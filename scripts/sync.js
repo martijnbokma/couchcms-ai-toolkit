@@ -16,257 +16,234 @@
  *   bun ~/couchcms-ai-toolkit/scripts/sync.js
  */
 
-import matter from "gray-matter";
-import { parse as parseYaml } from "yaml";
-import {
-  readFileSync,
-  writeFileSync,
-  existsSync,
-  mkdirSync,
-  readdirSync,
-} from "fs";
-import { join, dirname, resolve } from "path";
-import { fileURLToPath } from "url";
+import matter from 'gray-matter'
+import { parse as parseYaml } from 'yaml'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs'
+import { join, dirname, resolve } from 'path'
+import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const TOOLKIT_ROOT = resolve(__dirname, "..");
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const TOOLKIT_ROOT = resolve(__dirname, '..')
 
 /**
  * Load defaults from toolkit defaults.yaml
  */
 function loadDefaults(toolkitPath) {
-  const defaultsPath = join(toolkitPath, "defaults.yaml");
+    const defaultsPath = join(toolkitPath, 'defaults.yaml')
 
-  if (!existsSync(defaultsPath)) {
-    console.warn("⚠️  defaults.yaml not found, using built-in defaults");
-    return {
-      paths: {
-        css: "assets/css",
-        typescript: "assets/ts",
-        javascript: "assets/js",
-        components: "snippets/components",
-        views: "snippets/views",
-        layouts: "snippets/layouts",
-        filters: "snippets/filters",
-        forms: "snippets/forms",
-        public: "public",
-      },
-      standards: {
-        indentation: 4,
-        language: "english",
-        lineLength: 120,
-      },
-      naming: {
-        php_variables: "snake_case",
-        ts_variables: "camelCase",
-        css_classes: "kebab-case",
-      },
-    };
-  }
+    if (!existsSync(defaultsPath)) {
+        console.warn('⚠️  defaults.yaml not found, using built-in defaults')
+        return {
+            paths: {
+                css: 'assets/css',
+                typescript: 'assets/ts',
+                javascript: 'assets/js',
+                components: 'snippets/components',
+                views: 'snippets/views',
+                layouts: 'snippets/layouts',
+                filters: 'snippets/filters',
+                forms: 'snippets/forms',
+                public: 'public',
+            },
+            standards: {
+                indentation: 4,
+                language: 'english',
+                lineLength: 120,
+            },
+            naming: {
+                php_variables: 'snake_case',
+                ts_variables: 'camelCase',
+                css_classes: 'kebab-case',
+            },
+        }
+    }
 
-  const content = readFileSync(defaultsPath, "utf8");
-  return parseYaml(content);
+    const content = readFileSync(defaultsPath, 'utf8')
+    return parseYaml(content)
 }
 
 /**
  * Deep merge two objects
  */
 function deepMerge(target, source) {
-  const result = { ...target };
+    const result = { ...target }
 
-  for (const key in source) {
-    if (
-      source[key] &&
-      typeof source[key] === "object" &&
-      !Array.isArray(source[key])
-    ) {
-      result[key] = deepMerge(target[key] || {}, source[key]);
-    } else if (source[key] !== undefined) {
-      result[key] = source[key];
+    for (const key in source) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+            result[key] = deepMerge(target[key] || {}, source[key])
+        } else if (source[key] !== undefined) {
+            result[key] = source[key]
+        }
     }
-  }
 
-  return result;
+    return result
 }
 
 /**
  * Replace {{variable}} placeholders in content
  */
-function replaceVariables(content, variables, prefix = "") {
-  let result = content;
+function replaceVariables(content, variables, prefix = '') {
+    let result = content
 
-  for (const [key, value] of Object.entries(variables)) {
-    if (typeof value === "object" && !Array.isArray(value)) {
-      result = replaceVariables(
-        result,
-        value,
-        prefix ? `${prefix}.${key}` : key
-      );
-    } else {
-      const pattern = new RegExp(
-        `\\{\\{${prefix ? `${prefix}.` : ""}${key}\\}\\}`,
-        "g"
-      );
-      result = result.replace(pattern, String(value));
+    for (const [key, value] of Object.entries(variables)) {
+        if (typeof value === 'object' && !Array.isArray(value)) {
+            result = replaceVariables(result, value, prefix ? `${prefix}.${key}` : key)
+        } else {
+            const pattern = new RegExp(`\\{\\{${prefix ? `${prefix}.` : ''}${key}\\}\\}`, 'g')
+            result = result.replace(pattern, String(value))
+        }
     }
-  }
 
-  return result;
+    return result
 }
 
 /**
  * Find project.md in current directory or parent directories
  */
 function findProjectFile(startDir = process.cwd()) {
-  let currentDir = startDir;
-  const possibleNames = ["project.md", "PROJECT.md"];
+    let currentDir = startDir
+    const possibleNames = ['project.md', 'PROJECT.md']
 
-  while (currentDir !== "/") {
-    for (const name of possibleNames) {
-      const projectPath = join(currentDir, name);
-      if (existsSync(projectPath)) {
-        return projectPath;
-      }
+    while (currentDir !== '/') {
+        for (const name of possibleNames) {
+            const projectPath = join(currentDir, name)
+            if (existsSync(projectPath)) {
+                return projectPath
+            }
+        }
+        currentDir = dirname(currentDir)
     }
-    currentDir = dirname(currentDir);
-  }
 
-  return null;
+    return null
 }
 
 /**
  * Resolve toolkit path from project config
  */
 function resolveToolkitPath(configPath) {
-  if (!configPath) {
-    return TOOLKIT_ROOT;
-  }
+    if (!configPath) {
+        return TOOLKIT_ROOT
+    }
 
-  // Expand ~ to home directory
-  if (configPath.startsWith("~")) {
-    configPath = configPath.replace("~", process.env.HOME);
-  }
+    // Expand ~ to home directory
+    if (configPath.startsWith('~')) {
+        configPath = configPath.replace('~', process.env.HOME)
+    }
 
-  // Resolve relative paths from project directory
-  if (!configPath.startsWith("/")) {
-    configPath = resolve(process.cwd(), configPath);
-  }
+    // Resolve relative paths from project directory
+    if (!configPath.startsWith('/')) {
+        configPath = resolve(process.cwd(), configPath)
+    }
 
-  return configPath;
+    return configPath
 }
 
 /**
  * Load a module from the toolkit
  */
 function loadModule(moduleName, toolkitPath) {
-  const modulePath = join(toolkitPath, "modules", `${moduleName}.md`);
+    const modulePath = join(toolkitPath, 'modules', `${moduleName}.md`)
 
-  if (!existsSync(modulePath)) {
-    console.warn(`⚠️  Module not found: ${moduleName}`);
-    return null;
-  }
+    if (!existsSync(modulePath)) {
+        console.warn(`⚠️  Module not found: ${moduleName}`)
+        return null
+    }
 
-  const fileContent = readFileSync(modulePath, "utf8");
-  const { data: meta, content } = matter(fileContent);
+    const fileContent = readFileSync(modulePath, 'utf8')
+    const { data: meta, content } = matter(fileContent)
 
-  return { meta, content, name: moduleName };
+    return { meta, content, name: moduleName }
 }
 
 /**
  * Load an agent from the toolkit
  */
 function loadAgent(agentName, toolkitPath) {
-  // Agents are now in a flat structure under agents/
-  const agentPath = join(toolkitPath, "agents", `${agentName}.md`);
+    // Agents are now in a flat structure under agents/
+    const agentPath = join(toolkitPath, 'agents', `${agentName}.md`)
 
-  if (existsSync(agentPath)) {
-    const fileContent = readFileSync(agentPath, "utf8");
-    const { data: meta, content } = matter(fileContent);
-    return { meta, content, name: agentName };
-  }
+    if (existsSync(agentPath)) {
+        const fileContent = readFileSync(agentPath, 'utf8')
+        const { data: meta, content } = matter(fileContent)
+        return { meta, content, name: agentName }
+    }
 
-  console.warn(`⚠️  Agent not found: ${agentName}`);
-  return null;
+    console.warn(`⚠️  Agent not found: ${agentName}`)
+    return null
 }
 
 /**
  * Load project context from context directory
  */
 function loadProjectContext(contextPath, projectDir) {
-  if (!contextPath) {
-    return null;
-  }
+    if (!contextPath) {
+        return null
+    }
 
-  // Resolve relative paths from project directory
-  const fullPath = contextPath.startsWith("/")
-    ? contextPath
-    : resolve(projectDir, contextPath);
+    // Resolve relative paths from project directory
+    const fullPath = contextPath.startsWith('/') ? contextPath : resolve(projectDir, contextPath)
 
-  if (!existsSync(fullPath)) {
-    console.warn(`⚠️  Context directory not found: ${fullPath}`);
-    return null;
-  }
+    if (!existsSync(fullPath)) {
+        console.warn(`⚠️  Context directory not found: ${fullPath}`)
+        return null
+    }
 
-  // Load context.md if it exists
-  const contextFile = join(fullPath, "context.md");
-  if (existsSync(contextFile)) {
-    const fileContent = readFileSync(contextFile, "utf8");
-    const { data: meta, content } = matter(fileContent);
-    return { meta, content, path: fullPath };
-  }
+    // Load context.md if it exists
+    const contextFile = join(fullPath, 'context.md')
+    if (existsSync(contextFile)) {
+        const fileContent = readFileSync(contextFile, 'utf8')
+        const { data: meta, content } = matter(fileContent)
+        return { meta, content, path: fullPath }
+    }
 
-  // Otherwise, load all .md files in the directory
-  const files = readdirSync(fullPath).filter((f) => f.endsWith(".md"));
-  let combinedContent = "";
+    // Otherwise, load all .md files in the directory
+    const files = readdirSync(fullPath).filter(f => f.endsWith('.md'))
+    let combinedContent = ''
 
-  for (const file of files) {
-    const filePath = join(fullPath, file);
-    const fileContent = readFileSync(filePath, "utf8");
-    const { content } = matter(fileContent);
-    combinedContent += `\n${content}\n`;
-  }
+    for (const file of files) {
+        const filePath = join(fullPath, file)
+        const fileContent = readFileSync(filePath, 'utf8')
+        const { content } = matter(fileContent)
+        combinedContent += `\n${content}\n`
+    }
 
-  return { meta: {}, content: combinedContent, path: fullPath };
+    return { meta: {}, content: combinedContent, path: fullPath }
 }
 
 /**
  * Check for module conflicts
  */
 function checkConflicts(modules) {
-  const moduleNames = modules.map((m) => m.name);
-  const errors = [];
+    const moduleNames = modules.map(m => m.name)
+    const errors = []
 
-  for (const mod of modules) {
-    if (mod.meta.conflicts) {
-      for (const conflict of mod.meta.conflicts) {
-        if (moduleNames.includes(conflict)) {
-          errors.push(
-            `❌ Conflict: ${mod.name} cannot be used with ${conflict}`
-          );
+    for (const mod of modules) {
+        if (mod.meta.conflicts) {
+            for (const conflict of mod.meta.conflicts) {
+                if (moduleNames.includes(conflict)) {
+                    errors.push(`❌ Conflict: ${mod.name} cannot be used with ${conflict}`)
+                }
+            }
         }
-      }
+
+        if (mod.meta.requires) {
+            for (const required of mod.meta.requires) {
+                if (!moduleNames.includes(required)) {
+                    errors.push(`❌ Missing dependency: ${mod.name} requires ${required}`)
+                }
+            }
+        }
     }
 
-    if (mod.meta.requires) {
-      for (const required of mod.meta.requires) {
-        if (!moduleNames.includes(required)) {
-          errors.push(
-            `❌ Missing dependency: ${mod.name} requires ${required}`
-          );
-        }
-      }
-    }
-  }
-
-  return errors;
+    return errors
 }
 
 /**
  * Generate paths documentation section
  */
 function generatePathsSection(paths) {
-  return `## Project Paths
+    return `## Project Paths
 
 These are the configured paths for this project:
 
@@ -283,35 +260,28 @@ These are the configured paths for this project:
 | Public | \`${paths.public}\` |
 
 **Always use these paths when creating or referencing files.**
-`;
+`
 }
 
 /**
  * Generate the combined configuration content
  */
-function generateContent(
-  config,
-  mergedConfig,
-  modules,
-  agents,
-  projectContext,
-  projectRules
-) {
-  const timestamp = new Date().toISOString();
-  const moduleNames = modules.map((m) => m.name).join(", ");
-  const agentNames = agents.map((a) => a.name).join(", ");
-  const { paths, standards } = mergedConfig;
+function generateContent(config, mergedConfig, modules, agents, projectContext, projectRules) {
+    const timestamp = new Date().toISOString()
+    const moduleNames = modules.map(m => m.name).join(', ')
+    const agentNames = agents.map(a => a.name).join(', ')
+    const { paths, standards } = mergedConfig
 
-  let content = `# AI Coding Standards
-# Project: ${config.name || "Unnamed Project"}
+    let content = `# AI Coding Standards
+# Project: ${config.name || 'Unnamed Project'}
 # Generated: ${timestamp}
 # Modules: ${moduleNames}
-${agentNames ? `# Agents: ${agentNames}` : ""}
+${agentNames ? `# Agents: ${agentNames}` : ''}
 
 ## Project Overview
 
-- **Name**: ${config.name || "Unnamed"}
-- **Description**: ${config.description || "No description"}
+- **Name**: ${config.name || 'Unnamed'}
+- **Description**: ${config.description || 'No description'}
 - **Type**: CouchCMS Web Application
 
 ## Core Standards
@@ -324,90 +294,87 @@ ${generatePathsSection(paths)}
 
 ---
 
-`;
+`
 
-  // Add each module's content
-  for (const mod of modules) {
-    content += `\n${mod.content}\n\n---\n`;
-  }
-
-  // Add agents content
-  if (agents.length > 0) {
-    content += `\n# AI Agents\n\n`;
-    for (const agent of agents) {
-      content += `\n${agent.content}\n\n---\n`;
+    // Add each module's content
+    for (const mod of modules) {
+        content += `\n${mod.content}\n\n---\n`
     }
-  }
 
-  // Add project context
-  if (projectContext && projectContext.content.trim()) {
-    content += `\n# Project Context\n\n${projectContext.content}\n\n---\n`;
-  }
+    // Add agents content
+    if (agents.length > 0) {
+        content += `\n# AI Agents\n\n`
+        for (const agent of agents) {
+            content += `\n${agent.content}\n\n---\n`
+        }
+    }
 
-  // Add project-specific rules from project.md
-  if (projectRules && projectRules.trim()) {
-    content += `\n# Project-Specific Rules\n\n${projectRules}\n`;
-  }
+    // Add project context
+    if (projectContext && projectContext.content.trim()) {
+        content += `\n# Project Context\n\n${projectContext.content}\n\n---\n`
+    }
 
-  // Replace all {{variable}} placeholders
-  content = replaceVariables(content, mergedConfig);
+    // Add project-specific rules from project.md
+    if (projectRules && projectRules.trim()) {
+        content += `\n# Project-Specific Rules\n\n${projectRules}\n`
+    }
 
-  return content;
+    // Replace all {{variable}} placeholders
+    content = replaceVariables(content, mergedConfig)
+
+    return content
 }
 
 /**
  * Sync Cursor rules from toolkit to project
  */
 function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
-  const rulesSource = join(toolkitPath, "rules");
-  const rulesTarget = join(projectDir, ".cursor", "rules");
+    const rulesSource = join(toolkitPath, 'rules')
+    const rulesTarget = join(projectDir, '.cursor', 'rules')
 
-  if (!existsSync(rulesSource)) {
-    return; // No rules in toolkit
-  }
+    if (!existsSync(rulesSource)) {
+        return // No rules in toolkit
+    }
 
-  // Create target directory if needed
-  if (!existsSync(rulesTarget)) {
-    mkdirSync(rulesTarget, { recursive: true });
-  }
+    // Create target directory if needed
+    if (!existsSync(rulesTarget)) {
+        mkdirSync(rulesTarget, { recursive: true })
+    }
 
-  // Get all .mdc files from toolkit rules
-  const ruleFiles = readdirSync(rulesSource).filter((f) => f.endsWith(".mdc"));
+    // Get all .mdc files from toolkit rules
+    const ruleFiles = readdirSync(rulesSource).filter(f => f.endsWith('.mdc'))
 
-  for (const ruleFile of ruleFiles) {
-    const sourcePath = join(rulesSource, ruleFile);
-    const targetPath = join(rulesTarget, ruleFile);
+    for (const ruleFile of ruleFiles) {
+        const sourcePath = join(rulesSource, ruleFile)
+        const targetPath = join(rulesTarget, ruleFile)
 
-    let content = readFileSync(sourcePath, "utf8");
+        let content = readFileSync(sourcePath, 'utf8')
 
-    // Replace {{paths.xxx}} variables
-    content = replaceVariables(content, mergedConfig);
+        // Replace {{paths.xxx}} variables
+        content = replaceVariables(content, mergedConfig)
 
-    writeFileSync(targetPath, content);
-  }
+        writeFileSync(targetPath, content)
+    }
 
-  if (ruleFiles.length > 0) {
-    console.log(
-      `✅ Synced: ${ruleFiles.length} Cursor rules to .cursor/rules/`
-    );
-  }
+    if (ruleFiles.length > 0) {
+        console.log(`✅ Synced: ${ruleFiles.length} Cursor rules to .cursor/rules/`)
+    }
 }
 
 /**
  * Main sync function
  */
 async function sync() {
-  console.log("🔄 CouchCMS AI Toolkit - Sync\n");
+    try {
+        console.log('🔄 CouchCMS AI Toolkit - Sync\n')
 
-  // Find project.md
-  const projectPath = findProjectFile();
+        // Find project.md
+        const projectPath = findProjectFile()
 
-  if (!projectPath) {
-    console.error(
-      "❌ No project.md found in current directory or parent directories."
-    );
-    console.log("\nCreate a project.md file with:\n");
-    console.log(`---
+        if (!projectPath) {
+            console.error('❌ No project.md found in current directory or parent directories.')
+            console.log('\nCreate a project.md file with:\n')
+            console.log(`---
 name: "my-project"
 description: "Project description"
 toolkit: "./ai-toolkit"
@@ -427,105 +394,122 @@ paths:
 # Project-Specific Rules
 
 Add your project-specific instructions here...
-`);
-    process.exit(1);
-  }
+`)
+            process.exit(1)
+        }
 
-  console.log(`📄 Found: ${projectPath}`);
-  const projectDir = dirname(projectPath);
+        console.log(`📄 Found: ${projectPath}`)
+        const projectDir = dirname(projectPath)
 
-  // Parse project.md
-  const projectContent = readFileSync(projectPath, "utf8");
-  const { data: config, content: projectRules } = matter(projectContent);
+        // Parse project.md
+        let config, projectRules
+        try {
+            const projectContent = readFileSync(projectPath, 'utf8')
+            const parsed = matter(projectContent)
+            config = parsed.data
+            projectRules = parsed.content
+        } catch (error) {
+            console.error(`❌ Failed to parse project.md: ${error.message}`)
+            console.log('\nEnsure project.md has valid YAML frontmatter.\n')
+            process.exit(1)
+        }
 
-  console.log(`📦 Project: ${config.name || "Unnamed"}`);
+        console.log(`📦 Project: ${config.name || 'Unnamed'}`)
 
-  // Resolve toolkit path
-  const toolkitPath = resolveToolkitPath(config.toolkit);
-  console.log(`🛠️  Toolkit: ${toolkitPath}`);
+        // Resolve toolkit path
+        const toolkitPath = resolveToolkitPath(config.toolkit)
 
-  // Load defaults and merge with project config
-  const defaults = loadDefaults(toolkitPath);
-  const mergedConfig = deepMerge(defaults, {
-    paths: config.paths || {},
-    standards: config.standards || config.overrides || {},
-    naming: config.naming || {},
-  });
+        // Verify toolkit path exists
+        if (!existsSync(toolkitPath)) {
+            console.error(`❌ Toolkit path not found: ${toolkitPath}`)
+            console.log("\nCheck the 'toolkit' path in your project.md\n")
+            process.exit(1)
+        }
 
-  console.log(`📁 Paths: ${Object.keys(mergedConfig.paths).length} configured`);
+        console.log(`🛠️  Toolkit: ${toolkitPath}`)
 
-  // Ensure couchcms-core is always included
-  const moduleList = config.modules || ["couchcms-core"];
-  if (!moduleList.includes("couchcms-core")) {
-    moduleList.unshift("couchcms-core");
-  }
+        // Load defaults and merge with project config
+        const defaults = loadDefaults(toolkitPath)
+        const mergedConfig = deepMerge(defaults, {
+            paths: config.paths || {},
+            standards: config.standards || config.overrides || {},
+            naming: config.naming || {},
+        })
 
-  console.log(`📚 Modules: ${moduleList.join(", ")}`);
+        console.log(`📁 Paths: ${Object.keys(mergedConfig.paths).length} configured`)
 
-  // Load modules
-  const modules = moduleList
-    .map((name) => loadModule(name, toolkitPath))
-    .filter(Boolean);
+        // Ensure couchcms-core is always included
+        const moduleList = config.modules || ['couchcms-core']
+        if (!moduleList.includes('couchcms-core')) {
+            moduleList.unshift('couchcms-core')
+        }
 
-  // Load agents
-  const agentList = config.agents || [];
-  const agents = agentList
-    .map((name) => loadAgent(name, toolkitPath))
-    .filter(Boolean);
+        console.log(`📚 Modules: ${moduleList.join(', ')}`)
 
-  if (agents.length > 0) {
-    console.log(`🤖 Agents: ${agents.map((a) => a.name).join(", ")}`);
-  }
+        // Load modules
+        const modules = moduleList.map(name => loadModule(name, toolkitPath)).filter(Boolean)
 
-  // Load project context
-  const projectContext = loadProjectContext(config.context, projectDir);
-  if (projectContext) {
-    console.log(`📋 Context: ${projectContext.path}`);
-  }
+        // Load agents
+        const agentList = config.agents || []
+        const agents = agentList.map(name => loadAgent(name, toolkitPath)).filter(Boolean)
 
-  // Check for conflicts
-  const conflicts = checkConflicts(modules);
-  if (conflicts.length > 0) {
-    console.log("\n");
-    conflicts.forEach((c) => console.log(c));
-    process.exit(1);
-  }
+        if (agents.length > 0) {
+            console.log(`🤖 Agents: ${agents.map(a => a.name).join(', ')}`)
+        }
 
-  // Generate content
-  const content = generateContent(
-    config,
-    mergedConfig,
-    modules,
-    agents,
-    projectContext,
-    projectRules
-  );
+        // Load project context
+        const projectContext = loadProjectContext(config.context, projectDir)
+        if (projectContext) {
+            console.log(`📋 Context: ${projectContext.path}`)
+        }
 
-  // Write editor configurations
-  // .cursorrules
-  writeFileSync(join(projectDir, ".cursorrules"), content);
-  console.log("✅ Generated: .cursorrules");
+        // Check for conflicts
+        const conflicts = checkConflicts(modules)
+        if (conflicts.length > 0) {
+            console.log('\n')
+            conflicts.forEach(c => console.log(c))
+            process.exit(1)
+        }
 
-  // CLAUDE.md
-  writeFileSync(join(projectDir, "CLAUDE.md"), content);
-  console.log("✅ Generated: CLAUDE.md");
+        // Generate content
+        const content = generateContent(config, mergedConfig, modules, agents, projectContext, projectRules)
 
-  // .github/copilot-instructions.md
-  const githubDir = join(projectDir, ".github");
-  if (!existsSync(githubDir)) {
-    mkdirSync(githubDir, { recursive: true });
-  }
-  writeFileSync(join(githubDir, "copilot-instructions.md"), content);
-  console.log("✅ Generated: .github/copilot-instructions.md");
+        // Write editor configurations
+        try {
+            // .cursorrules
+            writeFileSync(join(projectDir, '.cursorrules'), content)
+            console.log('✅ Generated: .cursorrules')
 
-  // Sync Cursor rules
-  syncCursorRules(toolkitPath, projectDir, mergedConfig);
+            // CLAUDE.md
+            writeFileSync(join(projectDir, 'CLAUDE.md'), content)
+            console.log('✅ Generated: CLAUDE.md')
 
-  // AGENT.md
-  const { paths, standards } = mergedConfig;
-  writeFileSync(
-    join(projectDir, "AGENT.md"),
-    `# Universal AI Agent Instructions
+            // .github/copilot-instructions.md
+            const githubDir = join(projectDir, '.github')
+            if (!existsSync(githubDir)) {
+                mkdirSync(githubDir, { recursive: true })
+            }
+            writeFileSync(join(githubDir, 'copilot-instructions.md'), content)
+            console.log('✅ Generated: .github/copilot-instructions.md')
+        } catch (error) {
+            console.error(`❌ Failed to write configuration files: ${error.message}`)
+            console.log('\nCheck file permissions in project directory.\n')
+            process.exit(1)
+        }
+
+        // Sync Cursor rules
+        try {
+            syncCursorRules(toolkitPath, projectDir, mergedConfig)
+        } catch (error) {
+            console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
+        }
+
+        // AGENT.md
+        try {
+            const { paths, standards } = mergedConfig
+            writeFileSync(
+                join(projectDir, 'AGENT.md'),
+                `# Universal AI Agent Instructions
 
 This project uses the CouchCMS AI Toolkit for consistent AI agent behavior.
 
@@ -535,7 +519,7 @@ All AI coding agents follow the rules generated from:
 - \`project.md\` - Project-specific configuration
 - \`defaults.yaml\` - Toolkit defaults
 - Toolkit modules from: ${toolkitPath}
-${projectContext ? `- Project context from: ${config.context}` : ""}
+${projectContext ? `- Project context from: ${config.context}` : ''}
 
 ## Project Paths
 
@@ -550,28 +534,18 @@ ${projectContext ? `- Project context from: ${config.context}` : ""}
 ## Modules Active
 
 ${modules
-  .map(
-    (m) =>
-      `- **${m.meta.name || m.name}** (v${m.meta.version || "1.0"}): ${
-        m.meta.description || "No description"
-      }`
-  )
-  .join("\n")}
+    .map(m => `- **${m.meta.name || m.name}** (v${m.meta.version || '1.0'}): ${m.meta.description || 'No description'}`)
+    .join('\n')}
 
 ${
-  agents.length > 0
-    ? `## Agents Active
+    agents.length > 0
+        ? `## Agents Active
 
 ${agents
-  .map(
-    (a) =>
-      `- **${a.meta.name || a.name}** (${a.meta.type || "daily"}): ${
-        a.meta.description || "No description"
-      }`
-  )
-  .join("\n")}
+    .map(a => `- **${a.meta.name || a.name}** (${a.meta.type || 'daily'}): ${a.meta.description || 'No description'}`)
+    .join('\n')}
 `
-    : ""
+        : ''
 }
 
 ## Regenerate
@@ -586,17 +560,30 @@ bun ${toolkitPath}/scripts/sync.js
 
 - **Indentation**: ${standards.indentation} spaces
 - **Language**: ${standards.language} only
-- **Modules**: ${moduleList.join(", ")}
+- **Modules**: ${moduleList.join(', ')}
 
 If any conflict exists between configurations, \`project.md\` always wins.
 `
-  );
-  console.log("✅ Generated: AGENT.md");
+            )
+            console.log('✅ Generated: AGENT.md')
+        } catch (error) {
+            console.warn(`⚠️  Failed to generate AGENT.md: ${error.message}`)
+        }
 
-  console.log(
-    `\n✨ Sync complete! ${modules.length} modules, ${agents.length} agents loaded.\n`
-  );
+        console.log(`\n✨ Sync complete! ${modules.length} modules, ${agents.length} agents loaded.\n`)
+    } catch (error) {
+        console.error(`\n❌ Sync failed: ${error.message}\n`)
+        console.log('Troubleshooting:')
+        console.log('  1. Verify project.md has valid YAML frontmatter')
+        console.log('  2. Check toolkit path in project.md')
+        console.log('  3. Ensure all referenced modules exist')
+        console.log("  4. Run 'bun run validate' for detailed diagnostics\n")
+        process.exit(1)
+    }
 }
 
 // Run
-sync().catch(console.error);
+sync().catch(error => {
+    console.error(`\n❌ Unexpected error: ${error.message}\n`)
+    process.exit(1)
+})

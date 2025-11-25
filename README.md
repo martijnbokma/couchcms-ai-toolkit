@@ -13,7 +13,25 @@ This toolkit provides consistent AI assistance across all your CouchCMS projects
 
 ## Quick Start
 
-### 1. Add to Your Project
+### Option 1: Interactive Setup (Recommended)
+
+The easiest way to get started with a new project:
+
+```bash
+cd your-project
+bun ai-toolkit/scripts/init.js
+```
+
+The interactive wizard will:
+
+- Set up your `project.md` configuration
+- Let you choose modules and agents
+- Create context directories
+- Run the first sync automatically
+
+### Option 2: Manual Setup
+
+#### 1. Add to Your Project
 
 **Option A: Git Submodule (Recommended)**
 
@@ -31,30 +49,30 @@ git clone https://github.com/your-user/couchcms-ai-toolkit.git ~/couchcms-ai-too
 # In your project, reference it in project.md
 ```
 
-### 2. Create Project Configuration
+#### 2. Create Project Configuration
 
 Create `project.md` in your project root:
 
 ```markdown
 ---
-name: "my-project"
-description: "Description of your project"
+name: 'my-project'
+description: 'Description of your project'
 
-toolkit: "./ai-toolkit" # or "~/couchcms-ai-toolkit" if cloned separately
+toolkit: './ai-toolkit' # or "~/couchcms-ai-toolkit" if cloned separately
 
 modules:
-  - couchcms-core # Always included automatically
-  - tailwindcss # If using TailwindCSS
-  - daisyui # If using daisyUI
-  - alpinejs # If using Alpine.js
-  - typescript # If using TypeScript
-  - databound-forms # If using DataBound Forms
+    - couchcms-core # Always included automatically
+    - tailwindcss # If using TailwindCSS
+    - daisyui # If using daisyUI
+    - alpinejs # If using Alpine.js
+    - typescript # If using TypeScript
+    - databound-forms # If using DataBound Forms
 
 agents:
-  - couchcms-agent # Daily CouchCMS development
-  - safety-checker # HTML comment security
+    - couchcms-agent # Daily CouchCMS development
+    - safety-checker # HTML comment security
 
-context: ".project/ai" # Project-specific context directory
+context: '.project/ai' # Project-specific context directory
 ---
 
 # Project-Specific Rules
@@ -122,39 +140,39 @@ This generates:
 
 Combined agents with Quick Reference + Deep Dive sections:
 
-| Agent             | Description                              |
-| ----------------- | ---------------------------------------- |
-| `couchcms`        | Core CouchCMS templates, patterns        |
-| `databound-forms` | Forms, CRUD, validation, security        |
-| `alpinejs`        | Alpine.js + CouchCMS integration         |
-| `tailwindcss`     | TailwindCSS 4 + daisyUI 5 styling        |
-| `typescript`      | TypeScript standards and patterns        |
-| `custom-routes`   | Clean URLs and routing                   |
-| `mysql`           | Database operations and optimization     |
-| `bun`             | Bun runtime and build tooling            |
-| `git`             | Version control and workflow             |
+| Agent             | Description                          |
+| ----------------- | ------------------------------------ |
+| `couchcms`        | Core CouchCMS templates, patterns    |
+| `databound-forms` | Forms, CRUD, validation, security    |
+| `alpinejs`        | Alpine.js + CouchCMS integration     |
+| `tailwindcss`     | TailwindCSS 4 + daisyUI 5 styling    |
+| `typescript`      | TypeScript standards and patterns    |
+| `custom-routes`   | Clean URLs and routing               |
+| `mysql`           | Database operations and optimization |
+| `bun`             | Bun runtime and build tooling        |
+| `git`             | Version control and workflow         |
 
 ## Auto-Loading Rules
 
 Cursor rules that auto-load based on file type:
 
-| Rule                    | Triggers On                    |
-| ----------------------- | ------------------------------ |
-| `refactor-html.mdc`     | `snippets/**/*.html`, `*.php`  |
-| `refactor-typescript.mdc` | `assets/ts/**/*.ts`          |
-| `refactor-css.mdc`      | `assets/css/**/*.css`          |
-| `refactor-forms.mdc`    | `snippets/forms/**/*.html`     |
+| Rule                      | Triggers On                   |
+| ------------------------- | ----------------------------- |
+| `refactor-html.mdc`       | `snippets/**/*.html`, `*.php` |
+| `refactor-typescript.mdc` | `assets/ts/**/*.ts`           |
+| `refactor-css.mdc`        | `assets/css/**/*.css`         |
+| `refactor-forms.mdc`      | `snippets/forms/**/*.html`    |
 
 ## Prompts Library
 
 Reusable prompts for common tasks:
 
-| Directory       | Contents                              |
-| --------------- | ------------------------------------- |
+| Directory         | Contents                                 |
+| ----------------- | ---------------------------------------- |
 | `best-practices/` | Claude, JavaScript, TypeScript, security |
-| `debugging/`    | Alpine.js, CouchCMS troubleshooting   |
-| `validators/`   | Design, links, responsive, standards  |
-| `refactoring/`  | Design/functionality preserving       |
+| `debugging/`      | Alpine.js, CouchCMS troubleshooting      |
+| `validators/`     | Design, links, responsive, standards     |
+| `refactoring/`    | Design/functionality preserving          |
 
 ## Project Structure
 
@@ -185,9 +203,16 @@ couchcms-ai-toolkit/
 │   ├── validators/       # Code validation
 │   └── refactoring/      # Refactoring patterns
 ├── framework/            # AI prompting framework (AAPF)
-├── scripts/              # Build scripts
-│   └── sync.js           # Generate editor configs
-└── defaults.yaml         # Default path configuration
+├── scripts/              # Automation scripts
+│   ├── sync.js           # Generate editor configs
+│   ├── validate.js       # Validate project setup
+│   └── init.js           # Interactive setup wizard
+├── templates/            # Project templates
+│   ├── project.md        # Project config template
+│   └── agent-template.md # Agent template
+├── defaults.yaml         # Default path configuration
+├── CHANGELOG.md          # Version history
+└── package.json          # Dependencies & scripts
 ```
 
 ## Your Project Structure
@@ -206,15 +231,79 @@ your-project/
 ## Commands
 
 ```bash
-# Generate editor configurations
-bun run sync
+# Interactive setup wizard for new projects
+bun run init
 
-# Validate project compliance (TODO)
+# Validate project configuration and compliance
 bun run validate
 
-# Initialize new project (TODO)
-bun run init
+# Generate/update editor configurations
+bun run sync
 ```
+
+### Command Details
+
+#### `bun run init`
+
+Interactive setup wizard that guides you through:
+
+- Project name and description
+- Module selection (with descriptions)
+- Agent selection (with descriptions)
+- Toolkit installation method (submodule vs home directory)
+- Context directory creation
+- Automatic first sync
+
+Perfect for new projects or when adding the toolkit to an existing project.
+
+#### `bun run validate`
+
+Validates your project setup:
+
+- Checks `project.md` syntax and YAML frontmatter
+- Verifies all referenced modules exist
+- Confirms all referenced agents exist
+- Validates toolkit path configuration
+- Checks generated files (.cursorrules, CLAUDE.md, AGENT.md)
+- Verifies custom path configurations
+- **Provides compliance score (0-100%)**
+
+Run this after making changes to `project.md` or when troubleshooting issues.
+
+Example output:
+
+```bash
+🔍 CouchCMS AI Toolkit - Validation
+
+📄 Found: project.md
+🛠️  Toolkit: ./ai-toolkit-shared
+📚 Modules: couchcms-core, tailwindcss, daisyui
+🤖 Agents: couchcms, databound-forms
+
+
+📊 Compliance Score: 100/100 (100%)
+
+✅ Validation passed - All checks OK!
+```
+
+#### `bun run sync`
+
+Generates AI configuration files:
+
+- `.cursorrules` - Cursor AI rules
+- `CLAUDE.md` - Claude AI rules
+- `AGENT.md` - Universal AI agent documentation
+- `.github/copilot-instructions.md` - GitHub Copilot rules
+- `.cursor/rules/*.mdc` - Auto-loading Cursor rules
+
+Run this after:
+
+- Updating `project.md`
+- Changing modules or agents
+- Updating toolkit (git pull)
+- Modifying project context
+
+**New in v1.1.0**: Enhanced error handling with helpful troubleshooting messages.
 
 ## Updating
 
@@ -223,12 +312,21 @@ bun run init
 cd ai-toolkit
 git pull origin main
 cd ..
-bun ai-toolkit/scripts/sync.js
+bun run sync
 
 # If cloned separately
 cd ~/couchcms-ai-toolkit
 git pull origin main
 ```
+
+After updating, always run:
+
+```bash
+bun run validate  # Check for any issues
+bun run sync      # Regenerate configurations
+```
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and upgrade notes.
 
 ## Customization
 
@@ -238,8 +336,8 @@ In your `project.md`:
 
 ```yaml
 overrides:
-  indentation: 2 # Override default 4-space indentation
-  language: "dutch" # Allow Dutch comments (not recommended)
+    indentation: 2 # Override default 4-space indentation
+    language: 'dutch' # Allow Dutch comments (not recommended)
 ```
 
 ### Disable Modules
@@ -276,44 +374,44 @@ We welcome contributions! Here's how you can help improve the toolkit:
 
 1. **Create the module file** in `modules/`:
 
-   ```bash
-   touch modules/my-module.md
-   ```
+    ```bash
+    touch modules/my-module.md
+    ```
 
 2. **Use the standard frontmatter**:
 
-   ```markdown
-   ---
-   id: my-module
-   name: "My Module"
-   version: "1.0"
-   description: "Brief description of what this module covers"
-   required: false
-   requires: [] # Other modules this depends on
-   conflicts: [] # Modules that can't be used together
-   ---
+    ```markdown
+    ---
+    id: my-module
+    name: 'My Module'
+    version: '1.0'
+    description: 'Brief description of what this module covers'
+    required: false
+    requires: [] # Other modules this depends on
+    conflicts: [] # Modules that can't be used together
+    ---
 
-   # My Module Standards
+    # My Module Standards
 
-   ## Overview
+    ## Overview
 
-   Explain what this module is for...
+    Explain what this module is for...
 
-   ## Patterns
+    ## Patterns
 
-   Show code examples...
+    Show code examples...
 
-   ## Best Practices
+    ## Best Practices
 
-   List dos and don'ts...
-   ```
+    List dos and don'ts...
+    ```
 
 3. **Test your module**:
 
-   ```bash
-   # Add to a project.md and run sync
-   bun scripts/sync.js
-   ```
+    ```bash
+    # Add to a project.md and run sync
+    bun scripts/sync.js
+    ```
 
 4. **Submit a pull request**
 
@@ -323,9 +421,9 @@ We welcome contributions! Here's how you can help improve the toolkit:
 2. Make your changes
 3. Test with `bun scripts/sync.js`
 4. Submit a pull request with:
-   - What you changed
-   - Why it's an improvement
-   - Any breaking changes
+    - What you changed
+    - Why it's an improvement
+    - Any breaking changes
 
 ### Module Guidelines
 
@@ -357,6 +455,117 @@ bun install
 # Test sync script
 bun scripts/sync.js
 ```
+
+## Troubleshooting
+
+### Validation Fails
+
+If `bun run validate` shows errors:
+
+1. **Check `project.md` syntax**
+
+    ```bash
+    # Ensure valid YAML frontmatter
+    # Check for missing quotes, commas, etc.
+    ```
+
+2. **Verify toolkit path**
+
+    ```yaml
+    # In project.md, ensure toolkit path is correct:
+    toolkit: "./ai-toolkit-shared"  # Submodule
+    # or
+    toolkit: "~/couchcms-ai-toolkit"  # Home directory
+    ```
+
+3. **Check module names**
+
+    ```yaml
+    # Module names must match exactly:
+    modules:
+        - couchcms-core # ✅ Correct
+        - couchcms # ❌ Wrong
+        - tailwindcss # ✅ Correct
+        - tailwind # ❌ Wrong
+    ```
+
+4. **Run with debug output**
+    ```bash
+    bun ai-toolkit-shared/scripts/validate.js
+    # Shows detailed error messages
+    ```
+
+### Sync Fails
+
+If `bun run sync` encounters errors:
+
+1. **Run validation first**
+
+    ```bash
+    bun run validate
+    # Fix any errors before syncing
+    ```
+
+2. **Check file permissions**
+
+    ```bash
+    # Ensure you can write to project directory
+    ls -la .cursorrules CLAUDE.md AGENT.md
+    ```
+
+3. **Verify toolkit structure**
+    ```bash
+    ls ai-toolkit-shared/modules/
+    ls ai-toolkit-shared/agents/
+    # Ensure all expected files exist
+    ```
+
+### Common Issues
+
+**"Module not found" warnings**
+
+- Double-check module names in `project.md`
+- Ensure toolkit is up to date: `git pull`
+
+**"Toolkit path not found" error**
+
+- Verify the `toolkit` path in `project.md`
+- For submodules: `./ai-toolkit-shared`
+- For home directory: `~/couchcms-ai-toolkit`
+
+**Generated files not updating**
+
+- Delete generated files and re-run sync
+- Check if you're editing generated files (don't edit them directly!)
+
+**Compliance score < 100%**
+
+- Review warnings in validation output
+- Fix any missing modules or paths
+- Re-run validation after fixes
+
+### Getting Help
+
+1. Run validation for detailed diagnostics
+2. Check [CHANGELOG.md](CHANGELOG.md) for breaking changes
+3. Review error messages carefully - they include troubleshooting hints
+4. Open an issue with validation output and error messages
+
+## Version History
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history and upgrade guides.
+
+**Current Version**: 1.1.0
+
+### What's New in 1.1.0
+
+- ✅ **Interactive setup wizard** (`bun run init`)
+- ✅ **Project validation** (`bun run validate`)
+- ✅ **Enhanced error handling** in sync script
+- ✅ **CHANGELOG.md** for version tracking
+- ✅ **Better troubleshooting** messages
+
+[See full changelog](CHANGELOG.md)
 
 ## License
 

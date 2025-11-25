@@ -1,17 +1,30 @@
 {
-  "name": "couchcms-ai-toolkit",
-  "version": "1.0.0",
-  "description": "Universal AI Development Toolkit for CouchCMS Projects",
-  "type": "module",
-  "scripts": {
-    "sync": "bun scripts/sync.js",
-    "validate": "bun scripts/validate.js",
-    "init": "bun scripts/init.js"
-  },
-  "dependencies": {
-    "gray-matter": "^4.0.3",
-    "yaml": "^2.3.4"
-  },
-  "author": "",
-  "license": "MIT"
+    "name": "couchcms-ai-toolkit",
+    "version": "1.1.0",
+    "description": "Universal AI Development Toolkit for CouchCMS Projects",
+    "type": "module",
+    "scripts": {
+        "sync": "bun scripts/sync.js",
+        "validate": "bun scripts/validate.js",
+        "init": "bun scripts/init.js"
+    },
+    "dependencies": {
+        "gray-matter": "^4.0.3",
+        "yaml": "^2.3.4"
+    },
+    "keywords": [
+        "couchcms",
+        "ai",
+        "toolkit",
+        "cursor",
+        "claude",
+        "copilot",
+        "development"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/your-user/couchcms-ai-toolkit.git"
+    },
+    "author": "",
+    "license": "MIT"
 }
