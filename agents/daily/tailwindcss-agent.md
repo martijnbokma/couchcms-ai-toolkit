@@ -1,15 +1,15 @@
 ---
 name: TailwindCSS Agent
-version: '1.0'
+version: "1.0"
 type: daily
 description: Utility-first CSS, responsive design, and TailwindCSS 4 patterns
 tags:
-    - tailwindcss
-    - css
-    - responsive
-    - design
+  - tailwindcss
+  - css
+  - responsive
+  - design
 requires:
-    - tailwindcss
+  - tailwindcss
 ---
 
 # TailwindCSS Agent
@@ -56,20 +56,18 @@ npm install tailwindcss@latest @tailwindcss/vite@latest daisyui@latest
 ## Vite Configuration
 
 ```javascript
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-    plugins: [
-        tailwindcss(),
-    ],
-})
+  plugins: [tailwindcss()],
+});
 ```
 
 ## CSS Entry Point
 
 ```css
 /* TailwindCSS 4 + DaisyUI 5 syntax */
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* Content sources - Tell TailwindCSS where to find classes */
 @source "./**/*.{html,php,js,ts}";
@@ -92,13 +90,13 @@ export default defineConfig({
 
 ```css
 @plugin "daisyui/theme" {
-    name: 'custom_theme';
-    color-scheme: dark;
+  name: "custom_theme";
+  color-scheme: dark;
 
-    --color-base-100: oklch(22% 0.019 237.69);
-    --color-primary: oklch(67.2% 0.289 341.94);
-    --color-secondary: oklch(68.8% 0.207 12.04);
-    --color-accent: oklch(74.7% 0.18 57.14);
+  --color-base-100: oklch(22% 0.019 237.69);
+  --color-primary: oklch(67.2% 0.289 341.94);
+  --color-secondary: oklch(68.8% 0.207 12.04);
+  --color-accent: oklch(74.7% 0.18 57.14);
 }
 ```
 
@@ -106,8 +104,10 @@ export default defineConfig({
 
 ```html
 <!-- Organized: layout → spacing → sizing → colors → typography → effects -->
-<div class="flex items-center gap-4 p-4 w-full bg-base-200 text-base-content rounded-lg shadow-md">
-    Content
+<div
+  class="flex items-center gap-4 p-4 w-full bg-base-200 text-base-content rounded-lg shadow-md"
+>
+  Content
 </div>
 ```
 
@@ -115,7 +115,9 @@ export default defineConfig({
 
 ```html
 <!-- Mobile-first: base → sm → md → lg → xl -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-    <div class="card">Item</div>
+<div
+  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+>
+  <div class="card">Item</div>
 </div>
 ```

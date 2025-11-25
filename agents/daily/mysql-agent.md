@@ -1,13 +1,13 @@
 ---
 name: MySQL Agent
-version: '1.0'
+version: "1.0"
 type: daily
 description: Database operations, optimization, and CouchCMS-specific queries
 tags:
-    - mysql
-    - database
-    - couchcms
-    - performance
+  - mysql
+  - database
+  - couchcms
+  - performance
 ---
 
 # MySQL Agent

@@ -1,15 +1,15 @@
 ---
 name: Alpine.js Agent
-version: '1.0'
+version: "1.0"
 type: daily
 description: Lightweight JavaScript interactions and reactive components
 tags:
-    - alpinejs
-    - javascript
-    - reactive
-    - components
+  - alpinejs
+  - javascript
+  - reactive
+  - components
 requires:
-    - alpinejs
+  - alpinejs
 ---
 
 # Alpine.js Agent
@@ -52,23 +52,25 @@ You are an Alpine.js specialist focused on lightweight JavaScript interactions a
 
 ```html
 <div x-data="{ items: <cms:show_json items /> }">
-    <template x-for="item in items" :key="item.id">
-        <div x-text="item.title"></div>
-    </template>
+  <template x-for="item in items" :key="item.id">
+    <div x-text="item.title"></div>
+  </template>
 </div>
 ```
 
 ### Form with CouchCMS DataBound Forms
 
 ```html
-<form x-data="{ submitting: false, errors: {} }"
-      @submit.prevent="submitting = true"
-      method="post">
-    <cms:input type="bound" name="title" />
-    <button type="submit" :disabled="submitting">
-        <span x-show="!submitting">Save</span>
-        <span x-show="submitting">Saving...</span>
-    </button>
+<form
+  x-data="{ submitting: false, errors: {} }"
+  @submit.prevent="submitting = true"
+  method="post"
+>
+  <cms:input type="bound" name="title" />
+  <button type="submit" :disabled="submitting">
+    <span x-show="!submitting">Save</span>
+    <span x-show="submitting">Saving...</span>
+  </button>
 </form>
 ```
 
@@ -76,18 +78,20 @@ You are an Alpine.js specialist focused on lightweight JavaScript interactions a
 
 ```html
 <div x-data="{ open: false }">
-    <button @click="open = true">Open Modal</button>
-    <div x-show="open"
-         x-transition
-         @keydown.escape.window="open = false"
-         class="modal modal-open">
-        <div class="modal-box" @click.outside="open = false">
-            <h3 class="font-bold text-lg">Modal Title</h3>
-            <div class="modal-action">
-                <button @click="open = false" class="btn">Close</button>
-            </div>
-        </div>
+  <button @click="open = true">Open Modal</button>
+  <div
+    x-show="open"
+    x-transition
+    @keydown.escape.window="open = false"
+    class="modal modal-open"
+  >
+    <div class="modal-box" @click.outside="open = false">
+      <h3 class="font-bold text-lg">Modal Title</h3>
+      <div class="modal-action">
+        <button @click="open = false" class="btn">Close</button>
+      </div>
     </div>
+  </div>
 </div>
 ```
 

@@ -1,15 +1,15 @@
 ---
 name: TypeScript Agent
-version: '1.0'
+version: "1.0"
 type: daily
 description: Type safety, modern JavaScript features, and performance optimization
 tags:
-    - typescript
-    - javascript
-    - types
-    - performance
+  - typescript
+  - javascript
+  - types
+  - performance
 requires:
-    - typescript
+  - typescript
 ---
 
 # TypeScript Agent
@@ -45,16 +45,16 @@ You are a TypeScript specialist focused on type safety, modern JavaScript featur
 ```typescript
 // Define clear interfaces
 interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: 'student' | 'teacher' | 'admin';
+  id: string;
+  name: string;
+  email: string;
+  role: "student" | "teacher" | "admin";
 }
 
 interface ApiResponse<T> {
-    success: boolean;
-    data?: T;
-    error?: string;
+  success: boolean;
+  data?: T;
+  error?: string;
 }
 ```
 
@@ -63,33 +63,40 @@ interface ApiResponse<T> {
 ```typescript
 // Receive object, return object (RORO pattern)
 interface FetchOptions {
-    endpoint: string;
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    body?: Record<string, unknown>;
+  endpoint: string;
+  method?: "GET" | "POST" | "PUT" | "DELETE";
+  body?: Record<string, unknown>;
 }
 
 interface FetchResult<T> {
-    data: T | null;
-    error: string | null;
+  data: T | null;
+  error: string | null;
 }
 
-async function fetchData<T>({ endpoint, method = 'GET', body }: FetchOptions): Promise<FetchResult<T>> {
-    try {
-        const response = await fetch(endpoint, {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: body ? JSON.stringify(body) : undefined,
-        });
+async function fetchData<T>({
+  endpoint,
+  method = "GET",
+  body,
+}: FetchOptions): Promise<FetchResult<T>> {
+  try {
+    const response = await fetch(endpoint, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: body ? JSON.stringify(body) : undefined,
+    });
 
-        if (!response.ok) {
-            return { data: null, error: `HTTP ${response.status}` };
-        }
-
-        const data = await response.json() as T;
-        return { data, error: null };
-    } catch (err) {
-        return { data: null, error: err instanceof Error ? err.message : 'Unknown error' };
+    if (!response.ok) {
+      return { data: null, error: `HTTP ${response.status}` };
     }
+
+    const data = (await response.json()) as T;
+    return { data, error: null };
+  } catch (err) {
+    return {
+      data: null,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
 }
 ```
 
@@ -98,33 +105,33 @@ async function fetchData<T>({ endpoint, method = 'GET', body }: FetchOptions): P
 ```typescript
 // Type-safe Alpine component
 interface ModalState {
-    open: boolean;
-    title: string;
-    content: string;
+  open: boolean;
+  title: string;
+  content: string;
 }
 
 function createModal(): ModalState & {
-    show: (title: string, content: string) => void;
-    close: () => void;
+  show: (title: string, content: string) => void;
+  close: () => void;
 } {
-    return {
-        open: false,
-        title: '',
-        content: '',
-        show(title: string, content: string) {
-            this.title = title;
-            this.content = content;
-            this.open = true;
-        },
-        close() {
-            this.open = false;
-        },
-    };
+  return {
+    open: false,
+    title: "",
+    content: "",
+    show(title: string, content: string) {
+      this.title = title;
+      this.content = content;
+      this.open = true;
+    },
+    close() {
+      this.open = false;
+    },
+  };
 }
 
 // Register with Alpine
-document.addEventListener('alpine:init', () => {
-    window.Alpine.data('modal', createModal);
+document.addEventListener("alpine:init", () => {
+  window.Alpine.data("modal", createModal);
 });
 ```
 
@@ -133,20 +140,20 @@ document.addEventListener('alpine:init', () => {
 ```typescript
 // Debounce with proper typing
 function debounce<T extends (...args: Parameters<T>) => void>(
-    func: T,
-    wait: number
+  func: T,
+  wait: number
 ): (...args: Parameters<T>) => void {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    return (...args: Parameters<T>) => {
-        if (timeoutId) clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => func(...args), wait);
-    };
+  return (...args: Parameters<T>) => {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), wait);
+  };
 }
 
 // Type guard
 function isString(value: unknown): value is string {
-    return typeof value === 'string';
+  return typeof value === "string";
 }
 ```
 

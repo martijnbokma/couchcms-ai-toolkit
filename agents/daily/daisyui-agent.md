@@ -1,15 +1,15 @@
 ---
 name: DaisyUI Agent
-version: '1.0'
+version: "1.0"
 type: daily
 description: Component design, theming, and DaisyUI 5 patterns
 tags:
-    - daisyui
-    - components
-    - theming
-    - ui
+  - daisyui
+  - components
+  - theming
+  - ui
 requires:
-    - daisyui
+  - daisyui
 ---
 
 # DaisyUI Agent
@@ -84,14 +84,14 @@ You are a DaisyUI specialist focused on component design, theming, and integrati
 
 ```html
 <div class="card bg-base-100 shadow-xl">
-    <figure><img src="image.jpg" alt="Description" /></figure>
-    <div class="card-body">
-        <h2 class="card-title">Title</h2>
-        <p>Description text</p>
-        <div class="card-actions justify-end">
-            <button class="btn btn-primary">Action</button>
-        </div>
+  <figure><img src="image.jpg" alt="Description" /></figure>
+  <div class="card-body">
+    <h2 class="card-title">Title</h2>
+    <p>Description text</p>
+    <div class="card-actions justify-end">
+      <button class="btn btn-primary">Action</button>
     </div>
+  </div>
 </div>
 ```
 
@@ -99,18 +99,18 @@ You are a DaisyUI specialist focused on component design, theming, and integrati
 
 ```html
 <dialog id="my_modal" class="modal">
-    <div class="modal-box">
-        <h3 class="text-lg font-bold">Modal Title</h3>
-        <p class="py-4">Modal content here</p>
-        <div class="modal-action">
-            <form method="dialog">
-                <button class="btn">Close</button>
-            </form>
-        </div>
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Modal Title</h3>
+    <p class="py-4">Modal content here</p>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn">Close</button>
+      </form>
     </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
 </dialog>
 ```
 
@@ -118,13 +118,17 @@ You are a DaisyUI specialist focused on component design, theming, and integrati
 
 ```html
 <div class="form-control w-full">
-    <label class="label">
-        <span class="label-text">Label</span>
-    </label>
-    <input type="text" placeholder="Type here" class="input input-bordered w-full" />
-    <label class="label">
-        <span class="label-text-alt">Helper text</span>
-    </label>
+  <label class="label">
+    <span class="label-text">Label</span>
+  </label>
+  <input
+    type="text"
+    placeholder="Type here"
+    class="input input-bordered w-full"
+  />
+  <label class="label">
+    <span class="label-text-alt">Helper text</span>
+  </label>
 </div>
 ```
 
@@ -132,12 +136,12 @@ You are a DaisyUI specialist focused on component design, theming, and integrati
 
 ```css
 @plugin "daisyui/theme" {
-    name: 'custom_theme';
-    color-scheme: dark;
-    --color-primary: oklch(67.2% 0.289 341.94);
-    --color-secondary: oklch(68.8% 0.207 12.04);
-    --color-base-100: oklch(22% 0.019 237.69);
-    --color-base-content: oklch(90% 0.01 240);
+  name: "custom_theme";
+  color-scheme: dark;
+  --color-primary: oklch(67.2% 0.289 341.94);
+  --color-secondary: oklch(68.8% 0.207 12.04);
+  --color-base-100: oklch(22% 0.019 237.69);
+  --color-base-content: oklch(90% 0.01 240);
 }
 ```
 
@@ -145,12 +149,9 @@ You are a DaisyUI specialist focused on component design, theming, and integrati
 
 ```css
 @plugin "daisyui" {
-    themes:
-        light --default,
-        dark --prefersdark,
-        custom_theme;
-    root: ':root';
-    logs: true;
+  themes: light --default, dark --prefersdark, custom_theme;
+  root: ":root";
+  logs: true;
 }
 ```
 
