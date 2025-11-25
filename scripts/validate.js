@@ -40,7 +40,7 @@ function findProjectFile(startDir = process.cwd()) {
 /**
  * Resolve toolkit path from project config
  */
-function resolveToolkitPath(configPath) {
+function resolveToolkitPath(configPath, projectDir) {
     if (!configPath) {
         return TOOLKIT_ROOT
     }
@@ -50,7 +50,8 @@ function resolveToolkitPath(configPath) {
     }
 
     if (!configPath.startsWith('/')) {
-        configPath = resolve(process.cwd(), configPath)
+        // Resolve relative to project directory, not current working directory
+        configPath = resolve(projectDir, configPath)
     }
 
     return configPath
@@ -106,7 +107,7 @@ async function validate() {
     }
 
     // Validate toolkit path
-    const toolkitPath = resolveToolkitPath(config.toolkit)
+    const toolkitPath = resolveToolkitPath(config.toolkit, projectDir)
 
     if (!existsSync(toolkitPath)) {
         errors.push(`Toolkit path not found: ${toolkitPath}`)
