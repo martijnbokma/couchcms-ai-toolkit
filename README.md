@@ -163,6 +163,89 @@ Add Markdown content after the frontmatter in `project.md`:
 - All forms via DataBound Forms
 ```
 
+## Contributing
+
+We welcome contributions! Here's how you can help improve the toolkit:
+
+### Adding a New Module
+
+1. **Create the module file** in `modules/`:
+   ```bash
+   touch modules/my-module.md
+   ```
+
+2. **Use the standard frontmatter**:
+   ```markdown
+   ---
+   id: my-module
+   name: "My Module"
+   version: "1.0"
+   description: "Brief description of what this module covers"
+   required: false
+   requires: []           # Other modules this depends on
+   conflicts: []          # Modules that can't be used together
+   ---
+
+   # My Module Standards
+
+   ## Overview
+   Explain what this module is for...
+
+   ## Patterns
+   Show code examples...
+
+   ## Best Practices
+   List dos and don'ts...
+   ```
+
+3. **Test your module**:
+   ```bash
+   # Add to a project.md and run sync
+   bun scripts/sync.js
+   ```
+
+4. **Submit a pull request**
+
+### Improving Existing Modules
+
+1. Fork the repository
+2. Make your changes
+3. Test with `bun scripts/sync.js`
+4. Submit a pull request with:
+   - What you changed
+   - Why it's an improvement
+   - Any breaking changes
+
+### Module Guidelines
+
+- **Be concise**: AI context windows are limited
+- **Include examples**: Show working code, not just theory
+- **Mark critical rules**: Use 🚨 for important warnings
+- **Stay current**: Update version numbers when frameworks change
+- **Test thoroughly**: Ensure sync works after changes
+
+### Reporting Issues
+
+Open an issue with:
+- Description of the problem
+- Which module is affected
+- Steps to reproduce
+- Expected vs actual behavior
+
+### Development Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/martijnbokma/couchcms-ai-toolkit.git
+cd couchcms-ai-toolkit
+
+# Install dependencies
+bun install
+
+# Test sync script
+bun scripts/sync.js
+```
+
 ## License
 
 MIT
