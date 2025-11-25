@@ -1,10 +1,22 @@
 ---
 description: Auto-load refactoring rules for HTML/CouchCMS templates
-globs: ["{{paths.snippets}}/**/*.html", "*.php"]
+globs: ['{{paths.snippets}}/**/*.html', '*.php']
 alwaysApply: false
 ---
 
 # Refactoring Rules for CouchCMS Templates
+
+## 🚨 CRITICAL: Refactoring Workflow
+
+**When a refactoring request is made (e.g., "refactor @file.php" or "refactor @file.html"), you MUST:**
+
+1. **First**: Load and follow `@ai-toolkit-shared/prompts/refactoring/router.md`
+2. **Router will**: Analyze the file, select appropriate specialist(s), request confirmation
+3. **Then**: Apply the rules below as part of the selected specialist workflow
+
+**Never skip the router analysis step - it ensures the correct specialist is selected.**
+
+---
 
 When refactoring this file, apply these rules:
 

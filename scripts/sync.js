@@ -30,7 +30,7 @@ const TOOLKIT_ROOT = resolve(__dirname, '..')
 /**
  * Register Handlebars helpers
  */
-Handlebars.registerHelper('join', function(array, separator) {
+Handlebars.registerHelper('join', function (array, separator) {
     if (!Array.isArray(array)) return ''
     return array.join(separator || ', ')
 })
@@ -335,6 +335,144 @@ ${generatePathsSection(paths)}
 }
 
 /**
+ * Prepare template data for rendering
+ */
+function prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath) {
+    const { paths, standards, naming } = mergedConfig
+
+    // Extract languages and frameworks from modules
+    const languages = []
+    const frameworks = []
+    const techHierarchy = []
+
+    modules.forEach((mod, index) => {
+        if (mod.meta?.category === 'language') {
+            languages.push(mod.meta.name || mod.name)
+        }
+        if (mod.meta?.category === 'framework') {
+            frameworks.push(mod.meta.name || mod.name)
+        }
+        techHierarchy.push({
+            name: mod.meta?.name || mod.name,
+            description: mod.meta?.description || 'No description',
+            order: index + 1,
+        })
+    })
+
+    // Check for CMS and frontend
+    const hasCms = modules.some(m => m.name.includes('couchcms') || m.name.includes('cms'))
+    const hasFrontend = modules.some(
+        m =>
+            m.name.includes('tailwind') ||
+            m.name.includes('alpine') ||
+            m.name.includes('react') ||
+            m.name.includes('vue')
+    )
+
+    // Prepare modules data
+    const modulesData = modules.map(mod => ({
+        name: mod.meta?.name || mod.name,
+        description: mod.meta?.description || 'No description',
+        version: mod.meta?.version || '1.0',
+        slug: mod.name,
+    }))
+
+    // Prepare roles data (if available in config)
+    const roles = config.roles || []
+
+    return {
+        project: {
+            name: config.name || 'Unnamed Project',
+            type: config.type || 'CouchCMS Web Application',
+            description: config.description || 'No description',
+        },
+        standards: {
+            indentation: standards.indentation || 4,
+            line_length: standards.lineLength || 120,
+            language: standards.language || 'english',
+            naming: naming || {},
+        },
+        paths: paths,
+        languages: languages,
+        frameworks: frameworks,
+        tech_hierarchy: techHierarchy,
+        modules: modulesData,
+        agents: agents.map(a => ({
+            name: a.meta?.name || a.name,
+            description: a.meta?.description || 'No description',
+            type: a.meta?.type || 'daily',
+        })),
+        roles: roles,
+        has_cms: hasCms,
+        has_frontend: hasFrontend,
+        project_context: projectContext?.content || '',
+        toolkit_path: toolkitPath,
+        context_path: config.context || null,
+    }
+}
+
+/**
+ * Generate editor configuration files from templates
+ */
+function generateEditorConfigs(toolkitPath, projectDir, templateData) {
+    const templatesDir = join(toolkitPath, 'templates', 'editors')
+
+    if (!existsSync(templatesDir)) {
+        return // No templates directory
+    }
+
+    // Mapping of template files to output files
+    const templateMap = {
+        'cursor.template.md': { output: '.cursorrules', dir: projectDir },
+        'claude.template.md': { output: 'CLAUDE.md', dir: projectDir },
+        'copilot.template.md': { output: 'copilot-instructions.md', dir: join(projectDir, '.github') },
+        'codewhisperer.template.md': { output: '.codewhisperer/settings.json', dir: projectDir },
+        'tabnine.template.md': { output: '.tabnine/settings.json', dir: projectDir },
+        'windsurf.template.md': { output: '.windsurf/rules.md', dir: projectDir },
+        'agent.template.md': { output: 'AGENT.md', dir: projectDir },
+    }
+
+    const templateFiles = readdirSync(templatesDir).filter(f => f.endsWith('.template.md'))
+    let generatedCount = 0
+
+    for (const templateFile of templateFiles) {
+        const mapping = templateMap[templateFile]
+        if (!mapping) {
+            continue // Skip unmapped templates
+        }
+
+        try {
+            // Load template
+            const templatePath = join(templatesDir, templateFile)
+            const templateContent = readFileSync(templatePath, 'utf8')
+
+            // Compile and render template
+            const template = Handlebars.compile(templateContent)
+            const rendered = template(templateData)
+
+            // Build full output path
+            const outputPath = join(mapping.dir, mapping.output)
+
+            // Ensure output directory exists (handle subdirectories in output path)
+            const outputDir = dirname(outputPath)
+            if (!existsSync(outputDir)) {
+                mkdirSync(outputDir, { recursive: true })
+            }
+
+            // Write output file
+            writeFileSync(outputPath, rendered)
+            generatedCount++
+
+            console.log(`✅ Generated: ${mapping.output}`)
+        } catch (error) {
+            console.warn(`⚠️  Failed to generate from ${templateFile}: ${error.message}`)
+        }
+    }
+
+    return generatedCount
+}
+
+/**
  * Sync Cursor rules from toolkit to project
  */
 function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
@@ -480,29 +618,26 @@ Add your project-specific instructions here...
             process.exit(1)
         }
 
-        // Generate content
-        const content = generateContent(config, mergedConfig, modules, agents, projectContext, projectRules)
+        // Prepare template data
+        const templateData = prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath)
 
-        // Write editor configurations
+        // Add project rules to template data
+        if (projectRules && projectRules.trim()) {
+            templateData.project_rules = projectRules
+        }
+
+        // Add module list for templates
+        templateData.module_list = (config.modules || ['couchcms-core']).join(', ')
+
+        // Generate editor configurations from templates
         try {
-            // .cursorrules
-            writeFileSync(join(projectDir, '.cursorrules'), content)
-            console.log('✅ Generated: .cursorrules')
-
-            // CLAUDE.md
-            writeFileSync(join(projectDir, 'CLAUDE.md'), content)
-            console.log('✅ Generated: CLAUDE.md')
-
-            // .github/copilot-instructions.md
-            const githubDir = join(projectDir, '.github')
-            if (!existsSync(githubDir)) {
-                mkdirSync(githubDir, { recursive: true })
+            const generatedCount = generateEditorConfigs(toolkitPath, projectDir, templateData)
+            if (generatedCount === 0) {
+                console.warn('⚠️  No editor configs generated - templates may be missing')
             }
-            writeFileSync(join(githubDir, 'copilot-instructions.md'), content)
-            console.log('✅ Generated: .github/copilot-instructions.md')
         } catch (error) {
-            console.error(`❌ Failed to write configuration files: ${error.message}`)
-            console.log('\nCheck file permissions in project directory.\n')
+            console.error(`❌ Failed to generate editor configs: ${error.message}`)
+            console.log('\nCheck template files in toolkit.\n')
             process.exit(1)
         }
 
@@ -511,72 +646,6 @@ Add your project-specific instructions here...
             syncCursorRules(toolkitPath, projectDir, mergedConfig)
         } catch (error) {
             console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
-        }
-
-        // AGENT.md
-        try {
-            const { paths, standards } = mergedConfig
-            writeFileSync(
-                join(projectDir, 'AGENT.md'),
-                `# Universal AI Agent Instructions
-
-This project uses the CouchCMS AI Toolkit for consistent AI agent behavior.
-
-## Configuration
-
-All AI coding agents follow the rules generated from:
-- \`project.md\` - Project-specific configuration
-- \`defaults.yaml\` - Toolkit defaults
-- Toolkit modules from: ${toolkitPath}
-${projectContext ? `- Project context from: ${config.context}` : ''}
-
-## Project Paths
-
-| Type | Path |
-|------|------|
-| CSS | \`${paths.css}\` |
-| TypeScript | \`${paths.typescript}\` |
-| Components | \`${paths.components}\` |
-| Views | \`${paths.views}\` |
-| Layouts | \`${paths.layouts}\` |
-
-## Modules Active
-
-${modules
-    .map(m => `- **${m.meta.name || m.name}** (v${m.meta.version || '1.0'}): ${m.meta.description || 'No description'}`)
-    .join('\n')}
-
-${
-    agents.length > 0
-        ? `## Agents Active
-
-${agents
-    .map(a => `- **${a.meta.name || a.name}** (${a.meta.type || 'daily'}): ${a.meta.description || 'No description'}`)
-    .join('\n')}
-`
-        : ''
-}
-
-## Regenerate
-
-\`\`\`bash
-bun run ai:sync
-# or
-bun ${toolkitPath}/scripts/sync.js
-\`\`\`
-
-## Key Standards
-
-- **Indentation**: ${standards.indentation} spaces
-- **Language**: ${standards.language} only
-- **Modules**: ${moduleList.join(', ')}
-
-If any conflict exists between configurations, \`project.md\` always wins.
-`
-            )
-            console.log('✅ Generated: AGENT.md')
-        } catch (error) {
-            console.warn(`⚠️  Failed to generate AGENT.md: ${error.message}`)
         }
 
         console.log(`\n✨ Sync complete! ${modules.length} modules, ${agents.length} agents loaded.\n`)

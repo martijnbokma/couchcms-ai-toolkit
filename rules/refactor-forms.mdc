@@ -1,15 +1,22 @@
 ---
 description: Auto-load refactoring rules for DataBound Forms
-globs:
-  [
-    "{{paths.forms}}/**/*.html",
-    "{{paths.views}}/**/create*.html",
-    "{{paths.views}}/**/edit*.html",
-  ]
+globs: ['{{paths.forms}}/**/*.html', '{{paths.views}}/**/create*.html', '{{paths.views}}/**/edit*.html']
 alwaysApply: false
 ---
 
 # Refactoring Rules for DataBound Forms
+
+## 🚨 CRITICAL: Refactoring Workflow
+
+**When a refactoring request is made (e.g., "refactor @file.html" for forms), you MUST:**
+
+1. **First**: Load and follow `@ai-toolkit-shared/prompts/refactoring/router.md`
+2. **Router will**: Analyze the file, select appropriate specialist(s), request confirmation
+3. **Then**: Apply the rules below as part of the selected specialist workflow
+
+**Never skip the router analysis step - it ensures the correct specialist is selected.**
+
+---
 
 When refactoring this file, apply these rules:
 
