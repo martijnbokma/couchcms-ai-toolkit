@@ -356,6 +356,42 @@ ${generatePathsSection(paths)}
 }
 
 /**
+ * Sync Cursor rules from toolkit to project
+ */
+function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
+  const rulesSource = join(toolkitPath, "rules");
+  const rulesTarget = join(projectDir, ".cursor", "rules");
+
+  if (!existsSync(rulesSource)) {
+    return; // No rules in toolkit
+  }
+
+  // Create target directory if needed
+  if (!existsSync(rulesTarget)) {
+    mkdirSync(rulesTarget, { recursive: true });
+  }
+
+  // Get all .mdc files from toolkit rules
+  const ruleFiles = readdirSync(rulesSource).filter((f) => f.endsWith(".mdc"));
+
+  for (const ruleFile of ruleFiles) {
+    const sourcePath = join(rulesSource, ruleFile);
+    const targetPath = join(rulesTarget, ruleFile);
+
+    let content = readFileSync(sourcePath, "utf8");
+
+    // Replace {{paths.xxx}} variables
+    content = replaceVariables(content, mergedConfig);
+
+    writeFileSync(targetPath, content);
+  }
+
+  if (ruleFiles.length > 0) {
+    console.log(`✅ Synced: ${ruleFiles.length} Cursor rules to .cursor/rules/`);
+  }
+}
+
+/**
  * Main sync function
  */
 async function sync() {
@@ -479,6 +515,9 @@ Add your project-specific instructions here...
   }
   writeFileSync(join(githubDir, "copilot-instructions.md"), content);
   console.log("✅ Generated: .github/copilot-instructions.md");
+
+  // Sync Cursor rules
+  syncCursorRules(toolkitPath, projectDir, mergedConfig);
 
   // AGENT.md
   const { paths, standards } = mergedConfig;

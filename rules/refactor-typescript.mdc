@@ -1,0 +1,49 @@
+---
+description: Auto-load refactoring rules for TypeScript files
+globs: ["{{paths.typescript}}/**/*.ts"]
+alwaysApply: false
+---
+
+# Refactoring Rules for TypeScript
+
+When refactoring this file, apply these rules:
+
+## Type Safety
+
+- ❌ Never use `any` type (use `unknown` if truly unknown)
+- ✅ Define interfaces for all data structures
+- ✅ Use `import type` for type-only imports
+- ✅ Enable strict mode in tsconfig
+
+## Imports
+
+- ❌ Never use barrel file imports: `from './components'`
+- ❌ Never use index re-exports: `from './index'`
+- ✅ Always use direct imports: `from './components/button'`
+
+## Naming Conventions
+
+- Files: `kebab-case.ts` (e.g., `video-player.ts`)
+- Variables: `camelCase` (e.g., `videoPlayer`)
+- Interfaces/Types: `PascalCase` (e.g., `VideoPlayer`)
+
+## Alpine.js Integration
+
+- Export functions for Alpine.js use on `window`
+- Keep Alpine components simple, complex logic in TypeScript
+- Define types for Alpine component data
+
+## Error Handling
+
+- Use Result types for expected errors
+- Use try/catch for unexpected errors
+- Provide meaningful error messages
+
+## Checklist
+
+- [ ] No `any` types
+- [ ] Direct imports only (no barrel files)
+- [ ] Proper naming conventions
+- [ ] Type-only imports where applicable
+- [ ] Error handling implemented
+- [ ] Alpine integration via window exports

@@ -1,12 +1,12 @@
 ---
 name: CouchCMS Agent
-version: '2.0'
+version: "2.0"
 type: combined
 description: Core CouchCMS templates, tags, and patterns
 tags:
-    - couchcms
-    - php
-    - templates
+  - couchcms
+  - php
+  - templates
 ---
 
 # CouchCMS Agent
@@ -40,25 +40,27 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Core Tags
 
-| Tag | Purpose |
-|-----|---------|
+| Tag              | Purpose                    |
+| ---------------- | -------------------------- |
 | `<cms:template>` | Define template properties |
-| `<cms:editable>` | Create editable fields |
-| `<cms:pages>` | List/query pages |
-| `<cms:show>` | Output variable |
-| `<cms:if>` | Conditional logic |
-| `<cms:embed>` | Include snippet |
-| `<cms:set>` | Set variable |
-| `<cms:capture>` | Capture output |
+| `<cms:editable>` | Create editable fields     |
+| `<cms:pages>`    | List/query pages           |
+| `<cms:show>`     | Output variable            |
+| `<cms:if>`       | Conditional logic          |
+| `<cms:embed>`    | Include snippet            |
+| `<cms:set>`      | Set variable               |
+| `<cms:capture>`  | Capture output             |
 
 ### Critical Rules
 
 ⚠️ **HTML Comments**: Use `[cms:` instead of `<cms:` in HTML comments to prevent crashes:
+
 ```html
 <!-- [cms: This won't execute ] -->
 ```
 
 ⚠️ **Self-Closing Tags**: Always use explicit closing tags:
+
 ```html
 <!-- ✅ Correct -->
 <cms:show content></cms:show>
@@ -82,73 +84,79 @@ You are a CouchCMS expert specializing in template development, content manageme
 ### Listing Pages
 
 ```html
-<cms:pages masterpage='projects.php' 
-           custom_field='is_published=1' 
-           orderby='publish_date' 
-           order='desc'
-           limit='12'>
-    <div class="card bg-base-100 shadow-lg">
-        <div class="card-body">
-            <h2 class="card-title"><cms:show k_page_title /></h2>
-            <p class="text-base-content/70"><cms:excerptHTML><cms:show description /></cms:excerptHTML></p>
-            <a href="<cms:show k_page_link />" class="btn btn-primary">View</a>
-        </div>
+<cms:pages
+  masterpage="projects.php"
+  custom_field="is_published=1"
+  orderby="publish_date"
+  order="desc"
+  limit="12"
+>
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body">
+      <h2 class="card-title"><cms:show k_page_title /></h2>
+      <p class="text-base-content/70">
+        <cms:excerptHTML><cms:show description /></cms:excerptHTML>
+      </p>
+      <a href="<cms:show k_page_link />" class="btn btn-primary">View</a>
     </div>
-    
-    <cms:no_results>
-        <p class="text-base-content/70">No projects found.</p>
-    </cms:no_results>
+  </div>
+
+  <cms:no_results>
+    <p class="text-base-content/70">No projects found.</p>
+  </cms:no_results>
 </cms:pages>
 ```
 
 ### Pagination
 
 ```html
-<cms:pages masterpage='projects.php' limit='10' paginate='1'>
-    <!-- Content -->
-    
-    <cms:paginator>
-        <div class="join mt-6">
-            <cms:if k_paginate_link_prev>
-                <a href="<cms:show k_paginate_link_prev />" class="join-item btn">«</a>
-            </cms:if>
-            
-            <cms:pages startcount='1' limit='<cms:show k_total_pages />'>
-                <a href="<cms:show k_paginate_link />" 
-                   class="join-item btn <cms:if k_paginate_link_current>btn-active</cms:if>">
-                    <cms:show k_count />
-                </a>
-            </cms:pages>
-            
-            <cms:if k_paginate_link_next>
-                <a href="<cms:show k_paginate_link_next />" class="join-item btn">»</a>
-            </cms:if>
-        </div>
-    </cms:paginator>
+<cms:pages masterpage="projects.php" limit="10" paginate="1">
+  <!-- Content -->
+
+  <cms:paginator>
+    <div class="join mt-6">
+      <cms:if k_paginate_link_prev>
+        <a href="<cms:show k_paginate_link_prev />" class="join-item btn">«</a>
+      </cms:if>
+
+      <cms:pages startcount="1" limit="<cms:show k_total_pages />">
+        <a
+          href="<cms:show k_paginate_link />"
+          class="join-item btn <cms:if k_paginate_link_current>btn-active</cms:if>"
+        >
+          <cms:show k_count />
+        </a>
+      </cms:pages>
+
+      <cms:if k_paginate_link_next>
+        <a href="<cms:show k_paginate_link_next />" class="join-item btn">»</a>
+      </cms:if>
+    </div>
+  </cms:paginator>
 </cms:pages>
 ```
 
 ### Sub-Templates
 
 ```html
-<cms:template title='Projects' clonable='1'>
-    <!-- Common fields -->
-    <cms:editable name='description' type='textarea' />
-    <cms:editable name='content_owner' type='text' system='1' />
-    
-    <!-- Film sub-template -->
-    <cms:sub_template name='film' title='Film'>
-        <cms:editable name='youtube_id' type='text' required='1' />
-        <cms:editable name='duration' type='text' />
-    </cms:sub_template>
-    
-    <!-- Series sub-template -->
-    <cms:sub_template name='series' title='Series'>
-        <cms:repeatable name='episodes'>
-            <cms:editable name='episode_title' type='text' required='1' />
-            <cms:editable name='episode_youtube_id' type='text' required='1' />
-        </cms:repeatable>
-    </cms:sub_template>
+<cms:template title="Projects" clonable="1">
+  <!-- Common fields -->
+  <cms:editable name="description" type="textarea" />
+  <cms:editable name="content_owner" type="text" system="1" />
+
+  <!-- Film sub-template -->
+  <cms:sub_template name="film" title="Film">
+    <cms:editable name="youtube_id" type="text" required="1" />
+    <cms:editable name="duration" type="text" />
+  </cms:sub_template>
+
+  <!-- Series sub-template -->
+  <cms:sub_template name="series" title="Series">
+    <cms:repeatable name="episodes">
+      <cms:editable name="episode_title" type="text" required="1" />
+      <cms:editable name="episode_youtube_id" type="text" required="1" />
+    </cms:repeatable>
+  </cms:sub_template>
 </cms:template>
 ```
 
@@ -156,7 +164,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ```html
 <!-- Define relation field -->
-<cms:editable name='related_projects' 
+<cms:editable name='related_projects'
               type='relation'
               masterpage='projects.php'
               has='many'
@@ -264,16 +272,14 @@ Components (head.html, footer.html)
 
 ```html
 <!-- Cache expensive queries -->
-<cms:cached name='featured_projects' expiry='3600'>
-    <cms:pages masterpage='projects.php' 
-               custom_field='featured=1' 
-               limit='6'>
-        <!-- Cached content -->
-    </cms:pages>
+<cms:cached name="featured_projects" expiry="3600">
+  <cms:pages masterpage="projects.php" custom_field="featured=1" limit="6">
+    <!-- Cached content -->
+  </cms:pages>
 </cms:cached>
 
 <!-- Invalidate cache on form submit -->
-<cms:db_persist_form _invalidate_cache='1' />
+<cms:db_persist_form _invalidate_cache="1" />
 ```
 
 ### JSON API
@@ -321,16 +327,10 @@ Components (head.html, footer.html)
 
 ```html
 <!-- ❌ Bad: Using <cms:php> for simple logic -->
-<cms:php>
-    if ($k_page_title == 'Home') {
-        echo 'Welcome';
-    }
-</cms:php>
+<cms:php> if ($k_page_title == 'Home') { echo 'Welcome'; } </cms:php>
 
 <!-- ✅ Good: Idiomatic CouchCMS -->
-<cms:if k_page_title='Home'>
-    Welcome
-</cms:if>
+<cms:if k_page_title="Home"> Welcome </cms:if>
 ```
 
 ### Refactoring Patterns
@@ -340,16 +340,16 @@ Components (head.html, footer.html)
 ```html
 <!-- Before: Repeated card pattern -->
 <div class="card">
-    <h2><cms:show k_page_title /></h2>
-    <p><cms:show description /></p>
+  <h2><cms:show k_page_title /></h2>
+  <p><cms:show description /></p>
 </div>
 <!-- Same pattern repeated elsewhere -->
 
 <!-- After: Reusable snippet -->
 <!-- {{paths.components}}/cards/content-card.html -->
 <div class="card">
-    <h2><cms:show k_page_title /></h2>
-    <p><cms:show description /></p>
+  <h2><cms:show k_page_title /></h2>
+  <p><cms:show description /></p>
 </div>
 
 <!-- Usage -->
@@ -361,32 +361,29 @@ Components (head.html, footer.html)
 ```html
 <!-- Before: Deep nesting -->
 <cms:if k_logged_in>
-    <cms:if k_is_page>
-        <cms:if content_owner=k_user_name>
-            Content here
-        </cms:if>
-    </cms:if>
+  <cms:if k_is_page>
+    <cms:if content_owner="k_user_name"> Content here </cms:if>
+  </cms:if>
 </cms:if>
 
 <!-- After: Guard clauses with filters -->
-<cms:embed '{{paths.filters}}/authenticated.html' />
-<cms:embed '{{paths.filters}}/owns_content.html' />
-Content here
+<cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
+'{{paths.filters}}/owns_content.html' /> Content here
 ```
 
 **Add Security Patterns:**
 
 ```html
 <!-- Before: No ownership check -->
-<cms:form masterpage='projects.php' mode='edit' page_id=k_page_id>
-    ...
+<cms:form masterpage="projects.php" mode="edit" page_id="k_page_id">
+  ...
 </cms:form>
 
 <!-- After: With ownership validation -->
-<cms:embed '{{paths.filters}}/authenticated.html' />
-<cms:embed '{{paths.filters}}/owns_content.html' />
-<cms:form masterpage='projects.php' mode='edit' page_id=k_page_id>
-    ...
+<cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
+'{{paths.filters}}/owns_content.html' />
+<cms:form masterpage="projects.php" mode="edit" page_id="k_page_id">
+  ...
 </cms:form>
 ```
 
@@ -405,13 +402,13 @@ Content here
 
 ## Troubleshooting
 
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| White page | PHP/CMS error | Check `couch/error.log` |
-| Changes not showing | Cache | Add `?nc=1` or clear cache |
-| Template not registering | Syntax error | Visit template directly in browser |
-| Fields not saving | Wrong field name | Match `name` exactly |
-| 404 on routes | Missing `K_IGNORE_CONTEXT` | Add to `COUCH::invoke()` |
+| Problem                  | Cause                      | Solution                           |
+| ------------------------ | -------------------------- | ---------------------------------- |
+| White page               | PHP/CMS error              | Check `couch/error.log`            |
+| Changes not showing      | Cache                      | Add `?nc=1` or clear cache         |
+| Template not registering | Syntax error               | Visit template directly in browser |
+| Fields not saving        | Wrong field name           | Match `name` exactly               |
+| 404 on routes            | Missing `K_IGNORE_CONTEXT` | Add to `COUCH::invoke()`           |
 
 ### Debug Tools
 
@@ -430,14 +427,14 @@ Content here
 
 ### Common Variables
 
-| Variable | Description |
-|----------|-------------|
-| `k_page_id` | Current page ID |
-| `k_page_title` | Page title |
-| `k_page_link` | Page URL |
-| `k_template_name` | Template filename |
-| `k_sub_template_name` | Sub-template name |
-| `k_user_name` | Logged-in username |
-| `k_user_id` | Logged-in user ID |
-| `k_logged_in` | Is user logged in |
+| Variable              | Description              |
+| --------------------- | ------------------------ |
+| `k_page_id`           | Current page ID          |
+| `k_page_title`        | Page title               |
+| `k_page_link`         | Page URL                 |
+| `k_template_name`     | Template filename        |
+| `k_sub_template_name` | Sub-template name        |
+| `k_user_name`         | Logged-in username       |
+| `k_user_id`           | Logged-in user ID        |
+| `k_logged_in`         | Is user logged in        |
 | `k_user_access_level` | User access level (0-10) |

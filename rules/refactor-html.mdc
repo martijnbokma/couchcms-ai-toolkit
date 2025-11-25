@@ -1,0 +1,46 @@
+---
+description: Auto-load refactoring rules for HTML/CouchCMS templates
+globs: ["{{paths.snippets}}/**/*.html", "*.php"]
+alwaysApply: false
+---
+
+# Refactoring Rules for CouchCMS Templates
+
+When refactoring this file, apply these rules:
+
+## CouchCMS Safety
+
+- ❌ Never use `<cms:` in HTML comments (will execute and crash)
+- ✅ Use `[cms:` syntax in comments instead
+- ✅ Check layout files too for shorthand syntax issues
+
+## Alpine.js Compatibility
+
+- ❌ Never use `@click` shorthand in CouchCMS templates
+- ❌ Never use `:class` shorthand in CouchCMS templates  
+- ✅ Always use `x-on:click` full syntax
+- ✅ Always use `x-bind:class` full syntax
+
+## Code Quality
+
+- Extract repeated patterns into reusable snippets
+- Use `<cms:embed>` for shared components
+- Use authentication filters: `<cms:embed '{{paths.filters}}/authenticated.html' />`
+- Use ownership filters for edit/delete operations
+- Keep Alpine.js components < 50 lines (move complex logic to TypeScript)
+
+## Styling
+
+- Use daisyUI semantic colors: `bg-base-100`, `text-base-content`
+- Avoid Tailwind color names: `bg-gray-100`, `text-black`
+- Mobile-first responsive: `sm:`, `md:`, `lg:` prefixes
+
+## Checklist
+
+- [ ] No `<cms:` in HTML comments
+- [ ] No `@` or `:` Alpine shorthand
+- [ ] ARIA attributes for accessibility
+- [ ] DaisyUI semantic colors
+- [ ] Reusable snippets (DRY)
+- [ ] 4-space indentation
+- [ ] English-only code/comments

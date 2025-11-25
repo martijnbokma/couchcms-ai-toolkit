@@ -1,0 +1,48 @@
+---
+description: Auto-load refactoring rules for CSS files
+globs: ["{{paths.css}}/**/*.css"]
+alwaysApply: false
+---
+
+# Refactoring Rules for CSS/TailwindCSS
+
+When refactoring this file, apply these rules:
+
+## TailwindCSS Priority
+
+- ❌ Avoid custom CSS for patterns Tailwind provides
+- ✅ Use Tailwind utility classes first
+- ✅ Only custom CSS for properties Tailwind doesn't have
+
+## DaisyUI Colors
+
+- ❌ Never use Tailwind colors: `bg-gray-100`, `text-black`
+- ✅ Always use semantic colors: `bg-base-100`, `text-base-content`
+- ✅ Theme-aware: colors adapt to light/dark themes
+
+## Component Scoping
+
+- ❌ Never use global element selectors with !important
+- ✅ Use component-scoped class names
+- ✅ Follow BEM or similar naming if needed
+
+## File Organization
+
+- Follow `{{paths.css}}/input.css` import structure
+- Use kebab-case for file names
+- Group related styles together
+
+## Responsive Design
+
+- Mobile-first approach
+- Use breakpoint prefixes: `sm:`, `md:`, `lg:`, `xl:`
+- Test across screen sizes
+
+## Checklist
+
+- [ ] Prefer Tailwind utilities over custom CSS
+- [ ] Using daisyUI semantic colors
+- [ ] No global element selectors
+- [ ] Mobile-first responsive
+- [ ] Proper file organization
+- [ ] No unnecessary `!important`

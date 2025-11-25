@@ -1,12 +1,12 @@
 ---
 name: TypeScript Agent
-version: '2.0'
+version: "2.0"
 type: combined
 description: Type-safe TypeScript for CouchCMS projects
 tags:
-    - typescript
-    - javascript
-    - frontend
+  - typescript
+  - javascript
+  - frontend
 ---
 
 # TypeScript Agent
@@ -21,31 +21,31 @@ You are a TypeScript expert specializing in type-safe frontend code for CouchCMS
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "esModuleInterop": true,
-        "moduleResolution": "bundler",
-        "target": "ES2022",
-        "module": "ESNext"
-    }
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "module": "ESNext"
+  }
 }
 ```
 
 ### Naming Conventions
 
-| Type | Convention | Example |
-|------|------------|---------|
-| Variables | camelCase | `userName`, `isActive` |
-| Functions | camelCase | `fetchData()`, `handleClick()` |
-| Classes | PascalCase | `EpisodeManager`, `VideoPlayer` |
-| Interfaces | PascalCase | `UserProfile`, `FormData` |
-| Types | PascalCase | `ContentType`, `ApiResponse` |
-| Constants | UPPER_SNAKE | `MAX_RETRIES`, `API_URL` |
-| Files | kebab-case | `video-player.ts`, `form-utils.ts` |
+| Type       | Convention  | Example                            |
+| ---------- | ----------- | ---------------------------------- |
+| Variables  | camelCase   | `userName`, `isActive`             |
+| Functions  | camelCase   | `fetchData()`, `handleClick()`     |
+| Classes    | PascalCase  | `EpisodeManager`, `VideoPlayer`    |
+| Interfaces | PascalCase  | `UserProfile`, `FormData`          |
+| Types      | PascalCase  | `ContentType`, `ApiResponse`       |
+| Constants  | UPPER_SNAKE | `MAX_RETRIES`, `API_URL`           |
+| Files      | kebab-case  | `video-player.ts`, `form-utils.ts` |
 
 ### Your Approach
 
@@ -64,22 +64,22 @@ You are a TypeScript expert specializing in type-safe frontend code for CouchCMS
 ```typescript
 // {{paths.typescript}}/types/content.ts
 export interface Episode {
-    id: string
-    title: string
-    season: number
-    number: number
-    youtubeId: string
-    description?: string
-    duration?: number
+  id: string;
+  title: string;
+  season: number;
+  number: number;
+  youtubeId: string;
+  description?: string;
+  duration?: number;
 }
 
 export interface Project {
-    id: string
-    title: string
-    type: 'film' | 'series' | 'podcast'
-    contentOwner: string
-    isPublished: boolean
-    episodes?: Episode[]
+  id: string;
+  title: string;
+  type: "film" | "series" | "podcast";
+  contentOwner: string;
+  isPublished: boolean;
+  episodes?: Episode[];
 }
 ```
 
@@ -88,35 +88,37 @@ export interface Project {
 ```typescript
 // {{paths.typescript}}/utils/helpers.ts
 export function debounce<T extends (...args: unknown[]) => unknown>(
-    func: T,
-    wait: number
+  func: T,
+  wait: number
 ): (...args: Parameters<T>) => void {
-    let timeout: ReturnType<typeof setTimeout> | null = null
-    
-    return function (...args: Parameters<T>) {
-        if (timeout) clearTimeout(timeout)
-        timeout = setTimeout(() => func(...args), wait)
-    }
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  return function (...args: Parameters<T>) {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
 }
 
 export function formatDuration(seconds: number): string {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    const secs = seconds % 60
-    
-    if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-    }
-    return `${minutes}:${secs.toString().padStart(2, '0')}`
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  }
+  return `${minutes}:${secs.toString().padStart(2, "0")}`;
 }
 
 export function slugify(text: string): string {
-    return text
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim()
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();
 }
 ```
 
@@ -125,45 +127,45 @@ export function slugify(text: string): string {
 ```typescript
 // {{paths.typescript}}/api/client.ts
 export interface ApiResponse<T> {
-    success: boolean
-    data?: T
-    error?: string
+  success: boolean;
+  data?: T;
+  error?: string;
 }
 
 export async function fetchApi<T>(
-    endpoint: string,
-    options?: RequestInit
+  endpoint: string,
+  options?: RequestInit
 ): Promise<ApiResponse<T>> {
-    try {
-        const response = await fetch(endpoint, {
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers,
-            },
-            ...options,
-        })
-        
-        if (!response.ok) {
-            return {
-                success: false,
-                error: `HTTP ${response.status}: ${response.statusText}`,
-            }
-        }
-        
-        const data = await response.json()
-        return { success: true, data }
-    } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
-        }
+  try {
+    const response = await fetch(endpoint, {
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      ...options,
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: `HTTP ${response.status}: ${response.statusText}`,
+      };
     }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
 }
 
 // Usage
-const result = await fetchApi<Project[]>('/api/projects.php')
+const result = await fetchApi<Project[]>("/api/projects.php");
 if (result.success && result.data) {
-    console.log(result.data)
+  console.log(result.data);
 }
 ```
 
@@ -171,67 +173,67 @@ if (result.success && result.data) {
 
 ```typescript
 // {{paths.typescript}}/components/episode-manager.ts
-import type { Episode } from '../types/content'
+import type { Episode } from "../types/content";
 
 export interface EpisodeManagerState {
-    episodes: Episode[]
-    selectedId: string | null
-    filter: string
+  episodes: Episode[];
+  selectedId: string | null;
+  filter: string;
 }
 
 export function createEpisodeManager(initialEpisodes: Episode[] = []) {
-    return {
-        episodes: initialEpisodes,
-        selectedId: null as string | null,
-        filter: '',
-        
-        get filteredEpisodes(): Episode[] {
-            if (!this.filter) return this.episodes
-            const query = this.filter.toLowerCase()
-            return this.episodes.filter(ep => 
-                ep.title.toLowerCase().includes(query)
-            )
-        },
-        
-        addEpisode(episode: Omit<Episode, 'id'>): void {
-            this.episodes.push({
-                ...episode,
-                id: crypto.randomUUID(),
-            })
-        },
-        
-        removeEpisode(id: string): void {
-            this.episodes = this.episodes.filter(ep => ep.id !== id)
-        },
-        
-        serialize(): string {
-            return JSON.stringify(this.episodes)
-        },
-        
-        validate(): { valid: boolean; errors: string[] } {
-            const errors: string[] = []
-            
-            this.episodes.forEach((ep, i) => {
-                if (!ep.title?.trim()) {
-                    errors.push(`Episode ${i + 1}: Title required`)
-                }
-                if (!/^[a-zA-Z0-9_-]{11}$/.test(ep.youtubeId)) {
-                    errors.push(`Episode ${i + 1}: Invalid YouTube ID`)
-                }
-            })
-            
-            return { valid: errors.length === 0, errors }
-        },
-    }
+  return {
+    episodes: initialEpisodes,
+    selectedId: null as string | null,
+    filter: "",
+
+    get filteredEpisodes(): Episode[] {
+      if (!this.filter) return this.episodes;
+      const query = this.filter.toLowerCase();
+      return this.episodes.filter((ep) =>
+        ep.title.toLowerCase().includes(query)
+      );
+    },
+
+    addEpisode(episode: Omit<Episode, "id">): void {
+      this.episodes.push({
+        ...episode,
+        id: crypto.randomUUID(),
+      });
+    },
+
+    removeEpisode(id: string): void {
+      this.episodes = this.episodes.filter((ep) => ep.id !== id);
+    },
+
+    serialize(): string {
+      return JSON.stringify(this.episodes);
+    },
+
+    validate(): { valid: boolean; errors: string[] } {
+      const errors: string[] = [];
+
+      this.episodes.forEach((ep, i) => {
+        if (!ep.title?.trim()) {
+          errors.push(`Episode ${i + 1}: Title required`);
+        }
+        if (!/^[a-zA-Z0-9_-]{11}$/.test(ep.youtubeId)) {
+          errors.push(`Episode ${i + 1}: Invalid YouTube ID`);
+        }
+      });
+
+      return { valid: errors.length === 0, errors };
+    },
+  };
 }
 
 // Register for Alpine
 declare global {
-    interface Window {
-        createEpisodeManager: typeof createEpisodeManager
-    }
+  interface Window {
+    createEpisodeManager: typeof createEpisodeManager;
+  }
 }
-window.createEpisodeManager = createEpisodeManager
+window.createEpisodeManager = createEpisodeManager;
 ```
 
 ---
@@ -242,25 +244,25 @@ window.createEpisodeManager = createEpisodeManager
 
 ```typescript
 // Result type for explicit error handling
-type Result<T, E = Error> = 
-    | { success: true; data: T }
-    | { success: false; error: E }
+type Result<T, E = Error> =
+  | { success: true; data: T }
+  | { success: false; error: E };
 
 function parseJson<T>(json: string): Result<T, string> {
-    try {
-        const data = JSON.parse(json) as T
-        return { success: true, data }
-    } catch {
-        return { success: false, error: 'Invalid JSON' }
-    }
+  try {
+    const data = JSON.parse(json) as T;
+    return { success: true, data };
+  } catch {
+    return { success: false, error: "Invalid JSON" };
+  }
 }
 
 // Usage with exhaustive handling
-const result = parseJson<Episode[]>(jsonString)
+const result = parseJson<Episode[]>(jsonString);
 if (result.success) {
-    console.log(result.data) // Type: Episode[]
+  console.log(result.data); // Type: Episode[]
 } else {
-    console.error(result.error) // Type: string
+  console.error(result.error); // Type: string
 }
 ```
 
@@ -269,25 +271,25 @@ if (result.success) {
 ```typescript
 // Type guard function
 function isEpisode(value: unknown): value is Episode {
-    return (
-        typeof value === 'object' &&
-        value !== null &&
-        'id' in value &&
-        'title' in value &&
-        'youtubeId' in value
-    )
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "title" in value &&
+    "youtubeId" in value
+  );
 }
 
 // Array type guard
 function isEpisodeArray(value: unknown): value is Episode[] {
-    return Array.isArray(value) && value.every(isEpisode)
+  return Array.isArray(value) && value.every(isEpisode);
 }
 
 // Usage
-const data: unknown = JSON.parse(input)
+const data: unknown = JSON.parse(input);
 if (isEpisodeArray(data)) {
-    // data is now typed as Episode[]
-    data.forEach(ep => console.log(ep.title))
+  // data is now typed as Episode[]
+  data.forEach((ep) => console.log(ep.title));
 }
 ```
 
@@ -295,29 +297,31 @@ if (isEpisodeArray(data)) {
 
 ```typescript
 // Generic list manager
-export function createListManager<T extends { id: string }>(initialItems: T[] = []) {
-    return {
-        items: initialItems,
-        
-        add(item: T): void {
-            this.items.push(item)
-        },
-        
-        remove(id: string): void {
-            this.items = this.items.filter(item => item.id !== id)
-        },
-        
-        find(id: string): T | undefined {
-            return this.items.find(item => item.id === id)
-        },
-        
-        update(id: string, updates: Partial<T>): void {
-            const index = this.items.findIndex(item => item.id === id)
-            if (index !== -1) {
-                this.items[index] = { ...this.items[index], ...updates }
-            }
-        },
-    }
+export function createListManager<T extends { id: string }>(
+  initialItems: T[] = []
+) {
+  return {
+    items: initialItems,
+
+    add(item: T): void {
+      this.items.push(item);
+    },
+
+    remove(id: string): void {
+      this.items = this.items.filter((item) => item.id !== id);
+    },
+
+    find(id: string): T | undefined {
+      return this.items.find((item) => item.id === id);
+    },
+
+    update(id: string, updates: Partial<T>): void {
+      const index = this.items.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        this.items[index] = { ...this.items[index], ...updates };
+      }
+    },
+  };
 }
 ```
 
@@ -326,38 +330,38 @@ export function createListManager<T extends { id: string }>(initialItems: T[] = 
 ```typescript
 // Type-safe event emitter
 type EventMap = {
-    'episode:selected': { id: string; episode: Episode }
-    'episode:added': { episode: Episode }
-    'episode:removed': { id: string }
-}
+  "episode:selected": { id: string; episode: Episode };
+  "episode:added": { episode: Episode };
+  "episode:removed": { id: string };
+};
 
 class EventBus {
-    private listeners = new Map<string, Set<Function>>()
-    
-    on<K extends keyof EventMap>(
-        event: K,
-        callback: (data: EventMap[K]) => void
-    ): () => void {
-        if (!this.listeners.has(event)) {
-            this.listeners.set(event, new Set())
-        }
-        this.listeners.get(event)!.add(callback)
-        
-        // Return unsubscribe function
-        return () => this.listeners.get(event)?.delete(callback)
+  private listeners = new Map<string, Set<Function>>();
+
+  on<K extends keyof EventMap>(
+    event: K,
+    callback: (data: EventMap[K]) => void
+  ): () => void {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, new Set());
     }
-    
-    emit<K extends keyof EventMap>(event: K, data: EventMap[K]): void {
-        this.listeners.get(event)?.forEach(cb => cb(data))
-    }
+    this.listeners.get(event)!.add(callback);
+
+    // Return unsubscribe function
+    return () => this.listeners.get(event)?.delete(callback);
+  }
+
+  emit<K extends keyof EventMap>(event: K, data: EventMap[K]): void {
+    this.listeners.get(event)?.forEach((cb) => cb(data));
+  }
 }
 
-export const eventBus = new EventBus()
+export const eventBus = new EventBus();
 
 // Usage
-const unsubscribe = eventBus.on('episode:selected', ({ id, episode }) => {
-    console.log(`Selected: ${episode.title}`)
-})
+const unsubscribe = eventBus.on("episode:selected", ({ id, episode }) => {
+  console.log(`Selected: ${episode.title}`);
+});
 ```
 
 ### Validation Schema
@@ -365,33 +369,33 @@ const unsubscribe = eventBus.on('episode:selected', ({ id, episode }) => {
 ```typescript
 // Simple schema validation
 interface ValidationRule<T> {
-    validate: (value: T) => boolean
-    message: string
+  validate: (value: T) => boolean;
+  message: string;
 }
 
 function createValidator<T>(rules: ValidationRule<T>[]) {
-    return (value: T): { valid: boolean; errors: string[] } => {
-        const errors = rules
-            .filter(rule => !rule.validate(value))
-            .map(rule => rule.message)
-        
-        return { valid: errors.length === 0, errors }
-    }
+  return (value: T): { valid: boolean; errors: string[] } => {
+    const errors = rules
+      .filter((rule) => !rule.validate(value))
+      .map((rule) => rule.message);
+
+    return { valid: errors.length === 0, errors };
+  };
 }
 
 // Usage
 const validateEpisode = createValidator<Episode>([
-    {
-        validate: ep => ep.title.length >= 2,
-        message: 'Title must be at least 2 characters',
-    },
-    {
-        validate: ep => /^[a-zA-Z0-9_-]{11}$/.test(ep.youtubeId),
-        message: 'Invalid YouTube ID format',
-    },
-])
+  {
+    validate: (ep) => ep.title.length >= 2,
+    message: "Title must be at least 2 characters",
+  },
+  {
+    validate: (ep) => /^[a-zA-Z0-9_-]{11}$/.test(ep.youtubeId),
+    message: "Invalid YouTube ID format",
+  },
+]);
 
-const result = validateEpisode(episode)
+const result = validateEpisode(episode);
 ```
 
 ---
@@ -411,27 +415,27 @@ const result = validateEpisode(episode)
 ```typescript
 // ❌ Bad: Using 'any' type
 function processData(data: any) {
-    return data.items.map((item: any) => item.name)
+  return data.items.map((item: any) => item.name);
 }
 
 // ✅ Good: Proper typing
 interface DataResponse {
-    items: Array<{ name: string; id: string }>
+  items: Array<{ name: string; id: string }>;
 }
 function processData(data: DataResponse): string[] {
-    return data.items.map(item => item.name)
+  return data.items.map((item) => item.name);
 }
 ```
 
 ```typescript
 // ❌ Bad: Barrel file imports
-import { ComponentA, ComponentB } from './components'
-import { logger, utils } from './index'
+import { ComponentA, ComponentB } from "./components";
+import { logger, utils } from "./index";
 
 // ✅ Good: Direct imports (tree-shaking friendly)
-import { ComponentA } from './components/component-a'
-import { ComponentB } from './components/component-b'
-import { logger } from './lib/logger'
+import { ComponentA } from "./components/component-a";
+import { ComponentB } from "./components/component-b";
+import { logger } from "./lib/logger";
 ```
 
 ### Refactoring Patterns
@@ -441,31 +445,33 @@ import { logger } from './lib/logger'
 ```typescript
 // Before: Loose typing
 function createManager(config) {
-    return {
-        items: [],
-        add(item) { this.items.push(item) }
-    }
+  return {
+    items: [],
+    add(item) {
+      this.items.push(item);
+    },
+  };
 }
 
 // After: Strict typing
 interface ManagerConfig {
-    maxItems: number
+  maxItems: number;
 }
 
 interface Manager<T> {
-    items: T[]
-    add(item: T): void
+  items: T[];
+  add(item: T): void;
 }
 
 function createManager<T>(config: ManagerConfig): Manager<T> {
-    return {
-        items: [],
-        add(item: T) {
-            if (this.items.length < config.maxItems) {
-                this.items.push(item)
-            }
-        }
-    }
+  return {
+    items: [],
+    add(item: T) {
+      if (this.items.length < config.maxItems) {
+        this.items.push(item);
+      }
+    },
+  };
 }
 ```
 
@@ -477,23 +483,23 @@ function createManager<T>(config: ManagerConfig): Manager<T> {
 
 // After: TypeScript module
 export interface Item {
-    id: string
-    title: string
+  id: string;
+  title: string;
 }
 
 export async function fetchItems(endpoint: string): Promise<Item[]> {
-    const response = await fetch(endpoint)
-    if (!response.ok) throw new Error('Fetch failed')
-    return response.json()
+  const response = await fetch(endpoint);
+  if (!response.ok) throw new Error("Fetch failed");
+  return response.json();
 }
 
 export function validateItem(item: Item): boolean {
-    return item.id.length > 0 && item.title.length >= 2
+  return item.id.length > 0 && item.title.length >= 2;
 }
 
 // Register for Alpine
-window.fetchItems = fetchItems
-window.validateItem = validateItem
+window.fetchItems = fetchItems;
+window.validateItem = validateItem;
 ```
 
 ### Refactoring Checklist
@@ -512,33 +518,37 @@ window.validateItem = validateItem
 
 ## Troubleshooting
 
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| `any` type error | Implicit any | Add explicit type or enable `noImplicitAny` |
-| Null error | Missing null check | Use optional chaining `?.` or null check |
-| Import error | Wrong module resolution | Check `moduleResolution` in tsconfig |
-| Type not exported | Missing export | Add `export` keyword |
-| Generic inference fail | Can't infer type | Provide explicit type argument |
+| Problem                | Cause                   | Solution                                    |
+| ---------------------- | ----------------------- | ------------------------------------------- |
+| `any` type error       | Implicit any            | Add explicit type or enable `noImplicitAny` |
+| Null error             | Missing null check      | Use optional chaining `?.` or null check    |
+| Import error           | Wrong module resolution | Check `moduleResolution` in tsconfig        |
+| Type not exported      | Missing export          | Add `export` keyword                        |
+| Generic inference fail | Can't infer type        | Provide explicit type argument              |
 
 ### Debugging Tips
 
 ```typescript
 // Log type at compile time
-type Debug<T> = { [K in keyof T]: T[K] }
-type TestType = Debug<Episode> // Hover to see expanded type
+type Debug<T> = { [K in keyof T]: T[K] };
+type TestType = Debug<Episode>; // Hover to see expanded type
 
 // Runtime type checking
 function assertNever(value: never): never {
-    throw new Error(`Unexpected value: ${value}`)
+  throw new Error(`Unexpected value: ${value}`);
 }
 
 // Exhaustive switch
-function handleType(type: 'film' | 'series' | 'podcast'): string {
-    switch (type) {
-        case 'film': return 'Film'
-        case 'series': return 'Series'
-        case 'podcast': return 'Podcast'
-        default: return assertNever(type) // Compile error if case missing
-    }
+function handleType(type: "film" | "series" | "podcast"): string {
+  switch (type) {
+    case "film":
+      return "Film";
+    case "series":
+      return "Series";
+    case "podcast":
+      return "Podcast";
+    default:
+      return assertNever(type); // Compile error if case missing
+  }
 }
 ```
