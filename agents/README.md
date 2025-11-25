@@ -4,17 +4,17 @@ Combined AI agents with Quick Reference + Deep Dive structure.
 
 ## Available Agents
 
-| Agent | Description |
-|-------|-------------|
-| `alpinejs` | Lightweight reactive JavaScript for CouchCMS |
-| `bun` | Bun runtime, package management, build tooling |
-| `couchcms` | Core CouchCMS templates, tags, patterns |
-| `custom-routes` | Clean URLs and application routing |
-| `databound-forms` | CRUD operations and form handling |
-| `git` | Version control and workflow management |
-| `mysql` | Database operations and optimization |
-| `tailwindcss` | TailwindCSS 4 + daisyUI 5 styling |
-| `typescript` | Type-safe frontend code |
+| Agent             | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| `alpinejs`        | Lightweight reactive JavaScript for CouchCMS   |
+| `bun`             | Bun runtime, package management, build tooling |
+| `couchcms`        | Core CouchCMS templates, tags, patterns        |
+| `custom-routes`   | Clean URLs and application routing             |
+| `databound-forms` | CRUD operations and form handling              |
+| `git`             | Version control and workflow management        |
+| `mysql`           | Database operations and optimization           |
+| `tailwindcss`     | TailwindCSS 4 + daisyUI 5 styling              |
+| `typescript`      | Type-safe frontend code                        |
 
 ## Agent Structure
 
@@ -23,7 +23,7 @@ Each agent follows a layered structure:
 ```markdown
 ---
 name: Agent Name
-version: '2.0'
+version: "2.0"
 type: combined
 description: Brief description
 tags: [tag1, tag2]
@@ -32,15 +32,19 @@ tags: [tag1, tag2]
 # Agent Name
 
 ## Quick Reference
+
 <!-- Quick patterns for daily use (~100 lines) -->
 
 ## Common Patterns
+
 <!-- Frequently used code examples -->
 
 ## Deep Dive
+
 <!-- Advanced patterns, architecture (~200+ lines) -->
 
 ## Troubleshooting
+
 <!-- Common problems and solutions -->
 ```
 

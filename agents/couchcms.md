@@ -299,6 +299,110 @@ Components (head.html, footer.html)
 
 ---
 
+## Refactoring
+
+### When to Refactor
+
+- ⚠️ Using `<cms:php>` when CouchCMS tags exist
+- ⚠️ Deep nesting of conditional logic
+- ⚠️ Duplicated code (no snippets)
+- ⚠️ Using `<cms:` in HTML comments (causes crashes)
+- ⚠️ Missing authentication/ownership checks
+
+### Anti-Patterns to Fix
+
+```html
+<!-- ❌ Bad: Using <cms: in HTML comments -->
+<!-- <cms:show k_page_title /> - This WILL execute! -->
+
+<!-- ✅ Good: Safe comment syntax -->
+<!-- [cms:show k_page_title /] - This won't execute -->
+```
+
+```html
+<!-- ❌ Bad: Using <cms:php> for simple logic -->
+<cms:php>
+    if ($k_page_title == 'Home') {
+        echo 'Welcome';
+    }
+</cms:php>
+
+<!-- ✅ Good: Idiomatic CouchCMS -->
+<cms:if k_page_title='Home'>
+    Welcome
+</cms:if>
+```
+
+### Refactoring Patterns
+
+**Extract Reusable Snippets:**
+
+```html
+<!-- Before: Repeated card pattern -->
+<div class="card">
+    <h2><cms:show k_page_title /></h2>
+    <p><cms:show description /></p>
+</div>
+<!-- Same pattern repeated elsewhere -->
+
+<!-- After: Reusable snippet -->
+<!-- {{paths.components}}/cards/content-card.html -->
+<div class="card">
+    <h2><cms:show k_page_title /></h2>
+    <p><cms:show description /></p>
+</div>
+
+<!-- Usage -->
+<cms:embed '{{paths.components}}/cards/content-card.html' />
+```
+
+**Flatten Deep Nesting:**
+
+```html
+<!-- Before: Deep nesting -->
+<cms:if k_logged_in>
+    <cms:if k_is_page>
+        <cms:if content_owner=k_user_name>
+            Content here
+        </cms:if>
+    </cms:if>
+</cms:if>
+
+<!-- After: Guard clauses with filters -->
+<cms:embed '{{paths.filters}}/authenticated.html' />
+<cms:embed '{{paths.filters}}/owns_content.html' />
+Content here
+```
+
+**Add Security Patterns:**
+
+```html
+<!-- Before: No ownership check -->
+<cms:form masterpage='projects.php' mode='edit' page_id=k_page_id>
+    ...
+</cms:form>
+
+<!-- After: With ownership validation -->
+<cms:embed '{{paths.filters}}/authenticated.html' />
+<cms:embed '{{paths.filters}}/owns_content.html' />
+<cms:form masterpage='projects.php' mode='edit' page_id=k_page_id>
+    ...
+</cms:form>
+```
+
+### Refactoring Checklist
+
+- [ ] No `<cms:` tags in HTML comments (use `[cms:`)
+- [ ] Minimal `<cms:php>` usage (prefer CouchCMS tags)
+- [ ] Reusable snippets for repeated patterns
+- [ ] Authentication filters on protected routes
+- [ ] Ownership validation on edit/delete
+- [ ] Proper template inheritance (`<cms:extends>`)
+- [ ] 4-space indentation consistently
+- [ ] English-only code and comments
+
+---
+
 ## Troubleshooting
 
 | Problem | Cause | Solution |

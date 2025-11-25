@@ -361,6 +361,120 @@ window.createEpisodeSelector = createEpisodeSelector
 
 ---
 
+## Refactoring
+
+### When to Refactor
+
+- ⚠️ Using `@` shorthand syntax in CouchCMS templates
+- ⚠️ Too much logic in `x-data` (> 50 lines)
+- ⚠️ Missing ARIA attributes for accessibility
+- ⚠️ No debouncing on expensive operations
+- ⚠️ Complex logic that belongs in TypeScript
+
+### Anti-Patterns to Fix
+
+```html
+<!-- ❌ Bad: Too much logic in Alpine -->
+<div x-data="{
+    users: [],
+    loading: false,
+    async fetchUsers() {
+        this.loading = true
+        try {
+            const response = await fetch('/api/users')
+            this.users = await response.json()
+        } finally {
+            this.loading = false
+        }
+    }
+}" x-init="fetchUsers()">
+```
+
+```html
+<!-- ✅ Good: Logic moved to TypeScript -->
+<div x-data="{
+    users: [],
+    loading: false,
+    async init() {
+        this.loading = true
+        this.users = await window.loadUsers()
+        this.loading = false
+    }
+}">
+```
+
+### Refactoring Patterns
+
+**Extract Reusable Components:**
+
+```html
+<!-- Before: Repeated modal pattern -->
+<div x-data="{ open: false }">
+    <button x-on:click="open = true">Open</button>
+    <div x-show="open">Modal 1</div>
+</div>
+<div x-data="{ open: false }">
+    <button x-on:click="open = true">Open</button>
+    <div x-show="open">Modal 2</div>
+</div>
+
+<!-- After: Reusable Alpine component -->
+<script>
+Alpine.data('modal', () => ({
+    open: false,
+    show() { this.open = true },
+    hide() { this.open = false }
+}))
+</script>
+<div x-data="modal">...</div>
+<div x-data="modal">...</div>
+```
+
+**Add Accessibility:**
+
+```html
+<!-- Before: No ARIA -->
+<div x-data="{ open: false }">
+    <div x-on:click="open = !open">Menu</div>
+    <div x-show="open"><div>Item</div></div>
+</div>
+
+<!-- After: Proper ARIA -->
+<div x-data="{ open: false }">
+    <button x-on:click="open = !open" 
+            x-bind:aria-expanded="open" 
+            aria-controls="menu">Menu</button>
+    <div x-show="open" id="menu" role="menu">
+        <button role="menuitem">Item</button>
+    </div>
+</div>
+```
+
+**Optimize Rendering:**
+
+```html
+<!-- Before: Always renders, just hides -->
+<div x-show="showLargeComponent">
+    <cms:embed 'components/large.html' />
+</div>
+
+<!-- After: Only renders when needed -->
+<template x-if="showLargeComponent">
+    <div><cms:embed 'components/large.html' /></div>
+</template>
+```
+
+### Refactoring Checklist
+
+- [ ] No `@` or `:` shorthand in CouchCMS templates
+- [ ] Components follow single responsibility (< 50 lines)
+- [ ] ARIA attributes present for accessibility
+- [ ] Events properly debounced/throttled
+- [ ] Complex logic moved to TypeScript
+- [ ] Layout files checked for shorthand syntax
+
+---
+
 ## Troubleshooting
 
 | Problem | Cause | Solution |

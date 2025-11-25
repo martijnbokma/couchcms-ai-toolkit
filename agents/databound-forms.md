@@ -353,6 +353,106 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ---
 
+## Refactoring
+
+### When to Refactor
+
+- ⚠️ Missing `enctype` for file uploads
+- ⚠️ Validation on inputs instead of editable regions
+- ⚠️ Missing ownership/authentication checks
+- ⚠️ No error handling or user feedback
+- ⚠️ Duplicated form steps (no snippets)
+
+### Anti-Patterns to Fix
+
+```html
+<!-- ❌ Bad: Validation on bound input -->
+<cms:input type='bound' name='title' required='1' validator='min_len=3' />
+
+<!-- ✅ Good: Validation on editable region in template -->
+<cms:editable name='title' type='text' required='1' validator='min_len=3' />
+<!-- Then bound input just binds -->
+<cms:input type='bound' name='title' />
+```
+
+```html
+<!-- ❌ Bad: No ownership check on edit -->
+<cms:form masterpage='projects.php' mode='edit' page_id=k_page_id>
+
+<!-- ✅ Good: With ownership validation -->
+<cms:embed '{{paths.filters}}/authenticated.html' />
+<cms:embed '{{paths.filters}}/owns_content.html' />
+<cms:form masterpage='projects.php' mode='edit' page_id=k_page_id>
+```
+
+### Refactoring Patterns
+
+**Add Proper Error Handling:**
+
+```html
+<!-- Before: No error display -->
+<cms:form masterpage='projects.php' mode='create'>
+    <cms:input type='bound' name='title' />
+    <button type='submit'>Save</button>
+</cms:form>
+
+<!-- After: Complete error handling -->
+<cms:form masterpage='projects.php' mode='create'>
+    <cms:if k_error>
+        <div class="alert alert-error">
+            <cms:each k_error><p><cms:show item /></p></cms:each>
+        </div>
+    </cms:if>
+    
+    <label class="form-control">
+        <span class="label-text">Title *</span>
+        <cms:input type='bound' name='title' class='input input-bordered' />
+        <cms:if k_error_title>
+            <span class="text-error text-sm"><cms:show k_error_title /></span>
+        </cms:if>
+    </label>
+    
+    <button type='submit' class='btn btn-primary'>Save</button>
+    
+    <cms:if k_success>
+        <cms:db_persist_form content_owner=k_user_name _invalidate_cache='1' />
+        <cms:set_flash name='success' value='Saved!' />
+        <cms:redirect k_page_link />
+    </cms:if>
+</cms:form>
+```
+
+**Extract Reusable Form Steps:**
+
+```html
+<!-- Before: Duplicated form fields -->
+<!-- In create.html and edit.html -->
+
+<!-- After: Shared snippet -->
+<!-- {{paths.forms}}/project-fields.html -->
+<label class="form-control">
+    <span class="label-text">Title *</span>
+    <cms:input type='bound' name='title' class='input input-bordered' />
+</label>
+
+<!-- Usage in both create and edit -->
+<cms:embed '{{paths.forms}}/project-fields.html' />
+```
+
+### Refactoring Checklist
+
+- [ ] `enctype='multipart/form-data'` for file uploads
+- [ ] Validation defined on editable regions (not inputs)
+- [ ] Authentication filter on protected forms
+- [ ] Ownership check on edit/delete forms
+- [ ] Setting `content_owner` on create
+- [ ] Proper error display with `k_error`
+- [ ] Success feedback with flash messages
+- [ ] Reusable form snippets (DRY)
+- [ ] Anti-spam measures for public forms
+
+---
+
 ## Troubleshooting
 
 | Problem | Cause | Solution |

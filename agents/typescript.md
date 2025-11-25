@@ -396,6 +396,120 @@ const result = validateEpisode(episode)
 
 ---
 
+## Refactoring
+
+### When to Refactor
+
+- ⚠️ Using `any` type instead of proper types
+- ⚠️ Barrel file imports (kills tree-shaking)
+- ⚠️ Missing error handling
+- ⚠️ Complex logic in Alpine.js that belongs in TypeScript
+- ⚠️ No TypeScript types for data structures
+
+### Anti-Patterns to Fix
+
+```typescript
+// ❌ Bad: Using 'any' type
+function processData(data: any) {
+    return data.items.map((item: any) => item.name)
+}
+
+// ✅ Good: Proper typing
+interface DataResponse {
+    items: Array<{ name: string; id: string }>
+}
+function processData(data: DataResponse): string[] {
+    return data.items.map(item => item.name)
+}
+```
+
+```typescript
+// ❌ Bad: Barrel file imports
+import { ComponentA, ComponentB } from './components'
+import { logger, utils } from './index'
+
+// ✅ Good: Direct imports (tree-shaking friendly)
+import { ComponentA } from './components/component-a'
+import { ComponentB } from './components/component-b'
+import { logger } from './lib/logger'
+```
+
+### Refactoring Patterns
+
+**Add Type Safety:**
+
+```typescript
+// Before: Loose typing
+function createManager(config) {
+    return {
+        items: [],
+        add(item) { this.items.push(item) }
+    }
+}
+
+// After: Strict typing
+interface ManagerConfig {
+    maxItems: number
+}
+
+interface Manager<T> {
+    items: T[]
+    add(item: T): void
+}
+
+function createManager<T>(config: ManagerConfig): Manager<T> {
+    return {
+        items: [],
+        add(item: T) {
+            if (this.items.length < config.maxItems) {
+                this.items.push(item)
+            }
+        }
+    }
+}
+```
+
+**Move Logic from Alpine to TypeScript:**
+
+```typescript
+// Before: Complex logic in Alpine x-data
+// <div x-data="{ items: [], async fetch() { ... }, validate() { ... } }">
+
+// After: TypeScript module
+export interface Item {
+    id: string
+    title: string
+}
+
+export async function fetchItems(endpoint: string): Promise<Item[]> {
+    const response = await fetch(endpoint)
+    if (!response.ok) throw new Error('Fetch failed')
+    return response.json()
+}
+
+export function validateItem(item: Item): boolean {
+    return item.id.length > 0 && item.title.length >= 2
+}
+
+// Register for Alpine
+window.fetchItems = fetchItems
+window.validateItem = validateItem
+```
+
+### Refactoring Checklist
+
+- [ ] No `any` types (use `unknown` if truly unknown)
+- [ ] Direct imports only (no barrel files)
+- [ ] Files in `{{paths.typescript}}/` directory
+- [ ] File naming: `kebab-case.ts`
+- [ ] Variable naming: `camelCase`
+- [ ] Interface/Type naming: `PascalCase`
+- [ ] Type-only imports use `import type`
+- [ ] Proper error handling with typed errors
+- [ ] Complex Alpine logic extracted to TypeScript
+
+---
+
 ## Troubleshooting
 
 | Problem | Cause | Solution |
