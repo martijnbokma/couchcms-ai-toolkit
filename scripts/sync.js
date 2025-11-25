@@ -35,6 +35,10 @@ Handlebars.registerHelper('join', function (array, separator) {
     return array.join(separator || ', ')
 })
 
+Handlebars.registerHelper('add', function (a, b) {
+    return Number(a) + Number(b)
+})
+
 /**
  * Load defaults from toolkit defaults.yaml
  */
@@ -130,7 +134,7 @@ function findProjectFile(startDir = process.cwd()) {
 /**
  * Resolve toolkit path from project config
  */
-function resolveToolkitPath(configPath) {
+function resolveToolkitPath(configPath, projectDir) {
     if (!configPath) {
         return TOOLKIT_ROOT
     }
@@ -140,9 +144,9 @@ function resolveToolkitPath(configPath) {
         configPath = configPath.replace('~', process.env.HOME)
     }
 
-    // Resolve relative paths from project directory
+    // Resolve relative paths from project directory (not current working directory)
     if (!configPath.startsWith('/')) {
-        configPath = resolve(process.cwd(), configPath)
+        configPath = resolve(projectDir, configPath)
     }
 
     return configPath
@@ -488,10 +492,15 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
         mkdirSync(rulesTarget, { recursive: true })
     }
 
-    // Get all .mdc files from toolkit rules
-    const ruleFiles = readdirSync(rulesSource).filter(f => f.endsWith('.mdc'))
+    // Get all .mdc and .md files from toolkit rules
+    const ruleFiles = readdirSync(rulesSource).filter(f => f.endsWith('.mdc') || f.endsWith('.md'))
 
     for (const ruleFile of ruleFiles) {
+        // Skip README.md
+        if (ruleFile === 'README.md') {
+            continue
+        }
+
         const sourcePath = join(rulesSource, ruleFile)
         const targetPath = join(rulesTarget, ruleFile)
 
@@ -504,7 +513,8 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
     }
 
     if (ruleFiles.length > 0) {
-        console.log(`✅ Synced: ${ruleFiles.length} Cursor rules to .cursor/rules/`)
+        const copiedCount = ruleFiles.filter(f => f !== 'README.md').length
+        console.log(`✅ Synced: ${copiedCount} Cursor rules to .cursor/rules/`)
     }
 }
 
@@ -564,7 +574,7 @@ Add your project-specific instructions here...
         console.log(`📦 Project: ${config.name || 'Unnamed'}`)
 
         // Resolve toolkit path
-        const toolkitPath = resolveToolkitPath(config.toolkit)
+        const toolkitPath = resolveToolkitPath(config.toolkit, projectDir)
 
         // Verify toolkit path exists
         if (!existsSync(toolkitPath)) {

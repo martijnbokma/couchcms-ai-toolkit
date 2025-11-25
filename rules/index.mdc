@@ -1,0 +1,165 @@
+---
+description: Universal AI Development Toolkit bridge - connects Cursor with unified project configuration for consistent coding standards
+globs: ['**/*.php', '**/*.html', '**/*.ts', '**/*.css', '**/*.js', '**/*.md']
+alwaysApply: true
+---
+
+# Universal AI Development Toolkit Bridge
+
+**Highly Critical:**
+Whenever generating code, you must ALWAYS refer to the project's configuration file (`project.md` or `docs/standards.md` or `.project/standards.md`) to ensure all code strictly adheres to the project's coding standards and conventions.
+
+This configuration file is the single source of truth. Do not ignore or bypass it.
+
+---
+
+**Critical: Always follow the project configuration file before generating any code.**
+
+If no configuration file exists, alert the user that this critical file is missing. The toolkit expects one of:
+
+- `project.md` (root directory)
+- `docs/standards.md`
+- `.project/standards.md`
+
+---
+
+This file connects Cursor AI rules with the Universal AI Development Toolkit system, providing consistent coding standards and specialized workflows across all CouchCMS projects.
+
+## Quick Navigation
+
+### 🚀 Start Here
+
+- **[Main Cursor Rules](../../.cursorrules)** - Primary AI agent guidelines (auto-generated from project config)
+- **[Project Configuration](../../project.md)** - Project-specific settings and standards
+- **[Toolkit Documentation](../../ai-toolkit-shared/docs/GETTING-STARTED.md)** - Complete toolkit guide
+
+### 📚 Knowledge Modules
+
+The toolkit provides specialized knowledge modules. Check your `project.md` to see which modules are active:
+
+- **couchcms-core** - Core CouchCMS patterns (always included)
+- **tailwindcss** - TailwindCSS 4 patterns and utilities
+- **daisyui** - daisyUI 5 component library
+- **alpinejs** - Alpine.js integration with CouchCMS
+- **typescript** - TypeScript standards and patterns
+- **databound-forms** - CouchCMS DataBound Forms
+
+Reference: `ai-toolkit-shared/modules/` or `ai-toolkit-shared/docs/MODULES.md`
+
+### 🤖 AI Agents
+
+Specialized agents for different development tasks. Check your `project.md` for active agents:
+
+- **couchcms** - Core CouchCMS development
+- **databound-forms** - Forms and CRUD operations
+- **alpinejs** - Alpine.js development
+- **tailwindcss** - Styling with TailwindCSS + daisyUI
+- **typescript** - TypeScript development
+- **custom-routes** - Clean URLs and routing
+- **mysql** - Database operations
+- **bun** - Build tooling
+- **git** - Version control
+
+Reference: `ai-toolkit-shared/agents/` or `ai-toolkit-shared/docs/AGENTS.md`
+
+### 🛠️ Specialized Workflows
+
+The toolkit provides reusable prompts and workflows:
+
+- **Best Practices** - Coding standards and patterns (`ai-toolkit-shared/prompts/best-practices/`)
+- **Debugging** - Troubleshooting guides (`ai-toolkit-shared/prompts/debugging/`)
+- **Refactoring** - Code improvement workflows (`ai-toolkit-shared/prompts/refactoring/`)
+- **Validators** - Code quality checks (`ai-toolkit-shared/prompts/validators/`)
+
+### 📋 Auto-Loading Rules
+
+Cursor automatically loads rules based on file type:
+
+- **refactor-html.mdc** - HTML/PHP template refactoring
+- **refactor-typescript.mdc** - TypeScript refactoring
+- **refactor-css.mdc** - CSS/TailwindCSS refactoring
+- **refactor-forms.mdc** - Form refactoring
+- **design.mdc** - UI/UX design principles
+- **daisyui.mdc** - daisyUI 5 component reference
+
+## Universal AI Development Toolkit
+
+### 🤖 AI Agent Management
+
+```bash
+# Update all AI agent configurations
+bun ai-toolkit-shared/scripts/sync.js
+
+# Validate code compliance
+bun ai-toolkit-shared/scripts/validate.js
+
+# Interactive setup (first time)
+bun ai-toolkit-shared/scripts/init.js
+```
+
+### 🎯 Key Features
+
+- **Single Source of Truth**: Project configuration file controls all AI agents
+- **Automatic Sync**: Changes propagate to all tools instantly
+- **Language Enforcement**: Consistent language requirements (English-only by default)
+- **Framework Patterns**: CouchCMS, TailwindCSS, Alpine.js, TypeScript patterns
+- **Quality Assurance**: Built-in validation and compliance checking
+- **Zero Config**: Works out of the box with sensible defaults
+
+### 📦 Project Structure
+
+The toolkit uses these standard paths (configurable in `project.md`):
+
+- **CSS**: `{{paths.css}}` (default: `assets/css`)
+- **TypeScript**: `{{paths.typescript}}` (default: `assets/ts`)
+- **JavaScript**: `{{paths.javascript}}` (default: `assets/js`)
+- **Components**: `{{paths.components}}` (default: `snippets/components`)
+- **Views**: `{{paths.views}}` (default: `snippets/views`)
+- **Layouts**: `{{paths.layouts}}` (default: `snippets/layouts`)
+- **Filters**: `{{paths.filters}}` (default: `snippets/filters`)
+- **Forms**: `{{paths.forms}}` (default: `snippets/forms`)
+
+## For Cursor AI
+
+This file serves as a bridge between Cursor AI rules and the comprehensive Universal AI Development Toolkit. The system provides:
+
+1. **Project Configuration** - Single source of truth for all standards
+2. **Knowledge Modules** - Framework-specific patterns and best practices
+3. **AI Agents** - Specialized guidance for different development tasks
+4. **Workflow Prompts** - Reusable prompts for common scenarios
+5. **Auto-Loading Rules** - Context-aware refactoring patterns
+
+**Workflow:**
+
+1. **Start with project configuration** - Read `project.md` or `docs/standards.md` for project context
+2. **Check active modules** - See which knowledge modules are enabled
+3. **Use appropriate agents** - Select the right agent for your task
+4. **Apply workflows** - Use specialized prompts for debugging, refactoring, etc.
+5. **Reference modules** - Check module documentation for detailed patterns
+
+**Remember**: All configurations are auto-generated from your project configuration file. Run `bun ai-toolkit-shared/scripts/sync.js` to update after changes.
+
+## Quick Decision Matrix
+
+| Task                         | Primary Resource                        | Secondary Resource                             |
+| ---------------------------- | --------------------------------------- | ---------------------------------------------- |
+| **New CouchCMS template**    | `agents/couchcms.md`                    | `modules/couchcms-core.md`                     |
+| **Form creation**            | `agents/databound-forms.md`             | `modules/databound-forms.md`                   |
+| **UI component**             | `agents/tailwindcss.md`                 | `modules/tailwindcss.md`, `modules/daisyui.md` |
+| **Interactive feature**      | `agents/alpinejs.md`                    | `modules/alpinejs.md`                          |
+| **TypeScript code**          | `agents/typescript.md`                  | `modules/typescript.md`                        |
+| **Debugging issue**          | `prompts/debugging/specialist.md`       | `prompts/debugging/`                           |
+| **Code refactoring**         | `prompts/refactoring/`                  | Auto-loading refactor rules                    |
+| **Performance optimization** | `prompts/best-practices/performance.md` | `agents/bun.md`                                |
+
+## Getting Help
+
+- **Setup Issues**: See `ai-toolkit-shared/docs/GETTING-STARTED.md`
+- **Command Reference**: See `ai-toolkit-shared/docs/COMMANDS.md`
+- **Troubleshooting**: See `ai-toolkit-shared/docs/TROUBLESHOOTING.md`
+- **Module Details**: See `ai-toolkit-shared/docs/MODULES.md`
+- **Agent Details**: See `ai-toolkit-shared/docs/AGENTS.md`
+
+---
+
+**This file is automatically generated and updated by the toolkit sync process. Do not edit manually.**

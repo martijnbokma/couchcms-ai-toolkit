@@ -6,8 +6,8 @@
 
 - **Type**: {{project.type}}
 - **Description**: {{project.description}}
-- **Languages**: {{languages | join(", ")}}
-- **Frameworks**: {{frameworks | join(", ")}}
+- **Languages**: {{join languages ", "}}
+- **Frameworks**: {{join frameworks ", "}}
 
 ## Core Rules
 
@@ -27,7 +27,7 @@
 ### Technology Hierarchy (Follow This Order)
 
 {{#each tech_hierarchy}}
-{{@index + 1}}. **{{name}}**: {{description}}
+{{add @index 1}}. **{{name}}**: {{description}}
 {{/each}}
 
 ## Available Knowledge Modules

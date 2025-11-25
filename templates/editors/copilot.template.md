@@ -5,8 +5,8 @@
 ## Project Configuration
 
 - **Project**: {{project.name}} ({{project.type}})
-- **Languages**: {{languages | join(", ")}}
-- **Frameworks**: {{frameworks | join(", ")}}
+- **Languages**: {{join languages ", "}}
+- **Frameworks**: {{join frameworks ", "}}
 
 ## Code Standards
 

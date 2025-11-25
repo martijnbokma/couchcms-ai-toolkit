@@ -35,8 +35,8 @@ bun run validate
 ## Project Context
 
 - **Type**: {{project.type}}
-- **Languages**: {{languages | join(", ")}}
-- **Frameworks**: {{frameworks | join(", ")}}
+- **Languages**: {{join languages ", "}}
+- **Frameworks**: {{join frameworks ", "}}
 - **Standards**: {{standards.indentation}}-space indentation, English-only, theme-aware styling
 
 ## Key Requirements

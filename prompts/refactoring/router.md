@@ -6,9 +6,10 @@
 
 This router automatically detects and uses project standards from:
 
-1. **`docs/standards.md`** (recommended location)
-2. **`standards.md`** (root directory)
-3. **`project.md`** (fallback for legacy projects)
+1. **`.project/standards.md`** (recommended - project configuration directory)
+2. **`docs/standards.md`** (documentation location)
+3. **`standards.md`** (root directory)
+4. **`project.md`** (fallback for legacy projects)
 
 The standards file contains:
 

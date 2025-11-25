@@ -35,8 +35,9 @@ All templates use the following Handlebars variables that are populated from `pr
 
 ### Technology Stack
 
-- `{{languages | join(", ")}}` - Comma-separated list of languages
-- `{{frameworks | join(", ")}}` - Comma-separated list of frameworks
+- `{{join languages ", "}}` - Comma-separated list of languages
+- `{{join frameworks ", "}}` - Comma-separated list of frameworks
+- `{{add @index 1}}` - Add numbers (e.g., for numbered lists)
 - `{{#each tech_hierarchy}}` - Loop through technology hierarchy
 - `{{#each modules}}` - Loop through knowledge modules
 - `{{#each roles}}` - Loop through project roles

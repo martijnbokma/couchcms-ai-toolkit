@@ -6,17 +6,23 @@ The AI toolkit automatically detects and uses `standards.md` as the single sourc
 
 The toolkit searches for configuration files in this priority order:
 
-1. **`docs/standards.md`** (recommended)
+1. **`.project/standards.md`** (recommended)
+    - Project configuration directory
+    - Consistent with `.project/ai/context.md` structure
+    - Logical location for project-specific config
+    - Keeps root directory clean
+
+2. **`docs/standards.md`** (documentation location)
     - Clear organization
     - Follows documentation conventions
     - Easy to find and maintain
 
-2. **`standards.md`** (root directory)
+3. **`standards.md`** (root directory)
     - Simple path
     - More visible
     - Still works perfectly
 
-3. **`project.md`** (fallback)
+4. **`project.md`** (fallback)
     - Legacy support
     - Backward compatibility
     - Will be phased out

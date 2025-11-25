@@ -27,7 +27,7 @@
 ### Technology Stack Hierarchy
 
 {{#each tech_hierarchy}}
-{{@index + 1}}. **{{name}}**: {{description}}
+{{add @index 1}}. **{{name}}**: {{description}}
 {{/each}}
 
 ## Active Knowledge Modules

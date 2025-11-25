@@ -13,18 +13,20 @@ import matter from 'gray-matter'
  * Find configuration file (standards.md or project.md)
  *
  * Detection priority:
- * 1. docs/standards.md (recommended)
- * 2. standards.md (root)
- * 3. project.md (fallback)
+ * 1. .project/standards.md (recommended - project configuration directory)
+ * 2. docs/standards.md (documentation location)
+ * 3. standards.md (root directory)
+ * 4. project.md (fallback for legacy support)
  *
  * @param {string} projectDir - Project root directory
  * @returns {string|null} - Path to config file or null if not found
  */
 export function findConfigFile(projectDir) {
     const candidates = [
-        join(projectDir, 'docs', 'standards.md'),
-        join(projectDir, 'standards.md'),
-        join(projectDir, 'project.md'), // fallback for legacy support
+        join(projectDir, '.project', 'standards.md'), // Recommended - project config directory
+        join(projectDir, 'docs', 'standards.md'), // Documentation location
+        join(projectDir, 'standards.md'), // Root directory
+        join(projectDir, 'project.md'), // Fallback for legacy support
     ]
 
     for (const path of candidates) {
@@ -74,7 +76,13 @@ export function getConfigFileName(projectDir) {
     }
 
     if (config.isStandards) {
-        return config.path.includes('docs/') ? 'docs/standards.md' : 'standards.md'
+        if (config.path.includes('.project/')) {
+            return '.project/standards.md'
+        }
+        if (config.path.includes('docs/')) {
+            return 'docs/standards.md'
+        }
+        return 'standards.md'
     }
 
     return 'project.md'

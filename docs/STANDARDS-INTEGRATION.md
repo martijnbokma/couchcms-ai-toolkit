@@ -10,9 +10,20 @@ The AI toolkit can automatically detect and use `standards.md` as the primary co
 
 The toolkit searches for configuration files in this order:
 
-1. **`docs/standards.md`** (primary - recommended location)
-2. **`standards.md`** (root directory)
-3. **`project.md`** (fallback - legacy support)
+1. **`.project/standards.md`** (primary - recommended location)
+    - Project configuration directory
+    - Consistent with `.project/ai/context.md` structure
+    - Logical location for project-specific config
+
+2. **`docs/standards.md`** (documentation location)
+    - Clear organization
+    - Follows documentation conventions
+
+3. **`standards.md`** (root directory)
+    - Simple path
+    - More visible
+
+4. **`project.md`** (fallback - legacy support)
 
 ## File Structure
 
@@ -109,7 +120,10 @@ The `prompts/validators/standards.md` validator automatically:
 
 ```bash
 # If you have project.md, rename it
-mv project.md docs/standards.md
+mv project.md .project/standards.md
+
+# Create .project directory if needed
+mkdir -p .project
 
 # Update any references
 # The toolkit will automatically detect it
@@ -119,8 +133,8 @@ mv project.md docs/standards.md
 
 ```bash
 # Keep project.md for now
-# Create docs/standards.md with full standards
-# Toolkit will prefer standards.md
+# Create .project/standards.md with full standards
+# Toolkit will prefer .project/standards.md
 # Remove project.md later when ready
 ```
 
@@ -128,7 +142,7 @@ mv project.md docs/standards.md
 
 ```bash
 # Extract standards from project.md
-# Create docs/standards.md with:
+# Create .project/standards.md with:
 # - YAML frontmatter (project config)
 # - Full standards documentation
 # - Quality checklists
@@ -255,11 +269,18 @@ bun ai-toolkit-shared/scripts/validate.js
 
 ### 1. Location
 
-**Recommended**: `docs/standards.md`
+**Recommended**: `.project/standards.md`
+
+- Project configuration directory
+- Consistent with `.project/ai/context.md` structure
+- Logical location for project-specific config
+- Keeps root directory clean
+
+**Alternative**: `docs/standards.md` (documentation)
 
 - Clear organization
-- Easy to find
 - Follows documentation conventions
+- Easy to find
 
 **Alternative**: `standards.md` (root)
 
@@ -287,11 +308,12 @@ bun ai-toolkit-shared/scripts/validate.js
 
 ```bash
 # Check file location
+ls -la .project/standards.md
 ls -la docs/standards.md
 ls -la standards.md
 
 # Verify file exists
-test -f docs/standards.md && echo "Found" || echo "Not found"
+test -f .project/standards.md && echo "Found" || echo "Not found"
 ```
 
 ### YAML Parse Errors
