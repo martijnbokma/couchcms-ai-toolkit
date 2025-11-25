@@ -17,6 +17,7 @@ paths:
   fonts: "assets/fonts"
 
   # CouchCMS templates
+  snippets: "snippets"
   components: "snippets/components"
   views: "snippets/views"
   layouts: "snippets/layouts"
