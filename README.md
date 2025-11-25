@@ -305,18 +305,45 @@ Run this after:
 
 **New in v1.1.0**: Enhanced error handling with helpful troubleshooting messages.
 
+## Dependencies
+
+The toolkit requires a few Node.js dependencies for the automation scripts. These are **not** committed to the repository.
+
+### First-Time Setup
+
+After cloning or adding the submodule:
+
+```bash
+cd ai-toolkit-shared  # or ~/couchcms-ai-toolkit
+bun install  # or: npm install
+```
+
+This installs:
+
+- `gray-matter` - YAML frontmatter parsing
+- `js-yaml` - YAML processing
+
+### Important Notes
+
+- `node_modules/` is **gitignored** and should never be committed
+- Dependencies are lightweight (~2MB)
+- Only needed for running `sync`, `validate`, and `init` scripts
+- Your project doesn't need these dependencies
+
 ## Updating
 
 ```bash
 # If using submodule
 cd ai-toolkit
 git pull origin main
+bun install  # Update dependencies if needed
 cd ..
 bun run sync
 
 # If cloned separately
 cd ~/couchcms-ai-toolkit
 git pull origin main
+bun install  # Update dependencies if needed
 ```
 
 After updating, always run:
