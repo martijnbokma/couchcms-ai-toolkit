@@ -10,27 +10,27 @@
 
 paths:
   # Frontend assets
-  css: 'assets/css'
-  typescript: 'assets/ts'
-  javascript: 'assets/js'
-  images: 'assets/images'
-  fonts: 'assets/fonts'
+  css: "assets/css"
+  typescript: "assets/ts"
+  javascript: "assets/js"
+  images: "assets/images"
+  fonts: "assets/fonts"
 
   # CouchCMS templates
-  components: 'snippets/components'
-  views: 'snippets/views'
-  layouts: 'snippets/layouts'
-  filters: 'snippets/filters'
-  forms: 'snippets/forms'
-  helpers: 'snippets/helpers'
+  components: "snippets/components"
+  views: "snippets/views"
+  layouts: "snippets/layouts"
+  filters: "snippets/filters"
+  forms: "snippets/forms"
+  helpers: "snippets/helpers"
 
   # Build output
-  public: 'public'
-  dist: 'dist'
+  public: "public"
+  dist: "dist"
 
   # Configuration
-  config: 'config'
-  scripts: 'scripts'
+  config: "config"
+  scripts: "scripts"
 
 # =============================================================================
 # CODE STANDARDS
@@ -38,7 +38,7 @@ paths:
 
 standards:
   indentation: 4
-  language: 'english'
+  language: "english"
   lineLength: 120
 
 # =============================================================================
@@ -47,23 +47,23 @@ standards:
 
 naming:
   # PHP/CouchCMS
-  php_variables: 'snake_case'
-  php_functions: 'snake_case'
-  cms_fields: 'snake_case'
+  php_variables: "snake_case"
+  php_functions: "snake_case"
+  cms_fields: "snake_case"
 
   # TypeScript/JavaScript
-  ts_variables: 'camelCase'
-  ts_functions: 'camelCase'
-  ts_classes: 'PascalCase'
-  ts_interfaces: 'PascalCase'
-  ts_types: 'PascalCase'
+  ts_variables: "camelCase"
+  ts_functions: "camelCase"
+  ts_classes: "PascalCase"
+  ts_interfaces: "PascalCase"
+  ts_types: "PascalCase"
 
   # CSS
-  css_classes: 'kebab-case'
-  css_variables: 'kebab-case'
+  css_classes: "kebab-case"
+  css_variables: "kebab-case"
 
   # Files
-  php_files: 'kebab-case'
-  ts_files: 'kebab-case'
-  css_files: 'kebab-case'
-  component_files: 'kebab-case'
+  php_files: "kebab-case"
+  ts_files: "kebab-case"
+  css_files: "kebab-case"
+  component_files: "kebab-case"
