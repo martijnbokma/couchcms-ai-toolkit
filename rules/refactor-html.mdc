@@ -17,7 +17,7 @@ When refactoring this file, apply these rules:
 ## Alpine.js Compatibility
 
 - ❌ Never use `@click` shorthand in CouchCMS templates
-- ❌ Never use `:class` shorthand in CouchCMS templates  
+- ❌ Never use `:class` shorthand in CouchCMS templates
 - ✅ Always use `x-on:click` full syntax
 - ✅ Always use `x-bind:class` full syntax
 

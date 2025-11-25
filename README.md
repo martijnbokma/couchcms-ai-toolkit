@@ -120,11 +120,41 @@ This generates:
 
 ## Available Agents
 
-| Agent                 | Type       | Description                          |
-| --------------------- | ---------- | ------------------------------------ |
-| `couchcms-agent`      | Daily      | Template development, forms, data    |
-| `couchcms-specialist` | Specialist | Deep expertise for complex decisions |
-| `safety-checker`      | Daily      | HTML comment security checker        |
+Combined agents with Quick Reference + Deep Dive sections:
+
+| Agent             | Description                              |
+| ----------------- | ---------------------------------------- |
+| `couchcms`        | Core CouchCMS templates, patterns        |
+| `databound-forms` | Forms, CRUD, validation, security        |
+| `alpinejs`        | Alpine.js + CouchCMS integration         |
+| `tailwindcss`     | TailwindCSS 4 + daisyUI 5 styling        |
+| `typescript`      | TypeScript standards and patterns        |
+| `custom-routes`   | Clean URLs and routing                   |
+| `mysql`           | Database operations and optimization     |
+| `bun`             | Bun runtime and build tooling            |
+| `git`             | Version control and workflow             |
+
+## Auto-Loading Rules
+
+Cursor rules that auto-load based on file type:
+
+| Rule                    | Triggers On                    |
+| ----------------------- | ------------------------------ |
+| `refactor-html.mdc`     | `snippets/**/*.html`, `*.php`  |
+| `refactor-typescript.mdc` | `assets/ts/**/*.ts`          |
+| `refactor-css.mdc`      | `assets/css/**/*.css`          |
+| `refactor-forms.mdc`    | `snippets/forms/**/*.html`     |
+
+## Prompts Library
+
+Reusable prompts for common tasks:
+
+| Directory       | Contents                              |
+| --------------- | ------------------------------------- |
+| `best-practices/` | Claude, JavaScript, TypeScript, security |
+| `debugging/`    | Alpine.js, CouchCMS troubleshooting   |
+| `validators/`   | Design, links, responsive, standards  |
+| `refactoring/`  | Design/functionality preserving       |
 
 ## Project Structure
 
@@ -137,16 +167,27 @@ couchcms-ai-toolkit/
 │   ├── alpinejs.md
 │   ├── typescript.md
 │   └── databound-forms.md
-├── agents/               # Specialized agents
-│   ├── daily/            # Quick daily helpers
-│   │   ├── couchcms-agent.md
-│   │   └── safety-checker.md
-│   └── specialists/      # Deep expertise
-│       └── couchcms-specialist.md
-├── templates/            # Editor config templates
+├── agents/               # Combined agents (Quick + Deep)
+│   ├── alpinejs.md
+│   ├── couchcms.md
+│   ├── databound-forms.md
+│   ├── tailwindcss.md
+│   ├── typescript.md
+│   └── ...
+├── rules/                # Auto-loading Cursor rules
+│   ├── refactor-html.mdc
+│   ├── refactor-typescript.mdc
+│   ├── refactor-css.mdc
+│   └── refactor-forms.mdc
+├── prompts/              # Reusable AI prompts
+│   ├── best-practices/   # Claude, JS, TS, security
+│   ├── debugging/        # Troubleshooting guides
+│   ├── validators/       # Code validation
+│   └── refactoring/      # Refactoring patterns
+├── framework/            # AI prompting framework (AAPF)
 ├── scripts/              # Build scripts
 │   └── sync.js           # Generate editor configs
-└── package.json
+└── defaults.yaml         # Default path configuration
 ```
 
 ## Your Project Structure

@@ -387,7 +387,9 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
   }
 
   if (ruleFiles.length > 0) {
-    console.log(`✅ Synced: ${ruleFiles.length} Cursor rules to .cursor/rules/`);
+    console.log(
+      `✅ Synced: ${ruleFiles.length} Cursor rules to .cursor/rules/`
+    );
   }
 }
 

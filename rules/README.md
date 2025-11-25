@@ -4,12 +4,12 @@ Auto-loading refactoring rules for Cursor IDE.
 
 ## Available Rules
 
-| Rule | Glob Pattern | Description |
-|------|--------------|-------------|
-| `refactor-html.mdc` | `{{paths.snippets}}/**/*.html`, `*.php` | CouchCMS templates, Alpine.js |
-| `refactor-typescript.mdc` | `{{paths.typescript}}/**/*.ts` | TypeScript files |
-| `refactor-css.mdc` | `{{paths.css}}/**/*.css` | CSS/TailwindCSS files |
-| `refactor-forms.mdc` | `{{paths.forms}}/**/*.html` | DataBound Forms |
+| Rule                      | Glob Pattern                            | Description                   |
+| ------------------------- | --------------------------------------- | ----------------------------- |
+| `refactor-html.mdc`       | `{{paths.snippets}}/**/*.html`, `*.php` | CouchCMS templates, Alpine.js |
+| `refactor-typescript.mdc` | `{{paths.typescript}}/**/*.ts`          | TypeScript files              |
+| `refactor-css.mdc`        | `{{paths.css}}/**/*.css`                | CSS/TailwindCSS files         |
+| `refactor-forms.mdc`      | `{{paths.forms}}/**/*.html`             | DataBound Forms               |
 
 ## How It Works
 

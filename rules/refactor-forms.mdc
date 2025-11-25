@@ -1,6 +1,11 @@
 ---
 description: Auto-load refactoring rules for DataBound Forms
-globs: ["{{paths.forms}}/**/*.html", "{{paths.views}}/**/create*.html", "{{paths.views}}/**/edit*.html"]
+globs:
+  [
+    "{{paths.forms}}/**/*.html",
+    "{{paths.views}}/**/create*.html",
+    "{{paths.views}}/**/edit*.html",
+  ]
 alwaysApply: false
 ---
 
