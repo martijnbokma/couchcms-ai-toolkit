@@ -177,18 +177,13 @@ function loadModule(moduleName, toolkitPath) {
  * Load an agent from the toolkit
  */
 function loadAgent(agentName, toolkitPath) {
-  // Check daily agents first, then specialists
-  const paths = [
-    join(toolkitPath, "agents", "daily", `${agentName}.md`),
-    join(toolkitPath, "agents", "specialists", `${agentName}.md`),
-  ];
+  // Agents are now in a flat structure under agents/
+  const agentPath = join(toolkitPath, "agents", `${agentName}.md`);
 
-  for (const agentPath of paths) {
-    if (existsSync(agentPath)) {
-      const fileContent = readFileSync(agentPath, "utf8");
-      const { data: meta, content } = matter(fileContent);
-      return { meta, content, name: agentName };
-    }
+  if (existsSync(agentPath)) {
+    const fileContent = readFileSync(agentPath, "utf8");
+    const { data: meta, content } = matter(fileContent);
+    return { meta, content, name: agentName };
   }
 
   console.warn(`⚠️  Agent not found: ${agentName}`);
