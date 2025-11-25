@@ -1,15 +1,17 @@
-# Security Best Practices — Matters (2025)
+# Security Best Practices
 
-This document contains the **security standards** for the Matters project.
-All rules apply to both **frontend and backend** code, with specific attention to CouchCMS integration.
+**Critical: Always follow project standards (standards.md) before generating any code.**
+
+This document contains **universal security standards** for modern web development.
+All rules are framework-agnostic and should be adapted to your project's `standards.md` configuration.
 
 ---
 
 ## 🔒 Authentication & Authorization
 
-1. **CouchCMS Authentication**:
-    - Use `snippets/filters/authenticated.html` for authentication checks
-    - Implement `snippets/filters/owns_{content}.html` for ownership validation
+1. **Authentication**:
+    - Use authentication filters/middleware for protected routes
+    - Implement ownership validation for user content
     - Never trust client-side authentication alone
     - Always validate user permissions server-side
 
@@ -31,7 +33,7 @@ All rules apply to both **frontend and backend** code, with specific attention t
 
 4. **Server-side Validation**:
     - Validate all inputs on the server before processing
-    - Use CouchCMS built-in validation where possible
+    - Use framework-provided validation where possible
     - Implement custom validation for complex inputs
     - Sanitize all user inputs before database operations
 
@@ -42,7 +44,7 @@ All rules apply to both **frontend and backend** code, with specific attention t
     - Sanitize HTML content before display
 
 6. **SQL Injection Prevention**:
-    - Use CouchCMS built-in database methods
+    - Use framework-provided database methods
     - Never concatenate user input into SQL queries
     - Use parameterized queries for custom database operations
     - Validate and escape all database inputs
@@ -52,7 +54,7 @@ All rules apply to both **frontend and backend** code, with specific attention t
 ## 🌐 XSS Prevention
 
 7. **Output Encoding**:
-    - Use CouchCMS built-in output encoding
+    - Use framework-provided output encoding
     - Escape HTML entities in user-generated content
     - Use Content Security Policy (CSP) headers
     - Implement proper MIME type validation
@@ -123,7 +125,7 @@ All rules apply to both **frontend and backend** code, with specific attention t
 
 16. **Dependency Security**:
     - Regularly update dependencies
-    - Use tools like `npm audit` to check for vulnerabilities
+    - Use tools like `npm audit` or `bun audit` to check for vulnerabilities
     - Implement dependency scanning in CI/CD
     - Use lock files for reproducible builds
 
@@ -177,18 +179,15 @@ All rules apply to both **frontend and backend** code, with specific attention t
 
 ---
 
-## 📋 Security Checklist
+## Quick Reference Checklist
 
-23. **Pre-deployment Security**:
-    - [ ] All inputs validated and sanitized
-    - [ ] Authentication and authorization implemented
-    - [ ] CSRF protection enabled
-    - [ ] Security headers configured
-    - [ ] Dependencies updated and scanned
-    - [ ] Secrets properly managed
-    - [ ] Error handling implemented
-    - [ ] Logging and monitoring configured
-    - [ ] Security tests passing
-    - [ ] Code review completed
-
----
+- [ ] All inputs validated and sanitized
+- [ ] Authentication and authorization implemented
+- [ ] CSRF protection enabled
+- [ ] Security headers configured
+- [ ] Dependencies updated and scanned
+- [ ] Secrets properly managed (not in code)
+- [ ] Error handling implemented (no information leakage)
+- [ ] Logging and monitoring configured
+- [ ] Security tests present
+- [ ] Code review completed for security issues

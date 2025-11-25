@@ -18,6 +18,7 @@
 
 import matter from 'gray-matter'
 import { parse as parseYaml } from 'yaml'
+import Handlebars from 'handlebars'
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs'
 import { join, dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
@@ -25,6 +26,14 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const TOOLKIT_ROOT = resolve(__dirname, '..')
+
+/**
+ * Register Handlebars helpers
+ */
+Handlebars.registerHelper('join', function(array, separator) {
+    if (!Array.isArray(array)) return ''
+    return array.join(separator || ', ')
+})
 
 /**
  * Load defaults from toolkit defaults.yaml

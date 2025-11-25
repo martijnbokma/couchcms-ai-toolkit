@@ -1,33 +1,34 @@
-# TypeScript Best Practices — Matters (2025)
+# TypeScript Best Practices
 
-This document contains the **TypeScript coding standards** for the Matters project.
-All rules are derived from the project's SSOF and apply to **frontend TypeScript code** only.
-PHP and CouchCMS-specific rules are intentionally left out.
+**Critical: Always follow project standards (standards.md) before generating any code.**
+
+This document contains **universal TypeScript coding standards** for modern web development.
+All rules are framework-agnostic and should be adapted to your project's `standards.md` configuration.
 
 ---
 
 ## 🌐 Language & Consistency
 
-1. **English only**: all variables, functions, comments, and documentation.
-2. **Indentation**: always 4 spaces.
-3. **Line length**: maximum 120 characters.
+1. **Language**: Follow language requirements from `standards.md` (typically English-only)
+2. **Indentation**: Use consistent indentation as defined in `standards.md`
+3. **Line length**: Follow maximum line length from `standards.md`
 4. **Naming conventions**:
     - Variables & functions → `camelCase`
-    - Files → `camelCase.ts`
+    - Files → `camelCase.ts` or `kebab-case.ts` (check `standards.md`)
     - Classes & Interfaces → `PascalCase`
-    - Types → `PascalCase` or `camelCase` for primitives
-    - Directories → `lowercase-dash`
+    - Types → `PascalCase`
+    - Directories → `lowercase-dash` or `camelCase`
 
 ---
 
 ## 📂 Project Structure & Modularity
 
-5. **Folder structure in `src/js/`**:
+5. **Folder structure** (adapt to your framework):
     - `components/` → UI components with TypeScript interfaces
-    - `modules/` → complex logic with strict typing
-    - `utils/` → pure helpers with comprehensive type definitions
-    - `types/` → shared type definitions and interfaces
-    - `config/` → constants with proper typing
+    - `modules/` or `lib/` → Complex logic with strict typing
+    - `utils/` or `helpers/` → Pure helpers with comprehensive type definitions
+    - `types/` → Shared type definitions and interfaces
+    - `config/` → Constants with proper typing
 
 6. **Type definitions**:
     - Always define interfaces for objects
@@ -52,7 +53,7 @@ PHP and CouchCMS-specific rules are intentionally left out.
     - Use `noUnusedLocals` and `noUnusedParameters`
 
 9. **Type safety**:
-    - Define return types for functions
+    - Define return types for public functions
     - Use type guards for runtime checks
     - Prefer type assertions with `as` over angle brackets
     - Use discriminated unions for state management
@@ -122,8 +123,7 @@ PHP and CouchCMS-specific rules are intentionally left out.
     - Test generic type constraints
 
 18. **Code review checklist**:
-    - English only
-    - 4-space indentation
+    - Language requirements met (check `standards.md`)
     - Strict TypeScript enabled
     - No `any` types used
     - Proper error handling
@@ -145,6 +145,31 @@ PHP and CouchCMS-specific rules are intentionally left out.
     - Use mapped types for transformations
     - Implement recursive types for nested structures
     - Use template literal types for API endpoints
-    - Leverage utility types from `@types/utility-types`
+    - Leverage utility types (`Partial`, `Pick`, `Omit`, etc.)
 
 ---
+
+## 🔧 Framework Integration Notes
+
+When using TypeScript with specific frameworks, additional patterns apply:
+
+- **React**: Use `React.FC`, proper event types, and generic components
+- **Vue**: Use `defineComponent` with type inference
+- **Node.js**: Use `@types/node` and proper async typing
+- **Express**: Type request/response with generics
+
+Check your project's `standards.md` and module documentation for framework-specific guidelines.
+
+---
+
+## Quick Reference Checklist
+
+- [ ] Strict mode enabled in tsconfig
+- [ ] No `any` types (use `unknown` if needed)
+- [ ] Named exports only (no default exports)
+- [ ] No barrel files or index re-exports
+- [ ] Type-only imports use `import type`
+- [ ] Interfaces for all objects
+- [ ] Type guards for runtime validation
+- [ ] Proper error handling with typed errors
+- [ ] Tests cover type scenarios

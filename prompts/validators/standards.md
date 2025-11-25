@@ -737,10 +737,11 @@ for (const tech of technologies) {
 ```bash
 # Look for best practices in:
 - docs/prompts/best-practices/
-- docs/prompts/best-practices/javascript.md
-- docs/prompts/best-practices/typescript.md
-- docs/prompts/best-practices/security.md
-- docs/prompts/best-practices/performance.md
+- docs/prompts/best-practices/javascript-best-practices.md
+- docs/prompts/best-practices/typescript-best-practices.md
+- docs/prompts/best-practices/security-best-practices.md
+- docs/prompts/best-practices/performance-best-practices.md
+- docs/prompts/best-practices/claude-code-best-practices.md
 ```
 
 **standards.md Parsing:**

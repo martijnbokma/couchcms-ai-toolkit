@@ -1,7 +1,9 @@
-# Performance Best Practices — Matters (2025)
+# Performance Best Practices
 
-This document contains the **performance optimization standards** for the Matters project.
-All rules apply to both **frontend and backend** code, with specific attention to CouchCMS integration.
+**Critical: Always follow project standards (standards.md) before generating any code.**
+
+This document contains **universal performance optimization standards** for modern web development.
+All rules are framework-agnostic and should be adapted to your project's `standards.md` configuration.
 
 ---
 
@@ -14,7 +16,7 @@ All rules apply to both **frontend and backend** code, with specific attention t
     - Use Web Workers for CPU-intensive tasks
 
 2. **CSS Performance**:
-    - Use TailwindCSS with PurgeCSS for minimal CSS
+    - Use utility-first CSS with purging for minimal CSS
     - Avoid unused CSS rules
     - Use CSS custom properties for theming
     - Implement critical CSS inlining
@@ -42,22 +44,22 @@ All rules apply to both **frontend and backend** code, with specific attention t
     - Implement cache invalidation strategies
 
 6. **Bundle Optimization**:
-    - Use Bun/esbuild for fast bundling
+    - Use modern bundlers (esbuild, Vite, Turbopack)
     - Implement code splitting by route
     - Use dynamic imports for heavy libraries
     - Minimize vendor bundle size
 
 ---
 
-## 🗄️ Database Performance
+## 🗄️ Database & API Performance
 
-7. **CouchCMS Optimization**:
-    - Use CouchCMS built-in caching where possible
+7. **Query Optimization**:
+    - Use backend caching where possible
     - Optimize database queries with proper indexing
     - Use pagination for large result sets
     - Implement query result caching
 
-8. **Database Queries**:
+8. **Database Best Practices**:
     - Avoid N+1 query problems
     - Use efficient JOIN operations
     - Implement proper database indexing
@@ -84,13 +86,13 @@ All rules apply to both **frontend and backend** code, with specific attention t
 ## 📱 Mobile Performance
 
 11. **Mobile Optimization**:
-    - Optimize for mobile-first design
-    - Minimize touch target sizes (44px minimum)
+    - Design mobile-first
+    - Ensure touch targets are 44px minimum
     - Implement proper viewport configuration
     - Use mobile-specific optimizations
 
 12. **Touch Performance**:
-    - Implement touch event optimization
+    - Optimize touch event handling
     - Use passive event listeners where possible
     - Minimize scroll jank
     - Optimize for 60fps animations
@@ -122,7 +124,7 @@ All rules apply to both **frontend and backend** code, with specific attention t
     - Use performance budgets
 
 16. **Real User Monitoring**:
-    - Implement performance monitoring
+    - Implement performance monitoring tools
     - Track user experience metrics
     - Monitor performance regressions
     - Use performance analytics
@@ -163,9 +165,9 @@ All rules apply to both **frontend and backend** code, with specific attention t
 
 ## 📈 Performance Testing
 
-21. **Performance Testing**:
+21. **Testing Practices**:
     - Implement automated performance tests
-    - Use performance testing tools
+    - Use performance testing tools (Lighthouse, WebPageTest)
     - Test on various devices and networks
     - Monitor performance regressions
 
@@ -193,29 +195,27 @@ All rules apply to both **frontend and backend** code, with specific attention t
 
 ---
 
-## 📋 Performance Checklist
-
-25. **Pre-deployment Performance**:
-    - [ ] Bundle size optimized
-    - [ ] Images compressed and optimized
-    - [ ] CSS purged and minified
-    - [ ] JavaScript minified and tree-shaken
-    - [ ] Caching headers configured
-    - [ ] Performance budgets met
-    - [ ] Core Web Vitals optimized
-    - [ ] Mobile performance tested
-    - [ ] Performance monitoring enabled
-    - [ ] Performance tests passing
-
----
-
 ## 🎯 Performance Targets
 
-26. **Performance Goals**:
-    - First Contentful Paint < 1.5s
-    - Largest Contentful Paint < 2.5s
-    - First Input Delay < 100ms
-    - Cumulative Layout Shift < 0.1
-    - Time to Interactive < 3.5s
+**Core Web Vitals Goals**:
+
+- First Contentful Paint < 1.5s
+- Largest Contentful Paint < 2.5s
+- First Input Delay < 100ms
+- Cumulative Layout Shift < 0.1
+- Time to Interactive < 3.5s
 
 ---
+
+## Quick Reference Checklist
+
+- [ ] Bundle size optimized (tree shaking, code splitting)
+- [ ] Images compressed and optimized
+- [ ] CSS purged and minified
+- [ ] JavaScript minified
+- [ ] Caching headers configured
+- [ ] Performance budgets defined
+- [ ] Core Web Vitals optimized
+- [ ] Mobile performance tested
+- [ ] Performance monitoring enabled
+- [ ] Lazy loading implemented
