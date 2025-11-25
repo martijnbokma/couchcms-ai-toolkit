@@ -5,13 +5,26 @@
  * Generates editor configurations from project.md, toolkit modules,
  * agents, and project-specific context.
  *
+ * Features:
+ * - Loads default configuration from defaults.yaml
+ * - Merges project-specific overrides from project.md
+ * - Replaces {{paths.xxx}} variables in output
+ * - Supports modules, agents, and project context
+ *
  * Usage:
  *   bun ai-toolkit/scripts/sync.js
  *   bun ~/couchcms-ai-toolkit/scripts/sync.js
  */
 
 import matter from "gray-matter";
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from "fs";
+import { parse as parseYaml } from "yaml";
+import {
+    readFileSync,
+    writeFileSync,
+    existsSync,
+    mkdirSync,
+    readdirSync,
+} from "fs";
 import { join, dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
@@ -19,12 +32,77 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const TOOLKIT_ROOT = resolve(__dirname, "..");
 
-// Default configuration
-const DEFAULTS = {
-    indentation: 4,
-    language: "english",
-    lineLength: 120,
-};
+/**
+ * Load defaults from toolkit defaults.yaml
+ */
+function loadDefaults(toolkitPath) {
+    const defaultsPath = join(toolkitPath, "defaults.yaml");
+
+    if (!existsSync(defaultsPath)) {
+        console.warn("⚠️  defaults.yaml not found, using built-in defaults");
+        return {
+            paths: {
+                css: "assets/css",
+                typescript: "assets/ts",
+                javascript: "assets/js",
+                components: "snippets/components",
+                views: "snippets/views",
+                layouts: "snippets/layouts",
+                filters: "snippets/filters",
+                forms: "snippets/forms",
+                public: "public",
+            },
+            standards: {
+                indentation: 4,
+                language: "english",
+                lineLength: 120,
+            },
+            naming: {
+                php_variables: "snake_case",
+                ts_variables: "camelCase",
+                css_classes: "kebab-case",
+            },
+        };
+    }
+
+    const content = readFileSync(defaultsPath, "utf8");
+    return parseYaml(content);
+}
+
+/**
+ * Deep merge two objects
+ */
+function deepMerge(target, source) {
+    const result = { ...target };
+
+    for (const key in source) {
+        if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
+            result[key] = deepMerge(target[key] || {}, source[key]);
+        } else if (source[key] !== undefined) {
+            result[key] = source[key];
+        }
+    }
+
+    return result;
+}
+
+/**
+ * Replace {{variable}} placeholders in content
+ */
+function replaceVariables(content, variables, prefix = "") {
+    let result = content;
+
+    for (const [key, value] of Object.entries(variables)) {
+        if (typeof value === "object" && !Array.isArray(value)) {
+            result = replaceVariables(result, value, prefix ? `${prefix}.${key}` : key);
+        } else {
+            const pattern = new RegExp(`\\{\\{${prefix ? `${prefix}.` : ""}${key}\\}\\}`, "g");
+            result = result.replace(pattern, String(value));
+        }
+    }
+
+    return result;
+}
 
 /**
  * Find project.md in current directory or parent directories
@@ -157,9 +235,7 @@ function checkConflicts(modules) {
         if (mod.meta.conflicts) {
             for (const conflict of mod.meta.conflicts) {
                 if (moduleNames.includes(conflict)) {
-                    errors.push(
-                        `❌ Conflict: ${mod.name} cannot be used with ${conflict}`
-                    );
+                    errors.push(`❌ Conflict: ${mod.name} cannot be used with ${conflict}`);
                 }
             }
         }
@@ -167,9 +243,7 @@ function checkConflicts(modules) {
         if (mod.meta.requires) {
             for (const required of mod.meta.requires) {
                 if (!moduleNames.includes(required)) {
-                    errors.push(
-                        `❌ Missing dependency: ${mod.name} requires ${required}`
-                    );
+                    errors.push(`❌ Missing dependency: ${mod.name} requires ${required}`);
                 }
             }
         }
@@ -179,12 +253,37 @@ function checkConflicts(modules) {
 }
 
 /**
+ * Generate paths documentation section
+ */
+function generatePathsSection(paths) {
+    return `## Project Paths
+
+These are the configured paths for this project:
+
+| Type | Path |
+|------|------|
+| CSS | \`${paths.css}\` |
+| TypeScript | \`${paths.typescript}\` |
+| JavaScript | \`${paths.javascript}\` |
+| Components | \`${paths.components}\` |
+| Views | \`${paths.views}\` |
+| Layouts | \`${paths.layouts}\` |
+| Filters | \`${paths.filters}\` |
+| Forms | \`${paths.forms}\` |
+| Public | \`${paths.public}\` |
+
+**Always use these paths when creating or referencing files.**
+`;
+}
+
+/**
  * Generate the combined configuration content
  */
-function generateContent(config, modules, agents, projectContext, projectRules) {
+function generateContent(config, mergedConfig, modules, agents, projectContext, projectRules) {
     const timestamp = new Date().toISOString();
     const moduleNames = modules.map((m) => m.name).join(", ");
     const agentNames = agents.map((a) => a.name).join(", ");
+    const { paths, standards } = mergedConfig;
 
     let content = `# AI Coding Standards
 # Project: ${config.name || "Unnamed Project"}
@@ -200,9 +299,11 @@ ${agentNames ? `# Agents: ${agentNames}` : ""}
 
 ## Core Standards
 
-- **Indentation**: ${config.overrides?.indentation || DEFAULTS.indentation} spaces
-- **Language**: ${config.overrides?.language || DEFAULTS.language} only for all code and content
-- **Line Length**: ${config.overrides?.lineLength || DEFAULTS.lineLength} characters
+- **Indentation**: ${standards.indentation} spaces
+- **Language**: ${standards.language} only for all code and content
+- **Line Length**: ${standards.lineLength} characters
+
+${generatePathsSection(paths)}
 
 ---
 
@@ -231,6 +332,9 @@ ${agentNames ? `# Agents: ${agentNames}` : ""}
         content += `\n# Project-Specific Rules\n\n${projectRules}\n`;
     }
 
+    // Replace all {{variable}} placeholders
+    content = replaceVariables(content, mergedConfig);
+
     return content;
 }
 
@@ -244,9 +348,7 @@ async function sync() {
     const projectPath = findProjectFile();
 
     if (!projectPath) {
-        console.error(
-            "❌ No project.md found in current directory or parent directories."
-        );
+        console.error("❌ No project.md found in current directory or parent directories.");
         console.log("\nCreate a project.md file with:\n");
         console.log(`---
 name: "my-project"
@@ -260,6 +362,9 @@ modules:
 agents:
   - couchcms-agent
 context: ".project/ai"
+paths:
+  css: "src/css"        # Override default if needed
+  typescript: "src/ts"  # Override default if needed
 ---
 
 # Project-Specific Rules
@@ -282,6 +387,16 @@ Add your project-specific instructions here...
     const toolkitPath = resolveToolkitPath(config.toolkit);
     console.log(`🛠️  Toolkit: ${toolkitPath}`);
 
+    // Load defaults and merge with project config
+    const defaults = loadDefaults(toolkitPath);
+    const mergedConfig = deepMerge(defaults, {
+        paths: config.paths || {},
+        standards: config.standards || config.overrides || {},
+        naming: config.naming || {},
+    });
+
+    console.log(`📁 Paths: ${Object.keys(mergedConfig.paths).length} configured`);
+
     // Ensure couchcms-core is always included
     const moduleList = config.modules || ["couchcms-core"];
     if (!moduleList.includes("couchcms-core")) {
@@ -291,15 +406,11 @@ Add your project-specific instructions here...
     console.log(`📚 Modules: ${moduleList.join(", ")}`);
 
     // Load modules
-    const modules = moduleList
-        .map((name) => loadModule(name, toolkitPath))
-        .filter(Boolean);
+    const modules = moduleList.map((name) => loadModule(name, toolkitPath)).filter(Boolean);
 
     // Load agents
     const agentList = config.agents || [];
-    const agents = agentList
-        .map((name) => loadAgent(name, toolkitPath))
-        .filter(Boolean);
+    const agents = agentList.map((name) => loadAgent(name, toolkitPath)).filter(Boolean);
 
     if (agents.length > 0) {
         console.log(`🤖 Agents: ${agents.map((a) => a.name).join(", ")}`);
@@ -320,7 +431,7 @@ Add your project-specific instructions here...
     }
 
     // Generate content
-    const content = generateContent(config, modules, agents, projectContext, projectRules);
+    const content = generateContent(config, mergedConfig, modules, agents, projectContext, projectRules);
 
     // Write editor configurations
     // .cursorrules
@@ -340,6 +451,7 @@ Add your project-specific instructions here...
     console.log("✅ Generated: .github/copilot-instructions.md");
 
     // AGENT.md
+    const { paths, standards } = mergedConfig;
     writeFileSync(
         join(projectDir, "AGENT.md"),
         `# Universal AI Agent Instructions
@@ -350,25 +462,42 @@ This project uses the CouchCMS AI Toolkit for consistent AI agent behavior.
 
 All AI coding agents follow the rules generated from:
 - \`project.md\` - Project-specific configuration
+- \`defaults.yaml\` - Toolkit defaults
 - Toolkit modules from: ${toolkitPath}
 ${projectContext ? `- Project context from: ${config.context}` : ""}
+
+## Project Paths
+
+| Type | Path |
+|------|------|
+| CSS | \`${paths.css}\` |
+| TypeScript | \`${paths.typescript}\` |
+| Components | \`${paths.components}\` |
+| Views | \`${paths.views}\` |
+| Layouts | \`${paths.layouts}\` |
 
 ## Modules Active
 
 ${modules
     .map(
-        (m) => `- **${m.meta.name || m.name}** (v${m.meta.version || "1.0"}): ${m.meta.description || "No description"}`
+        (m) =>
+            `- **${m.meta.name || m.name}** (v${m.meta.version || "1.0"}): ${m.meta.description || "No description"}`
     )
     .join("\n")}
 
-${agents.length > 0 ? `## Agents Active
+${
+    agents.length > 0
+        ? `## Agents Active
 
 ${agents
     .map(
-        (a) => `- **${a.meta.name || a.name}** (${a.meta.type || "daily"}): ${a.meta.description || "No description"}`
+        (a) =>
+            `- **${a.meta.name || a.name}** (${a.meta.type || "daily"}): ${a.meta.description || "No description"}`
     )
     .join("\n")}
-` : ""}
+`
+        : ""
+}
 
 ## Regenerate
 
@@ -380,8 +509,8 @@ bun ${toolkitPath}/scripts/sync.js
 
 ## Key Standards
 
-- **Indentation**: ${config.overrides?.indentation || DEFAULTS.indentation} spaces
-- **Language**: ${config.overrides?.language || DEFAULTS.language} only
+- **Indentation**: ${standards.indentation} spaces
+- **Language**: ${standards.language} only
 - **Modules**: ${moduleList.join(", ")}
 
 If any conflict exists between configurations, \`project.md\` always wins.

@@ -28,7 +28,9 @@ When users ask about CouchCMS issues, you:
 ## Your Approach
 
 - Use idiomatic CouchCMS tags, avoid `<cms:php>` when possible
-- Create reusable snippets for common patterns
+- Create reusable snippets in `{{paths.components}}/`
+- Place page views in `{{paths.views}}/`
+- Place base layouts in `{{paths.layouts}}/`
 - Implement proper validation and security
 - Ensure clean integration with TailwindCSS and Alpine.js
 

@@ -1,0 +1,69 @@
+# CouchCMS AI Toolkit - Default Configuration
+# These are sensible defaults for CouchCMS projects.
+# Override any of these in your project.md file.
+
+# =============================================================================
+# PATH CONVENTIONS
+# =============================================================================
+# These paths are relative to the project root.
+# Override in project.md if your project uses different paths.
+
+paths:
+  # Frontend assets
+  css: 'assets/css'
+  typescript: 'assets/ts'
+  javascript: 'assets/js'
+  images: 'assets/images'
+  fonts: 'assets/fonts'
+
+  # CouchCMS templates
+  components: 'snippets/components'
+  views: 'snippets/views'
+  layouts: 'snippets/layouts'
+  filters: 'snippets/filters'
+  forms: 'snippets/forms'
+  helpers: 'snippets/helpers'
+
+  # Build output
+  public: 'public'
+  dist: 'dist'
+
+  # Configuration
+  config: 'config'
+  scripts: 'scripts'
+
+# =============================================================================
+# CODE STANDARDS
+# =============================================================================
+
+standards:
+  indentation: 4
+  language: 'english'
+  lineLength: 120
+
+# =============================================================================
+# NAMING CONVENTIONS
+# =============================================================================
+
+naming:
+  # PHP/CouchCMS
+  php_variables: 'snake_case'
+  php_functions: 'snake_case'
+  cms_fields: 'snake_case'
+
+  # TypeScript/JavaScript
+  ts_variables: 'camelCase'
+  ts_functions: 'camelCase'
+  ts_classes: 'PascalCase'
+  ts_interfaces: 'PascalCase'
+  ts_types: 'PascalCase'
+
+  # CSS
+  css_classes: 'kebab-case'
+  css_variables: 'kebab-case'
+
+  # Files
+  php_files: 'kebab-case'
+  ts_files: 'kebab-case'
+  css_files: 'kebab-case'
+  component_files: 'kebab-case'

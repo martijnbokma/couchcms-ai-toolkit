@@ -1,6 +1,6 @@
 ---
 name: CouchCMS Specialist
-version: '1.0'
+version: "1.0"
 description: Deep CouchCMS expertise for complex decisions
 type: specialist
 ---

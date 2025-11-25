@@ -74,16 +74,20 @@ name: My Project Context
 # Project Context
 
 ## Content Types
+
 - Describe your content types here
 
 ## Architecture
+
 - Describe your architecture here
 
 ## Code Examples
+
 - Add project-specific code examples
 ```
 
 This separates:
+
 - **project.md** - Short, core rules (~50 lines)
 - **.project/ai/** - Detailed context and examples
 
@@ -116,11 +120,11 @@ This generates:
 
 ## Available Agents
 
-| Agent             | Type       | Description                              |
-| ----------------- | ---------- | ---------------------------------------- |
-| `couchcms-agent`  | Daily      | Template development, forms, data        |
+| Agent                 | Type       | Description                          |
+| --------------------- | ---------- | ------------------------------------ |
+| `couchcms-agent`      | Daily      | Template development, forms, data    |
 | `couchcms-specialist` | Specialist | Deep expertise for complex decisions |
-| `safety-checker`  | Daily      | HTML comment security checker            |
+| `safety-checker`      | Daily      | HTML comment security checker        |
 
 ## Project Structure
 
@@ -230,11 +234,13 @@ We welcome contributions! Here's how you can help improve the toolkit:
 ### Adding a New Module
 
 1. **Create the module file** in `modules/`:
+
    ```bash
    touch modules/my-module.md
    ```
 
 2. **Use the standard frontmatter**:
+
    ```markdown
    ---
    id: my-module
@@ -242,23 +248,27 @@ We welcome contributions! Here's how you can help improve the toolkit:
    version: "1.0"
    description: "Brief description of what this module covers"
    required: false
-   requires: []           # Other modules this depends on
-   conflicts: []          # Modules that can't be used together
+   requires: [] # Other modules this depends on
+   conflicts: [] # Modules that can't be used together
    ---
 
    # My Module Standards
 
    ## Overview
+
    Explain what this module is for...
 
    ## Patterns
+
    Show code examples...
 
    ## Best Practices
+
    List dos and don'ts...
    ```
 
 3. **Test your module**:
+
    ```bash
    # Add to a project.md and run sync
    bun scripts/sync.js
@@ -287,6 +297,7 @@ We welcome contributions! Here's how you can help improve the toolkit:
 ### Reporting Issues
 
 Open an issue with:
+
 - Description of the problem
 - Which module is affected
 - Steps to reproduce

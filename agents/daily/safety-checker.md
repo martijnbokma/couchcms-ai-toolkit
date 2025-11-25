@@ -1,6 +1,6 @@
 ---
 name: CouchCMS Safety Checker
-version: '1.0'
+version: "1.0"
 description: HTML comment security checker for CouchCMS
 type: daily
 ---
@@ -51,7 +51,7 @@ CouchCMS has a **critical security behavior**:
 
 <!-- Multiline comments MUST be wrapped in cms:ignore -->
 <cms:ignore>
-    <!-- Usage:
+  <!-- Usage:
     [cms:embed 'components/button.html'
         text='Button Text'
     /]
@@ -80,7 +80,7 @@ CouchCMS has a **critical security behavior**:
 ```html
 <!-- ✅ SAFE - Wrapped in cms:ignore with square brackets -->
 <cms:ignore>
-    <!-- Usage:
+  <!-- Usage:
     [cms:embed 'components/button.html'
         text='Button Text'
     /]
