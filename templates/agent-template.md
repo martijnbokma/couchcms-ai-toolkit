@@ -1,15 +1,15 @@
 ---
 name: Agent Name
-version: '1.0'
+version: "1.0"
 type: daily # or 'specialist'
 description: Brief description of what this agent does
 tags:
-    - tag1
-    - tag2
+  - tag1
+  - tag2
 requires: # Optional: modules this agent needs
-    - couchcms-core
+  - couchcms-core
 conflicts: # Optional: modules that conflict
-    - some-module
+  - some-module
 ---
 
 # Agent Name

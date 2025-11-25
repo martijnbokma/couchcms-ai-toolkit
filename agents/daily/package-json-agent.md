@@ -1,13 +1,13 @@
 ---
 name: Package.json Agent
-version: '1.0'
+version: "1.0"
 type: daily
 description: Package.json analysis, dependency management, and optimization
 tags:
-    - npm
-    - bun
-    - dependencies
-    - package-json
+  - npm
+  - bun
+  - dependencies
+  - package-json
 ---
 
 # Package.json Agent
@@ -59,21 +59,21 @@ bun remove package-name
 
 ```json
 {
-    "scripts": {
-        "dev": "bun run dev:server",
-        "dev:server": "bun run dev-server.ts",
-        "dev:watch": "bun run build:watch",
+  "scripts": {
+    "dev": "bun run dev:server",
+    "dev:server": "bun run dev-server.ts",
+    "dev:watch": "bun run build:watch",
 
-        "build": "bun run build:prod",
-        "build:dev": "bun run build.ts --dev",
-        "build:prod": "bun run build.ts",
-        "build:watch": "bun run build.ts --dev --watch",
+    "build": "bun run build:prod",
+    "build:dev": "bun run build.ts --dev",
+    "build:prod": "bun run build.ts",
+    "build:watch": "bun run build.ts --dev --watch",
 
-        "ai:sync": "bun ai-toolkit-shared/scripts/sync.js",
+    "ai:sync": "bun ai-toolkit-shared/scripts/sync.js",
 
-        "sync": "bun run ai:sync",
-        "postinstall": "bun run ai:sync"
-    }
+    "sync": "bun run ai:sync",
+    "postinstall": "bun run ai:sync"
+  }
 }
 ```
 
@@ -81,17 +81,17 @@ bun remove package-name
 
 ```json
 {
-    "engines": {
-        "node": ">=18.0.0",
-        "bun": ">=1.0.0"
-    },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
 
-    "overrides": {
-        "glob-parent": "^6.0.2",
-        "minimist": "^1.2.8"
-    },
+  "overrides": {
+    "glob-parent": "^6.0.2",
+    "minimist": "^1.2.8"
+  },
 
-    "trustedDependencies": ["sharp", "@swc/core"]
+  "trustedDependencies": ["sharp", "@swc/core"]
 }
 ```
 

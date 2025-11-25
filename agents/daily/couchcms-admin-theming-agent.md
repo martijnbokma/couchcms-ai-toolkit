@@ -1,13 +1,13 @@
 ---
 name: CouchCMS Admin Theming Agent
-version: '1.0'
+version: "1.0"
 type: daily
 description: CouchCMS admin panel customization and theming
 tags:
-    - couchcms
-    - admin
-    - theming
-    - customization
+  - couchcms
+  - admin
+  - theming
+  - customization
 ---
 
 # CouchCMS Admin Panel Theming Agent
@@ -143,7 +143,12 @@ if( defined('K_ADMIN') ){
 **Assign Template to Group**:
 
 ```html
-<cms:template clonable="1" title="My Project" parent="_my_projects_" icon="briefcase"></cms:template>
+<cms:template
+  clonable="1"
+  title="My Project"
+  parent="_my_projects_"
+  icon="briefcase"
+></cms:template>
 ```
 
 ### 4. Add Custom CSS
@@ -152,14 +157,14 @@ if( defined('K_ADMIN') ){
 
 ```css
 .col-my_field {
-    width: 200px;
-    text-align: center;
+  width: 200px;
+  text-align: center;
 }
 
 .custom-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
 }
 ```
 
