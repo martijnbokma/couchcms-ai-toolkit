@@ -16,12 +16,14 @@ This toolkit provides consistent AI assistance across all your CouchCMS projects
 ### 1. Add to Your Project
 
 **Option A: Git Submodule (Recommended)**
+
 ```bash
 cd your-project
 git submodule add https://github.com/your-user/couchcms-ai-toolkit.git ai-toolkit
 ```
 
 **Option B: Clone Separately**
+
 ```bash
 # Clone toolkit
 git clone https://github.com/your-user/couchcms-ai-toolkit.git ~/couchcms-ai-toolkit
@@ -38,15 +40,21 @@ Create `project.md` in your project root:
 name: "my-project"
 description: "Description of your project"
 
-toolkit: "./ai-toolkit"  # or "~/couchcms-ai-toolkit" if cloned separately
+toolkit: "./ai-toolkit" # or "~/couchcms-ai-toolkit" if cloned separately
 
 modules:
-  - couchcms-core      # Always include
-  - tailwindcss        # If using TailwindCSS
-  - daisyui            # If using daisyUI
-  - alpinejs           # If using Alpine.js
-  - typescript         # If using TypeScript
-  - databound-forms    # If using DataBound Forms
+  - couchcms-core # Always included automatically
+  - tailwindcss # If using TailwindCSS
+  - daisyui # If using daisyUI
+  - alpinejs # If using Alpine.js
+  - typescript # If using TypeScript
+  - databound-forms # If using DataBound Forms
+
+agents:
+  - couchcms-agent # Daily CouchCMS development
+  - safety-checker # HTML comment security
+
+context: ".project/ai" # Project-specific context directory
 ---
 
 # Project-Specific Rules
@@ -54,7 +62,32 @@ modules:
 Add any project-specific instructions here...
 ```
 
-### 3. Generate Editor Configurations
+### 3. Add Project Context (Optional)
+
+Create `.project/ai/context.md` for detailed project-specific information:
+
+```markdown
+---
+name: My Project Context
+---
+
+# Project Context
+
+## Content Types
+- Describe your content types here
+
+## Architecture
+- Describe your architecture here
+
+## Code Examples
+- Add project-specific code examples
+```
+
+This separates:
+- **project.md** - Short, core rules (~50 lines)
+- **.project/ai/** - Detailed context and examples
+
+### 4. Generate Editor Configurations
 
 ```bash
 # If toolkit is submodule
@@ -65,39 +98,64 @@ bun ~/couchcms-ai-toolkit/scripts/sync.js
 ```
 
 This generates:
+
 - `.cursorrules` - Cursor AI configuration
 - `CLAUDE.md` - Claude configuration
 - `.github/copilot-instructions.md` - GitHub Copilot configuration
 
 ## Available Modules
 
-| Module | Description |
-|--------|-------------|
-| `couchcms-core` | Core CouchCMS patterns, templates, security |
-| `tailwindcss` | TailwindCSS 4 patterns and best practices |
-| `daisyui` | daisyUI 5 components and theming |
-| `alpinejs` | Alpine.js patterns, CouchCMS integration |
-| `typescript` | TypeScript standards and patterns |
-| `databound-forms` | DataBound Forms implementation |
+| Module            | Description                                 |
+| ----------------- | ------------------------------------------- |
+| `couchcms-core`   | Core CouchCMS patterns, templates, security |
+| `tailwindcss`     | TailwindCSS 4 patterns and best practices   |
+| `daisyui`         | daisyUI 5 components and theming            |
+| `alpinejs`        | Alpine.js patterns, CouchCMS integration    |
+| `typescript`      | TypeScript standards and patterns           |
+| `databound-forms` | DataBound Forms implementation              |
+
+## Available Agents
+
+| Agent             | Type       | Description                              |
+| ----------------- | ---------- | ---------------------------------------- |
+| `couchcms-agent`  | Daily      | Template development, forms, data        |
+| `couchcms-specialist` | Specialist | Deep expertise for complex decisions |
+| `safety-checker`  | Daily      | HTML comment security checker            |
 
 ## Project Structure
 
 ```
 couchcms-ai-toolkit/
-├── modules/           # Knowledge modules
+├── modules/              # Knowledge modules
 │   ├── couchcms-core.md
 │   ├── tailwindcss.md
 │   ├── daisyui.md
 │   ├── alpinejs.md
 │   ├── typescript.md
 │   └── databound-forms.md
-├── agents/            # Specialized agents
-├── templates/         # Editor config templates
-├── scripts/           # Build scripts
-│   ├── sync.js        # Generate editor configs
-│   ├── validate.js    # Validate project compliance
-│   └── init.js        # Initialize new project
+├── agents/               # Specialized agents
+│   ├── daily/            # Quick daily helpers
+│   │   ├── couchcms-agent.md
+│   │   └── safety-checker.md
+│   └── specialists/      # Deep expertise
+│       └── couchcms-specialist.md
+├── templates/            # Editor config templates
+├── scripts/              # Build scripts
+│   └── sync.js           # Generate editor configs
 └── package.json
+```
+
+## Your Project Structure
+
+```
+your-project/
+├── ai-toolkit-shared/    # Submodule (universal)
+├── .project/ai/          # Project-specific context
+│   └── context.md        # Detailed project info
+├── project.md            # Project configuration
+├── .cursorrules          # Generated (don't edit)
+├── CLAUDE.md             # Generated (don't edit)
+└── AGENT.md              # Generated (don't edit)
 ```
 
 ## Commands
@@ -135,8 +193,8 @@ In your `project.md`:
 
 ```yaml
 overrides:
-  indentation: 2        # Override default 4-space indentation
-  language: "dutch"     # Allow Dutch comments (not recommended)
+  indentation: 2 # Override default 4-space indentation
+  language: "dutch" # Allow Dutch comments (not recommended)
 ```
 
 ### Disable Modules
@@ -155,10 +213,12 @@ Add Markdown content after the frontmatter in `project.md`:
 # Project-Specific Rules
 
 ## Client Requirements
+
 - Logo must always be in top-left corner
 - Use corporate colors: #003366, #FF6600
 
 ## Technical Decisions
+
 - No TypeScript for this project
 - All forms via DataBound Forms
 ```

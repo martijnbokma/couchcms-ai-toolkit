@@ -19,9 +19,10 @@ bun add tailwindcss @tailwindcss/vite
 ## Configuration
 
 ### CSS Entry Point
+
 ```css
 /* No tailwind.config.js needed in v4! */
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* Content sources */
 @source "./**/*.{html,php,js,ts}";
@@ -33,12 +34,13 @@ bun add tailwindcss @tailwindcss/vite
 ```
 
 ### Vite Configuration
+
 ```javascript
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-    plugins: [tailwindcss()],
-})
+  plugins: [tailwindcss()],
+});
 ```
 
 ## Key Differences in v4
@@ -51,20 +53,27 @@ export default defineConfig({
 ## Class Organization
 
 Group classes logically:
+
 ```html
 <!-- Layout → Spacing → Colors → Typography → Effects -->
-<div class="flex items-center gap-4 p-6 bg-base-100 text-base-content rounded-lg shadow-md">
+<div
+  class="flex items-center gap-4 p-6 bg-base-100 text-base-content rounded-lg shadow-md"
+></div>
 ```
 
 ## Responsive Design
 
 ### Mobile-First Approach
+
 ```html
 <!-- Base (mobile) → sm → md → lg → xl → 2xl -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+<div
+  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+></div>
 ```
 
 ### Common Breakpoints
+
 - `sm`: 640px
 - `md`: 768px
 - `lg`: 1024px
@@ -74,6 +83,7 @@ Group classes logically:
 ## Best Practices
 
 ### DO
+
 - Use utility-first classes
 - Prefer Tailwind utilities over custom CSS
 - Use responsive prefixes (`sm:`, `md:`, `lg:`)
@@ -81,6 +91,7 @@ Group classes logically:
 - Use semantic color classes
 
 ### DON'T
+
 - Write custom CSS when utilities suffice
 - Use global element selectors with `!important`
 - Mix inline styles with utility classes
@@ -89,6 +100,7 @@ Group classes logically:
 ## CSS Architecture
 
 ### 🚨 CRITICAL: No Global Element Selectors
+
 ```css
 /* ❌ FORBIDDEN */
 img {
@@ -100,27 +112,32 @@ img {
 ```
 
 ### Custom CSS (When Needed)
+
 Only write custom CSS for properties Tailwind doesn't provide:
+
 ```css
 .custom-clip {
-    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
 }
 ```
 
 ## Performance
 
 ### FOUC Prevention
+
 CSS defaults must match JavaScript configuration:
+
 ```css
 /* CSS must match JS carousel config */
 @media (min-width: 1280px) {
-    .carousel .slide {
-        width: calc(20% - 19.2px); /* 5 slides, 24px spacing */
-    }
+  .carousel .slide {
+    width: calc(20% - 19.2px); /* 5 slides, 24px spacing */
+  }
 }
 ```
 
 ### Build Verification
+
 ```bash
 # After modifying CSS
 bun run build:css

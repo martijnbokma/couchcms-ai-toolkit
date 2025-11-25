@@ -15,15 +15,15 @@ toolkit: "./ai-toolkit"
 # couchcms-core is always included automatically.
 modules:
   # Frontend
-  - tailwindcss        # TailwindCSS 4 patterns
-  - daisyui            # daisyUI 5 components
-  - alpinejs           # Alpine.js patterns + CouchCMS integration
-  
+  - tailwindcss # TailwindCSS 4 patterns
+  - daisyui # daisyUI 5 components
+  - alpinejs # Alpine.js patterns + CouchCMS integration
+
   # Backend
-  - databound-forms    # CouchCMS DataBound Forms
-  
+  - databound-forms # CouchCMS DataBound Forms
+
   # Optional
-  - typescript         # TypeScript standards (comment out if not using)
+  - typescript # TypeScript standards (comment out if not using)
 
 # === OVERRIDES (Optional) ===
 # Override default settings for this project
@@ -41,16 +41,19 @@ This content will be included in all generated AI configurations.
 ## Example Sections
 
 ### Client Requirements
+
 - Specific design requirements
 - Brand guidelines
 - Content restrictions
 
 ### Technical Decisions
+
 - Technology choices specific to this project
 - Patterns or libraries unique to this project
 - Known limitations or workarounds
 
 ### Team Conventions
+
 - Code review process
 - Naming conventions beyond the defaults
 - Documentation requirements
