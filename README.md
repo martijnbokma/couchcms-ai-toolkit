@@ -80,34 +80,98 @@ context: '.project/ai' # Project-specific context directory
 Add any project-specific instructions here...
 ```
 
-### 3. Add Project Context (Optional)
+### 3. Add Project Context (Optional but Recommended)
 
-Create `.project/ai/context.md` for detailed project-specific information:
+You have two options for project-specific information:
+
+#### Option A: Keep It Simple (Recommended for most projects)
+
+Just use `project.md` for everything:
+
+```markdown
+---
+name: 'my-project'
+description: 'Description'
+toolkit: './ai-toolkit'
+modules: [couchcms-core, tailwindcss]
+agents: [couchcms]
+---
+
+# Project-Specific Rules
+
+## Content Types
+
+- Films: Single video projects
+- Series: Multi-episode content
+
+## Architecture
+
+- TailwindCSS + daisyUI for styling
+- Alpine.js for interactivity
+
+## Code Examples
+
+[Add examples here as needed]
+```
+
+**Use this when**: You have < 200 lines of project-specific info.
+
+#### Option B: Separate Detailed Context (For larger projects)
+
+Keep `project.md` short (~50 lines), move detailed context to `.project/ai/context.md`:
+
+**project.md** (configuration only):
+
+```markdown
+---
+name: 'my-project'
+description: 'Description'
+toolkit: './ai-toolkit'
+modules: [couchcms-core, tailwindcss]
+agents: [couchcms]
+context: '.project/ai' # Reference to detailed context
+---
+
+# Core Project Rules
+
+- English only
+- Use semantic colors
+- Validate ownership
+```
+
+**<br>.project/ai/context.md** (detailed examples):
 
 ```markdown
 ---
 name: My Project Context
 ---
 
-# Project Context
+# Detailed Project Context
 
-## Content Types
+## Content Architecture
 
-- Describe your content types here
+[Extensive details...]
 
-## Architecture
+## Code Patterns
 
-- Describe your architecture here
+[Many examples...]
 
-## Code Examples
+## Component Library
 
-- Add project-specific code examples
+[Detailed documentation...]
 ```
 
-This separates:
+**Use this when**:
 
-- **project.md** - Short, core rules (~50 lines)
-- **.project/ai/** - Detailed context and examples
+- You have > 200 lines of project-specific information
+- You want to keep configuration (project.md) separate from documentation
+- Multiple team members need extensive context
+
+**Which Should You Use?**
+
+- **Small/Medium projects**: Use Option A (just project.md)
+- **Large/Complex projects**: Use Option B (separate context file)
+- **Not sure?** Start with Option A, split later if needed
 
 ### 4. Generate Editor Configurations
 
