@@ -13,23 +13,70 @@ This toolkit provides consistent AI assistance across all your CouchCMS projects
 
 ## Quick Start
 
-### Option 1: Interactive Setup (Recommended)
+### Starting from Scratch (Brand New Project)
 
-The easiest way to get started with a new project:
+If you're starting a completely new project:
 
 ```bash
-cd your-project
-bun ai-toolkit/scripts/init.js
+# 1. Create your project directory
+mkdir my-couchcms-project
+cd my-couchcms-project
+
+# 2. Initialize git (if not done yet)
+git init
+
+# 3. Add the toolkit as a submodule
+git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
+
+# 4. Install toolkit dependencies
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+
+# 5. Run the interactive setup wizard
+bun ai-toolkit-shared/scripts/init.js
 ```
 
-The interactive wizard will:
+**What the wizard does:**
 
-- Set up your `project.md` configuration
-- Let you choose modules and agents
-- Create context directories
-- Run the first sync automatically
+1. ✅ Asks for project name and description
+2. ✅ Lets you choose which modules to use (TailwindCSS, Alpine.js, etc.)
+3. ✅ Lets you select relevant AI agents
+4. ✅ **Automatically creates `project.md`** with your choices
+5. ✅ Optionally creates `.project/ai/context.md` for detailed documentation
+6. ✅ Runs initial sync to generate AI configs
 
-### Option 2: Manual Setup
+**Result:** You'll have a fully configured project with:
+
+- ✅ `project.md` - Your project configuration
+- ✅ `.cursorrules` - Cursor AI configuration
+- ✅ `CLAUDE.md` - Claude AI configuration
+- ✅ `AGENT.md` - Universal AI agent docs
+- ✅ `.project/ai/context.md` - Project context (if you chose this option)
+
+### Adding Toolkit to Existing Project
+
+If you already have a project:
+
+```bash
+# 1. Navigate to your project
+cd your-existing-project
+
+# 2. Add toolkit as submodule
+git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
+
+# 3. Install dependencies
+cd ai-toolkit-shared
+bun install
+cd ..
+
+# 4. Run setup wizard
+bun ai-toolkit-shared/scripts/init.js
+```
+
+The wizard will detect if you already have a `project.md` and ask if you want to overwrite it.
+
+### Manual Setup (Advanced)
 
 #### 1. Add to Your Project
 
