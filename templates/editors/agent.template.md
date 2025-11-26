@@ -125,6 +125,12 @@ bun run validate
 
 ---
 
+{{#if framework_enabled}}
+{{framework}}
+
+---
+
+{{/if}}
 ## 🔗 CONFLICT RESOLUTION
 
 If any conflict exists between editor-specific configurations and `{{config_file_path}}`, **the standards file always wins**.

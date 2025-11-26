@@ -323,6 +323,12 @@ function processData(data: any): any { ... }
 
 ---
 
+{{#if framework_enabled}}
+{{framework}}
+
+---
+
+{{/if}}
 ## 🔗 INTEGRATION NOTES
 
 This instruction set is auto-generated from `{{config_file_path}}`. The system ensures:

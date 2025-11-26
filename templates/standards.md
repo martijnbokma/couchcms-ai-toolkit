@@ -40,6 +40,14 @@ modules:
     - typescript
     - databound-forms
 
+# === FRAMEWORK (OPTIONAL) ===
+# Enable AAPF framework for disciplined AI agent behavior
+# Options:
+#   - framework: true                    # Full framework (doctrine + directives + playbooks + enhancements)
+#   - framework: { doctrine: true, directives: true, playbooks: true }  # Custom selection
+#   - framework: false                   # Disabled (default)
+# framework: true
+
 # === CODING STANDARDS ===
 standards:
     indentation: 4

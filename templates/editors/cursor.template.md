@@ -299,6 +299,12 @@ Detailed documentation in `/docs/modules/`:
 
 ---
 
+{{#if framework_enabled}}
+{{framework}}
+
+---
+
+{{/if}}
 ## 🔗 INTEGRATION
 
 ### Communication Legend

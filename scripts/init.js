@@ -81,6 +81,8 @@ async function init() {
     const useStandards = true
     let configPath, configDir
 
+    let frameworkConfig = null
+
     if (simpleMode) {
         // Simple mode: use recommended defaults
         configPath = join(projectDir, '.project', 'standards.md')
@@ -89,6 +91,8 @@ async function init() {
         console.log('   - Configuration: .project/standards.md')
         console.log('   - Modules: Standard preset (core + tailwindcss + alpinejs)')
         console.log('   - Agents: Standard preset (couchcms + tailwindcss + alpinejs)')
+        console.log('   - Framework: Disabled (can be enabled later in standards.md)')
+        frameworkConfig = false
     } else {
         // Custom mode: ask for configuration file location
         console.log('\n📁 Where should standards.md be created?')
@@ -281,6 +285,28 @@ async function init() {
             }
         }
 
+        // Framework selection (only in custom mode)
+        console.log('\n📐 AAPF Framework (optional):')
+        console.log('   The Autonomous Agent Prompting Framework provides disciplined,')
+        console.log('   evidence-first operational principles for AI agents.')
+        console.log('   Options:')
+        console.log('     1. Full (doctrine + directives + playbooks + enhancements)')
+        console.log('     2. Standard (doctrine + directives + playbooks)')
+        console.log('     3. Minimal (doctrine + directives only)')
+        console.log('     4. Disabled')
+        const frameworkChoice = await prompt('   Choice [1-4]', '2')
+
+        let frameworkConfig = null
+        if (frameworkChoice === '1') {
+            frameworkConfig = true // Full
+        } else if (frameworkChoice === '2') {
+            frameworkConfig = { doctrine: true, directives: true, playbooks: true }
+        } else if (frameworkChoice === '3') {
+            frameworkConfig = { doctrine: true, directives: true }
+        } else {
+            frameworkConfig = false // Disabled
+        }
+
         // Context directory (only in custom mode, and only for extensive documentation)
         console.log('\n📋 Context directory (optional):')
         console.log('   .project/ai/context.md is ONLY for extensive project documentation (>1000 lines)')
@@ -331,6 +357,30 @@ async function init() {
                 /agents:\n    cursor: true\n    copilot: true\n    claude: true\n    vscode: true\n    windsurf: true\n    tabnine: true\n    amazon_codewhisperer: true/g,
                 `agents:\n    cursor: true\n    copilot: true\n    claude: true\n    vscode: true\n    windsurf: true\n    tabnine: true\n    amazon_codewhisperer: true\n\n# === ACTIVE AGENTS ===\nactive_agents:\n${agentsYaml}`
             )
+        }
+
+        // Add framework configuration if enabled
+        if (frameworkConfig && frameworkConfig !== false) {
+            let frameworkYaml = ''
+            if (frameworkConfig === true) {
+                frameworkYaml = 'framework: true'
+            } else {
+                const parts = []
+                if (frameworkConfig.doctrine) parts.push('    doctrine: true')
+                if (frameworkConfig.directives) parts.push('    directives: true')
+                if (frameworkConfig.playbooks) parts.push('    playbooks: true')
+                if (frameworkConfig.enhancements) parts.push('    enhancements: true')
+                frameworkYaml = `framework:\n${parts.join('\n')}`
+            }
+
+            // Replace framework comment line with actual config
+            standardsMd = standardsMd.replace(
+                /# framework: true/g,
+                frameworkYaml
+            )
+        } else {
+            // Remove framework line if disabled
+            standardsMd = standardsMd.replace(/# framework: true\n/g, '')
         }
 
         writeFileSync(configPath, standardsMd)
