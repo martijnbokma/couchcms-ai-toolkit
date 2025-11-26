@@ -9,11 +9,12 @@ requires: []
 conflicts: [bootstrap]
 ---
 
+
 # TailwindCSS Standards
 
 ## Installation (TailwindCSS 4)
 
-```bash
+```bash title="command.sh"
 bun add tailwindcss @tailwindcss/vite
 ```
 
@@ -21,7 +22,7 @@ bun add tailwindcss @tailwindcss/vite
 
 ### CSS Entry Point
 
-```css
+```css title="tailwind.config"
 /* No tailwind.config.js needed in v4! */
 @import "tailwindcss";
 
@@ -36,7 +37,7 @@ bun add tailwindcss @tailwindcss/vite
 
 ### Vite Configuration
 
-```javascript
+```javascript title="example.js"
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
@@ -55,7 +56,7 @@ export default defineConfig({
 
 Group classes logically:
 
-```html
+```html title="template.html"
 <!-- Layout → Spacing → Colors → Typography → Effects -->
 <div
   class="flex items-center gap-4 p-6 bg-base-100 text-base-content rounded-lg shadow-md"
@@ -66,7 +67,7 @@ Group classes logically:
 
 ### Mobile-First Approach
 
-```html
+```html title="template.html"
 <!-- Base (mobile) → sm → md → lg → xl → 2xl -->
 <div
   class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
@@ -102,7 +103,7 @@ Group classes logically:
 
 ### 🚨 CRITICAL: No Global Element Selectors
 
-```css
+```css title="styles.css"
 /* ❌ FORBIDDEN */
 img {
     max-height: 200px !important;
@@ -116,7 +117,7 @@ img {
 
 Only write custom CSS for properties Tailwind doesn't provide:
 
-```css
+```css title="styles.css"
 .custom-clip {
   clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
 }
@@ -128,7 +129,7 @@ Only write custom CSS for properties Tailwind doesn't provide:
 
 CSS defaults must match JavaScript configuration:
 
-```css
+```css title="styles.css"
 /* CSS must match JS carousel config */
 @media (min-width: 1280px) {
   .carousel .slide {
@@ -139,7 +140,7 @@ CSS defaults must match JavaScript configuration:
 
 ### Build Verification
 
-```bash
+```bash title="command.sh"
 # After modifying CSS
 bun run build:css
 

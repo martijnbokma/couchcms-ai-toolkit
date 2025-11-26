@@ -1,10 +1,29 @@
 # CouchCMS AI Toolkit - Pre-Flight Checks Configuration
 # These checks run automatically before any code generation/modification
-# Severity levels: CRITICAL (blocks), ERROR (blocks), WARNING (warns), INFO (informs)
+#
+# Severity levels:
+#   CRITICAL - Blocks code generation, must be fixed
+#   ERROR - Blocks code generation, must be fixed
+#   WARNING - Shows warning but allows continuation
+#   INFO - Informs only, no blocking
+#
+# Schema per check:
+#   pattern: string (regex) - Pattern to match in code
+#   severity: string - One of: CRITICAL, ERROR, WARNING, INFO
+#   message: string - Human-readable error message
+#   fix: string - Suggested fix or fix description
+#   auto_fix: boolean - Whether check can be auto-fixed
+#   example: object (optional) - bad/good examples
+#   reference: string (optional) - Documentation reference
+#   ignore_in: array<string> (optional) - File patterns to ignore
+#   threshold: number (optional) - Threshold for warnings
+#
+# Used by: Pre-flight check system before code generation
 
 # =============================================================================
 # COUCHCMS CHECKS
 # =============================================================================
+# CouchCMS-specific checks for template safety and correctness
 
 couchcms:
   # HTML Comment Security - CouchCMS tags in comments are EXECUTED
@@ -65,6 +84,7 @@ couchcms:
 # =============================================================================
 # TYPESCRIPT CHECKS
 # =============================================================================
+# TypeScript code quality and type safety checks
 
 typescript:
   # Avoid 'any' type
@@ -106,6 +126,7 @@ typescript:
 # =============================================================================
 # SECURITY CHECKS
 # =============================================================================
+# Security vulnerability detection patterns
 
 security:
   # XSS via innerHTML
@@ -154,6 +175,7 @@ security:
 # =============================================================================
 # CSS/TAILWIND CHECKS
 # =============================================================================
+# CSS and TailwindCSS best practices checks
 
 css:
   # Important overuse
@@ -176,6 +198,7 @@ css:
 # =============================================================================
 # ALPINE.JS CHECKS
 # =============================================================================
+# Alpine.js integration and best practices checks
 
 alpinejs:
   # Missing x-cloak
@@ -197,6 +220,7 @@ alpinejs:
 # =============================================================================
 # GENERAL CODE QUALITY
 # =============================================================================
+# General code quality and maintainability checks
 
 general:
   # Very long lines
@@ -226,26 +250,33 @@ general:
 # =============================================================================
 # EXECUTION CONFIGURATION
 # =============================================================================
+# How pre-flight checks are executed and which files to check
+#
+# Schema:
+#   block_on: array<string> - Severity levels that block code generation
+#   warn_on: array<string> - Severity levels that show warnings
+#   inform_on: array<string> - Severity levels that only inform
+#   global_ignore: array<string> - Glob patterns to skip entirely
 
 execution:
   # Stop execution on these severity levels
   block_on:
-    - CRITICAL
-    - ERROR
+    - CRITICAL  # Must fix before proceeding
+    - ERROR     # Must fix before proceeding
 
   # Show warning but continue
   warn_on:
-    - WARNING
+    - WARNING   # Shows warning, asks for confirmation
 
   # Inform only, no pause
   inform_on:
-    - INFO
+    - INFO      # Logs information, no blocking
 
-  # Skip checks in these paths
+  # Skip checks in these paths (glob patterns)
   global_ignore:
-    - "node_modules/**"
-    - "vendor/**"
-    - "dist/**"
-    - ".git/**"
-    - "*.min.js"
-    - "*.min.css"
+    - "node_modules/**"    # Dependencies
+    - "vendor/**"          # PHP dependencies
+    - "dist/**"            # Build output
+    - ".git/**"            # Git metadata
+    - "*.min.js"           # Minified JavaScript
+    - "*.min.css"          # Minified CSS

@@ -9,11 +9,12 @@ requires: [tailwindcss]
 conflicts: []
 ---
 
+
 # daisyUI Standards
 
 ## Installation
 
-```bash
+```bash title="command.sh"
 bun add daisyui
 ```
 
@@ -21,14 +22,14 @@ bun add daisyui
 
 ### CSS Setup
 
-```css
+```css title="styles.css"
 @import "tailwindcss";
 @plugin "daisyui";
 ```
 
 ### Theme Configuration
 
-```css
+```css title="styles.css"
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark;
 }
@@ -38,7 +39,7 @@ bun add daisyui
 
 ### 🚨 CRITICAL: Use Semantic Colors
 
-```html
+```html title="template.html"
 <!-- ✅ GOOD: Adapts to theme -->
 <div class="bg-base-100 text-base-content">
   <button class="btn btn-primary">
@@ -65,7 +66,7 @@ bun add daisyui
 
 ### Buttons
 
-```html
+```html title="template.html"
 <button class="btn">Default</button>
 <button class="btn btn-primary">Primary</button>
 <button class="btn btn-outline btn-secondary">Outline</button>
@@ -74,7 +75,7 @@ bun add daisyui
 
 ### Cards
 
-```html
+```html title="template.html"
 <div class="card bg-base-100 shadow-xl">
   <figure><img src="..." alt="..." /></figure>
   <div class="card-body">
@@ -89,7 +90,7 @@ bun add daisyui
 
 ### Forms
 
-```html
+```html title="template.html"
 <div class="form-control">
   <label class="label">
     <span class="label-text">Label</span>
@@ -100,7 +101,7 @@ bun add daisyui
 
 ### Modal
 
-```html
+```html title="template.html"
 <button onclick="my_modal.showModal()" class="btn">Open</button>
 <dialog id="my_modal" class="modal">
   <div class="modal-box">
@@ -115,7 +116,7 @@ bun add daisyui
 
 ## Custom Theme
 
-```css
+```css title="styles.css"
 @plugin "daisyui/theme" {
   name: "custom";
   default: true;

@@ -9,6 +9,7 @@ tags:
   - frontend
 ---
 
+
 # TypeScript Agent
 
 You are a TypeScript expert specializing in type-safe frontend code for CouchCMS projects.
@@ -19,7 +20,7 @@ You are a TypeScript expert specializing in type-safe frontend code for CouchCMS
 
 ### Strict Configuration
 
-```json
+```json title="config.json"
 {
   "compilerOptions": {
     "strict": true,
@@ -61,7 +62,7 @@ You are a TypeScript expert specializing in type-safe frontend code for CouchCMS
 
 ### Interface Definition
 
-```typescript
+```typescript title="example.ts"
 // {{paths.typescript}}/types/content.ts
 export interface Episode {
   id: string;
@@ -85,7 +86,7 @@ export interface Project {
 
 ### Utility Functions
 
-```typescript
+```typescript title="example.ts"
 // {{paths.typescript}}/utils/helpers.ts
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
@@ -124,7 +125,7 @@ export function slugify(text: string): string {
 
 ### API Fetching
 
-```typescript
+```typescript title="projects.php"
 // {{paths.typescript}}/api/client.ts
 export interface ApiResponse<T> {
   success: boolean;
@@ -171,7 +172,7 @@ if (result.success && result.data) {
 
 ### Alpine.js Integration
 
-```typescript
+```typescript title="Alpine.js"
 // {{paths.typescript}}/components/episode-manager.ts
 import type { Episode } from "../types/content";
 
@@ -242,7 +243,7 @@ window.createEpisodeManager = createEpisodeManager;
 
 ### Error Handling
 
-```typescript
+```typescript title="example.ts"
 // Result type for explicit error handling
 type Result<T, E = Error> =
   | { success: true; data: T }
@@ -268,7 +269,7 @@ if (result.success) {
 
 ### Type Guards
 
-```typescript
+```typescript title="example.ts"
 // Type guard function
 function isEpisode(value: unknown): value is Episode {
   return (
@@ -295,7 +296,7 @@ if (isEpisodeArray(data)) {
 
 ### Generic Components
 
-```typescript
+```typescript title="example.ts"
 // Generic list manager
 export function createListManager<T extends { id: string }>(
   initialItems: T[] = []
@@ -327,7 +328,7 @@ export function createListManager<T extends { id: string }>(
 
 ### Event Handling
 
-```typescript
+```typescript title="example.ts"
 // Type-safe event emitter
 type EventMap = {
   "episode:selected": { id: string; episode: Episode };
@@ -366,7 +367,7 @@ const unsubscribe = eventBus.on("episode:selected", ({ id, episode }) => {
 
 ### Validation Schema
 
-```typescript
+```typescript title="example.ts"
 // Simple schema validation
 interface ValidationRule<T> {
   validate: (value: T) => boolean;
@@ -412,7 +413,7 @@ const result = validateEpisode(episode);
 
 ### Anti-Patterns to Fix
 
-```typescript
+```typescript title="example.ts"
 // ❌ Bad: Using 'any' type
 function processData(data: any) {
   return data.items.map((item: any) => item.name);
@@ -427,7 +428,7 @@ function processData(data: DataResponse): string[] {
 }
 ```
 
-```typescript
+```typescript title="example.ts"
 // ❌ Bad: Barrel file imports
 import { ComponentA, ComponentB } from "./components";
 import { logger, utils } from "./index";
@@ -442,7 +443,7 @@ import { logger } from "./lib/logger";
 
 **Add Type Safety:**
 
-```typescript
+```typescript title="example.ts"
 // Before: Loose typing
 function createManager(config) {
   return {
@@ -477,7 +478,7 @@ function createManager<T>(config: ManagerConfig): Manager<T> {
 
 **Move Logic from Alpine to TypeScript:**
 
-```typescript
+```typescript title="example.ts"
 // Before: Complex logic in Alpine x-data
 // <div x-data="{ items: [], async fetch() { ... }, validate() { ... } }">
 
@@ -528,7 +529,7 @@ window.validateItem = validateItem;
 
 ### Debugging Tips
 
-```typescript
+```typescript title="example.ts"
 // Log type at compile time
 type Debug<T> = { [K in keyof T]: T[K] };
 type TestType = Debug<Episode>; // Hover to see expanded type

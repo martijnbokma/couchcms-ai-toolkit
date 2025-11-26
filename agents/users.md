@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Users Agent
 
 You are a CouchCMS user management expert specializing in access control, user groups, permissions, and authentication patterns.
@@ -61,7 +63,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Check if User is Logged In
 
-```php
+```php title="template.php"
 <cms:if k_logged_in>
     <p>Welcome, <cms:show k_user_title />!</p>
     <a href="<cms:show k_logout_link />" class="btn btn-sm btn-ghost">Logout</a>
@@ -72,7 +74,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Template-Level Access Control
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='News' clonable='1' access_level='2'>
     <!-- Only Authenticated Users (level 2+) can access -->
@@ -81,7 +83,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Element-Level Access Control
 
-```php
+```php title="template.php"
 <!-- Show content only to Authenticated User (Special) or higher -->
 <cms:if k_user_access_level ge '4'>
     <div class="card bg-base-100 shadow-md">
@@ -108,7 +110,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Check for Super Admin
 
-```php
+```php title="template.php"
 <cms:if k_user_access_level ge '10'>
     <div class="admin-panel">
         <h3>Admin Panel</h3>
@@ -119,7 +121,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Check for Administrator or Higher
 
-```php
+```php title="template.php"
 <cms:if k_user_access_level ge '7'>
     <div class="management-panel">
         <h3>Content Management</h3>
@@ -130,7 +132,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### User Profile Display
 
-```php
+```php title="template.php"
 <cms:if k_logged_in>
     <div class="user-profile">
         <div class="avatar placeholder">
@@ -154,7 +156,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Conditional Navigation
 
-```php
+```php title=">blog.php"
 <nav class="navbar">
     <div class="navbar-start">
         <a href="<cms:show k_site_link />" class="btn btn-ghost">Home</a>
@@ -178,7 +180,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Protected Content with Login Prompt
 
-```php
+```php title="template.php"
 <cms:if k_user_access_level ge '2'>
     <div class="protected-content">
         <h2>Members Only Content</h2>
@@ -196,11 +198,11 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Multiple Access Level Checks
 
-```php
+```php title="template.php"
 <cms:if k_user_access_level ge '10'>
     <!-- Super Admin only -->
     <div class="super-admin-panel">
@@ -232,7 +234,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Access Control for File Downloads
 
-```php
+```php title="template.php"
 <!-- Using cloaked URLs for protected files -->
 <cms:if k_user_access_level ge '2'>
     <a href="<cms:cloak_url 'downloads/premium-file.pdf' />" class="btn btn-primary">Download</a>
@@ -246,7 +248,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### User-Specific Content
 
-```php
+```php title="user-content.php"
 <cms:if k_logged_in>
     <cms:pages masterpage='user-content.php' folder=k_user_name limit='10'>
         <div class="mb-4">
@@ -258,7 +260,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Conditional Form Display
 
-```php
+```php title="content.php"
 <cms:if k_user_access_level ge '7'>
     <!-- Admin can create/edit/delete -->
     <cms:form masterpage='content.php' mode='create'>
@@ -307,7 +309,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 **Problem**: Users can access content they shouldn't
 
 **Solution**: Check access level correctly:
-```php
+```php title="template.php"
 <!-- ❌ Wrong - only checks if logged in -->
 <cms:if k_logged_in>
     <!-- Content -->
@@ -324,7 +326,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 **Problem**: Login link doesn't appear
 
 **Solution**: Use `k_login_link` variable:
-```php
+```php title="template.php"
 <a href="<cms:show k_login_link />" class="btn btn-primary">Login</a>
 ```
 
@@ -333,7 +335,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 **Problem**: Template-level access control not enforced
 
 **Solution**: Set `access_level` in template tag:
-```php
+```php title="template.php"
 <cms:template title='News' clonable='1' access_level='2'>
 ```
 
@@ -342,7 +344,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 **Problem**: Access level comparison not working
 
 **Solution**: Use `ge` (greater or equal) for level checks:
-```php
+```php title="template.php"
 <!-- Check for Administrator (7) or higher -->
 <cms:if k_user_access_level ge '7'>
     <!-- Admin content -->
@@ -359,7 +361,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Protected Content' clonable='1' access_level='2' />
 

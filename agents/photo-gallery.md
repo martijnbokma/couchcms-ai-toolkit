@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Photo Gallery Agent
 
 You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF data extraction, automatic thumbnail generation, and gallery display patterns.
@@ -62,7 +64,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Basic Gallery Template Setup
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Gallery' clonable='1' dynamic_folders='1' gallery='1'>
     <cms:editable
@@ -125,7 +127,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery with Albums (Folders)
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Gallery' clonable='1' dynamic_folders='1' gallery='1'>
     <cms:editable name='gg_image' label='Image' type='image' />
@@ -179,7 +181,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery with Lightbox
 
-```php
+```php title="gallery.php"
 <cms:pages masterpage='gallery.php' limit='20' paginate='1'>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <a
@@ -200,7 +202,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery with EXIF Data
 
-```php
+```php title="config.php"
 <!-- Enable EXIF in config.php -->
 <!-- define( 'K_EXTRACT_EXIF_DATA', 1 ); -->
 
@@ -266,7 +268,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery with File Metadata
 
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <div class="mb-4">
         <img src="<cms:show gg_image />" alt="<cms:show k_page_title />" />
@@ -282,7 +284,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery Ordered by File Name
 
-```php
+```php title="gallery.php"
 <cms:pages masterpage='gallery.php' orderby='file_name' order_dir='asc'>
     <div class="mb-4">
         <a href="<cms:show k_page_link />">
@@ -294,7 +296,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery with Pagination
 
-```php
+```php title="gallery.php"
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     <cms:pages masterpage='gallery.php' limit='20' paginate='1'>
         <a href="<cms:show k_page_link />" class="block">
@@ -316,11 +318,11 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Gallery Carousel
 
-```php
+```php title="gallery.php"
 <div class="carousel carousel-center space-x-4">
     <cms:pages masterpage='gallery.php' limit='10'>
         <div class="carousel-item">
@@ -336,7 +338,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery with Masonry Layout
 
-```php
+```php title="gallery.php"
 <div class="columns-2 md:columns-3 lg:columns-4 gap-4">
     <cms:pages masterpage='gallery.php'>
         <div class="mb-4 break-inside-avoid">
@@ -354,7 +356,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery Filter by Album
 
-```php
+```php title="gallery.php"
 <!-- Album selector -->
 <div class="mb-6">
     <select class="select select-bordered" onchange="window.location.href=this.value">
@@ -408,7 +410,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 **Problem**: Upload button doesn't appear or upload fails
 
 **Solution**: Ensure template has `gallery='1'` and required region names:
-```php
+```php title="template.php"
 <cms:template title='Gallery' clonable='1' dynamic_folders='1' gallery='1'>
     <cms:editable name='gg_image' type='image' />
     <cms:editable name='gg_thumb' assoc_field='gg_image' type='thumbnail' />
@@ -420,7 +422,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 **Problem**: Gallery features don't work
 
 **Solution**: Use exact names `gg_image` and `gg_thumb`:
-```php
+```php title="template.php"
 <!-- ❌ Wrong -->
 <cms:editable name='gallery_image' type='image' />
 
@@ -433,7 +435,7 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 **Problem**: EXIF variables are empty
 
 **Solution**: Enable EXIF extraction in config.php:
-```php
+```php title="config.php"
 // In config.php
 define( 'K_EXTRACT_EXIF_DATA', 1 );
 ```
@@ -456,7 +458,7 @@ Note: This prevents image resizing to preserve EXIF data.
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Gallery' clonable='1' dynamic_folders='1' gallery='1'>
     <cms:editable

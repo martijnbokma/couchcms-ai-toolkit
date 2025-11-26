@@ -5,8 +5,8 @@
 ## Project Configuration
 
 - **Project**: couchcms-ai-toolkit (CouchCMS Web Application)
-- **Languages**: 
-- **Frameworks**: 
+- **Languages**: TypeScript, PHP, CSS, HTML
+- **Frameworks**: CouchCMS, TailwindCSS, daisyUI, Alpine.js
 
 ---
 

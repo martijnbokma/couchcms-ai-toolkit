@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Archives Agent
 
 You are a CouchCMS archives expert specializing in organizing and displaying archived pages by time periods (yearly, monthly, daily) with archive navigation and date-based filtering.
@@ -61,7 +63,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Basic Archive List
 
-```php
+```php title="blog.php"
 <ul class="menu">
   <cms:archives masterpage='blog.php' limit='12'>
     <li>
@@ -76,7 +78,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Archive Menu with Counts
 
-```php
+```php title="blog.php"
 <aside class="mb-6">
   <h3 class="text-xl font-bold mb-4">Archives</h3>
   <ul class="menu bg-base-200 rounded-box">
@@ -94,7 +96,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Yearly Archives
 
-```php
+```php title="blog.php"
 <div class="mb-6">
   <h3 class="text-xl font-bold mb-4">Archives by Year</h3>
   <ul>
@@ -112,7 +114,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Monthly Archives
 
-```php
+```php title="blog.php"
 <div class="mb-6">
   <h3 class="text-xl font-bold mb-4">Archives by Month</h3>
   <ul>
@@ -130,7 +132,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Daily Archives
 
-```php
+```php title="blog.php"
 <div class="mb-6">
   <h3 class="text-xl font-bold mb-4">Archives by Day</h3>
   <ul>
@@ -148,7 +150,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Complete Archive List with Pages
 
-```php
+```php title="blog.php"
 <div class="archives-list">
   <cms:archives masterpage='blog.php'>
     <div class="mb-8">
@@ -178,7 +180,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Archive View Implementation
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Blog' clonable='1' />
 
@@ -234,7 +236,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Archive Navigation Sidebar
 
-```php
+```php title="blog.php"
 <aside class="w-64">
   <div class="card bg-base-200 shadow-md">
     <div class="card-body">
@@ -280,11 +282,11 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Archive Calendar View
 
-```php
+```php title="blog.php"
 <div class="calendar-view">
   <cms:archives masterpage='blog.php' type='daily' limit='31'>
     <div class="calendar-day">
@@ -305,7 +307,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Archive with Year/Month Breakdown
 
-```php
+```php title="blog.php"
 <cms:archives masterpage='blog.php' type='yearly'>
   <div class="mb-8">
     <h2 class="text-3xl font-bold mb-4">
@@ -366,7 +368,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 **Problem**: Archive list is empty
 
 **Solution**: Ensure pages exist and are published:
-```php
+```php title="blog.php"
 <cms:archives masterpage='blog.php'>
   <!-- Archives will only show if pages exist -->
 </cms:archives>
@@ -377,7 +379,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 **Problem**: Archives grouped incorrectly
 
 **Solution**: Specify archive type:
-```php
+```php title="blog.php"
 <!-- Yearly -->
 <cms:archives masterpage='blog.php' type='yearly'>
 
@@ -393,7 +395,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 **Problem**: Archive view doesn't show correct pages
 
 **Solution**: Use `start_on` and `stop_before` with archive dates:
-```php
+```php title="blog.php"
 <cms:if k_is_archive>
   <cms:pages masterpage='blog.php' start_on=k_archive_date stop_before=k_next_archive_date>
     <!-- Pages in archive period -->
@@ -411,7 +413,7 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Blog' clonable='1' />
 

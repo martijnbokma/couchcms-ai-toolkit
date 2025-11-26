@@ -9,28 +9,26 @@ requires: [couchcms-core]
 conflicts: []
 ---
 
-# custom-routes
 
+# Custom Routes
 
-
-
-## Custom Routes
+## Overview
 
 ### Introduction to Custom Routes
 
-```php
+```php title="template.php"
 http://www.yoursite.com/blog.php?p=12
 http://www.yoursite.com/blog/some_page_name.html (with prettyURLs activated)
 ```
 
 ### Validation & Constraints
 
-```php
+```php title="template.php"
 <cms:route name='edit_view' path='{:id}/edit' />
 ```
 
 ### URL Generation
 
-```php
+```php title="template.php"
 <cms:route_link 'edit_view' rt_id='41' />
 ```

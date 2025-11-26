@@ -9,18 +9,16 @@ requires: [couchcms-core]
 conflicts: []
 ---
 
-# pagination
 
+# Pagination
 
-
-
-## Pagination
+## Overview
 
 Comprehensive guide to implementing pagination in CouchCMS for pages, search results, and comments with navigation controls and page numbering.
 
 ### Basic Pagination Example
 
-```php
+```php title="blog.php"
 <cms:pages masterpage="blog.php" limit="10" paginate="1">
     <!-- Pagination variables available here -->
 </cms:pages>
@@ -28,7 +26,7 @@ Comprehensive guide to implementing pagination in CouchCMS for pages, search res
 
 ### Manual Pagination Example
 
-```php
+```php title="blog.php"
 <cms:pages masterpage="blog.php" limit="10" paginate="1">
     <cms:if k_paginated_top>
         <cms:if k_paginator_required >
@@ -53,7 +51,7 @@ Comprehensive guide to implementing pagination in CouchCMS for pages, search res
 
 ### Using Paginator Tag
 
-```php
+```php title="blog.php"
 <cms:pages masterpage="blog.php" limit="10" paginate="1">
     <cms:if k_paginated_top>
         <cms:if k_paginator_required >
@@ -74,6 +72,6 @@ Comprehensive guide to implementing pagination in CouchCMS for pages, search res
 
 ### Example
 
-```php
+```php title="template.php"
 <cms:paginator />
 ```

@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Folders Agent
 
 You are a CouchCMS folders expert specializing in virtual folder creation, hierarchical organization, folder navigation, and breadcrumb generation.
@@ -59,7 +61,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Define Folder Structure
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='News' clonable='1'>
     <cms:folder name="world" title="World News">
@@ -82,7 +84,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### List All Folders
 
-```php
+```php title="news.php"
 <cms:folders masterpage='news.php'>
     <div class="mb-2">
         <a href="<cms:show k_folder_link />" class="link link-primary">
@@ -94,7 +96,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Hierarchical Folder List
 
-```php
+```php title="news.php"
 <cms:folders masterpage='news.php' hierarchical='1'>
     <div class="mb-2" style="padding-left: <cms:show k_level />em;">
         <a href="<cms:show k_folder_link />" class="link link-primary">
@@ -106,7 +108,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Folder Navigation Menu
 
-```php
+```php title="news.php"
 <cms:folders masterpage='news.php' hierarchical='1' extended_info='1'>
     <cms:if k_level_start><ul class="menu"></cms:if>
     <cms:if k_element_start>
@@ -122,7 +124,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Breadcrumbs
 
-```php
+```php title="template.php"
 <cms:if k_is_page || k_is_folder>
     <nav class="breadcrumbs">
         <ul>
@@ -136,7 +138,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Custom Breadcrumbs
 
-```php
+```php title="template.php"
 <cms:if k_is_page || k_is_folder>
     <nav class="breadcrumbs">
         <ul>
@@ -160,7 +162,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Filter Pages by Folder
 
-```php
+```php title="news.php"
 <cms:pages masterpage='news.php' folder='sports' limit='10' paginate='1'>
     <div class="mb-4">
         <h3><a href="<cms:show k_page_link />"><cms:show k_page_title /></a></h3>
@@ -171,7 +173,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Folder View Implementation
 
-```php
+```php title="news.php"
 <cms:if k_is_folder>
     <div class="mb-6">
         <h1><cms:show k_folder_title /></h1>
@@ -191,7 +193,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Subfolders Only
 
-```php
+```php title="news.php"
 <cms:folders masterpage='news.php' childof='world' hierarchical='1'>
     <div class="mb-2">
         <a href="<cms:show k_folder_link />" class="link link-primary">
@@ -203,7 +205,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Limited Depth
 
-```php
+```php title="news.php"
 <cms:folders masterpage='news.php' hierarchical='1' depth='2'>
     <div class="mb-2" style="padding-left: <cms:show k_level />em;">
         <a href="<cms:show k_folder_link />" class="link link-primary">
@@ -215,7 +217,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Exclude Folders
 
-```php
+```php title="news.php"
 <cms:folders masterpage='news.php' hierarchical='1' exclude='music,asia'>
     <div class="mb-2">
         <a href="<cms:show k_folder_link />" class="link link-primary">
@@ -227,11 +229,11 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Folder Menu with Active State
 
-```php
+```php title="news.php"
 <cms:if k_is_page || k_is_folder>
     <cms:if k_folder_name><cms:set current_folder=k_folder_name /></cms:if>
     <cms:if k_page_foldername><cms:set current_folder=k_page_foldername /></cms:if>
@@ -256,13 +258,13 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Folder with Page Count
 
-```php
+```php title="news.php"
 <cms:listfolders masterpage='news.php' hierarchical='1' show_count='1' />
 ```
 
 ### Folder Dropdown Navigation
 
-```php
+```php title="news.php"
 <select class="select select-bordered" onchange="window.location.href=this.value">
     <option value="<cms:show k_template_link />">All Categories</option>
     <cms:folders masterpage='news.php' hierarchical='1'>
@@ -276,7 +278,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Folder Cards with Images
 
-```php
+```php title="news.php"
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <cms:folders masterpage='news.php' depth='1'>
         <div class="card bg-base-100 shadow-md">
@@ -331,7 +333,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 **Problem**: Folders don't show in admin panel
 
 **Solution**: Ensure you visit the template as super-admin after defining folders:
-```php
+```php title="template.php"
 <!-- Define folders -->
 <cms:folder name="category" title="Category" />
 
@@ -343,7 +345,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 **Problem**: Folders don't show in hierarchical order
 
 **Solution**: Use `hierarchical='1'` parameter:
-```php
+```php title="news.php"
 <cms:folders masterpage='news.php' hierarchical='1'>
     <!-- Folders in hierarchy -->
 </cms:folders>
@@ -354,7 +356,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 **Problem**: Breadcrumbs don't appear
 
 **Solution**: Check if in page or folder view:
-```php
+```php title="template.php"
 <cms:if k_is_page || k_is_folder>
     <cms:breadcrumbs separator=' > ' include_template='1' />
 </cms:if>
@@ -365,7 +367,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 **Problem**: Pages don't filter correctly by folder
 
 **Solution**: Use `folder` parameter correctly:
-```php
+```php title="news.php"
 <cms:pages masterpage='news.php' folder='sports' limit='10'>
     <!-- Pages in sports folder -->
 </cms:pages>
@@ -381,7 +383,7 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='News' clonable='1'>
     <cms:folder name="world" title="World News">

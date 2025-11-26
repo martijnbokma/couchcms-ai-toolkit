@@ -12,6 +12,7 @@ requires:
   - couchcms-core
 ---
 
+
 # DataBound Forms Agent
 
 You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operations, form validation, and repeatable regions.
@@ -32,7 +33,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Basic Form Structure
 
-```html
+```html title="projects.php"
 <cms:form masterpage="projects.php" mode="create" enctype="multipart/form-data">
   <cms:input type="bound" name="title" />
   <cms:input type="bound" name="description" />
@@ -68,7 +69,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Create Form
 
-```html
+```html title="projects.php"
 <cms:embed '{{paths.filters}}/authenticated.html' />
 
 <cms:form masterpage="projects.php" mode="create" enctype="multipart/form-data">
@@ -122,7 +123,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Edit Form
 
-```html
+```html title="projects.php"
 <cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
 '{{paths.filters}}/owns_content.html' />
 
@@ -151,7 +152,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Delete with Confirmation
 
-```html
+```html title="projects.php"
 <cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
 '{{paths.filters}}/owns_content.html' />
 
@@ -177,7 +178,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Ownership Filter
 
-```html
+```html title="template.html"
 <!-- {{paths.filters}}/owns_content.html -->
 <cms:if k_is_page>
     <cms:if content_owner ne k_user_name>
@@ -194,7 +195,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Multi-Step Wizard
 
-```html
+```html title="projects.php"
 <div x-data="{ step: 1, maxStep: 3 }">
   <!-- Progress -->
   <ul class="steps w-full mb-6">
@@ -267,7 +268,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 **Template Definition:**
 
-```html
+```html title="template.html"
 <cms:repeatable name="episodes" label="Episodes">
   <cms:editable name="episode_title" type="text" required="1" />
   <cms:editable
@@ -282,7 +283,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 **Form with Alpine.js Episode Manager:**
 
-```html
+```html title="template.html"
 <div
   x-data="{
     episodes: [],
@@ -341,7 +342,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 **Form Persistence:**
 
-```html
+```html title="template.html"
 <cms:if k_success>
   <cms:db_persist_form
     episodes="frm_episodes_json"
@@ -353,7 +354,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Anti-Spam Protection
 
-```html
+```html title="contact.php"
 <cms:form masterpage='contact.php' mode='create'>
     <!-- Honeypot (hidden from users) -->
     <div style="display:none">
@@ -394,7 +395,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Auto-Save Drafts
 
-```html
+```html title="projects.php"
 <div
   x-data="{
     formData: {},
@@ -451,7 +452,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Anti-Patterns to Fix
 
-```html
+```html title="template.html"
 <!-- ❌ Bad: Validation on bound input -->
 <cms:input type="bound" name="title" required="1" validator="min_len=3" />
 
@@ -461,7 +462,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 <cms:input type="bound" name="title" />
 ```
 
-```html
+```html title="projects.php"
 <!-- ❌ Bad: No ownership check on edit -->
 <cms:form masterpage="projects.php" mode="edit" page_id="k_page_id">
   <!-- ✅ Good: With ownership validation -->
@@ -475,7 +476,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 **Add Proper Error Handling:**
 
-```html
+```html title="projects.php"
 <!-- Before: No error display -->
 <cms:form masterpage="projects.php" mode="create">
   <cms:input type="bound" name="title" />
@@ -512,7 +513,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 **Extract Reusable Form Steps:**
 
-```html
+```html title="project-fields.html"
 <!-- Before: Duplicated form fields -->
 <!-- In create.html and edit.html -->
 
@@ -554,7 +555,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Debug Form Data
 
-```html
+```html title="template.html"
 <!-- Show all form data -->
 <cms:if k_success>
   <pre><cms:dump frm_data /></pre>

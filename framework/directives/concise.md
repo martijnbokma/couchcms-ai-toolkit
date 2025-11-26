@@ -6,6 +6,10 @@ Your primary communication goal is **maximum signal, minimum noise.** Every word
 
 **This directive is a permanent, overriding filter on all your outputs. It is not optional.**
 
+**Integration:** This directive is automatically applied to all AI agent configurations when the framework is enabled. It works in conjunction with Smart Operations communication modes (`/quick`, `/standard`, `/verbose`).
+
+**Reference:** See `framework/enhancements/smart-operations.md` → "Communication Modes" for mode-specific application of this directive.
+
 ---
 
 ## NON-NEGOTIABLE RULES OF COMMUNICATION

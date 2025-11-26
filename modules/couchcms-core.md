@@ -9,13 +9,14 @@ requires: []
 conflicts: []
 ---
 
+
 # CouchCMS Core Standards
 
 ## Template Structure
 
 ### Basic Template
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:extends 'layouts/base.html' />
 <cms:block 'templates'>
@@ -43,7 +44,7 @@ conflicts: []
 - Use `[cms:` instead of `<cms:` in comments
 - Wrap multiline comments with CouchCMS tags in `<cms:ignore>` blocks
 
-```html
+```html title="template.html"
 <!-- ❌ BAD: This will execute and crash the site -->
 <!-- <cms:show my_variable /> -->
 
@@ -70,7 +71,7 @@ conflicts: []
 
 `<cms:else />` and `<cms:else_if />` are **self-closing** tags:
 
-```html
+```html title="template.html"
 <!-- ✅ GOOD: Self-closing syntax -->
 <cms:if condition>
   <div>Condition is true</div>
@@ -91,7 +92,7 @@ conflicts: []
 
 ### Pages Query
 
-```html
+```html title="template.php"
 <cms:pages
   masterpage="template.php"
   limit="10"
@@ -105,7 +106,7 @@ conflicts: []
 
 ### Relationships
 
-```html
+```html title="items.php"
 <cms:editable name='related_items' label='Related Items'
     type='relation' masterpage='items.php' />
 
@@ -117,7 +118,7 @@ conflicts: []
 
 ### Repeatable Regions
 
-```html
+```html title="template.html"
 <cms:editable name='gallery' label='Gallery' type='repeatable'>
     <cms:editable name='image' label='Image' type='image' />
     <cms:editable name='caption' label='Caption' type='text' />

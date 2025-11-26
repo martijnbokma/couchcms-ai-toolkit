@@ -9,11 +9,12 @@ requires: []
 conflicts: []
 ---
 
+
 # Alpine.js Standards
 
 ## Installation
 
-```html
+```html title="cdn.min.js"
 <script
   defer
   src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
@@ -22,7 +23,7 @@ conflicts: []
 
 Or via npm:
 
-```bash
+```bash title="command.sh"
 bun add alpinejs
 ```
 
@@ -32,7 +33,7 @@ bun add alpinejs
 
 CouchCMS conflicts with Alpine's shorthand colon syntax:
 
-```html
+```html title="template.html"
 <!-- ❌ BAD: Causes CouchCMS error -->
 <div :class="{ 'active': isActive }">
   <!-- ✅ GOOD: Use x-bind: prefix -->
@@ -60,7 +61,7 @@ CouchCMS conflicts with Alpine's shorthand colon syntax:
 
 ### Toggle Component
 
-```html
+```html title="template.html"
 <div x-data="{ open: false }">
   <button @click="open = !open">Toggle</button>
   <div x-show="open" x-transition>Content</div>
@@ -69,7 +70,7 @@ CouchCMS conflicts with Alpine's shorthand colon syntax:
 
 ### Form Handling
 
-```html
+```html title="template.html"
 <form x-data="{ loading: false }" @submit.prevent="loading = true">
   <input type="text" x-bind:disabled="loading" />
   <button type="submit" x-bind:disabled="loading">
@@ -81,7 +82,7 @@ CouchCMS conflicts with Alpine's shorthand colon syntax:
 
 ### Dropdown
 
-```html
+```html title="template.html"
 <div x-data="{ open: false }" @click.away="open = false">
   <button @click="open = !open">Menu</button>
   <div x-show="open" x-transition class="dropdown-content">
@@ -93,7 +94,7 @@ CouchCMS conflicts with Alpine's shorthand colon syntax:
 
 ### Tabs
 
-```html
+```html title="template.html"
 <div x-data="{ activeTab: 'tab1' }">
   <div class="tabs">
     <button
@@ -118,7 +119,7 @@ CouchCMS conflicts with Alpine's shorthand colon syntax:
 
 ### Passing Data to Alpine
 
-```html
+```html title="template.html"
 <div
   x-data="{
     items: <cms:show items_json />,
@@ -133,7 +134,7 @@ CouchCMS conflicts with Alpine's shorthand colon syntax:
 
 ### Conditional Rendering
 
-```html
+```html title="template.html"
 <cms:if user_logged_in>
   <div x-data="{ showProfile: false }">
     <button @click="showProfile = !showProfile">Profile</button>
@@ -162,7 +163,7 @@ CouchCMS conflicts with Alpine's shorthand colon syntax:
 
 For complex logic, move to external functions:
 
-```javascript
+```javascript title="example.js"
 // components/dropdown.js
 export function dropdown() {
   return {
@@ -177,7 +178,7 @@ export function dropdown() {
 }
 ```
 
-```html
+```html title="template.html"
 <div x-data="dropdown()">
   <button @click="toggle()">Menu</button>
   <div x-show="open" @click.away="close()">Content</div>

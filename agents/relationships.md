@@ -12,6 +12,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Relationships Agent
 
 You are a CouchCMS relationships expert specializing in establishing and managing relationships between pages of different templates using one-to-one, one-to-many, and many-to-many patterns.
@@ -54,13 +56,13 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 **Example**: Artists and Albums (artist can have many albums, album can have many artists)
 
-```php
+```php title="albums.php"
 <!-- In artists.php (primary template) -->
 <cms:editable type='relation' name='artist_albums' masterpage='albums.php' />
 ```
 
 **Display related albums for an artist**:
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <h2>Artist: <cms:show k_page_title /></h2>
     <h3>Related Albums:</h3>
@@ -77,7 +79,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 ```
 
 **Display related artists for an album**:
-```php
+```php title="artists.php"
 <!-- In albums.php (opposite template) -->
 <cms:if k_is_page>
     <h2>Album: <cms:show k_page_title /></h2>
@@ -92,13 +94,13 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 **Example**: Authors and Books (author can have many books, book has one author)
 
-```php
+```php title="books.php"
 <!-- In authors.php (primary template) -->
 <cms:editable type='relation' name='author_books' masterpage='books.php' reverse_has='one' />
 ```
 
 **Display books for an author**:
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <h2>Author: <cms:show k_page_title /></h2>
     <h3>Books:</h3>
@@ -112,7 +114,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 ```
 
 **Display author for a book**:
-```php
+```php title="authors.php"
 <!-- In books.php -->
 <cms:if k_is_page>
     <h2>Book: <cms:show k_page_title /></h2>
@@ -126,13 +128,13 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 **Example**: Albums and Songs (album has many songs, song belongs to one album)
 
-```php
+```php title="songs.php"
 <!-- In albums.php (primary template) -->
 <cms:editable type='relation' name='album_songs' masterpage='songs.php' has='one' />
 ```
 
 **Display songs for an album**:
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <h2>Album: <cms:show k_page_title /></h2>
     <h3>Tracklist:</h3>
@@ -145,7 +147,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 ```
 
 **Display album for a song**:
-```php
+```php title="albums.php"
 <!-- In songs.php -->
 <cms:if k_is_page>
     <h2>Song: <cms:show k_page_title /></h2>
@@ -159,13 +161,13 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 **Example**: User and Profile (user has one profile, profile belongs to one user)
 
-```php
+```php title="profiles.php"
 <!-- In users.php (primary template) -->
 <cms:editable type='relation' name='user_profile' masterpage='profiles.php' has='one' reverse_has='one' />
 ```
 
 **Display profile for a user**:
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <h2>User: <cms:show k_page_title /></h2>
     <cms:related_pages 'user_profile'>
@@ -181,11 +183,11 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Relationship with Filtering
 
-```php
+```php title="template.php"
 <!-- Filter related pages by folder -->
 <cms:related_pages 'artist_albums' folder='published'>
     <div class="mb-4">
@@ -196,7 +198,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 ### Relationship with Ordering
 
-```php
+```php title="template.php"
 <!-- Order related pages -->
 <cms:related_pages 'author_books' orderby='publish_date' order_dir='desc'>
     <div class="mb-4">
@@ -208,7 +210,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 ### Relationship with Limit
 
-```php
+```php title="template.php"
 <!-- Limit number of related pages -->
 <cms:related_pages 'artist_albums' limit='5'>
     <div class="mb-4">
@@ -219,7 +221,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 ### Relationship Outside Page Context
 
-```php
+```php title="artists.php"
 <!-- Get related pages for a specific page -->
 <cms:pages masterpage='artists.php' page_name='john-lennon'>
     <h3>Albums of John Lennon:</h3>
@@ -233,7 +235,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 ### Relationship with Pagination
 
-```php
+```php title="template.php"
 <cms:related_pages 'author_books' limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <p>Showing <cms:show k_record_from />-<cms:show k_record_to /> of <cms:show k_total_records /> books</p>
@@ -249,7 +251,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 ### Relationship Definition with Parameters
 
-```php
+```php title="albums.php"
 <!-- Control which pages appear in selection -->
 <cms:editable
     type='relation'
@@ -299,7 +301,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 **Problem**: `related_pages` tag shows no results
 
 **Solution**: Ensure you're in page-view context or provide context with `pages` tag:
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <cms:related_pages 'artist_albums'>
         <!-- Results -->
@@ -312,7 +314,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 **Problem**: `reverse_related_pages` doesn't work
 
 **Solution**: Always specify `masterpage` parameter:
-```php
+```php title="artists.php"
 <cms:reverse_related_pages 'artist_albums' masterpage='artists.php'>
     <!-- Results -->
 </cms:reverse_related_pages>
@@ -323,7 +325,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 **Problem**: Relationship allows too many or too few selections
 
 **Solution**: Adjust `has` and `reverse_has` parameters:
-```php
+```php title="books.php"
 <!-- One-to-Many -->
 <cms:editable type='relation' name='author_books' masterpage='books.php' reverse_has='one' />
 
@@ -345,7 +347,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 **Problem**: Some pages don't appear in relationship selection
 
 **Solution**: Check folder filtering and relationship type constraints:
-```php
+```php title="books.php"
 <!-- For One-to-Many, only unassociated pages appear -->
 <cms:editable type='relation' name='author_books' masterpage='books.php' reverse_has='one' />
 ```
@@ -360,7 +362,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 **Solution**:
 
-```php
+```php title="products.php"
 <!-- In manufacturers.php (primary) -->
 <cms:editable type='relation' name='manufacturer_products' masterpage='products.php' reverse_has='one' />
 
@@ -396,7 +398,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 **Solution**:
 
-```php
+```php title="order_items.php"
 <!-- In orders.php (primary) -->
 <cms:editable type='relation' name='order_items' masterpage='order_items.php' reverse_has='one' />
 
@@ -430,7 +432,7 @@ You are a CouchCMS relationships expert specializing in establishing and managin
 
 **Solution**:
 
-```php
+```php title="blog.php"
 <!-- In blog.php -->
 <cms:editable type='relation' name='related_posts' masterpage='blog.php' />
 

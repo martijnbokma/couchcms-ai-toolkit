@@ -7,64 +7,77 @@
 # =============================================================================
 # These paths are relative to the project root.
 # Override in project.md if your project uses different paths.
+#
+# Schema: All paths must be strings, relative to project root (no leading /)
+# Used by: sync.js for {{paths.xxx}} variable replacement in templates
 
 paths:
   # Frontend assets
-  css: "assets/css"
-  typescript: "assets/ts"
-  javascript: "assets/js"
-  images: "assets/images"
-  fonts: "assets/fonts"
+  css: "assets/css"                    # CSS files directory
+  typescript: "assets/ts"               # TypeScript source files
+  javascript: "assets/js"               # JavaScript files (if not using TypeScript)
+  images: "assets/images"               # Image assets
+  fonts: "assets/fonts"                 # Font files
 
   # CouchCMS templates
-  snippets: "snippets"
-  components: "snippets/components"
-  views: "snippets/views"
-  layouts: "snippets/layouts"
-  filters: "snippets/filters"
-  forms: "snippets/forms"
-  helpers: "snippets/helpers"
+  snippets: "snippets"                  # Base snippets directory
+  components: "snippets/components"      # Reusable component snippets
+  views: "snippets/views"               # View templates (list, detail, etc.)
+  layouts: "snippets/layouts"           # Layout templates (base, page, etc.)
+  filters: "snippets/filters"           # Security and access control filters
+  forms: "snippets/forms"               # DataBound form templates
+  helpers: "snippets/helpers"           # Helper snippets (utilities)
 
   # Build output
-  public: "public"
-  dist: "dist"
+  public: "public"                      # Public web root (served files)
+  dist: "dist"                          # Build/distribution directory (if used)
 
   # Configuration
-  config: "config"
-  scripts: "scripts"
+  config: "config"                      # Configuration files directory
+  scripts: "scripts"                    # Build and utility scripts
 
 # =============================================================================
 # CODE STANDARDS
 # =============================================================================
+# Core coding standards applied to all generated code.
+#
+# Schema:
+#   indentation: integer (1-8) - Number of spaces for indentation
+#   language: string - Must be "english" (enforced by toolkit)
+#   lineLength: integer (80-200) - Maximum line length in characters
 
 standards:
-  indentation: 4
-  language: "english"
-  lineLength: 120
+  indentation: 4          # Spaces per indentation level (must be consistent)
+  language: "english"     # All code, comments, and content must be in English
+  lineLength: 120         # Maximum characters per line (soft limit)
 
 # =============================================================================
 # NAMING CONVENTIONS
 # =============================================================================
+# Naming style conventions for different code elements.
+#
+# Schema: All values must be one of: "snake_case", "camelCase", "PascalCase", "kebab-case"
+# Used by: Code generation templates and validation
 
 naming:
   # PHP/CouchCMS
-  php_variables: "snake_case"
-  php_functions: "snake_case"
-  cms_fields: "snake_case"
+  php_variables: "snake_case"    # PHP variable names: $my_variable
+  php_functions: "snake_case"    # PHP function names: my_function()
+  cms_fields: "snake_case"       # CouchCMS editable field names: my_field
 
   # TypeScript/JavaScript
-  ts_variables: "camelCase"
-  ts_functions: "camelCase"
-  ts_classes: "PascalCase"
-  ts_interfaces: "PascalCase"
-  ts_types: "PascalCase"
+  ts_variables: "camelCase"      # TypeScript variables: myVariable
+  ts_functions: "camelCase"      # TypeScript functions: myFunction()
+  ts_classes: "PascalCase"       # TypeScript classes: MyClass
+  ts_interfaces: "PascalCase"    # TypeScript interfaces: MyInterface
+  ts_types: "PascalCase"         # TypeScript type aliases: MyType
 
   # CSS
-  css_classes: "kebab-case"
-  css_variables: "kebab-case"
+  css_classes: "kebab-case"      # CSS class names: .my-class
+  css_variables: "kebab-case"    # CSS custom properties: --my-variable
 
   # Files
-  php_files: "kebab-case"
-  ts_files: "kebab-case"
-  css_files: "kebab-case"
-  component_files: "kebab-case"
+  php_files: "kebab-case"        # PHP file names: my-file.php
+  ts_files: "kebab-case"         # TypeScript file names: my-file.ts
+  css_files: "kebab-case"        # CSS file names: my-file.css
+  component_files: "kebab-case"  # Component file names: my-component.html

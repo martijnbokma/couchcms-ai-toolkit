@@ -6,8 +6,8 @@
 
 - **Type**: CouchCMS Web Application
 - **Description**: CouchCMS AI Toolkit - Development and maintenance configuration
-- **Languages**: 
-- **Frameworks**: 
+- **Languages**: TypeScript, PHP, CSS, HTML
+- **Frameworks**: CouchCMS, TailwindCSS, daisyUI, Alpine.js
 
 ---
 

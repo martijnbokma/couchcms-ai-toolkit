@@ -12,6 +12,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Pagination Agent
 
 You are a CouchCMS pagination expert specializing in implementing pagination for pages, search results, and comments with navigation controls and record counting.
@@ -67,7 +69,7 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ### Basic Pagination
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <div class="mb-4">
@@ -90,7 +92,7 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ### Pagination with Search
 
-```php
+```php title="blog.php"
 <cms:search masterpage='blog.php' limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <div class="alert alert-info mb-4">
@@ -114,7 +116,7 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ### Pagination with Comments
 
-```php
+```php title="template.php"
 <cms:comments limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <div class="mb-4">
@@ -137,7 +139,7 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ### Custom Pagination Display
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <div class="flex justify-between items-center mb-6">
@@ -167,7 +169,7 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ### Pagination with Start Count
 
-```php
+```php title="blog.php"
 <!-- Start counting from 0 instead of 1 -->
 <cms:pages masterpage='blog.php' limit='10' paginate='1' startcount='0'>
     <cms:if k_paginated_top>
@@ -180,7 +182,7 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ### Pagination Navigation Only
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1'>
     <!-- Content -->
 
@@ -194,11 +196,11 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Pagination with Custom Styling
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1'>
     <!-- Content -->
 
@@ -214,7 +216,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 
 ### Conditional Pagination Display
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <cms:if k_paginator_required>
@@ -231,7 +233,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 
 ### Pagination with Record Numbers
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1'>
     <div class="mb-4">
         <span class="badge badge-ghost">#<cms:show k_current_record /></span>
@@ -243,7 +245,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 
 ### Pagination Info in Card
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <div class="card bg-base-200 mb-4">
@@ -297,7 +299,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 **Problem**: Pagination links don't appear
 
 **Solution**: Ensure `paginate='1'` is set and there are more records than the limit:
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1'>
     <!-- Content -->
     <cms:paginator />
@@ -309,7 +311,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 **Problem**: Record numbers don't match expectations
 
 **Solution**: Check `startcount` parameter - default is 1, use 0 for zero-based:
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='10' paginate='1' startcount='0'>
     <!-- k_count will be 0-9, k_current_record will be 0-9 -->
 </cms:pages>
@@ -320,7 +322,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 **Problem**: Pagination info displays even when only one page
 
 **Solution**: Use `k_paginator_required` to conditionally display:
-```php
+```php title="template.php"
 <cms:if k_paginator_required>
     <p>Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
 </cms:if>
@@ -331,7 +333,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 **Problem**: Pagination appears in unexpected place
 
 **Solution**: Use `k_paginated_top` and `k_paginated_bottom` to control placement:
-```php
+```php title="template.php"
 <cms:if k_paginated_top>
     <!-- Info at top -->
 </cms:if>
@@ -353,7 +355,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Blog' clonable='1' />
 
@@ -417,7 +419,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 
 **Solution**:
 
-```php
+```php title="blog.php"
 <cms:search masterpage='blog.php' limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <div class="alert alert-info mb-4">
@@ -448,7 +450,7 @@ The `<cms:paginator />` tag generates links that can be styled with daisyUI's `j
 
 **Solution**:
 
-```php
+```php title="template.php"
 <cms:comments limit='10' paginate='1'>
     <cms:if k_paginated_top>
         <div class="mb-4">

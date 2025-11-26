@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # RSS Feeds Agent
 
 You are a CouchCMS RSS feed expert specializing in XML feed generation, content syndication, and RSS 2.0 standard compliance.
@@ -33,7 +35,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### RSS Structure
 
-```xml
+```xml title="rss-structure.txt"
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
   <channel>
@@ -66,7 +68,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### Basic RSS Feed
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 <rss version="2.0">
@@ -98,7 +100,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### RSS Feed with Categories
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 <rss version="2.0">
@@ -132,7 +134,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### RSS Feed with Author
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 <rss version="2.0">
@@ -166,7 +168,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### Multi-Template RSS Feed
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 <rss version="2.0">
@@ -198,7 +200,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### RSS Feed with Images
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 <rss version="2.0">
@@ -232,7 +234,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### RSS Feed for Specific Folder
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 <rss version="2.0">
@@ -263,11 +265,11 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### RSS Feed with Custom Excerpt
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='20'>
   <item>
     <title><cms:show k_page_title /></title>
@@ -289,7 +291,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### RSS Feed with Comments Count
 
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='20'>
   <item>
     <title><cms:show k_page_title /></title>
@@ -310,7 +312,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### RSS Feed Validation
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
@@ -379,7 +381,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 **Problem**: PHP code appears in feed output
 
 **Solution**: Ensure content type is set before XML declaration on same line:
-```php
+```php title="template.php"
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 ```
 
@@ -388,7 +390,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 **Problem**: Feed doesn't validate
 
 **Solution**: Check for proper encoding and structure:
-```php
+```php title="template.php"
 <!-- Ensure proper encoding -->
 <cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 
@@ -401,7 +403,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 **Problem**: HTML tags show as text
 
 **Solution**: Use `html_encode` properly:
-```php
+```php title="template.php"
 <description>
   <cms:html_encode>
     <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
@@ -414,7 +416,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 **Problem**: Items have no content
 
 **Solution**: Check if pages exist and are published:
-```php
+```php title="blog.php"
 <cms:pages masterpage='blog.php' limit='20' orderby='publish_date' order_dir='desc'>
   <cms:if k_page_title>
     <item>
@@ -434,7 +436,7 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">

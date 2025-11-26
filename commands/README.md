@@ -8,7 +8,12 @@ Reusable slash commands for CouchCMS projects.
 |---------|-------------|-------|
 | `code-review.md` | Comprehensive code review checklist | `/code-review` |
 | `create-component.md` | Create a new CouchCMS component | `/create-component` |
+| `retro.md` | Generate session retrospective with auto-analysis | `/retro` |
+| `refactor.md` | Intelligent refactoring with auto-detection | `/refactor` |
 | `refactor-file.md` | Refactor a file using toolkit patterns | `/refactor-file` |
+| `refactor-modules.md` | Validate and refactor modules | `/refactor-modules` |
+| `refactor-agents.md` | Validate and refactor agents | `/refactor-agents` |
+| `refactor-toolkit.md` | Refactor or optimize toolkit components | `/refactor-toolkit` |
 | `validate-code.md` | Validate code against project standards | `/validate-code` |
 | `create-form.md` | Create a DataBound Form | `/create-form` |
 | `create-view.md` | Create a CouchCMS view | `/create-view` |

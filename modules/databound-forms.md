@@ -9,11 +9,12 @@ requires: [couchcms-core]
 conflicts: []
 ---
 
+
 # DataBound Forms Standards
 
 ## Basic Structure
 
-```html
+```html title="items.php"
 <cms:form
   masterpage="items.php"
   mode="create"
@@ -42,13 +43,13 @@ conflicts: []
 
 ### Create Mode
 
-```html
+```html title="items.php"
 <cms:form masterpage="items.php" mode="create"></cms:form>
 ```
 
 ### Edit Mode
 
-```html
+```html title="items.php"
 <cms:form masterpage="items.php" mode="edit" page_id="item_id"></cms:form>
 ```
 
@@ -56,13 +57,13 @@ conflicts: []
 
 ### Text Input
 
-```html
+```html title="template.html"
 <cms:input name="title" type="bound" class="input input-bordered w-full" />
 ```
 
 ### Textarea
 
-```html
+```html title="template.html"
 <cms:input
   name="description"
   type="bound"
@@ -72,25 +73,25 @@ conflicts: []
 
 ### File Upload
 
-```html
+```html title="template.html"
 <cms:input name="image" type="bound" class="file-input file-input-bordered" />
 ```
 
 ### Dropdown
 
-```html
+```html title="template.html"
 <cms:input name="category" type="bound" class="select select-bordered w-full" />
 ```
 
 ### Checkbox
 
-```html
+```html title="template.html"
 <cms:input name="is_published" type="bound" class="checkbox" />
 ```
 
 ### Relation Field
 
-```html
+```html title="template.html"
 <cms:input
   name="related_items"
   type="bound"
@@ -102,7 +103,7 @@ conflicts: []
 
 ### Built-in Validators
 
-```html
+```html title="template.html"
 <cms:input name="email" type="bound" validator="email" required="1" />
 
 <cms:input name="password" type="bound" validator="min_len=8" required="1" />
@@ -110,7 +111,7 @@ conflicts: []
 
 ### Custom Validation
 
-```html
+```html title="template.html"
 <cms:if k_submitted>
   <cms:validate
     field="custom_field"
@@ -124,7 +125,7 @@ conflicts: []
 
 ### Image Upload with Preview
 
-```html
+```html title="template.html"
 <div x-data="{ preview: '<cms:show image />' }">
   <cms:input
     name="image"
@@ -138,7 +139,7 @@ conflicts: []
 
 ### Multiple Files
 
-```html
+```html title="template.html"
 <cms:input name="gallery" type="bound" />
 ```
 
@@ -150,7 +151,7 @@ DataBound Forms include CSRF protection by default. The token is automatically i
 
 ### Ownership Validation
 
-```html
+```html title="template.html"
 <cms:if "<cms:not_empty k_user_id />">
     <cms:if "<cms:is_equal k_page_owner k_user_id />">
         <!-- User owns this content -->
@@ -165,7 +166,7 @@ DataBound Forms include CSRF protection by default. The token is automatically i
 
 ### Redirect After Success
 
-```html
+```html title="items.php"
 <cms:if k_success>
   <cms:redirect "<cms:link masterpage="items.php" />" />
 </cms:if>
@@ -173,7 +174,7 @@ DataBound Forms include CSRF protection by default. The token is automatically i
 
 ### Show Success Message
 
-```html
+```html title="template.html"
 <cms:if k_success>
   <div class="alert alert-success">Item saved successfully!</div>
 </cms:if>
@@ -181,7 +182,7 @@ DataBound Forms include CSRF protection by default. The token is automatically i
 
 ### Set Page Data on Success
 
-```html
+```html title="template.html"
 <cms:if k_success>
   <cms:db_persist_form _invalidate_cache="1" _auto_title="1" />
   <cms:redirect k_redirect_link />
@@ -190,7 +191,7 @@ DataBound Forms include CSRF protection by default. The token is automatically i
 
 ## Complete Example
 
-```html
+```html title="projects.php"
 <cms:embed 'filters/authenticated.html' />
 
 <cms:form

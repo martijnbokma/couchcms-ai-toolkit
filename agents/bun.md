@@ -10,6 +10,7 @@ tags:
     - runtime
 ---
 
+
 # Bun Agent
 
 You are a Bun expert specializing in fast JavaScript runtime, package management, and build tooling.
@@ -33,7 +34,7 @@ You are a Bun expert specializing in fast JavaScript runtime, package management
 
 ### package.json Scripts
 
-```json
+```json title="package.js"
 {
     "scripts": {
         "dev": "bun run --watch {{paths.typescript}}/input.ts",
@@ -58,7 +59,7 @@ You are a Bun expert specializing in fast JavaScript runtime, package management
 
 ### TypeScript Build
 
-```typescript
+```typescript title="input.ts"
 // build.ts
 import { build } from 'bun'
 
@@ -74,7 +75,7 @@ await build({
 
 ### File Operations
 
-```typescript
+```typescript title="config.json"
 import { readFile, writeFile, exists } from 'fs/promises'
 
 // Read file
@@ -91,7 +92,7 @@ const fileExists = await Bun.file('config.json').exists()
 
 ### Environment Variables
 
-```typescript
+```typescript title="example.ts"
 // Access env vars
 const apiKey = Bun.env.API_KEY
 const isDev = Bun.env.NODE_ENV === 'development'
@@ -102,7 +103,7 @@ const isDev = Bun.env.NODE_ENV === 'development'
 
 ### HTTP Server
 
-```typescript
+```typescript title="example.ts"
 Bun.serve({
     port: 3000,
     fetch(request) {
@@ -123,7 +124,7 @@ Bun.serve({
 
 ### Custom Build Script
 
-```typescript
+```typescript title="input.ts"
 // scripts/build.ts
 import { build, type BuildConfig } from 'bun'
 import { rmSync, mkdirSync, existsSync } from 'fs'
@@ -167,7 +168,7 @@ console.log(`Output: ${result.outputs.length} files`)
 
 ### Watch Mode Script
 
-```typescript
+```typescript title="example.ts"
 // scripts/watch.ts
 import { watch } from 'fs'
 import { spawn } from 'bun'
@@ -210,7 +211,7 @@ process.on('SIGINT', () => {
 
 ### Parallel Task Runner
 
-```typescript
+```typescript title="example.ts"
 // scripts/dev.ts
 import { spawn, type Subprocess } from 'bun'
 
@@ -240,7 +241,7 @@ process.on('SIGINT', () => {
 
 ### Dependency Analysis
 
-```typescript
+```typescript title="package.json"
 // scripts/analyze-deps.ts
 const pkg = await Bun.file('package.json').json()
 
@@ -275,7 +276,7 @@ await result.exited
 
 ### Debug Commands
 
-```bash
+```bash title="command.sh"
 # Check Bun version
 bun --version
 

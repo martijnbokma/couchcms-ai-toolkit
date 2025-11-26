@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Comments Agent
 
 You are a CouchCMS comments expert specializing in comment forms, moderation workflows, spam prevention, and comment display with pagination.
@@ -71,7 +73,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 
 ### Enable Comments for Template
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Blog' clonable='1' commentable='1'>
     <!-- Template definition -->
@@ -80,7 +82,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 
 ### Basic Comment Form
 
-```php
+```php title="template.php"
 <cms:if k_is_commentable>
     <div class="comment-form">
         <h3>Post a Comment</h3>
@@ -149,7 +151,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 
 ### Display Comments
 
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <div class="comments-section">
         <h3>Comments</h3>
@@ -212,7 +214,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 
 ### Complete Comment System
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Blog' clonable='1' commentable='1' />
 
@@ -384,11 +386,11 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Recent Comments Widget
 
-```php
+```php title="template.php"
 <!-- Display recent comments from all pages -->
 <div class="recent-comments">
     <h3>Recent Comments</h3>
@@ -406,7 +408,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 
 ### Comments by Template
 
-```php
+```php title="blog.php"
 <!-- Show comments only from specific template -->
 <cms:comments masterpage='blog.php' limit='10' paginate='1'>
     <!-- Comments from blog.php only -->
@@ -415,7 +417,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 
 ### Comments with Gravatar
 
-```php
+```php title="template.php"
 <cms:comments page_id=k_page_id limit='10' paginate='1'>
     <div class="comment mb-6">
         <div class="flex items-start gap-4">
@@ -431,7 +433,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 
 ### Comment Form as Snippet
 
-```php
+```php title="comment-form.html"
 <!-- Save as snippets/forms/comment-form.html -->
 <cms:if k_is_commentable>
     <cms:form method="post">
@@ -480,7 +482,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 **Problem**: Comments don't appear on page
 
 **Solution**: Ensure template has `commentable='1'` and page allows comments:
-```php
+```php title="template.php"
 <cms:template title='Blog' clonable='1' commentable='1'>
 ```
 
@@ -489,7 +491,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 **Problem**: Comment form doesn't show
 
 **Solution**: Check `k_is_commentable` variable:
-```php
+```php title="template.php"
 <cms:if k_is_commentable>
     <!-- Comment form -->
 </cms:if>
@@ -500,7 +502,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 **Problem**: CAPTCHA validation fails
 
 **Solution**: Ensure CAPTCHA field is included for logged-out users:
-```php
+```php title="template.php"
 <cms:if k_logged_out>
     <cms:input type="captcha" name="captcha" format='i-r-t' />
 </cms:if>
@@ -511,7 +513,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 **Problem**: Comments don't save after submission
 
 **Solution**: Ensure `process_comment` tag is called:
-```php
+```php title="template.php"
 <cms:if k_success>
     <cms:process_comment />
     <cms:if k_process_comment_success>
@@ -525,7 +527,7 @@ You are a CouchCMS comments expert specializing in comment forms, moderation wor
 **Problem**: Receiving spam comments
 
 **Solution**: Enable approval and CAPTCHA:
-```php
+```php title="config.php"
 // In config.php
 define( 'K_COMMENTS_REQUIRE_APPROVAL', 1 );
 define( 'K_COMMENTS_INTERVAL', 5 * 60 );
@@ -546,7 +548,7 @@ define( 'K_COMMENTS_INTERVAL', 5 * 60 );
 
 **Solution**:
 
-```php
+```php title="template.php"
 <cms:form method="post">
     <cms:if k_success>
         <cms:process_comment />

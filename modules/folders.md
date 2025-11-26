@@ -9,18 +9,16 @@ requires: [couchcms-core]
 conflicts: []
 ---
 
-# folders
 
+# Folders
 
-
-
-## Folders
+## Overview
 
 Master content organization with CouchCMS virtual folders, create SEO-friendly URL hierarchies, and build dynamic navigation menus with folder-based structure.
 
 ### news.php
 
-```php
+```php title="news.php"
 <cms:folder name="world" title="World News">
     <cms:folder name="north-america" title="North American News">
         <cms:folder name="united-states" title="United States News">
@@ -40,13 +38,13 @@ Master content organization with CouchCMS virtual folders, create SEO-friendly U
 
 ### Root URL
 
-```txt
+```txt title="root-url.txt"
 https://www.yoursite.com/news/a-hot-news.html
 ```
 
 ### Music News URL
 
-```txt
+```txt title="music-news-url.txt"
 https://www.yoursite.com/news/music/a-hot-news.html
 ```
 
@@ -67,19 +65,19 @@ Always get the URL of any section being pointed to by visiting it and copying it
 
 ### Nested Page URL Example
 
-```txt
+```txt title="nested-page-url-example.txt"
 https://www.yoursite.com/one/two/three/
 ```
 
 ### URL Structure Example
 
-```txt
+```txt title="url-structure-example.txt"
 https://www.yoursite.com/one/two/three/
 ```
 
 ### Basic Template Declaration
 
-```php
+```php title="template.php"
 <cms:template clonable="1">
 
     // ... existing code ...
@@ -92,7 +90,7 @@ https://www.yoursite.com/one/two/three/
 
 ### Example
 
-```php
+```php title="index.php"
 <cms:nested_pages masterpage='index.php'>
     <a href="<cms:show k_nestedpage_link />"><cms:show k_nestedpage_title /></a><br />
 </cms:nested_pages>
@@ -100,7 +98,7 @@ https://www.yoursite.com/one/two/three/
 
 ### Example
 
-```txt
+```txt title="example.txt"
 World News
 North American News
 United States News
@@ -119,6 +117,6 @@ Entertainment News
 
 ### Basic Dropdown Example
 
-```php
+```php title="news.php"
 <cms:dropdownfolders masterpage="news.php" />
 ```

@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Nested Pages Agent
 
 You are a CouchCMS nested pages expert specializing in hierarchical page structures, dynamic menu generation, breadcrumbs, and pointer pages for site organization.
@@ -56,7 +58,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Enable Nested Pages
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Pages' clonable='1' nested_pages='1'>
     <cms:editable name='content' label='Content' type='richtext' />
@@ -65,7 +67,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Basic Menu Generation
 
-```php
+```php title="index.php"
 <nav class="navbar">
     <div class="navbar-start">
         <cms:menu masterpage='index.php' />
@@ -75,7 +77,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Custom Menu Styling
 
-```php
+```php title="index.php"
 <nav>
     <cms:menu
         masterpage='index.php'
@@ -86,7 +88,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Breadcrumbs
 
-```php
+```php title="index.php"
 <cms:if k_is_page>
     <nav class="breadcrumbs">
         <ul>
@@ -99,7 +101,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Custom Breadcrumbs
 
-```php
+```php title="index.php"
 <cms:if k_is_page>
     <nav class="breadcrumbs">
         <ul>
@@ -124,7 +126,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Complete Nested Pages Template
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Pages' clonable='1' nested_pages='1'>
     <cms:editable name='content' label='Content' type='richtext' />
@@ -163,7 +165,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Menu with Custom Classes
 
-```php
+```php title="index.php"
 <nav class="navbar bg-base-100 shadow-lg">
     <div class="navbar-start">
         <a href="<cms:show k_site_link />" class="btn btn-ghost text-xl">Site Name</a>
@@ -182,7 +184,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Nested Pages Iteration
 
-```php
+```php title="index.php"
 <cms:nested_pages masterpage='index.php'>
     <cms:if k_level_start><ul class="menu"></cms:if>
     <cms:if k_element_start>
@@ -198,11 +200,11 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Menu with Active States
 
-```php
+```php title="index.php"
 <nav>
     <cms:menu
         masterpage='index.php'
@@ -224,7 +226,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Pointer Page Setup
 
-```php
+```php title="template.php"
 <!-- In admin panel, for a nested page: -->
 <!-- 1. Check "Points to another page" -->
 <!-- 2. Enter target URL (e.g., https://www.yoursite.com/portfolio/) -->
@@ -233,7 +235,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Masquerading Section
 
-```php
+```php title="template.php"
 <!-- For index.php nested pages only -->
 <!-- In admin: -->
 <!-- 1. Create nested page -->
@@ -244,7 +246,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Menu with Icons
 
-```php
+```php title="index.php"
 <nav>
     <cms:menu masterpage='index.php' menu_class='menu menu-horizontal'>
         <!-- Menu items can include icons -->
@@ -254,7 +256,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 ### Conditional Menu Items
 
-```php
+```php title="index.php"
 <cms:nested_pages masterpage='index.php'>
     <cms:if k_show_in_menu>
         <cms:if k_level_start><ul></cms:if>
@@ -303,7 +305,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 **Problem**: Nested pages don't show hierarchy
 
 **Solution**: Ensure `nested_pages='1'` is set:
-```php
+```php title="template.php"
 <cms:template title='Pages' clonable='1' nested_pages='1'>
 ```
 
@@ -312,7 +314,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 **Problem**: Menu doesn't appear
 
 **Solution**: Use `menu` tag with correct masterpage:
-```php
+```php title="index.php"
 <cms:menu masterpage='index.php' />
 ```
 
@@ -321,7 +323,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 **Problem**: Breadcrumbs don't appear
 
 **Solution**: Use `nested_crumbs` tag:
-```php
+```php title="index.php"
 <cms:if k_is_page>
     <cms:nested_crumbs masterpage='index.php' />
 </cms:if>
@@ -346,7 +348,7 @@ You are a CouchCMS nested pages expert specializing in hierarchical page structu
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Pages' clonable='1' nested_pages='1'>
     <cms:editable name='content' label='Content' type='richtext' />

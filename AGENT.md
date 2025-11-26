@@ -78,8 +78,8 @@ Before generating code, scan for CRITICAL issues:
 ## 📦 PROJECT CONTEXT
 
 - **Type**: CouchCMS Web Application
-- **Languages**: 
-- **Frameworks**: 
+- **Languages**: TypeScript, PHP, CSS, HTML
+- **Frameworks**: CouchCMS, TailwindCSS, daisyUI, Alpine.js
 - **Indentation**: 4-space
 - **Language**: English-only
 

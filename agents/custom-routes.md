@@ -11,6 +11,7 @@ requires:
   - couchcms-core
 ---
 
+
 # Custom Routes Agent
 
 You are a CouchCMS routing expert specializing in clean URLs, custom routes, and application-style navigation.
@@ -21,7 +22,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Basic Route Setup
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:extends 'layouts/base.html' />
 
@@ -69,7 +70,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Route with Constraints
 
-```html
+```html title="template.html"
 <cms:route
   name="user_profile"
   pattern="users/{username}"
@@ -87,7 +88,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Multi-Parameter Routes
 
-```html
+```html title="template.html"
 <cms:route
   name="category_filter"
   pattern="projects/category/{category}/page/{page}"
@@ -103,7 +104,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Protected Routes
 
-```html
+```html title="authenticated.html"
 <cms:template title='Dashboard' routable='1'>
     <cms:route name='dashboard' pattern='dashboard' />
     <cms:route name='my_projects' pattern='my-projects' />
@@ -128,7 +129,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### URL Generation
 
-```html
+```html title="projects.php"
 <!-- Generate route URL -->
 <a href="<cms:link masterpage='projects.php' route='detail' id='123' />">
   View Project
@@ -148,7 +149,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Route Validation Filter
 
-```html
+```html title="projects.php"
 <!-- Validate route parameter points to existing page -->
 <cms:if k_route_name='detail'>
     <cms:set valid_page = '0' />
@@ -166,7 +167,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### API Routes
 
-```html
+```html title="projects.php"
 <cms:template title='API' routable='1'>
     <cms:route name='api_projects' pattern='api/v1/projects' />
     <cms:route name='api_project' pattern='api/v1/projects/{id}' constraints='id=\d+' />
@@ -205,7 +206,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Nested Route Handling
 
-```html
+```html title="authenticated.html"
 <!-- Admin routes with sub-sections -->
 <cms:template title='Admin' routable='1'>
     <cms:route name='admin_dashboard' pattern='admin' />
@@ -245,7 +246,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Redirect Patterns
 
-```html
+```html title="projects.php"
 <!-- Redirect old URLs to new routes -->
 <cms:if k_route_name="old_project_url">
   <cms:redirect
@@ -280,7 +281,7 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Debug Routes
 
-```html
+```html title="template.html"
 <!-- Show current route info -->
 <cms:if k_user_access_level ge '7'>
     <div class="bg-base-200 p-4 text-sm">

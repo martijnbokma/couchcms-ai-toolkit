@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # On-Page Editing Agent
 
 You are a CouchCMS on-page editing expert specializing in inline editing, popup editing, and visual content management for frontend editing.
@@ -52,7 +54,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Enable On-Page Editing
 
-```php
+```php title="template.php"
 <!DOCTYPE html>
 <html>
 <head>
@@ -68,7 +70,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Inline Text Editing
 
-```php
+```php title="template.php"
 <!-- For headings -->
 <h1 <cms:inline_edit 'page_title' />><cms:show page_title /></h1>
 
@@ -83,7 +85,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Popup Image Editing
 
-```php
+```php title="template.php"
 <div class="image-container">
     <img src="<cms:show hero_image />" alt="Hero image" />
     <cms:popup_edit 'hero_image' />
@@ -92,7 +94,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Popup with Custom Link Text
 
-```php
+```php title="template.php"
 <div class="content">
     <cms:show intro_text />
     <cms:popup_edit 'intro_text' link_text='Edit content' class='btn btn-sm btn-ghost' />
@@ -101,7 +103,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Multiple Regions in Popup
 
-```php
+```php title="template.php"
 <div class="hero-section">
     <img src="<cms:show hero_image />" alt="Hero" />
     <h1><cms:show hero_title /></h1>
@@ -112,7 +114,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Complete On-Page Editing Template
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Home' clonable='1'>
     <cms:editable name='hero_image' label='Hero Image' type='image' />
@@ -156,7 +158,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Disable Editing Border
 
-```php
+```php title="template.php"
 <head>
     <cms:load_edit no_border='1' />
 </head>
@@ -164,7 +166,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Toggle Editing On/Off
 
-```php
+```php title="template.php"
 <!-- At top of template -->
 <cms:if k_user_access_level ge '7' && "<cms:not "<cms:get_session 'inline_edit_on' />" />">
     <cms:no_edit />
@@ -193,11 +195,11 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Inline Edit with Custom Styling
 
-```php
+```php title="template.php"
 <h1
     <cms:inline_edit 'page_title' />
     class="text-4xl font-bold"
@@ -208,7 +210,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Popup Edit with Icon
 
-```php
+```php title="template.php"
 <div class="relative">
     <img src="<cms:show gallery_image />" alt="Gallery" />
     <cms:popup_edit 'gallery_image' link_text='✏️' class='absolute top-2 right-2 btn btn-circle btn-sm' />
@@ -217,7 +219,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Conditional Editing
 
-```php
+```php title="template.php"
 <cms:if k_user_access_level ge '7'>
     <div class="content">
         <h1 <cms:inline_edit 'page_title' />><cms:show page_title /></h1>
@@ -267,7 +269,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 **Problem**: Edit links don't appear
 
 **Solution**: Ensure `load_edit` is in head and user is admin:
-```php
+```php title="template.php"
 <head>
     <cms:load_edit />
 </head>
@@ -278,7 +280,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 **Problem**: Inline editing doesn't activate
 
 **Solution**: Ensure `inline_edit` is on block-level element:
-```php
+```php title="template.php"
 <!-- ❌ Wrong - inline element -->
 <span <cms:inline_edit 'title' />><cms:show title /></span>
 
@@ -291,7 +293,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 **Problem**: Popup edit link doesn't appear
 
 **Solution**: Check tag placement and region name:
-```php
+```php title="template.php"
 <div>
     <img src="<cms:show my_image />" alt="Image" />
     <cms:popup_edit 'my_image' />
@@ -303,7 +305,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 **Problem**: Edit links visible to regular users
 
 **Solution**: This shouldn't happen - editing is admin-only. Check user access level or add conditional:
-```php
+```php title="template.php"
 <cms:if k_user_access_level ge '7'>
     <cms:popup_edit 'my_image' />
 </cms:if>
@@ -319,7 +321,7 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Home' clonable='1'>
     <cms:editable name='hero_image' label='Hero Image' type='image' />

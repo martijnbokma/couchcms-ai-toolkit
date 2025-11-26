@@ -10,6 +10,7 @@ tags:
     - performance
 ---
 
+
 # MySQL Agent
 
 You are a MySQL expert specializing in CouchCMS database operations, optimization, and query design.
@@ -32,7 +33,7 @@ You are a MySQL expert specializing in CouchCMS database operations, optimizatio
 
 ### Common Query Patterns
 
-```sql
+```sql title="projects.php"
 -- Get all pages from a template
 SELECT p.* 
 FROM couch_pages p
@@ -70,7 +71,7 @@ ORDER BY page_count DESC;
 
 ### Safe Query Execution (PHP)
 
-```php
+```php title="template.php"
 // ✅ Safe: Parameterized query
 $sql = "SELECT * FROM couch_pages WHERE template_id = ? AND publish_date <= ?";
 $stmt = $pdo->prepare($sql);
@@ -82,7 +83,7 @@ $sql = "SELECT * FROM couch_pages WHERE template_id = " . $templateId; // SQL In
 
 ### Get Pages with Custom Fields
 
-```sql
+```sql title="projects.php"
 -- Get projects with their content_owner
 SELECT 
     p.id,
@@ -103,7 +104,7 @@ ORDER BY p.publish_date DESC;
 
 ### Search with Fulltext
 
-```sql
+```sql title="search-with-fulltext.txt"
 -- Enable fulltext search on page content
 ALTER TABLE couch_pages ADD FULLTEXT INDEX ft_search (page_title, content);
 
@@ -119,7 +120,7 @@ LIMIT 20;
 
 ### Pagination Query
 
-```sql
+```sql title="projects.php"
 -- Efficient pagination with total count
 SELECT SQL_CALC_FOUND_ROWS p.*
 FROM couch_pages p
@@ -138,7 +139,7 @@ SELECT FOUND_ROWS() as total;
 
 ### Index Optimization
 
-```sql
+```sql title="index-optimization.txt"
 -- Check existing indexes
 SHOW INDEX FROM couch_pages;
 
@@ -160,7 +161,7 @@ LIMIT 10;
 
 ### Query Performance Analysis
 
-```sql
+```sql title="query-performance-analysis.txt"
 -- Enable slow query logging
 SET GLOBAL slow_query_log = 'ON';
 SET GLOBAL long_query_time = 1;
@@ -183,7 +184,7 @@ ORDER BY data_length DESC;
 
 ### Relationship Queries
 
-```sql
+```sql title="relationship-queries.txt"
 -- Get related pages (many-to-many via couch_relations)
 SELECT 
     p.id,
@@ -210,7 +211,7 @@ ORDER BY relation_count DESC;
 
 ### Repeatable Region Data
 
-```sql
+```sql title="repeatable-region-data.txt"
 -- Repeatable regions are stored as JSON in couch_data_text
 -- Extract JSON data (MySQL 5.7+)
 SELECT 
@@ -232,7 +233,7 @@ WHERE JSON_SEARCH(d.value, 'one', '%search%', NULL, '$[*].episode_title') IS NOT
 
 ### Backup and Maintenance
 
-```bash
+```bash title="command.sh"
 # Backup CouchCMS database
 mysqldump -u root -p database_name \
     --tables couch_pages couch_templates couch_fields \
@@ -248,7 +249,7 @@ mysqlcheck -u root -p --repair database_name couch_pages
 
 ### Transaction Safety
 
-```php
+```php title="template.php"
 <?php
 // Safe transaction for multi-step operations
 try {
@@ -284,7 +285,7 @@ try {
 
 ### Diagnostic Queries
 
-```sql
+```sql title="diagnostic-queries.txt"
 -- Check running queries
 SHOW FULL PROCESSLIST;
 
@@ -306,7 +307,7 @@ WHERE table_schema = DATABASE();
 
 ### Common CouchCMS Issues
 
-```sql
+```sql title="projects.php"
 -- Fix orphaned data (pages deleted but data remains)
 DELETE d FROM couch_data_text d
 LEFT JOIN couch_pages p ON d.page_id = p.id

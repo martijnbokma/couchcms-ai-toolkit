@@ -10,6 +10,7 @@ tags:
   - frontend
 ---
 
+
 # Alpine.js Agent
 
 You are an Alpine.js expert specializing in lightweight, reactive JavaScript for CouchCMS projects.
@@ -39,7 +40,7 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 **⚠️ CRITICAL**: Use `x-on:` instead of `@` in CouchCMS templates (colon conflicts with CMS tags):
 
-```html
+```html title="template.html"
 <!-- ✅ Correct in CouchCMS -->
 <button x-on:click="open = true">Open</button>
 
@@ -61,7 +62,7 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 ### Basic Toggle
 
-```html
+```html title="template.html"
 <div x-data="{ open: false }">
   <button x-on:click="open = !open" class="btn btn-primary">
     <span x-text="open ? 'Close' : 'Open'"></span>
@@ -72,7 +73,7 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 ### Modal Component
 
-```html
+```html title="template.html"
 <div x-data="{ showModal: false }">
   <button x-on:click="showModal = true" class="btn">Open Modal</button>
 
@@ -95,7 +96,7 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 ### Dropdown with CouchCMS Data
 
-```html
+```html title="categories.php"
 <div x-data="{ open: false, selected: '' }" class="dropdown">
   <button x-on:click="open = !open" class="btn">
     <span x-text="selected || 'Select...'"></span>
@@ -120,7 +121,7 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 ### Form with Validation
 
-```html
+```html title="template.html"
 <form
   x-data="{
     title: '',
@@ -177,7 +178,7 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 ### Tabs Component
 
-```html
+```html title="template.html"
 <div x-data="{ activeTab: 'tab1' }">
   <div role="tablist" class="tabs tabs-boxed">
     <button
@@ -209,7 +210,7 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 ### Global State with Stores
 
-```javascript
+```javascript title="example.js"
 // {{paths.typescript}}/stores/app-store.ts
 document.addEventListener("alpine:init", () => {
   Alpine.store("notifications", {
@@ -228,7 +229,7 @@ document.addEventListener("alpine:init", () => {
 });
 ```
 
-```html
+```html title="template.html"
 <!-- Usage anywhere -->
 <button x-on:click="$store.notifications.add('Saved!', 'success')">Save</button>
 
@@ -247,7 +248,7 @@ document.addEventListener("alpine:init", () => {
 
 ### Reusable Component Pattern
 
-```html
+```html title="template.html"
 <!-- Component definition -->
 <script>
   document.addEventListener("alpine:init", () => {
@@ -303,7 +304,7 @@ document.addEventListener("alpine:init", () => {
 
 ### TypeScript Integration
 
-```typescript
+```typescript title="example.ts"
 // {{paths.typescript}}/components/episode-selector.ts
 export interface Episode {
   id: string;
@@ -346,7 +347,7 @@ declare global {
 window.createEpisodeSelector = createEpisodeSelector;
 ```
 
-```html
+```html title="template.html"
 <!-- Usage in CouchCMS -->
 <div x-data="createEpisodeSelector(<cms:show_json episodes />)">
   <input type="text" x-model="filter" placeholder="Filter episodes..." />
@@ -365,7 +366,7 @@ window.createEpisodeSelector = createEpisodeSelector;
 
 ### Intersection Observer (Lazy Loading)
 
-```html
+```html title="template.html"
 <div
   x-data="{ loaded: false }"
   x-intersect:enter="loaded = true"
@@ -382,7 +383,7 @@ window.createEpisodeSelector = createEpisodeSelector;
 
 ### Persist State to LocalStorage
 
-```html
+```html title="template.html"
 <div x-data="{ theme: 'light' }" x-init="$persist(theme)">
   <select x-model="theme">
     <option value="light">Light</option>
@@ -405,7 +406,7 @@ window.createEpisodeSelector = createEpisodeSelector;
 
 ### Anti-Patterns to Fix
 
-```html
+```html title="template.html"
 <!-- ❌ Bad: Too much logic in Alpine -->
 <div
   x-data="{
@@ -425,7 +426,7 @@ window.createEpisodeSelector = createEpisodeSelector;
 ></div>
 ```
 
-```html
+```html title="template.html"
 <!-- ✅ Good: Logic moved to TypeScript -->
 <div
   x-data="{
@@ -444,7 +445,7 @@ window.createEpisodeSelector = createEpisodeSelector;
 
 **Extract Reusable Components:**
 
-```html
+```html title="template.html"
 <!-- Before: Repeated modal pattern -->
 <div x-data="{ open: false }">
   <button x-on:click="open = true">Open</button>
@@ -473,7 +474,7 @@ window.createEpisodeSelector = createEpisodeSelector;
 
 **Add Accessibility:**
 
-```html
+```html title="template.html"
 <!-- Before: No ARIA -->
 <div x-data="{ open: false }">
   <div x-on:click="open = !open">Menu</div>
@@ -497,7 +498,7 @@ window.createEpisodeSelector = createEpisodeSelector;
 
 **Optimize Rendering:**
 
-```html
+```html title="large.html"
 <!-- Before: Always renders, just hides -->
 <div x-show="showLargeComponent"><cms:embed 'components/large.html' /></div>
 
@@ -530,7 +531,7 @@ window.createEpisodeSelector = createEpisodeSelector;
 
 ### Debugging Tips
 
-```html
+```html title="template.html"
 <!-- Log state changes -->
 <div x-data="{ count: 0 }" x-effect="console.log('count:', count)">
   <button x-on:click="count++">Increment</button>

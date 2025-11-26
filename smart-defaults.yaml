@@ -1,10 +1,27 @@
 # CouchCMS AI Toolkit - Smart Defaults Configuration
 # Automatic context loading and suggestions based on file type and location
+#
+# Schema:
+#   file_contexts: object - Glob pattern → context mapping
+#   action_contexts: object - Action name → configuration
+#   intent_patterns: object - Intent name → pattern definition
+#   communication_modes: object - Mode name → mode configuration
+#   suggestion_triggers: object - Trigger name → suggestion rules
+#   context_cache_schema: object - Expected cache structure
+#   template_aliases: object - Alias → template path mapping
+#
+# Used by: AI agents for automatic context loading and smart suggestions
 
 # =============================================================================
 # FILE TYPE CONTEXTS
 # =============================================================================
 # When a file is referenced, automatically load the appropriate agents/modules
+#
+# Schema per entry:
+#   agents: array<string> - List of agent names to activate
+#   modules: array<string> - List of module names to load
+#   checks: array<string> - Pre-flight check names to run
+#   suggestions: array<string> - Suggested improvements
 
 file_contexts:
   # PHP Templates (CouchCMS)
@@ -101,7 +118,15 @@ file_contexts:
 # =============================================================================
 # ACTION CONTEXTS
 # =============================================================================
-# Default configurations for creation commands
+# Default configurations for creation commands (/component, /view, /form, etc.)
+#
+# Schema per action:
+#   files: array<object> - Files to create with path and template
+#     path: string - Output path (supports {{paths.xxx}} and {{name}} variables)
+#     template: string - Template alias or path
+#     optional: boolean - Whether file is optional (default: false)
+#   post_actions: array<string> - Actions to run after creation
+#   variations: object - Command flag variations with overrides
 
 action_contexts:
   # Create Component Bundle
@@ -189,6 +214,12 @@ action_contexts:
 # INTENT PATTERNS
 # =============================================================================
 # Automatic detection of user intent from natural language
+#
+# Schema per intent:
+#   triggers: array<string> - Keywords/phrases that trigger this intent
+#   action: string - Action to execute when intent detected
+#   confirm: string|boolean - Confirmation message (false = no confirmation)
+#   extract: string - Optional: what to extract from input
 
 intent_patterns:
   # Bug Fix Intent
@@ -259,6 +290,15 @@ intent_patterns:
 # =============================================================================
 # COMMUNICATION MODES
 # =============================================================================
+# Output verbosity and interaction style configurations
+#
+# Schema per mode:
+#   description: string - Human-readable description
+#   confirmations: boolean|string - When to ask for confirmation
+#   explanations: string - Level of explanation (minimal|brief|full)
+#   suggestions: string - Format for suggestions (compact|structured|detailed)
+#   format: string - Output format style
+#   include_references: boolean - Whether to include documentation references
 
 communication_modes:
   quick:
@@ -286,6 +326,13 @@ communication_modes:
 # =============================================================================
 # SUGGESTION TRIGGERS
 # =============================================================================
+# When to suggest related improvements after completing actions
+#
+# Schema per trigger:
+#   - suggest: string - Direct suggestion text
+#   - check: string - Condition to check before suggesting
+#     suggest: string - Suggestion if condition is true
+#     count: string - Variable name for count in suggestion text
 
 suggestion_triggers:
   # After fixing a bug
@@ -322,6 +369,17 @@ suggestion_triggers:
 # PROJECT CONTEXT STRUCTURE
 # =============================================================================
 # Expected structure for .project/context-cache.json
+#
+# This schema documents the expected format for cached project context.
+# Used for performance optimization - avoids re-scanning on every request.
+#
+# Schema:
+#   lastUpdated: string (ISO8601) - When cache was last updated
+#   projectStructure: object - File listings by category
+#   dependencies: object - Framework/library versions
+#   patterns: object - Paths to common patterns
+#   recentChanges: array<object> - Recent file modifications
+#   conventions: object - Project-specific conventions
 
 context_cache_schema:
   lastUpdated: "ISO8601 timestamp"
@@ -350,6 +408,11 @@ context_cache_schema:
 # =============================================================================
 # TEMPLATE ALIASES
 # =============================================================================
+# Short names for template paths used in action_contexts
+#
+# Schema: alias-name → template-path
+# Paths are relative to toolkit root or can be absolute
+# Used by: /component, /view, /form commands
 
 template_aliases:
   # Component templates

@@ -9,50 +9,14 @@
  */
 
 import { readFileSync, existsSync } from 'fs'
-import { dirname, resolve } from 'path'
+import { dirname, resolve, join } from 'path'
 import { fileURLToPath } from 'url'
-import { findConfigFile, loadConfig, getConfigFileName } from './utils.js'
+import { findConfigFile, loadConfig, getConfigFileName, findProjectFile, resolveToolkitPath } from './utils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const TOOLKIT_ROOT = resolve(__dirname, '..')
 
-/**
- * Find configuration file (standards.md) in current directory or parent directories
- */
-function findProjectFile(startDir = process.cwd()) {
-    let currentDir = startDir
-
-    while (currentDir !== '/') {
-        const configPath = findConfigFile(currentDir)
-        if (configPath) {
-            return configPath
-        }
-        currentDir = dirname(currentDir)
-    }
-
-    return null
-}
-
-/**
- * Resolve toolkit path from project config
- */
-function resolveToolkitPath(configPath, projectDir) {
-    if (!configPath) {
-        return TOOLKIT_ROOT
-    }
-
-    if (configPath.startsWith('~')) {
-        configPath = configPath.replace('~', process.env.HOME)
-    }
-
-    if (!configPath.startsWith('/')) {
-        // Resolve relative to project directory, not current working directory
-        configPath = resolve(projectDir, configPath)
-    }
-
-    return configPath
-}
 
 /**
  * Main validation function
@@ -110,7 +74,7 @@ async function validate() {
     }
 
     // Validate toolkit path
-    const toolkitPath = resolveToolkitPath(config.toolkit, projectDir)
+    const toolkitPath = resolveToolkitPath(config.toolkit, projectDir, TOOLKIT_ROOT)
 
     if (!existsSync(toolkitPath)) {
         errors.push(`Toolkit path not found: ${toolkitPath}`)

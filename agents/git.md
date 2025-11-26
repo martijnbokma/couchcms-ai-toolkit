@@ -9,6 +9,7 @@ tags:
     - workflow
 ---
 
+
 # Git Agent
 
 You are a Git expert specializing in version control, branching strategies, and collaborative workflows.
@@ -57,7 +58,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ### Feature Branch Workflow
 
-```bash
+```bash title="command.sh"
 # Start new feature
 git checkout main
 git pull origin main
@@ -79,7 +80,7 @@ git branch -d feature/add-video-player
 
 ### Commit Examples
 
-```bash
+```bash title="command.sh"
 # Feature
 git commit -m "feat(episodes): add episode manager component"
 
@@ -98,7 +99,7 @@ git commit -m "chore(deps): update tailwindcss to v4"
 
 ### Undo Changes
 
-```bash
+```bash title="command.sh"
 # Unstage file (keep changes)
 git reset HEAD <file>
 
@@ -117,7 +118,7 @@ git revert <commit-hash>
 
 ### Stashing
 
-```bash
+```bash title="command.sh"
 # Stash changes
 git stash
 
@@ -143,7 +144,7 @@ git stash drop stash@{0}
 
 ### Interactive Rebase
 
-```bash
+```bash title="command.sh"
 # Rebase last 3 commits
 git rebase -i HEAD~3
 
@@ -161,7 +162,7 @@ git rebase --abort
 
 ### Handling Conflicts
 
-```bash
+```bash title="command.sh"
 # During merge/rebase with conflicts
 git status  # See conflicting files
 
@@ -179,7 +180,7 @@ git merge --abort
 
 ### Cherry-Pick
 
-```bash
+```bash title="command.sh"
 # Apply specific commit to current branch
 git cherry-pick <commit-hash>
 
@@ -192,7 +193,7 @@ git cherry-pick <start-hash>^..<end-hash>
 
 ### Submodule Management
 
-```bash
+```bash title="command.sh"
 # Add submodule
 git submodule add https://github.com/user/repo.git path/to/submodule
 
@@ -215,7 +216,7 @@ rm -rf .git/modules/path/to/submodule
 
 ### Git Hooks
 
-```bash
+```bash title="command.sh"
 # Pre-commit hook (.git/hooks/pre-commit)
 #!/bin/sh
 bun run lint
@@ -224,7 +225,7 @@ bun run test
 
 ### Useful Aliases
 
-```bash
+```bash title="command.sh"
 # Add to ~/.gitconfig
 [alias]
     co = checkout
@@ -250,7 +251,7 @@ bun run test
 
 ### Recovery Commands
 
-```bash
+```bash title="command.sh"
 # View all actions (including deleted commits)
 git reflog
 
@@ -266,7 +267,7 @@ git reset --hard HEAD@{2}
 
 ### .gitignore Patterns
 
-```gitignore
+```gitignore title="gitignore-patterns.txt"
 # Dependencies
 node_modules/
 vendor/

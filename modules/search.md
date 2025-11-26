@@ -9,30 +9,28 @@ requires: [couchcms-core]
 conflicts: []
 ---
 
-# search
 
+# Search
 
-
-
-## Search
+## Overview
 
 Complete guide to implementing search functionality in CouchCMS using MySQL fulltext search with relevance ranking and pagination support.
 
 ### Search URL Example
 
-```txt
+```txt title="search-url-example.txt"
 https://www.yoursite.com/search.php?s=hello+world
 ```
 
 ### Basic Search Form
 
-```php
+```php title="template.php"
 <cms:search_form />
 ```
 
 ### Search Form with Custom Processor
 
-```php
+```php title=">search.php"
 <cms:search_form msg='Enter keywords' processor="<cms:show k_site_link />search.php" />
 ```
 
@@ -41,13 +39,13 @@ https://www.yoursite.com/search.php?s=hello+world
 
 ### Example
 
-```php
+```php title="news.php"
 <cms:search masterpage='news.php' >..</cms:search>
 ```
 
 ### Example
 
-```php
+```php title="news.php, blog.php"
 <cms:search masterpage='news.php, blog.php' >..</cms:search>
 ```
 
@@ -56,12 +54,12 @@ https://www.yoursite.com/search.php?s=hello+world
 
 ### Example
 
-```php
+```php title="template.php"
 <cms:search_form />
 ```
 
 ### Example
 
-```php
+```php title=">search.php"
 <cms:search_form msg='Search' processor="<cms:show k_site_link/>search.php" />
 ```

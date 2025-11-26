@@ -9,18 +9,16 @@ requires: [couchcms-core]
 conflicts: []
 ---
 
-# comments
 
+# Comments
 
-
-
-## Comments
+## Overview
 
 Comprehensive guide to enabling user comments on CouchCMS pages including comment forms, spam prevention with CAPTCHA, moderation workflow, and comment listing.
 
 ### blog.php
 
-```php
+```php title="blog.php"
 <cms:template title='Blog' clonable='1' commentable='1'>
     <!-- The editable and folder tags can go here -->
 </cms:template>
@@ -28,7 +26,7 @@ Comprehensive guide to enabling user comments on CouchCMS pages including commen
 
 ### config.php
 
-```php
+```php title="config.php"
 // 20.
 // A setting of '1' will necessitate the admin to approve comments before they get published.
 // '0' will publish comments immediately.
@@ -43,7 +41,7 @@ define( 'K_COMMENTS_INTERVAL', 5 * 60 );
 
 ### Comment Form Template
 
-```php
+```php title="template.php"
 <cms:if k_is_commentable >
 <div class="comment-form" >
     <h3>Post a comment</h3>
@@ -146,13 +144,13 @@ define( 'K_COMMENTS_INTERVAL', 5 * 60 );
 
 ### Example
 
-```php
+```php title="blog.php"
 <cms:comments masterpage='blog.php'></cms:comments>
 ```
 
 ### Example
 
-```php
+```php title="blog.php, testimonial.php"
 <cms:comments masterpage='blog.php, testimonial.php'></cms:comments>
 ```
 
@@ -165,7 +163,7 @@ Comprehensive guide to enabling user comments on CouchCMS pages including commen
 
 ### blog.php
 
-```php
+```php title="blog.php"
 <cms:template title='Blog' clonable='1' commentable='1'>
     <!-- The editable and folder tags can go here -->
 </cms:template>
@@ -173,7 +171,7 @@ Comprehensive guide to enabling user comments on CouchCMS pages including commen
 
 ### config.php
 
-```php
+```php title="config.php"
 // 20.
 // A setting of '1' will necessitate the admin to approve comments before they get published.
 // '0' will publish comments immediately.
@@ -188,7 +186,7 @@ define( 'K_COMMENTS_INTERVAL', 5 * 60 );
 
 ### Comment Form Template
 
-```php
+```php title="template.php"
 <cms:if k_is_commentable >
 <div class="comment-form" >
     <h3>Post a comment</h3>
@@ -291,12 +289,12 @@ define( 'K_COMMENTS_INTERVAL', 5 * 60 );
 
 ### Example
 
-```php
+```php title="blog.php"
 <cms:comments masterpage='blog.php'></cms:comments>
 ```
 
 ### Example
 
-```php
+```php title="blog.php, testimonial.php"
 <cms:comments masterpage='blog.php, testimonial.php'></cms:comments>
 ```

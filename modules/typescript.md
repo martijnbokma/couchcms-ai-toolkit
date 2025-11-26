@@ -9,13 +9,14 @@ requires: []
 conflicts: []
 ---
 
+
 # TypeScript Standards
 
 ## Configuration
 
 ### tsconfig.json
 
-```json
+```json title="tsconfig.json"
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -48,7 +49,7 @@ conflicts: []
 
 ### Interfaces (Preferred for Objects)
 
-```typescript
+```typescript title="example.ts"
 export interface UserProfile {
   id: string;
   name: string;
@@ -59,14 +60,14 @@ export interface UserProfile {
 
 ### Types (For Unions/Complex Types)
 
-```typescript
+```typescript title="example.ts"
 export type VideoStatus = "playing" | "paused" | "ended";
 export type EventHandler = (event: Event) => void;
 ```
 
 ### Avoid Enums
 
-```typescript
+```typescript title="example.ts"
 // ❌ Avoid enums
 enum Status {
   Active,
@@ -85,7 +86,7 @@ type Status = (typeof Status)[keyof typeof Status];
 
 ### RORO Pattern (Receive Object, Return Object)
 
-```typescript
+```typescript title="example.ts"
 interface GetUserOptions {
   id: string;
   includeProfile?: boolean;
@@ -105,7 +106,7 @@ export function getUser(options: GetUserOptions): GetUserResult {
 
 ### Guard Clauses
 
-```typescript
+```typescript title="example.ts"
 export function processUser(user: User | null): string {
   if (!user) {
     return "No user";
@@ -123,7 +124,7 @@ export function processUser(user: User | null): string {
 
 ### Result Types
 
-```typescript
+```typescript title="example.ts"
 type Result<T, E = Error> =
   | { success: true; data: T }
   | { success: false; error: E };
@@ -139,7 +140,7 @@ function parseJson<T>(json: string): Result<T> {
 
 ### Validation
 
-```typescript
+```typescript title="example.ts"
 function validateEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -150,7 +151,7 @@ function validateEmail(email: string): boolean {
 
 ### Named Exports Only
 
-```typescript
+```typescript title="example.ts"
 // ✅ GOOD: Named exports
 export function createPlayer() { ... }
 export interface PlayerConfig { ... }
@@ -161,7 +162,7 @@ export default class Player { ... }
 
 ### No Barrel Files
 
-```typescript
+```typescript title="example.ts"
 // ❌ BAD: index.ts barrel file
 export * from "./player";
 export * from "./utils";
@@ -175,7 +176,7 @@ import { formatTime } from "./utils";
 
 ### Type-Safe Element Selection
 
-```typescript
+```typescript title="example.ts"
 function getElement<T extends HTMLElement>(
   selector: string,
   parent: Document | Element = document
@@ -191,7 +192,7 @@ if (button) {
 
 ### Event Handling
 
-```typescript
+```typescript title="example.ts"
 function handleClick(event: MouseEvent): void {
   const target = event.target as HTMLElement;
   // ...
@@ -222,7 +223,7 @@ element.addEventListener("click", handleClick);
 
 ### 🚨 CRITICAL: No var() in Inline SVG
 
-```typescript
+```typescript title="example.ts"
 // ❌ BAD: CSS var() doesn't work in SVG attributes
 element.innerHTML = `<svg fill="var(--primary)">`;
 

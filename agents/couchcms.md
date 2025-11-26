@@ -9,6 +9,7 @@ tags:
   - templates
 ---
 
+
 # CouchCMS Agent
 
 You are a CouchCMS expert specializing in template development, content management, and clean architecture.
@@ -19,7 +20,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Template Structure
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:extends 'layouts/base.html' />
 
@@ -55,13 +56,13 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ⚠️ **HTML Comments**: Use `[cms:` instead of `<cms:` in HTML comments to prevent crashes:
 
-```html
+```html title="template.html"
 <!-- [cms: This won't execute ] -->
 ```
 
 ⚠️ **Self-Closing Tags**: Always use explicit closing tags:
 
-```html
+```html title="template.html"
 <!-- ✅ Correct -->
 <cms:show content></cms:show>
 
@@ -83,7 +84,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Listing Pages
 
-```html
+```html title="projects.php"
 <cms:pages
   masterpage="projects.php"
   custom_field="is_published=1"
@@ -109,7 +110,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Pagination
 
-```html
+```html title="projects.php"
 <cms:pages masterpage="projects.php" limit="10" paginate="1">
   <!-- Content -->
 
@@ -138,7 +139,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Sub-Templates
 
-```html
+```html title="template.html"
 <cms:template title="Projects" clonable="1">
   <!-- Common fields -->
   <cms:editable name="description" type="textarea" />
@@ -162,7 +163,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Relationships
 
-```html
+```html title="projects.php"
 <!-- Define relation field -->
 <cms:editable name='related_projects'
               type='relation'
@@ -183,7 +184,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### User Authentication
 
-```html
+```html title="login.php"
 <!-- {{paths.filters}}/authenticated.html -->
 <cms:if "<cms:not k_logged_in />">
     <cms:set_flash name='redirect_after_login' value=k_page_link />
@@ -193,7 +194,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Ownership Validation
 
-```html
+```html title="template.html"
 <!-- {{paths.filters}}/owns_content.html -->
 <cms:if k_is_page>
     <cms:if content_owner ne k_user_name>
@@ -222,14 +223,14 @@ Components (head.html, footer.html)
 
 **Critical**: `<cms:extends>` must be immediately after `require_once`:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:extends 'layouts/base.html' />
 ```
 
 ### Custom Routes
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:extends 'layouts/base.html' />
 
@@ -256,7 +257,7 @@ Components (head.html, footer.html)
 
 ### Custom Functions
 
-```html
+```html title="template.html"
 <cms:func 'generate_slug' text=''>
     <cms:set slug="<cms:lower text />" />
     <cms:set slug="<cms:replace ' ' '-' slug />" />
@@ -270,7 +271,7 @@ Components (head.html, footer.html)
 
 ### Caching
 
-```html
+```html title="projects.php"
 <!-- Cache expensive queries -->
 <cms:cached name="featured_projects" expiry="3600">
   <cms:pages masterpage="projects.php" custom_field="featured=1" limit="6">
@@ -284,7 +285,7 @@ Components (head.html, footer.html)
 
 ### JSON API
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 
 <cms:content_type 'application/json' />
@@ -317,7 +318,7 @@ Components (head.html, footer.html)
 
 ### Anti-Patterns to Fix
 
-```html
+```html title="template.html"
 <!-- ❌ Bad: Using <cms: in HTML comments -->
 <!-- <cms:show k_page_title /> - This WILL execute! -->
 
@@ -325,7 +326,7 @@ Components (head.html, footer.html)
 <!-- [cms:show k_page_title /] - This won't execute -->
 ```
 
-```html
+```html title="template.html"
 <!-- ❌ Bad: Using <cms:php> for simple logic -->
 <cms:php> if ($k_page_title == 'Home') { echo 'Welcome'; } </cms:php>
 
@@ -337,7 +338,7 @@ Components (head.html, footer.html)
 
 **Extract Reusable Snippets:**
 
-```html
+```html title="content-card.html"
 <!-- Before: Repeated card pattern -->
 <div class="card">
   <h2><cms:show k_page_title /></h2>
@@ -358,7 +359,7 @@ Components (head.html, footer.html)
 
 **Flatten Deep Nesting:**
 
-```html
+```html title="authenticated.html"
 <!-- Before: Deep nesting -->
 <cms:if k_logged_in>
   <cms:if k_is_page>
@@ -373,7 +374,7 @@ Components (head.html, footer.html)
 
 **Add Security Patterns:**
 
-```html
+```html title="projects.php"
 <!-- Before: No ownership check -->
 <cms:form masterpage="projects.php" mode="edit" page_id="k_page_id">
   ...
@@ -412,7 +413,7 @@ Components (head.html, footer.html)
 
 ### Debug Tools
 
-```html
+```html title="template.html"
 <!-- Dump variable -->
 <cms:dump var_name />
 

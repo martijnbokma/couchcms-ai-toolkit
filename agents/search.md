@@ -12,6 +12,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Search Agent
 
 You are a CouchCMS search expert specializing in MySQL fulltext search implementation, search forms, result display, and relevance ranking.
@@ -30,7 +32,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Basic Search Structure
 
-```php
+```php title="blog.php"
 <cms:search masterpage='blog.php' limit='10' paginate='1'>
     <h3><a href="<cms:show k_page_link />"><cms:show k_search_title /></a></h3>
     <cms:show k_search_excerpt />
@@ -62,7 +64,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Basic Search Page
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Search' />
 
@@ -112,7 +114,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Search Form on Different Page
 
-```php
+```php title=">search.php"
 <!-- On homepage (index.php) -->
 <cms:search_form
     msg='Search...'
@@ -127,7 +129,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Custom Search Form
 
-```html
+```html title=">search.php"
 <form method="get" action="<cms:show k_site_link />search.php" class="form-control">
     <div class="input-group">
         <input
@@ -144,7 +146,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Search with Keywords Parameter
 
-```php
+```php title="blog.php"
 <cms:search
     masterpage='blog.php'
     limit='10'
@@ -157,7 +159,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Multi-Template Search
 
-```php
+```php title="blog.php,portfolio.php"
 <!-- Search multiple templates -->
 <cms:search masterpage='blog.php,portfolio.php' limit='20' paginate='1'>
     <div class="mb-4">
@@ -170,7 +172,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Exclude Templates from Search
 
-```php
+```php title="!admin.php,!drafts.php"
 <!-- Search all templates except specific ones -->
 <cms:search masterpage='!admin.php,!drafts.php' limit='10' paginate='1'>
     <!-- Results here -->
@@ -179,7 +181,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Search with Folder Filter
 
-```php
+```php title="blog.php"
 <!-- Search only in specific folder -->
 <cms:search masterpage='blog.php' folder='news' limit='10' paginate='1'>
     <!-- Results here -->
@@ -188,11 +190,11 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Search with Date Range
 
-```php
+```php title="blog.php"
 <cms:search masterpage='blog.php' limit='10' paginate='1'>
     <cms:if k_page_date gte='2024-01-01' AND k_page_date lte='2024-12-31'>
         <div class="mb-4">
@@ -206,7 +208,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Search Results with Categories
 
-```php
+```php title="blog.php"
 <cms:search masterpage='blog.php' limit='10' paginate='1'>
     <div class="card bg-base-100 shadow-md mb-4">
         <div class="card-body">
@@ -227,7 +229,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Search Form with Autocomplete
 
-```html
+```html title=">search.php"
 <div class="form-control" x-data="{ query: '' }">
     <form method="get" action="<cms:show k_site_link />search.php" class="input-group">
         <input
@@ -279,7 +281,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 **Problem**: Search form submits but shows no results
 
 **Solution**:
-```php
+```php title="template.php"
 <!-- Check if search terms exist -->
 <cms:if k_search_keywords>
     <cms:search limit='10' paginate='1'>
@@ -295,7 +297,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 **Problem**: Search results don't show highlighted terms
 
 **Solution**: Use `k_search_title` and `k_search_excerpt` instead of `k_page_title` and regular content:
-```php
+```php title="template.php"
 <!-- ❌ Wrong -->
 <h3><cms:show k_page_title /></h3>
 
@@ -308,7 +310,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 **Problem**: Search takes too long on large sites
 
 **Solution**: Limit search scope and add pagination:
-```php
+```php title="blog.php,news.php"
 <!-- Limit to specific templates -->
 <cms:search masterpage='blog.php,news.php' limit='20' paginate='1'>
     <!-- Results -->
@@ -326,7 +328,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 **Problem**: Search form doesn't go to search results page
 
 **Solution**: Use `processor` parameter:
-```php
+```php title=">search.php"
 <cms:search_form processor="<cms:show k_site_link />search.php" />
 ```
 
@@ -340,7 +342,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Search' />
 
@@ -391,7 +393,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 **Solution**:
 
-```html
+```html title=">search.php"
 <!-- In snippets/layouts/header.html -->
 <div class="navbar-end">
     <form method="get" action="<cms:show k_site_link />search.php" class="form-control">
@@ -415,7 +417,7 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 **Solution**:
 
-```php
+```php title="blog.php"
 <cms:search masterpage='blog.php' limit='20' paginate='1'>
     <cms:if k_folder_name='<cms:gpc 'category' />' OR k_gpc_category=''>
         <div class="mb-4">

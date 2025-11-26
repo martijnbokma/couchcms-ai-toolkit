@@ -67,6 +67,40 @@ Refactor @assets/css/components/cards-coming-soon.css using @ai-toolkit-shared/p
 - Accessibility markup
 - Responsive behavior
 
+### Toolkit Refactoring
+
+**`toolkit.md`** - Refactor or optimize toolkit components (scripts, configs, prompts, modules, agents, rules).
+
+**Use when**: You want to refactor or optimize the toolkit itself.
+
+**Handles**:
+
+- **Scripts** (`scripts/*.js`) - Refactor sync.js, validate.js, etc.
+- **Configuration** (`*.yaml`, `defaults.yaml`) - Optimize config structure
+- **Prompts** (`prompts/**/*.md`) - Improve prompt structure
+- **Modules** (`modules/*.md`) - Refactor module documentation
+- **Agents** (`agents/*.md`) - Optimize agent guidelines
+- **Rules** (`rules/*.mdc`) - Refactor auto-loading rules
+- **Commands** (`commands/*.md`) - Improve command definitions
+
+**Special Considerations**:
+
+- Maintains toolkit architecture principles
+- Ensures backward compatibility
+- Updates CHANGELOG.md automatically
+- Verifies sync.js and validate.js still work
+- Documents breaking changes
+- Updates all cross-references
+
+**Example usage**:
+
+```
+Refactor @scripts/sync.js using @prompts/refactoring/toolkit.md
+Optimize @prompts/refactoring/router.md using @prompts/refactoring/toolkit.md
+```
+
+**Related**: See also `@prompts/best-practices/toolkit-optimization.md` for performance optimization strategies.
+
 ## Auto-Loading Rules
 
 The following `.mdc` rules automatically load when matching files are selected:

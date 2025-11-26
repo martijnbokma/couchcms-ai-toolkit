@@ -26,55 +26,93 @@ The AAPF framework embodies five foundational principles:
 
 ## Sync Status
 
-This is a **vendored copy** of the AAPF framework, maintained with manual sync.
+This is an **adapted and enhanced version** of the AAPF framework, integrated with the CouchCMS AI Toolkit.
 
-### Last Sync
+### Framework Evolution
 
-- **Date**: 2025-11-25
-- **Source**: https://gist.github.com/aashari/07cc9c1b6c0debbeb4f4d94a3a81339e
-- **Status**: Initial import
-- **Changes**: None (pristine copy)
+The framework has been significantly enhanced and integrated:
 
-### Sync Process
+- **Original Source**: Based on AAPF by aashari
+- **Current Status**: Fully integrated with CouchCMS AI Toolkit
+- **Enhancements**: Smart Operations, project standards integration, comprehensive playbooks
 
-1. **Check for updates** periodically (monthly recommended)
-2. **Review upstream changes** in the Gist
-3. **Document changes** below before merging
-4. **Test integration** after sync
-5. **Update this file** with sync date and changes
+### Last Major Update
 
-### How to Check for Updates
+- **Date**: 2025-01-26
+- **Status**: Fully integrated and aligned with toolkit
+- **Changes**: Comprehensive refactoring and enhancement
 
-```bash
-# Visit the original Gist
-open https://gist.github.com/aashari/07cc9c1b6c0debbeb4f4d94a3a81339e
+### Integration Status
 
-# Compare with local files
-diff <(curl -s https://gist.githubusercontent.com/aashari/07cc9c1b6c0debbeb4f4d94a3a81339e/raw/01-core.md) ai-toolkit-shared/framework/01-core.md
-```
+✅ **Fully Integrated:**
+- Operational Doctrine aligned with toolkit structure
+- Playbooks refactored and comprehensive
+- Smart Operations fully documented
+- Directives integrated into all agent configs
+- Testing guide updated
+
+✅ **Toolkit Integration:**
+- Automatic sync via `bun scripts/sync.js`
+- Integrated into all AI agent configurations
+- Pre-flight checks configuration
+- Smart defaults configuration
+- Project standards integration
 
 ## Local Modifications
 
-### None Currently
+### Framework Enhancements
 
-All files are pristine copies from the original source.
+**Date**: 2025-01-26
 
-Any future modifications will be documented here with:
+**Reason**: Integration with CouchCMS AI Toolkit and alignment with best practices
 
-- Date of modification
-- Reason for modification
-- Specific changes made
-- Impact on integration
+**Specific Changes**:
+
+1. **Operational Doctrine:**
+   - Added Smart Operations integration section
+   - Added Project Standards integration
+   - Added Playbook integration
+   - Enhanced reconnaissance checklist (8 items)
+   - Expanded workflow protocols
+
+2. **Playbooks:**
+   - `request.md`: Comprehensive refactoring with toolkit integration
+   - `refresh.md`: Enhanced root cause analysis protocol
+   - `retro.md`: Already comprehensive, maintained structure
+
+3. **Smart Operations:**
+   - Complete documentation of all features
+   - Configuration file references
+   - Integration with doctrine and playbooks
+   - Examples for all communication modes
+
+4. **Documentation:**
+   - README.md updated with current structure
+   - Testing guide aligned with current playbooks
+   - Attribution maintained
+
+**Impact on Integration:**
+- Framework is now fully integrated with toolkit
+- All configurations sync automatically
+- Pre-flight checks enforce standards
+- Smart context loading provides appropriate guidance
 
 ## Changelog
 
+### 2025-01-26 - Framework Integration & Enhancement
+
+- ✅ Operational Doctrine refactored and aligned with toolkit
+- ✅ Playbooks (request.md, refresh.md) comprehensively enhanced
+- ✅ Smart Operations fully documented
+- ✅ README.md updated with current structure
+- ✅ Integration with toolkit sync.js complete
+- ✅ All agent configurations updated
+
 ### 2025-11-25 - Initial Import
 
-- ✅ Imported complete AAPF framework from original Gist
+- ✅ Imported AAPF framework concepts from original Gist
 - ✅ Added attribution documentation
-- ✅ Set up manual sync process
-- ⚠️ Framework files: 00-07 imported as-is
-- ⚠️ No integration with toolkit sync.js yet (pending decision)
+- ✅ Set up integration with toolkit
 
 ### Future Syncs
 
@@ -91,13 +129,33 @@ When using this framework:
 3. **Document modifications** if you customize the framework
 4. **Respect the philosophy** - don't water down the discipline
 
+## Framework Files
+
+**Current Structure:**
+- `doctrine/operational-doctrine.md` - Core operational principles (enhanced)
+- `playbooks/request.md` - Feature request playbook (refactored)
+- `playbooks/refresh.md` - Bug fix playbook (refactored)
+- `playbooks/retro.md` - Retrospective playbook (maintained)
+- `enhancements/smart-operations.md` - Smart Operations (comprehensive)
+- `directives/concise.md` - Conciseness directive (maintained)
+- `directives/communication.md` - Communication directive (maintained)
+- `docs/testing.md` - Testing guide (needs update)
+
+**Integration Points:**
+- `preflight-checks.yaml` - Pre-flight check definitions
+- `smart-defaults.yaml` - Context loading and intent patterns
+- `docs/standards.md` - Project standards (referenced by framework)
+
 ## Questions or Contributions
 
-For questions about the AAPF framework itself, refer to:
+For questions about the **AAPF framework concepts**, refer to:
 
 - Original Gist: https://gist.github.com/aashari/07cc9c1b6c0debbeb4f4d94a3a81339e
 - Author's profile: https://github.com/aashari
 
-For questions about **toolkit integration**, refer to:
+For questions about **toolkit integration and enhancements**, refer to:
 
 - CouchCMS AI Toolkit: https://github.com/martijnbokma/couchcms-ai-toolkit
+- Framework README: `framework/README.md`
+- Operational Doctrine: `framework/doctrine/operational-doctrine.md`
+- Smart Operations: `framework/enhancements/smart-operations.md`

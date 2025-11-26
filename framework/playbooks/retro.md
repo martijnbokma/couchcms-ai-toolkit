@@ -1,242 +1,315 @@
-# Session Retrospective: 5 Slides Rollout & Architecture Evolution
+# Session Retrospective: Metacognitive Self-Improvement Loop
 
-> **📌 NOTE**: This retrospective has been moved to the centralized retrospectives directory.
-> **New Location**: `/docs/retrospectives/2025-11-02-swiper-carousel-5-slides.md`
-> **Index**: `/docs/retrospectives/README.md`
-
-**Date:** 2025-11-02
-**Session Type:** Feature Implementation + Refactoring Analysis
-**Mission:** Increase visible slides from 4 to 5 in "Recently Added" sections
-**Status:** ✅ Complete with Critical Lessons Learned
+{Replace this line with a brief description of the session: what was accomplished, what challenges were encountered, and what key learnings emerged. Be specific about the mission type (Feature Implementation, Bug Fix, Refactoring, etc.)}
 
 ---
 
-## Phase 3: Final Report
+## **Mission Briefing: Doctrine Evolution Protocol**
 
-### 📝 Doctrine Update Summary
+You will now conduct a structured retrospective of the completed session in full compliance with your **AUTONOMOUS PRINCIPAL ENGINEER - OPERATIONAL DOCTRINE.** This retrospective serves as the **metacognitive self-improvement loop** that ensures continuous evolution of the framework and project standards.
 
-**Project Doctrine Updated:** `/docs/standards.md`
+**Objective:** Identify durable, transferable lessons that should be integrated into the operational doctrine, project standards, or toolkit configuration.
 
-**Changes Applied:**
-
-#### 1. CouchCMS Template Development Best Practices (Section 4.1)
-
-**Added Critical Limitation:**
-
-```diff
-+ - **🚨 CRITICAL: No Nested Embeds in Capture Contexts**: Never use `<cms:embed>`
-+   within `<cms:capture>` contexts. CouchCMS cannot reliably parse nested embeds in
-+   captures, especially when they contain `<cms:show>` tags within string attributes.
-+   This causes quote escaping failures in eval'd PHP code. Always use inline markup
-+   within captures. See `/docs/architecture/couchcms-capture-limitations.md` for
-+   technical details.
-```
-
-#### 2. Code Generation Guidelines - CouchCMS Templates (Section)
-
-**Added Parameter Requirements:**
-
-```diff
-+ **Parameter-Based Component Requirements:**
-+
-+ When using reusable CouchCMS components (like `swiper-section.html`), ALWAYS pass
-+ explicit parameters - never rely on CSS defaults or implicit fallbacks:
-+
-+ <!-- ❌ BAD: Missing critical parameters -->
-+ <cms:embed 'components/media/swiper/swiper-section.html'
-+     masterpage='films.php'
-+     section_title='Recently Added'
-+ />
-+
-+ <!-- ✅ GOOD: Explicit configuration -->
-+ <cms:embed 'components/media/swiper/swiper-section.html'
-+     masterpage='films.php'
-+     section_title='Recently Added'
-+     swiper_breakpoints='{"320":{"slidesPerView":2},...}'
-+ />
-+
-+ **Why:** Without explicit parameters, components fall back to CSS defaults which may
-+ be outdated or inconsistent across different pages.
-```
-
-#### 3. Frontend Performance Standards (New Section)
-
-**Added FOUC Prevention Protocol:**
-
-```diff
-+ #### Frontend Performance Standards (FOUC Prevention)
-+
-+ **🚨 CRITICAL: CSS/JavaScript Synchronization for Dynamic Components**
-+
-+ When JavaScript dynamically changes layout (Swiper carousels, tabs, accordions),
-+ CSS defaults MUST match JavaScript's intended state to prevent layout shifts and
-+ FOUC (Flash of Unstyled Content).
-+
-+ [Complete formula and implementation details provided]
-```
-
-#### 4. Common Pitfalls to Avoid (Section)
-
-**Added Verification Requirements:**
-
-```diff
-+ - **🚨 CRITICAL: Modifying files without verifying actual usage** - File existence ≠
-+   file usage. Always grep/search for actual usage in templates and routes before
-+   modifying components
-+ - **🚨 CRITICAL: Incomplete scope analysis** - When user requests UI change, verify
-+   ALL pages/routes where that element appears (homepage, individual pages, dashboard,
-+   etc.), not just first instance found
-```
-
-#### 5. Validation Rules - Before Code Generation (Section)
-
-**Added Pre-Modification Checks:**
-
-```diff
-+ 6. **🚨 CRITICAL: Verify Actual File Usage** - Before modifying any component, use
-+    grep/search to verify actual usage in templates, routes, and views. File
-+    existence ≠ file usage.
-+ 7. **🚨 CRITICAL: Complete Scope Analysis** - When modifying UI elements, identify
-+    ALL pages where that element appears (homepage, individual content pages,
-+    dashboard, admin views, etc.)
-```
-
-**Sync Status:** ✅ All agent configurations regenerated successfully
+**Reference Documents:**
+- Operational Doctrine: `framework/doctrine/operational-doctrine.md`
+- Smart Operations: `framework/enhancements/smart-operations.md`
+- Project Standards: `docs/standards.md` (or project-specific standards file)
+- Pre-Flight Checks: `preflight-checks.yaml`
+- Smart Defaults: `smart-defaults.yaml`
 
 ---
 
-## 🎓 Session Learnings
+## **Phase 0: Session Context & Objectives**
 
-### Critical Behavioral Patterns Identified
+### Session Metadata
 
-#### ✅ Success Patterns
+- **Date:** {YYYY-MM-DD}
+- **Session Type:** {Feature Implementation | Bug Fix | Refactoring | Code Review | Other}
+- **Primary Mission:** {Brief description of what was accomplished}
+- **Status:** {✅ Complete | ⚠️ Partial | 🚧 Blocked}
 
-1. **Systematic File Tracing**
-    - Used grep to find actual file usage before modifications
-    - Traced routes (`films.php` → `film-list-view.html` → `swiper-section.html`)
-    - Prevented wasted effort on wrong files
+### Initial Objectives
 
-2. **FOUC Recognition & Prevention**
-    - Identified layout shift as CSS/JavaScript synchronization issue
-    - Applied mathematical formula for precise slide width calculation
-    - Created comprehensive prevention guide for future maintenance
-
-3. **Complete Scope Analysis**
-    - After first fix, checked ALL pages (homepage, /films/, /series/, /podcasts/, dashboard)
-    - Found and fixed inconsistencies across 5 different page contexts
-    - Ensured site-wide consistency
-
-4. **Pragmatic Engineering Decisions**
-    - When refactor attempts failed (3+ parse errors), immediately reverted to working state
-    - Chose reliability over perfection
-    - Documented limitations rather than forcing broken abstractions
-
-5. **Comprehensive Documentation**
-    - Created 4 detailed guides documenting problems, solutions, and maintenance
-    - Documented architectural limitations for future reference
-    - Provided formulas and checklists for future changes
-
-#### ❌ Failure Patterns & Corrections
-
-1. **Modified Wrong File Initially**
-    - **Failure**: Updated `recently-added-carousel.html` without verifying usage
-    - **User Correction**: "Ik zie nog steeds 4 slides, hoe kan dat?"
-    - **Root Cause**: Assumed file name indicated usage, didn't grep for actual usage
-    - **Lesson**: Always verify actual file usage before modifications
-
-2. **Over-Ambitious Refactor**
-    - **Failure**: Attempted to use universal card component via nested embeds in captures
-    - **User Correction**: Multiple parse errors (syntax error, unexpected identifier)
-    - **Root Cause**: Didn't understand CouchCMS architectural limitation with captures
-    - **Lesson**: CouchCMS captures require inline markup - no nested embeds allowed
-
-3. **Incomplete Scope Analysis**
-    - **Failure**: Fixed homepage but missed individual content pages (/films/, /series/, /podcasts/)
-    - **User Correction**: "Op de @films.php zie ik nog steeds 4 slides"
-    - **Root Cause**: Only checked homepage, didn't verify all pages with "Recently Added"
-    - **Lesson**: UI element changes require complete site-wide scope analysis
-
-4. **Parameter Assumption**
-    - **Failure**: Assumed `swiper-section.html` would use correct defaults
-    - **Root Cause**: Component uses CSS fallback when `swiper_breakpoints` parameter missing
-    - **Lesson**: Parameter-based components require explicit configuration
-
-### 🎯 Durable Lessons Integrated into Doctrine
-
-**Project-Specific (CouchCMS Architecture):**
-
-1. **No Nested Embeds in Captures** - CouchCMS parse limitation documented
-2. **Parameter-Based Components** - Always pass explicit configuration
-3. **Inline Markup in Captures** - Accept controlled duplication for reliability
-
-**Universal (Any Web Project):**
-
-4. **Verify File Usage Before Modification** - grep/search for actual usage
-5. **Complete Scope Analysis** - Find ALL instances of UI elements
-6. **FOUC Prevention Protocol** - Synchronize CSS and JavaScript exactly
-7. **Pragmatic Revert Protocol** - After 2-3 errors, revert immediately
-
-### 📊 Quantitative Impact
-
-**Files Modified:** 8 files
-**Documentation Created:** 5 new guides
-**Architectural Constraint Discovered:** CouchCMS capture + nested embed limitation
-**Site-Wide Consistency:** 5 pages now show 5 slides uniformly
-**Code Quality:** Maintained working, reliable codebase
-
-**What Worked:** Systematic tracing, FOUC expertise, complete scope analysis
-**What Failed:** Over-abstraction without understanding platform constraints
-**Final State:** ✅ Production-ready with comprehensive documentation
+1. {Primary objective}
+2. {Secondary objective}
+3. {Additional objectives if any}
 
 ---
 
-## 🧠 Meta-Learning
+## **Phase 1: Success Pattern Analysis**
 
-### The Perfect vs. The Good
+### ✅ What Worked Exceptionally Well
 
-**Key Insight:** This session demonstrated the critical balance between:
+Identify patterns, techniques, or approaches that led to successful outcomes:
 
-- **DRY Principle** (Don't Repeat Yourself) - Theoretical ideal
-- **Platform Constraints** (CouchCMS capture limitations) - Technical reality
-- **Pragmatic Engineering** (Working code > broken abstraction) - Professional wisdom
+1. **{Pattern Name}**
+    - **Description:** {What was done}
+    - **Evidence:** {Specific examples from the session}
+    - **Impact:** {Why this mattered}
+    - **Transferability:** {Can this be applied to future sessions?}
 
-**Decision Framework Established:**
+2. **{Pattern Name}**
+    - {Repeat structure}
 
-1. Attempt abstraction when architecturally sound
-2. Test early with real integration (not theory)
-3. After 2-3 failures, analyze for fundamental incompatibility
-4. Document limitation and accept pragmatic solution
-5. Ship working code, document lessons
+### 🎯 Durable Lessons (Universal Principles)
+
+Extract universal principles that apply beyond this specific session:
+
+**Project-Specific Learnings:**
+- {Learning 1}: {Description and why it matters}
+- {Learning 2}: {Description and why it matters}
+
+**Universal Learnings (Any Project):**
+- {Learning 1}: {Description and why it matters}
+- {Learning 2}: {Description and why it matters}
+
+---
+
+## **Phase 2: Failure Pattern Analysis**
+
+### ❌ What Failed and Why
+
+Identify failures, corrections, and root causes:
+
+1. **{Failure Pattern Name}**
+    - **Failure:** {What went wrong}
+    - **User Correction/Feedback:** {How the issue was identified}
+    - **Root Cause:** {Why it happened - be specific}
+    - **Lesson:** {What should be done differently next time}
+    - **Prevention:** {How to prevent this in future sessions}
+
+2. **{Failure Pattern Name}**
+    - {Repeat structure}
+
+### 🔄 Correction Patterns
+
+Document how failures were corrected and what that teaches us:
+
+- **{Correction Pattern}:** {Description of the correction approach}
+
+---
+
+## **Phase 3: Quantitative Impact Assessment**
+
+### Metrics
+
+- **Files Modified:** {Number}
+- **Files Created:** {Number}
+- **Documentation Created/Updated:** {Number and types}
+- **Tests Added/Updated:** {Number}
+- **Architectural Constraints Discovered:** {Number and types}
+- **System-Wide Impact:** {Scope of changes}
+
+### Quality Indicators
+
+- **What Worked:** {List key success factors}
+- **What Failed:** {List key failure factors}
+- **Final State:** {Overall assessment of code quality and system health}
+
+---
+
+## **Phase 4: Doctrine Integration Plan**
+
+### Standards Updates Required
+
+Identify specific updates needed in project standards or operational doctrine:
+
+#### 1. {Section/Area Name}
+
+**Current State:** {What the standards currently say (if anything)}
+
+**Proposed Update:**
+```diff
++ {New content to add}
+- {Content to remove (if any)}
+```
+
+**Rationale:** {Why this update is necessary}
+
+**Severity:** {CRITICAL | IMPORTANT | RECOMMENDED}
+
+#### 2. {Section/Area Name}
+    - {Repeat structure}
+
+### Pre-Flight Checks Updates
+
+If new patterns were identified that should be caught automatically:
+
+**Target File:** `preflight-checks.yaml`
+
+**Check Definition:**
+```yaml
+{category_name}:
+  {check_name}:
+    pattern: "{regex_pattern}"
+    severity: {CRITICAL | ERROR | WARNING | INFO}
+    message: "{Human-readable description}"
+    fix: "{How to fix}"
+    auto_fix: {true | false}
+    example:
+      bad: "{example of bad code}"
+      good: "{example of good code}"
+    reference: "{documentation reference}"
+```
+
+**Integration Steps:**
+1. Add check to `preflight-checks.yaml`
+2. Test the check with sample code
+3. Run `/sync` to update all agent configs
+4. Document in `framework/enhancements/smart-operations.md`
+
+### Smart Operations Integration
+
+If new slash commands or intent patterns would be valuable:
+
+**Target Files:**
+- `smart-defaults.yaml` → `intent_patterns` (for intent detection)
+- `framework/enhancements/smart-operations.md` (for documentation)
+
+**Command Addition:**
+- **Command:** `/{command}` - {Description}
+- **Action:** {What it does}
+- **Example:** `/{command} @file`
+- **Pre-Flight Checks:** {Which checks apply}
+
+**Intent Pattern Addition:**
+```yaml
+intent_patterns:
+  {intent_name}:
+    triggers: ["{keyword1}", "{keyword2}"]
+    action: {action_name}
+    confirm: "{Confirmation message}" | false
+```
+
+**Integration Steps:**
+1. Add to `smart-defaults.yaml`
+2. Document in `smart-operations.md`
+3. Run `/sync` to update configurations
+
+---
+
+## **Phase 5: Meta-Learning & Process Evolution**
+
+### Decision Frameworks Established
+
+Document any decision frameworks or heuristics that emerged:
+
+**{Framework Name}:**
+1. {Step 1}
+2. {Step 2}
+3. {Step 3}
 
 ### Process Maturation
 
 **Before This Session:**
-
-- Might have forced refactor despite parse errors
-- Might have missed scope beyond homepage
-- Might not have documented architectural constraints
+- {What might have been done differently}
+- {What assumptions might have been made}
+- {What might have been missed}
 
 **After This Session:**
+- {What will be done differently}
+- {What new awareness exists}
+- {What protocols are now in place}
 
-- Recognize platform limitations early
-- Verify complete scope before claiming completion
-- Document constraints for future developers
-- Pragmatic revert protocol when hitting fundamental limits
+### Balance Points Discovered
+
+Document any tensions between principles that were resolved:
+
+- **{Principle A}** vs **{Principle B}**: {How the balance was struck}
+- **{Ideal}** vs **{Reality}**: {How pragmatic decisions were made}
 
 ---
 
-## 🎯 Doctrine Evolution Complete
+## **Phase 6: Integration & Propagation**
 
-**Status:** 🟢 **Operational Doctrine Updated**
+### Standards Update Execution
 
-All learnings have been integrated into `/docs/standards.md` and propagated to all AI agent configurations (Cursor, Claude, Copilot, VSCode, Windsurf, Tabnine, CodeWhisperer).
+**Target Files:**
+- `docs/standards.md` (or project-specific standards file) - {What will be updated}
+- `framework/doctrine/operational-doctrine.md` - {What will be updated}
+- `preflight-checks.yaml` - {What will be added}
+- `smart-defaults.yaml` - {What will be added/updated}
+
+**Update Plan:**
+1. {Step 1 - Edit standards file}
+2. {Step 2 - Update doctrine if needed}
+3. {Step 3 - Add pre-flight checks if applicable}
+4. {Step 4 - Update smart defaults if applicable}
+5. {Step 5 - Run sync to propagate changes}
+
+### Agent Configuration Sync
+
+**Status:** {✅ Complete | ⚠️ Partial | 🚧 Pending}
+
+**Configurations to Update:**
+- `.cursorrules` - Cursor AI configuration
+- `CLAUDE.md` - Claude AI configuration
+- `.github/copilot-instructions.md` - GitHub Copilot configuration
+- `.codewhisperer/rules.md` - CodeWhisperer configuration
+- `.tabnine/guidelines/` - Tabnine configuration
+- `.windsurf/rules.md` - Windsurf configuration
+
+**Sync Command:**
+```bash
+bun scripts/sync.js
+```
+
+**Verification:**
+- Check that all configs include updated content
+- Verify pre-flight checks are active
+- Test Smart Operations features if updated
+
+---
+
+## **Phase 7: Final Verdict & Future Readiness**
+
+### Doctrine Evolution Status
+
+**Status:** {🟢 Complete | 🟡 Partial | 🔴 Blocked}
+
+**Summary:**
+- ✅ {What was successfully integrated}
+- ⚠️ {What needs follow-up}
+- 🚧 {What is blocked}
+
+### Future Mission Readiness
 
 **Future missions will benefit from:**
+- ✅ {Benefit 1}
+- ✅ {Benefit 2}
+- ✅ {Benefit 3}
 
-- ✅ CouchCMS capture architecture awareness
-- ✅ Complete usage verification protocol
-- ✅ Site-wide scope analysis requirement
-- ✅ FOUC prevention expertise
-- ✅ Pragmatic engineering decision framework
+### Final Statement
+
+Conclude with one of the following statements:
+
+- `"Self-Audit Complete. Doctrine has been updated with durable lessons. System state is verified. Ready for next engagement."`
+- `"Self-Audit Complete. CRITICAL LESSONS IDENTIFIED but integration blocked. [Describe blocker and recommend immediate action]."`
+
+---
+
+## **Appendix: Session Artifacts**
+
+### Key Files Modified
+
+- `{file1}` - {What changed and why}
+- `{file2}` - {What changed and why}
+
+### Documentation Created
+
+- `{doc1}` - {Purpose and key content}
+- `{doc2}` - {Purpose and key content}
+
+### Commands Executed
+
+```bash
+# {Description of command and purpose}
+{command}
+
+# {Description of command and purpose}
+{command}
+```
+
+---
 
 **Mission Complete. Doctrine Hardened. Ready for Next Engagement.** 🎖️

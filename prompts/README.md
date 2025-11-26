@@ -11,7 +11,8 @@ prompts/
 │   ├── javascript-best-practices.md   # JavaScript patterns and guidelines
 │   ├── typescript-best-practices.md   # TypeScript patterns and guidelines
 │   ├── performance-best-practices.md  # Performance optimization strategies
-│   └── security-best-practices.md     # Security guidelines and practices
+│   ├── security-best-practices.md     # Security guidelines and practices
+│   └── toolkit-optimization.md        # Toolkit optimization strategies
 │
 ├── debugging/          # Debug and troubleshoot
 │   ├── specialist.md   # General debugging specialist
@@ -27,7 +28,9 @@ prompts/
 │
 └── refactoring/        # Refactoring guides
     ├── design-preserving.md      # Refactor without changing design
-    └── functionality-preserving.md # Refactor without changing behavior
+    ├── functionality-preserving.md # Refactor without changing behavior
+    ├── router.md                 # Intelligent refactoring router
+    └── toolkit.md                # Refactor toolkit components (scripts, configs, prompts, etc.)
 ```
 
 ## Usage
@@ -37,6 +40,8 @@ prompts/
 ```
 @prompts/debugging/specialist.md Help debug this issue
 @prompts/best-practices/typescript-best-practices.md Review this TypeScript code
+@prompts/refactoring/toolkit.md Refactor toolkit component
+@prompts/best-practices/toolkit-optimization.md Optimize toolkit performance
 ```
 
 ### Use in Custom Rules/Agents

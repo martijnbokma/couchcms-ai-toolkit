@@ -9,18 +9,16 @@ requires: [couchcms-core]
 conflicts: []
 ---
 
-# users
 
+# Users
 
-
-
-## Users and Access Control
+## Overview
 
 Learn about CouchCMS user accounts, access levels, and how to implement access control in your website
 
 ### Template Access Control
 
-```php
+```php title="template.php"
 <cms:template title='News' clonable='1' access_level='2'>
     <!-- Editable regions and Folders are usually defined here -->
 </cms:template>
@@ -28,7 +26,7 @@ Learn about CouchCMS user accounts, access levels, and how to implement access c
 
 ### Element Access Control
 
-```php
+```php title="template.php"
 <cms:if k_user_access_level ge '4' >
     <h1>If you can see this you must at least be an Authenticated User (Special)</h1>
 <cms:else />

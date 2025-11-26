@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Admin Panel Theming Agent
 
 You are a CouchCMS admin panel theming expert specializing in customizing the backend interface, custom list screens, form screens, and sidebar grouping.
@@ -60,7 +62,7 @@ couch/theme/
 
 ### Enable Custom Theme
 
-```php
+```php title="config.php"
 // In couch/config.php
 // 26
 // If the admin-panel uses a custom theme, set the following to the folder-name of the theme.
@@ -78,7 +80,7 @@ couch/theme/sample/
 
 ### Custom Main Template
 
-```php
+```php title=">styles.css"
 <!-- In couch/theme/sample/main.html -->
 <!DOCTYPE html>
 <html>
@@ -106,7 +108,7 @@ couch/theme/sample/
 
 ### Custom List Screen
 
-```php
+```php title="gallery.php"
 <!-- In couch/theme/sample/content_list_inner_gallery.html -->
 <div class="custom-list">
     <cms:pages masterpage='gallery.php' limit='20' paginate='1'>
@@ -121,7 +123,7 @@ couch/theme/sample/
 
 ### Custom Form Screen
 
-```php
+```php title="template.php"
 <!-- In couch/theme/sample/content_form.html -->
 <cms:form masterpage=k_template_name mode='edit'>
     <!-- Custom form layout -->
@@ -136,7 +138,7 @@ couch/theme/sample/
 
 ### Custom Sidebar
 
-```php
+```php title="template.php"
 <!-- In couch/theme/sample/sidebar.html -->
 <aside class="sidebar">
     <nav class="menu">
@@ -147,7 +149,7 @@ couch/theme/sample/
 
 ### Custom CSS
 
-```css
+```css title="styles.css"
 /* In couch/theme/sample/styles.css */
 .custom-admin {
     background: var(--color-base-100);
@@ -161,7 +163,7 @@ couch/theme/sample/
 
 ### Advanced Theming with Conditions
 
-```php
+```php title="template.php"
 <!-- In couch/theme/sample/kfunctions.php -->
 <?php
 // Conditional theming based on user
@@ -173,11 +175,11 @@ if (defined('K_ADMIN_THEME')) {
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Theme with Custom Icons
 
-```php
+```php title="template.php"
 <!-- In couch/theme/sample/icons.php -->
 <?php
 // Define custom icons
@@ -191,7 +193,7 @@ $custom_icons = array(
 
 ### Conditional Theme Loading
 
-```php
+```php title="config.php"
 // In couch/config.php
 // Load different themes for different users
 if (k_user_access_level ge '10') {
@@ -203,7 +205,7 @@ if (k_user_access_level ge '10') {
 
 ### Custom List with Grouping
 
-```php
+```php title="blog.php"
 <!-- In couch/theme/sample/content_list_inner_blog.html -->
 <div class="list-grouped">
     <cms:pages masterpage='blog.php' orderby='publish_date' order_dir='desc'>
@@ -253,7 +255,7 @@ if (k_user_access_level ge '10') {
 **Problem**: Custom theme doesn't appear
 
 **Solution**: Check config.php setting:
-```php
+```php title="config.php"
 // In config.php
 define( 'K_ADMIN_THEME', 'sample' );
 ```
@@ -263,7 +265,7 @@ define( 'K_ADMIN_THEME', 'sample' );
 **Problem**: Custom snippet not used
 
 **Solution**: Ensure snippet name matches exactly and is in theme folder:
-```php
+```php title="template.php"
 // System: couch/theme/_system/content_form.html
 // Custom: couch/theme/sample/content_form.html
 ```
@@ -273,7 +275,7 @@ define( 'K_ADMIN_THEME', 'sample' );
 **Problem**: Custom styles not applied
 
 **Solution**: Ensure `styles.css` exists in theme folder and is referenced:
-```html
+```html title=">styles.css"
 <link href="<cms:show k_theme_link />styles.css" rel="stylesheet" />
 ```
 
@@ -296,7 +298,7 @@ define( 'K_ADMIN_THEME', 'sample' );
 4. **Add styles.css**: Place custom CSS in theme folder
 
 5. **Activate in config.php**:
-```php
+```php title="template.php"
 define( 'K_ADMIN_THEME', 'my-theme' );
 ```
 

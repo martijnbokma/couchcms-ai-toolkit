@@ -13,6 +13,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Repeatable Regions Agent
 
 You are a CouchCMS repeatable regions expert specializing in dynamic content blocks, portfolios, image galleries, and sortable content arrays.
@@ -65,14 +67,14 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Basic Repeatable Image
 
-```php
+```php title="template.php"
 <cms:repeatable name='portfolio_images'>
     <cms:editable type='image' name='portfolio_image' label='Image' />
 </cms:repeatable>
 ```
 
 **Display**:
-```php
+```php title="template.php"
 <cms:show_repeatable 'portfolio_images'>
     <div class="mb-4">
         <img src="<cms:show portfolio_image />" alt="Portfolio image" />
@@ -82,7 +84,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Image with Description
 
-```php
+```php title="template.php"
 <cms:repeatable name='gallery_items'>
     <cms:editable
         type='image'
@@ -103,7 +105,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 ```
 
 **Display**:
-```php
+```php title="template.php"
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <cms:show_repeatable 'gallery_items'>
         <div class="card bg-base-100 shadow-md">
@@ -120,7 +122,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Portfolio with Multiple Fields
 
-```php
+```php title="template.php"
 <cms:repeatable name='portfolio_items'>
     <cms:editable type='image' name='portfolio_image' label='Image' col_width='300' />
     <cms:editable type='text' name='portfolio_title' label='Title' col_width='200' />
@@ -130,7 +132,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 ```
 
 **Display**:
-```php
+```php title="template.php"
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <cms:show_repeatable 'portfolio_items'>
         <div class="card bg-base-100 shadow-xl">
@@ -153,7 +155,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Team Members
 
-```php
+```php title="template.php"
 <cms:repeatable name='team_members'>
     <cms:editable type='image' name='member_photo' label='Photo' col_width='200' />
     <cms:editable type='text' name='member_name' label='Name' col_width='200' />
@@ -163,7 +165,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 ```
 
 **Display**:
-```php
+```php title="template.php"
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <cms:show_repeatable 'team_members'>
         <div class="card bg-base-100 shadow-md">
@@ -182,7 +184,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Testimonials
 
-```php
+```php title="template.php"
 <cms:repeatable name='testimonials'>
     <cms:editable type='textarea' name='testimonial_text' label='Testimonial' col_width='400' />
     <cms:editable type='text' name='testimonial_author' label='Author' col_width='200' />
@@ -192,7 +194,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 ```
 
 **Display**:
-```php
+```php title="template.php"
 <div class="carousel carousel-center space-x-4">
     <cms:show_repeatable 'testimonials'>
         <div class="carousel-item">
@@ -221,7 +223,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Features List
 
-```php
+```php title="template.php"
 <cms:repeatable name='features'>
     <cms:editable type='text' name='feature_title' label='Title' col_width='200' />
     <cms:editable type='nicedit' name='feature_desc' label='Description' col_width='400' />
@@ -230,7 +232,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 ```
 
 **Display**:
-```php
+```php title="template.php"
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <cms:show_repeatable 'features'>
         <div class="card bg-base-100 shadow-md">
@@ -248,11 +250,11 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Repeatable with Counter
 
-```php
+```php title="template.php"
 <cms:show_repeatable 'portfolio_items' startcount='0'>
     <div class="mb-6">
         <span class="badge badge-primary">Item <cms:show k_count /> of <cms:show k_total_records /></span>
@@ -264,7 +266,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Conditional Display
 
-```php
+```php title="template.php"
 <cms:show_repeatable 'gallery_items'>
     <cms:if gallery_image>
         <div class="mb-4">
@@ -279,7 +281,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### First/Last Item Styling
 
-```php
+```php title="template.php"
 <cms:show_repeatable 'portfolio_items'>
     <cms:set item_class='card bg-base-100 shadow-md' />
     <cms:if k_count eq '1'>
@@ -299,7 +301,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Repeatable with Dropdown
 
-```php
+```php title="template.php"
 <cms:repeatable name='product_variants'>
     <cms:editable type='text' name='variant_name' label='Variant Name' col_width='200' />
     <cms:editable type='dropdown' name='variant_size' label='Size'
@@ -310,7 +312,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 ```
 
 **Display**:
-```php
+```php title="template.php"
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <cms:show_repeatable 'product_variants'>
         <div class="card bg-base-100 shadow-md">
@@ -329,7 +331,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 ### Nested Repeatable (Complex)
 
-```php
+```php title="template.php"
 <!-- Main repeatable -->
 <cms:repeatable name='sections'>
     <cms:editable type='text' name='section_title' label='Section Title' />
@@ -344,7 +346,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 ```
 
 **Display**:
-```php
+```php title="template.php"
 <cms:show_repeatable 'sections'>
     <section class="mb-12">
         <h2><cms:show section_title /></h2>
@@ -399,7 +401,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 **Problem**: Repeatable region doesn't appear in admin panel
 
 **Solution**: Ensure you visit template as super-admin after defining:
-```php
+```php title="template.php"
 <cms:repeatable name='my_items'>
     <cms:editable type='text' name='item_name' label='Name' />
 </cms:repeatable>
@@ -412,7 +414,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 **Problem**: Repeatable values don't show on frontend
 
 **Solution**: Use `show_repeatable` tag with correct name:
-```php
+```php title="template.php"
 <!-- ❌ Wrong -->
 <cms:show my_items />
 
@@ -427,7 +429,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 **Problem**: Fields appear too narrow or wide in admin
 
 **Solution**: Use `col_width` parameter:
-```php
+```php title="template.php"
 <cms:editable type='text' name='title' label='Title' col_width='300' />
 <cms:editable type='nicedit' name='content' label='Content' col_width='500' />
 ```
@@ -437,7 +439,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 **Problem**: Image previews don't appear in admin
 
 **Solution**: Add preview parameters:
-```php
+```php title="template.php"
 <cms:editable
     type='image'
     name='my_image'
@@ -457,7 +459,7 @@ You are a CouchCMS repeatable regions expert specializing in dynamic content blo
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Portfolio' clonable='1'>
     <cms:repeatable name='portfolio_gallery'>

@@ -10,6 +10,7 @@ tags:
   - frontend
 ---
 
+
 # TailwindCSS Agent
 
 You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for CouchCMS projects.
@@ -20,7 +21,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### TailwindCSS 4 Setup
 
-```css
+```css title="styles.css"
 /* {{paths.css}}/input.css */
 @import "tailwindcss";
 @plugin "daisyui";
@@ -55,7 +56,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Responsive Layout
 
-```html
+```html title="template.html"
 <div class="container mx-auto px-4">
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div class="card bg-base-100 shadow-lg">
@@ -70,7 +71,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Card Component
 
-```html
+```html title="template.html"
 <div class="card bg-base-100 shadow-xl">
   <figure><img src="image.jpg" alt="Image" /></figure>
   <div class="card-body">
@@ -88,7 +89,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Form Styling
 
-```html
+```html title="template.html"
 <form class="space-y-4">
   <div class="form-control">
     <label class="label">
@@ -117,7 +118,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Modal
 
-```html
+```html title="template.html"
 <button onclick="my_modal.showModal()" class="btn">Open Modal</button>
 
 <dialog id="my_modal" class="modal">
@@ -138,7 +139,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Navigation
 
-```html
+```html title="template.html"
 <div class="navbar bg-base-200">
   <div class="navbar-start">
     <a class="btn btn-ghost text-xl">Logo</a>
@@ -158,7 +159,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Drawer Layout (Dashboard)
 
-```html
+```html title="template.html"
 <div class="drawer lg:drawer-open">
   <input id="my-drawer" type="checkbox" class="drawer-toggle" />
 
@@ -191,7 +192,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Custom Theme
 
-```css
+```css title="styles.css"
 /* {{paths.css}}/input.css */
 @import "tailwindcss";
 @plugin "daisyui";
@@ -217,7 +218,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Responsive Typography
 
-```html
+```html title="template.html"
 <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
   Responsive Heading
 </h1>
@@ -229,7 +230,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Animation Classes
 
-```html
+```html title="template.html"
 <!-- Fade in on load -->
 <div class="animate-fade-in">Content</div>
 
@@ -259,7 +260,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Dark Mode Support
 
-```html
+```html title="template.html"
 <!-- Theme controller -->
 <label class="swap swap-rotate">
   <input type="checkbox" class="theme-controller" value="dark" />
@@ -275,7 +276,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Custom Component Class
 
-```css
+```css title="styles.css"
 /* {{paths.css}}/components/content-card.css */
 @layer components {
   .content-card {
@@ -293,7 +294,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Spacing System
 
-```html
+```html title="template.html"
 <!-- Consistent spacing -->
 <div class="space-y-4">
   <!-- 1rem gap -->
@@ -313,7 +314,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Truncation & Overflow
 
-```html
+```html title="template.html"
 <!-- Single line truncate -->
 <p class="truncate">Very long text that will be truncated...</p>
 
@@ -340,7 +341,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Anti-Patterns to Fix
 
-```html
+```html title="template.html"
 <!-- ❌ Bad: Custom CSS for common patterns -->
 <style>
   .custom-button {
@@ -355,7 +356,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 <button class="btn btn-primary">Click</button>
 ```
 
-```html
+```html title="template.html"
 <!-- ❌ Bad: Tailwind colors (don't adapt to theme) -->
 <div class="bg-gray-100 text-gray-800">Content</div>
 
@@ -367,7 +368,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 **Convert Custom CSS to Utilities:**
 
-```html
+```html title="template.html"
 <!-- Before: Custom CSS -->
 <style>
   .card-custom {
@@ -388,7 +389,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 **Add Responsive Design:**
 
-```html
+```html title="template.html"
 <!-- Before: Fixed layout -->
 <div class="grid grid-cols-3 gap-4">
   <!-- After: Mobile-first responsive -->
@@ -400,7 +401,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 **Fix Theme Compatibility:**
 
-```html
+```html title="template.html"
 <!-- Before: Hard-coded colors -->
 <div class="bg-white text-black border-gray-200">
   <!-- After: Theme-aware colors -->
@@ -432,7 +433,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Debug Utilities
 
-```html
+```html title="template.html"
 <!-- Show element boundaries -->
 <div class="outline outline-red-500">Debug borders</div>
 
@@ -447,7 +448,7 @@ You are a TailwindCSS 4 + daisyUI 5 expert specializing in utility-first CSS for
 
 ### Common Class Combinations
 
-```html
+```html title="template.html"
 <!-- Centered content -->
 <div class="flex items-center justify-center min-h-screen">
   <!-- Absolute positioned badge -->

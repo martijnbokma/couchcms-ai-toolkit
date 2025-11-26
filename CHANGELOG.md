@@ -69,6 +69,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **GETTING-STARTED.md** - Added links to Project Rules, User Rules, and Custom Commands guides
 - **sync.js** - Added command syncing functionality
 
+- **sync.js** - Major refactoring for improved maintainability and modularity
+    - Extracted `loadProjectConfiguration()` - Handles config file discovery and parsing
+    - Extracted `loadToolkitResources()` - Loads modules, agents, framework, and project context
+    - Extracted `generateAllConfigurations()` - Orchestrates all configuration generation
+    - Extracted `getTemplateMap()`, `renderTemplate()`, `writeConfigFile()` - Template processing utilities
+    - Extracted `generateTabnineSettings()`, `generateCodeWhispererReadme()` - Tool-specific generators
+    - Removed duplicate utility functions - Now imports from `utils.js`
+    - Reduced main `sync()` function from ~166 lines to ~34 lines (orchestrator pattern)
+    - Improved code organization and single responsibility principle compliance
+
+- **validate.js** - Refactored to eliminate code duplication
+    - Removed duplicate `findProjectFile()` - Now imports from `utils.js`
+    - Removed duplicate `resolveToolkitPath()` - Now imports from `utils.js`
+    - Fixed missing `join` import from `path` module
+    - Improved consistency with `sync.js` by sharing utilities
+
+- **utils.js** - Enhanced with shared utility functions
+    - Added `findProjectFile()` - Traverses directories to find config files
+    - Added `resolveToolkitPath()` - Resolves toolkit paths with tilde expansion support
+    - Added `replaceVariables()` - Recursive path variable replacement
+    - Added `ToolkitError` class - Standardized error handling for toolkit scripts
+    - Added `handleError()` function - Consistent error display and logging
+    - All functions properly exported for reuse across scripts
+
+- **init.js** - Major refactoring for improved maintainability and modularity
+    - Extracted `determineProjectDirectory()` - Project directory detection logic
+    - Extracted `checkExistingConfig()` - Config overwrite confirmation
+    - Extracted `determineConfigPath()` - Config file location selection
+    - Extracted `getAvailableModules()` / `getAvailableAgents()` - Module and agent definitions
+    - Extracted `selectModules()` / `selectAgents()` - Selection logic with preset support
+    - Extracted `selectFramework()` - Framework configuration selection
+    - Extracted `selectContextDirectory()` - Context directory selection
+    - Extracted `replaceTemplateVariables()` - Template variable replacement
+    - Extracted `generateStandardsFile()` - Standards file generation with error handling
+    - Extracted `setupContextDirectory()` - Context directory setup
+    - Extracted `runInitialSync()` - Sync script execution
+    - Extracted `displaySuccessMessage()` - Success message display
+    - Reduced main `init()` function from 526 → ~90 lines (orchestrator pattern)
+    - Added comprehensive JSDoc documentation for all functions
+    - Standardized error handling using `ToolkitError` from `utils.js`
+    - Improved code organization and single responsibility principle compliance
+
+- **sync.js** - Refactored to use shared error handling
+    - Removed duplicate `ToolkitError` class - Now imports from `utils.js`
+    - Removed duplicate `handleError()` function - Now imports from `utils.js`
+    - Improved consistency with other scripts by sharing utilities
+
+- **update-submodule.js** - Refactored for improved maintainability and error handling
+    - Extracted `detectGitRepo()` - Git repository and submodule detection
+    - Extracted `validateGitRepo()` - Git repository validation with ToolkitError
+    - Extracted `getCurrentBranch()` - Branch name retrieval with error handling
+    - Extracted `fetchLatestChanges()` - Fetch operation with error handling
+    - Extracted `pullLatestChanges()` - Pull operation with structured return value
+    - Extracted `getLatestCommit()` - Commit information retrieval
+    - Extracted `showUpdateSummary()` - Update summary display logic
+    - Refactored main logic into `updateSubmodule()` orchestrator function
+    - Standardized error handling using `ToolkitError` and `handleError()` from `utils.js`
+    - Added comprehensive JSDoc documentation for all functions
+    - Improved error messages with error codes (NOT_GIT_REPO, GET_BRANCH_FAILED, FETCH_FAILED, PULL_FAILED, GET_COMMIT_FAILED)
+    - Improved code organization and testability
+
+- **Configuration files** - Enhanced documentation and schema
+    - **defaults.yaml** - Added schema documentation for `paths`, `standards`, and `naming` sections
+    - **smart-defaults.yaml** - Added comprehensive schema documentation for all sections
+    - **preflight-checks.yaml** - Added severity level documentation and check structure schema
+    - Improved inline comments and usage notes throughout all config files
+
 ## [1.1.0] - 2025-11-25
 
 ### Added

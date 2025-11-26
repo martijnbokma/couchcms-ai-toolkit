@@ -14,6 +14,8 @@ requires:
   - couchcms-core
 ---
 
+
+
 # Views Agent
 
 You are a CouchCMS views expert specializing in implementing different view types (List, Page, Folder, Archive) and handling URL patterns for dynamic content display.
@@ -60,7 +62,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### Basic View Detection
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Blog' clonable='1' />
 
@@ -87,7 +89,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### Complete View Implementation
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Blog' clonable='1' />
 
@@ -155,7 +157,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### Simple View Implementation
 
-```php
+```php title="blog.php"
 <cms:if k_is_list>
     <!-- List View - Display list of pages -->
     <cms:pages masterpage='blog.php' limit='10' paginate='1'>
@@ -175,7 +177,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### Folder View with Breadcrumbs
 
-```php
+```php title="blog.php"
 <cms:if k_is_list>
     <cms:if k_is_folder>
         <nav class="breadcrumbs mb-6">
@@ -199,7 +201,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### Archive View with Date Display
 
-```php
+```php title="blog.php"
 <cms:if k_is_list>
     <cms:if k_is_archive>
         <div class="mb-6">
@@ -225,7 +227,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### View-Specific Navigation
 
-```php
+```php title="blog.php"
 <cms:if k_is_page>
     <!-- Page View Navigation -->
     <nav class="flex justify-between mb-6">
@@ -252,11 +254,11 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ---
 
-## Advanced Patterns
+## Deep Dive
 
 ### Conditional Content Based on View
 
-```php
+```php title="blog.php"
 <cms:if k_is_page>
     <!-- Page-specific content -->
     <article>
@@ -289,7 +291,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### View-Specific Headers
 
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <header class="mb-6">
         <h1 class="text-4xl font-bold"><cms:show k_page_title /></h1>
@@ -322,7 +324,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### View-Based Filtering
 
-```php
+```php title="blog.php"
 <cms:if k_is_list>
     <cms:if k_is_folder>
         <!-- Filter by folder -->
@@ -384,7 +386,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 **Problem**: Page view shows list content or vice versa
 
 **Solution**: Always check view type first:
-```php
+```php title="template.php"
 <cms:if k_is_page>
     <!-- Page content -->
 <cms:else />
@@ -397,7 +399,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 **Problem**: Folder view doesn't show folder-specific content
 
 **Solution**: Check for `k_is_folder` within list view:
-```php
+```php title="template.php"
 <cms:if k_is_list>
     <cms:if k_is_folder>
         <!-- Folder-specific content -->
@@ -411,7 +413,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 **Problem**: Archive view not recognized
 
 **Solution**: Check archive variables:
-```php
+```php title="template.php"
 <cms:if k_is_list>
     <cms:if k_is_archive>
         <cms:if k_is_year>
@@ -432,7 +434,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 **Problem**: Home view incorrectly shows folder-specific content
 
 **Solution**: Check `k_is_home` explicitly:
-```php
+```php title="template.php"
 <cms:if k_is_list>
     <cms:if k_is_folder>
         <!-- Folder content -->
@@ -456,7 +458,7 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 **Solution**:
 
-```php
+```php title="cms.php"
 <?php require_once('couch/cms.php'); ?>
 <cms:template title='Blog' clonable='1' />
 

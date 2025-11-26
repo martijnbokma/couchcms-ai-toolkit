@@ -9,24 +9,22 @@ requires: [couchcms-core]
 conflicts: []
 ---
 
-# repeatable-regions
 
+# Repeatable Regions
 
-
-
-## Repeatable Regions
+## Overview
 
 Complete guide to creating and managing dynamic repeatable regions in CouchCMS templates for portfolios, image galleries, and sortable content arrays.
 
 ### Basic Image Region
 
-```php
+```php title="template.php"
 <cms:editable type='image' name='my_image' label='Photo' />
 ```
 
 ### Repeatable Image Region
 
-```php
+```php title="template.php"
 <cms:repeatable name='my_multiple_images' >
         <cms:editable type='image' name='my_image' label='Photo' />
     </cms:repeatable>
@@ -34,7 +32,7 @@ Complete guide to creating and managing dynamic repeatable regions in CouchCMS t
 
 ### Image with Description
 
-```php
+```php title="template.php"
 <cms:repeatable name='my_multiple_images' >
     <cms:editable type='image' name='my_image' label='Photo' show_preview='1' preview_width='150' input_width='200' col_width='300' />
     <cms:editable type='nicedit' label='Description' name='my_desc' />
@@ -46,7 +44,7 @@ Complete guide to creating and managing dynamic repeatable regions in CouchCMS t
 
 ### Example
 
-```php
+```php title="template.php"
 <table>
 <cms:repeat count='4' >
     <tr>
@@ -65,7 +63,7 @@ Complete guide to creating and managing dynamic repeatable regions in CouchCMS t
 
 ### Example
 
-```php
+```php title="template.php"
 <cms:show_repeatable 'my_multiple_images' >
    <b>Image: <img src="<cms:show my_image />" />
    <b>Desc:</b> <cms:show my_desc />
