@@ -1,0 +1,56 @@
+{
+  "repeatable-regions": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "CouchCMS repeatable regions for dynamic content lists",
+    "promptTriggers": {
+      "keywords": [
+        "repeatable",
+        "cms:repeatable",
+        "show_repeatable",
+        "gallery",
+        "slider",
+        "faq",
+        "features",
+        "k_count",
+        "k_total_records"
+      ],
+      "intentPatterns": [
+        "(create|add).*?(repeatable|gallery|slider|faq)",
+        "(list|display).*?(images|items|features)",
+        "(dynamic|multiple).*?(content|fields)",
+        "(slideshow|carousel).*?(images)",
+        "(accordion|tabs).*?(content)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "views/**/*.html",
+        "components/**/*.html"
+      ],
+      "contentPatterns": [
+        "cms:repeatable",
+        "cms:show_repeatable",
+        "k_count",
+        "k_total_records",
+        "stacked_layout=",
+        "col_width="
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "cms:show[^>]*name=['\"][^'\"]*_rep['\"]",
+        "severity": "error",
+        "message": "❌ Use cms:show_repeatable (not cms:show) to display repeatable region content."
+      },
+      {
+        "pattern": "type=['\"]richtext['\"].*cms:repeatable",
+        "severity": "warning",
+        "message": "⚠️ Use type='nicedit' instead of 'richtext' inside repeatable regions."
+      }
+    ]
+  }
+}

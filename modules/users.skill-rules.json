@@ -1,0 +1,61 @@
+{
+  "users": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "CouchCMS user authentication and access control",
+    "promptTriggers": {
+      "keywords": [
+        "user",
+        "auth",
+        "login",
+        "logout",
+        "register",
+        "k_user",
+        "k_logged",
+        "access_level",
+        "member",
+        "permission"
+      ],
+      "intentPatterns": [
+        "(create|add|implement).*?(login|auth|user)",
+        "(check|verify).*?(logged|authenticated|permission)",
+        "(restrict|protect).*?(page|content|access)",
+        "(register|signup).*?(user|member)",
+        "(access|permission).*?(level|control)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "snippets/filters/**/*.html",
+        "*login*.html",
+        "*register*.html",
+        "*profile*.html"
+      ],
+      "contentPatterns": [
+        "k_logged_in",
+        "k_logged_out",
+        "k_user_access_level",
+        "k_user_name",
+        "k_user_id",
+        "k_login_link",
+        "k_logout_link",
+        "access_level="
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "k_logged_in(?!.*k_user_access_level)",
+        "severity": "warning",
+        "message": "⚠️ Use k_user_access_level for authorization, not just k_logged_in for authentication."
+      },
+      {
+        "pattern": "access_level=['\"]7['\"]",
+        "severity": "info",
+        "message": "💡 Access level 7 = Administrator. Use 2 for regular users, 4 for special users, 10 for super admin."
+      }
+    ]
+  }
+}

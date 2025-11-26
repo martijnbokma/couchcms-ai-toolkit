@@ -1,0 +1,57 @@
+{
+  "pagination": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "CouchCMS pagination for large result sets",
+    "promptTriggers": {
+      "keywords": [
+        "pagination",
+        "paginate",
+        "paginator",
+        "k_paginated",
+        "page",
+        "next",
+        "previous",
+        "limit",
+        "offset"
+      ],
+      "intentPatterns": [
+        "(add|implement).*?(pagination|paging)",
+        "(split|divide).*?(results|pages)",
+        "(next|previous).*?(page|link)",
+        "(limit|show).*?(per page|results)",
+        "(navigate|browse).*?(pages)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "views/**/*.html"
+      ],
+      "contentPatterns": [
+        "paginate='1'",
+        "cms:paginator",
+        "k_paginated_top",
+        "k_paginated_bottom",
+        "k_paginator_required",
+        "k_total_records",
+        "k_record_from",
+        "k_record_to"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "cms:pages[^>]*(?!paginate=)",
+        "severity": "info",
+        "message": "💡 Consider adding paginate='1' for large result sets."
+      },
+      {
+        "pattern": "cms:paginator[^>]*(?!k_paginator_required)",
+        "severity": "warning",
+        "message": "⚠️ Wrap cms:paginator with cms:if k_paginator_required to hide when not needed."
+      }
+    ]
+  }
+}

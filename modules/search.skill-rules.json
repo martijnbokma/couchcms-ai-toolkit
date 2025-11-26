@@ -1,0 +1,55 @@
+{
+  "search": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "CouchCMS fulltext search functionality",
+    "promptTriggers": {
+      "keywords": [
+        "search",
+        "cms:search",
+        "search_form",
+        "k_search",
+        "fulltext",
+        "keyword",
+        "query",
+        "find"
+      ],
+      "intentPatterns": [
+        "(create|add|implement).*?(search|find)",
+        "(search|find).*?(pages|content|posts)",
+        "(query|filter).*?(keyword|text)",
+        "(results|display).*?(search)",
+        "(highlight|excerpt).*?(search)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "views/**/*.html",
+        "*search*.html"
+      ],
+      "contentPatterns": [
+        "cms:search",
+        "cms:search_form",
+        "k_search_title",
+        "k_search_excerpt",
+        "k_search_keywords",
+        "gpc 's'"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "k_page_title(?!.*k_search_title)",
+        "severity": "warning",
+        "message": "⚠️ In search results, use k_search_title instead of k_page_title for highlighted matches."
+      },
+      {
+        "pattern": "cms:search[^>]*(?!paginate=)",
+        "severity": "info",
+        "message": "💡 Consider adding paginate='1' for large search result sets."
+      }
+    ]
+  }
+}

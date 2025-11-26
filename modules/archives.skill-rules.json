@@ -1,0 +1,57 @@
+{
+  "archives": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "CouchCMS date-based archives for blogs and news",
+    "promptTriggers": {
+      "keywords": [
+        "archive",
+        "date",
+        "monthly",
+        "yearly",
+        "k_archive",
+        "cms:archives",
+        "k_is_archive",
+        "calendar",
+        "timeline"
+      ],
+      "intentPatterns": [
+        "(create|add|show).*?(archive|timeline)",
+        "(list|display).*?(by date|monthly|yearly)",
+        "(blog|news).*?(archive)",
+        "(filter|group).*?(date|month|year)",
+        "(calendar|date).*?(view|navigation)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "views/**/*.html"
+      ],
+      "contentPatterns": [
+        "cms:archives",
+        "k_archive_",
+        "k_is_archive",
+        "k_is_year",
+        "k_is_month",
+        "k_is_day",
+        "start_on=",
+        "stop_before="
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "cms:archives[^>]*type=['\"]monthly['\"]",
+        "severity": "info",
+        "message": "💡 Monthly archives - common for blog sidebar widgets."
+      },
+      {
+        "pattern": "k_archive_date",
+        "severity": "info",
+        "message": "💡 Using k_archive_date - format with cms:date for proper display."
+      }
+    ]
+  }
+}

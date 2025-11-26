@@ -1,0 +1,55 @@
+{
+  "relationships": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "CouchCMS relationships between templates for linked content",
+    "promptTriggers": {
+      "keywords": [
+        "relationship",
+        "relation",
+        "related",
+        "reverse_related",
+        "linked",
+        "associate",
+        "many-to-many",
+        "one-to-many",
+        "cms:related_pages",
+        "cms:reverse_related"
+      ],
+      "intentPatterns": [
+        "(create|add|define).*?(relationship|relation)",
+        "(link|associate|connect).*?(pages|content|templates)",
+        "(show|list|display).*?(related|linked)",
+        "(many-to-many|one-to-many).*?(relationship)",
+        "(artist|album|product|category).*?(relation)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "views/**/*.html"
+      ],
+      "contentPatterns": [
+        "type='relation'",
+        "cms:related_pages",
+        "cms:reverse_related",
+        "relation=",
+        "masterpage="
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "cms:reverse_related[^>]*(?!masterpage=)",
+        "severity": "error",
+        "message": "❌ cms:reverse_related requires masterpage parameter to specify source template."
+      },
+      {
+        "pattern": "type=['\"]relation['\"].*type=['\"]relation['\"]",
+        "severity": "warning",
+        "message": "⚠️ Define relationship in ONE template only to avoid conflicts."
+      }
+    ]
+  }
+}

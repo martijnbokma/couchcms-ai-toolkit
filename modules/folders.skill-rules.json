@@ -1,0 +1,58 @@
+{
+  "folders": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "CouchCMS folders for hierarchical content organization",
+    "promptTriggers": {
+      "keywords": [
+        "folder",
+        "category",
+        "hierarchy",
+        "nested",
+        "parent",
+        "child",
+        "k_folder",
+        "cms:folders",
+        "cms:listfolders",
+        "cms:dropdownfolders",
+        "breadcrumb"
+      ],
+      "intentPatterns": [
+        "(create|add|modify).*?(folder|category|hierarchy)",
+        "(organize|structure).*?(content|pages)",
+        "(list|show|display).*?(folders|categories)",
+        "(breadcrumb|navigation).*?(folder)",
+        "(filter|sort).*?(by folder|category)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "views/**/*.html"
+      ],
+      "contentPatterns": [
+        "cms:folders",
+        "cms:listfolders",
+        "cms:dropdownfolders",
+        "k_folder_",
+        "k_is_folder",
+        "folder=",
+        "hierarchical="
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "folder=['\"]k_folder_name['\"]",
+        "severity": "info",
+        "message": "💡 Using dynamic folder filtering based on current folder context."
+      },
+      {
+        "pattern": "cms:folders[^>]*hierarchical=['\"]0['\"]",
+        "severity": "info",
+        "message": "💡 Flat folder listing - set hierarchical='1' for nested structure."
+      }
+    ]
+  }
+}

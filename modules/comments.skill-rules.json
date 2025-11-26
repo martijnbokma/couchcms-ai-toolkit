@@ -1,0 +1,61 @@
+{
+  "comments": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "CouchCMS comment system for user interactions",
+    "promptTriggers": {
+      "keywords": [
+        "comment",
+        "cms:comments",
+        "commentable",
+        "k_comment",
+        "process_comment",
+        "moderation",
+        "spam",
+        "captcha"
+      ],
+      "intentPatterns": [
+        "(create|add|enable).*?(comment|feedback)",
+        "(show|display|list).*?(comments)",
+        "(moderate|approve).*?(comment)",
+        "(spam|captcha).*?(protection)",
+        "(reply|respond).*?(comment)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "*comment*.html",
+        "views/**/*.html"
+      ],
+      "contentPatterns": [
+        "cms:comments",
+        "commentable='1'",
+        "process_comment",
+        "k_comment_author",
+        "k_comment_date",
+        "k_is_commentable",
+        "k_comments_count"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "cms:comments(?!.*page_id=)",
+        "severity": "warning",
+        "message": "⚠️ Specify page_id=k_page_id to show comments for current page only."
+      },
+      {
+        "pattern": "process_comment(?!.*captcha)",
+        "severity": "warning",
+        "message": "⚠️ Consider adding CAPTCHA for logged-out users to prevent spam."
+      },
+      {
+        "pattern": "commentable=['\"]1['\"]",
+        "severity": "info",
+        "message": "💡 Template has comments enabled. Ensure comment form and display are implemented."
+      }
+    ]
+  }
+}

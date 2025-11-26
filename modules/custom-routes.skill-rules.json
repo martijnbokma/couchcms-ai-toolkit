@@ -1,0 +1,56 @@
+{
+  "custom-routes": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "CouchCMS custom routes for clean URLs and REST-like patterns",
+    "promptTriggers": {
+      "keywords": [
+        "route",
+        "routing",
+        "prettyurl",
+        "clean url",
+        "slug",
+        "k_route",
+        "cms:route",
+        "routable",
+        "K_IGNORE_CONTEXT"
+      ],
+      "intentPatterns": [
+        "(create|add|define).*?(route|url|endpoint)",
+        "(clean|pretty|custom).*?(url|path)",
+        "(api|rest).*?(endpoint|route)",
+        "(slug|dynamic).*?(url|path)",
+        "(match|pattern).*?(url|route)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "api/**/*.php"
+      ],
+      "contentPatterns": [
+        "cms:route",
+        "routable='1'",
+        "k_route_name",
+        "k_route_param",
+        "K_IGNORE_CONTEXT",
+        "k_matched_route",
+        "constraints="
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "routable=['\"]1['\"].*COUCH::invoke\\(\\s*\\)",
+        "severity": "critical",
+        "message": "⚠️ CRITICAL: Routable templates MUST use COUCH::invoke(K_IGNORE_CONTEXT). Routes will fail otherwise."
+      },
+      {
+        "pattern": "cms:route[^>]*(?!constraints=)",
+        "severity": "info",
+        "message": "💡 Consider adding constraints to validate route parameters (e.g., constraints=\"id=\\d+\")."
+      }
+    ]
+  }
+}

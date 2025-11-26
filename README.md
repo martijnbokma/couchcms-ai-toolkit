@@ -9,8 +9,8 @@ Provides consistent AI assistance across all your projects with modules, agents,
 - 🎯 **Interactive Setup Wizard** - Get started in 2 minutes
 - ✅ **Project Validation** - Compliance checking (0-100% score)
 - 🔄 **Auto-Generated Configs** - Cursor, Claude, Copilot ready
-- 📦 **6 Knowledge Modules** - CouchCMS, TailwindCSS, Alpine.js, TypeScript, daisyUI, DataBound Forms
-- 🤖 **9 AI Agents** - Specialized guidance for daily development
+- 📦 **15 Knowledge Modules** - CouchCMS, TailwindCSS, Alpine.js, TypeScript, daisyUI, DataBound Forms, Search, Pagination, Users, Comments, and more
+- 🤖 **23 AI Agents** - Specialized guidance for daily development
 - 📋 **Auto-Loading Rules** - Context-aware refactoring patterns
 - 🔧 **Zero Config** - Works out of the box
 
@@ -129,8 +129,8 @@ bun ai-toolkit-shared/scripts/init.js
 | Guide                                          | Description                                      |
 | ---------------------------------------------- | ------------------------------------------------ |
 | **[Command Reference](docs/COMMANDS.md)**      | Detailed `init`, `validate`, `sync` commands     |
-| **[Available Modules](docs/MODULES.md)**       | 6 knowledge modules with descriptions            |
-| **[Available Agents](docs/AGENTS.md)**         | 9 specialized AI agents                          |
+| **[Available Modules](docs/MODULES.md)**       | 15 knowledge modules with descriptions           |
+| **[Available Agents](docs/AGENTS.md)**         | 23 specialized AI agents                         |
 | **[Project Rules](docs/PROJECT-RULES.md)**     | Guide to Cursor Project Rules                    |
 | **[User Rules](docs/USER-RULES.md)**           | Guide to Cursor User Rules                       |
 | **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Guide to Cursor Custom Commands                  |
