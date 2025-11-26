@@ -8,7 +8,7 @@
  *   bun ai-toolkit/scripts/init.js
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'fs'
 import { join, resolve, dirname, basename } from 'path'
 import { fileURLToPath } from 'url'
 import { findConfigFile, hasStandards, getConfigFileName, ToolkitError, handleError } from './utils.js'
@@ -577,6 +577,163 @@ Document common development workflows:
 }
 
 /**
+ * Clean generated files and directories
+ * @param {string} projectDir - Project root directory
+ * @param {boolean} confirmed - Whether user confirmed the cleanup
+ */
+function cleanGeneratedFiles(projectDir, confirmed = false) {
+    if (!confirmed) {
+        console.log('⚠️  Cleanup skipped (not confirmed)')
+        return
+    }
+
+    console.log('\n🧹 Cleaning generated files...\n')
+
+    const filesToRemove = [
+        // Root files
+        '.cursorrules',
+        'CLAUDE.md',
+        'AGENT.md',
+        'USER-RULES.md',
+        'PROJECT-RULES-TEMPLATE.md',
+
+        // .github
+        '.github/copilot-instructions.md',
+
+        // .codewhisperer
+        '.codewhisperer/rules.md',
+        '.codewhisperer/README.md',
+
+        // .tabnine
+        '.tabnine/guidelines/couchcms-standards.md',
+        '.tabnine/settings.json',
+
+        // .kiro
+        '.kiro/steering/coding-standards.md',
+
+        // .windsurf
+        '.windsurf/rules.md',
+
+        // .claude
+        '.claude/skills/skill-rules.json',
+        '.claude/settings.json',
+    ]
+
+    const dirsToClean = [
+        '.cursor/rules',
+        '.cursor/commands',
+        '.claude/hooks',
+    ]
+
+    let removedCount = 0
+
+    // Remove individual files
+    for (const file of filesToRemove) {
+        const filePath = join(projectDir, file)
+        if (existsSync(filePath)) {
+            try {
+                rmSync(filePath, { force: true })
+                removedCount++
+                console.log(`  🗑️  Removed: ${file}`)
+            } catch (error) {
+                console.warn(`  ⚠️  Failed to remove ${file}: ${error.message}`)
+            }
+        }
+    }
+
+    // Clean directories (remove all files, but keep directory structure)
+    for (const dir of dirsToClean) {
+        const dirPath = join(projectDir, dir)
+        if (existsSync(dirPath)) {
+            try {
+                const files = readdirSync(dirPath)
+                for (const file of files) {
+                    const filePath = join(dirPath, file)
+                    const stat = statSync(filePath)
+                    if (stat.isFile()) {
+                        rmSync(filePath, { force: true })
+                        removedCount++
+                        console.log(`  🗑️  Removed: ${dir}/${file}`)
+                    }
+                }
+
+                // Remove directory if empty
+                try {
+                    const remainingFiles = readdirSync(dirPath)
+                    if (remainingFiles.length === 0) {
+                        rmSync(dirPath, { recursive: true, force: true })
+                        console.log(`  🗑️  Removed empty directory: ${dir}`)
+                    }
+                } catch (error) {
+                    // Directory might have been removed already or has subdirectories
+                }
+            } catch (error) {
+                console.warn(`  ⚠️  Failed to clean ${dir}: ${error.message}`)
+            }
+        }
+    }
+
+    // Clean .claude/rules if it exists (only generated files)
+    const claudeRulesPath = join(projectDir, '.claude', 'rules')
+    if (existsSync(claudeRulesPath)) {
+        try {
+            const files = readdirSync(claudeRulesPath)
+            for (const file of files) {
+                // Only remove .mdc files (generated rules)
+                if (file.endsWith('.mdc')) {
+                    const filePath = join(claudeRulesPath, file)
+                    rmSync(filePath, { force: true })
+                    removedCount++
+                    console.log(`  🗑️  Removed: .claude/rules/${file}`)
+                }
+            }
+        } catch (error) {
+            console.warn(`  ⚠️  Failed to clean .claude/rules: ${error.message}`)
+        }
+    }
+
+    // Remove empty directories
+    const dirsToCheck = [
+        '.tabnine/guidelines',
+        '.tabnine',
+        '.codewhisperer',
+        '.kiro/steering',
+        '.kiro',
+        '.windsurf',
+        '.claude/skills',
+        '.claude/hooks',
+        '.claude/rules',
+        '.claude',
+        '.cursor/rules',
+        '.cursor/commands',
+        '.cursor',
+        '.github',
+    ]
+
+    // Remove empty directories (in reverse order to handle nested dirs)
+    for (const dir of dirsToCheck.reverse()) {
+        const dirPath = join(projectDir, dir)
+        if (existsSync(dirPath)) {
+            try {
+                const files = readdirSync(dirPath)
+                if (files.length === 0) {
+                    rmSync(dirPath, { recursive: true, force: true })
+                    console.log(`  🗑️  Removed empty directory: ${dir}`)
+                }
+            } catch (error) {
+                // Directory might have been removed already
+            }
+        }
+    }
+
+    if (removedCount > 0) {
+        console.log(`\n✅ Cleaned ${removedCount} file(s)\n`)
+    } else {
+        console.log(`\n✅ No generated files to clean\n`)
+    }
+}
+
+/**
  * Run initial sync script
  * @param {string} projectDir - Project root directory
  * @returns {Promise<void>}
@@ -713,6 +870,14 @@ async function init() {
 
     // Create context directory if requested
     await setupContextDirectory(projectDir, projectName, contextPath)
+
+    // Ask for confirmation before cleaning generated files
+    console.log('\n🧹 Before running sync, this will remove all existing generated configuration files.')
+    const confirmed = await confirm('Clean generated files before sync?', true)
+
+    if (confirmed) {
+        cleanGeneratedFiles(projectDir, true)
+    }
 
     // Run initial sync
     await runInitialSync(projectDir)

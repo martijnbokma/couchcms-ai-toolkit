@@ -966,11 +966,33 @@ function syncCursorCommands(toolkitPath, projectDir, mergedConfig) {
 }
 
 /**
+ * Prompt user for confirmation before cleaning
+ * @returns {Promise<boolean>} - True if user confirms, false otherwise
+ */
+async function confirmCleanup() {
+    return new Promise((resolve) => {
+        process.stdout.write('\n🧹 This will remove all generated configuration files.\n')
+        process.stdout.write('   Continue? [y/N]: ')
+
+        process.stdin.once('data', (data) => {
+            const answer = data.toString().trim().toLowerCase()
+            resolve(answer === 'y' || answer === 'yes')
+        })
+    })
+}
+
+/**
  * Clean generated files and directories
  * @param {string} projectDir - Project root directory
+ * @param {boolean} confirmed - Whether user confirmed the cleanup
  */
-function cleanGeneratedFiles(projectDir) {
-    console.log('🧹 Cleaning generated files...\n')
+function cleanGeneratedFiles(projectDir, confirmed = false) {
+    if (!confirmed) {
+        console.log('⚠️  Cleanup skipped (not confirmed)')
+        return
+    }
+
+    console.log('\n🧹 Cleaning generated files...\n')
 
     const filesToRemove = [
         // Root files
@@ -1291,8 +1313,8 @@ function loadAllAgents(agentList, toolkitPath) {
 }
 
 /**
- * Load and validate project configuration
- * @returns {object} - Configuration object with { config, projectDir, toolkitPath, mergedConfig, projectRules }
+ * Load and validate project configuration (without cleaning)
+ * @returns {object} - Configuration object with { config, projectDir, toolkitPath, mergedConfig, projectRules, projectName }
  * @throws {ToolkitError} If configuration is invalid or missing
  */
 function loadProjectConfiguration() {
@@ -1316,9 +1338,6 @@ function loadProjectConfiguration() {
     // Support both old format (config.name) and new format (config.project.name)
     const projectName = config.project?.name || config.name || 'Unnamed'
     console.log(`📦 Project: ${projectName}`)
-
-    // Clean generated files before syncing
-    cleanGeneratedFiles(projectDir)
 
     // Resolve toolkit path
     const toolkitPath = resolveToolkitPathWithContext(
@@ -1355,6 +1374,7 @@ function loadProjectConfiguration() {
         toolkitPath,
         mergedConfig,
         projectRules,
+        projectName: config.project?.name || config.name || 'Unnamed',
     }
 }
 
@@ -1493,8 +1513,19 @@ async function sync() {
     try {
         console.log('🔄 CouchCMS AI Toolkit - Sync\n')
 
-        // Load project configuration
-        const { config, projectDir, toolkitPath, mergedConfig, projectRules } = loadProjectConfiguration()
+        // Load project configuration (without cleaning yet)
+        const configResult = loadProjectConfiguration()
+        const { config, projectDir, toolkitPath, mergedConfig, projectRules } = configResult
+
+        // Ask for confirmation before cleaning
+        const confirmed = await confirmCleanup()
+        if (!confirmed) {
+            console.log('\n❌ Sync cancelled\n')
+            process.exit(0)
+        }
+
+        // Clean generated files before syncing (after confirmation)
+        cleanGeneratedFiles(projectDir, true)
 
         // Load toolkit resources
         const resources = loadToolkitResources(config, toolkitPath, projectDir)
@@ -1524,6 +1555,10 @@ async function sync() {
         }
     }
 }
+
+// Setup stdin for interactive input
+process.stdin.setEncoding('utf8')
+process.stdin.setRawMode(false)
 
 // Run
 sync().catch(error => {
