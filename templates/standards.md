@@ -5,6 +5,9 @@ project:
     type: 'couchcms-webapp'
     description: 'Brief description of your project'
 
+# === TOOLKIT LOCATION ===
+toolkit: './ai-toolkit-shared'
+
 # === LANGUAGES ===
 languages:
     - php

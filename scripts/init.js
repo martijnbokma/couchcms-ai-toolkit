@@ -358,7 +358,8 @@ async function init() {
         standardsMd = standardsMd
             .replace(/"my-project"/g, `"${projectName}"`)
             .replace(/Brief description of your project/g, projectDescription)
-            .replace(/"\.\/ai-toolkit"/g, `"${toolkitPath}"`)
+            .replace(/toolkit: '\.\/ai-toolkit-shared'/g, `toolkit: '${toolkitPath}'`)
+            .replace(/toolkit: "\.\/ai-toolkit-shared"/g, `toolkit: "${toolkitPath}"`)
             // Replace modules list - match any modules list in the template
             .replace(
                 /modules:\n(?:    - [^\n]+\n?)+/g,

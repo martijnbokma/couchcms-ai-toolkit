@@ -1138,7 +1138,9 @@ Add your project-specific instructions here...
             }
         } else {
             // Normal case: resolve toolkit path from project root
-            var toolkitPath = resolveToolkitPath(config.toolkit || '.', toolkitBaseDir)
+            // Default to './ai-toolkit-shared' if not specified
+            const defaultToolkitPath = './ai-toolkit-shared'
+            var toolkitPath = resolveToolkitPath(config.toolkit || defaultToolkitPath, toolkitBaseDir)
         }
 
         // Verify toolkit path exists
