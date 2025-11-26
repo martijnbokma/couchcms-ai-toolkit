@@ -1062,11 +1062,41 @@ Add your project-specific instructions here...
         }
 
         console.log(`📄 Found: ${configPath}`)
-        // If config is in .project/, use parent directory as project root
+        // If config is in .project/ or ai-toolkit-shared/, use parent directory as project root
         // Otherwise, use the directory containing the config file
         let projectDir = dirname(configPath)
-        if (configPath.includes('/.project/') || configPath.endsWith('.project/standards.md')) {
+
+        // Normalize path separators for cross-platform compatibility
+        const normalizedPath = configPath.replace(/\\/g, '/')
+        const configDir = dirname(normalizedPath)
+
+        // Check if config is in .project/ directory or ai-toolkit-shared/ directory
+        // Use path parts to detect these special directories
+        const pathParts = normalizedPath.split('/')
+        const projectIndex = pathParts.indexOf('.project')
+        const toolkitIndex = pathParts.indexOf('ai-toolkit-shared')
+
+        let needsParentDir = false
+        let reason = ''
+
+        if (projectIndex !== -1 && pathParts[projectIndex + 1] === 'standards.md') {
+            // Config is in .project/standards.md, go up to parent
+            needsParentDir = true
+            reason = '.project/'
+        } else if (toolkitIndex !== -1 && pathParts[toolkitIndex + 1] === 'standards.md') {
+            // Config is in ai-toolkit-shared/standards.md, go up to parent
+            needsParentDir = true
+            reason = 'ai-toolkit-shared/'
+        }
+
+        if (needsParentDir) {
+            const originalProjectDir = projectDir
             projectDir = dirname(projectDir) // Go up one level to project root
+            console.log(`📁 Config in ${reason}, using parent as project root`)
+            console.log(`   Before: ${originalProjectDir}`)
+            console.log(`   After:  ${projectDir}`)
+        } else {
+            console.log(`📁 Project root: ${projectDir}`)
         }
 
         // Parse configuration file
