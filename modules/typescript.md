@@ -1,6 +1,7 @@
 ---
 id: typescript
 name: "TypeScript"
+category: "frontend"
 version: "5.x"
 description: "TypeScript standards and patterns"
 required: false

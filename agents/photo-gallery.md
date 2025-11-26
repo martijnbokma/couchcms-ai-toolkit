@@ -632,3 +632,4 @@ Note: This prevents image resizing to preserve EXIF data.
 - CouchCMS Documentation: `concepts/photo-gallery.mdx`
 - Tag Reference: `tags-reference/core/exif/`
 
+

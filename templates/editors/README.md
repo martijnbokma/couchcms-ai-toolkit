@@ -16,6 +16,7 @@ This directory contains optimized template files for configuring AI coding assis
 | `copilot.template.md` | GitHub Copilot | Suggestion validation, completion priorities |
 | `codewhisperer.template.md` | Amazon CodeWhisperer | Generation validation, pattern blocking |
 | `tabnine.template.md` | Tabnine AI | Completion validation, context awareness |
+| `kiro.template.md` | Amazon Kiro IDE | Steering documents, always-included standards |
 | `windsurf.template.md` | Windsurf IDE | Cascade capabilities, smart operations |
 | `agent.template.md` | Universal base | Minimal core template for all agents |
 | `roles.template.md` | Project roles | Role definitions and responsibilities |

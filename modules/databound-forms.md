@@ -1,6 +1,7 @@
 ---
 id: databound-forms
 name: "DataBound Forms"
+category: "forms"
 version: "2.x"
 description: "CouchCMS DataBound Forms implementation patterns"
 required: false

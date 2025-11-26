@@ -1,6 +1,7 @@
 ---
 id: couchcms-core
 name: "CouchCMS Core"
+category: "core"
 version: "2.3"
 description: "Core CouchCMS patterns, templates, and security standards"
 required: true

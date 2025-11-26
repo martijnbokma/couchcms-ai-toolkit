@@ -50,13 +50,85 @@ When refactoring this file, apply these rules:
 - Use breakpoint prefixes: `sm:`, `md:`, `lg:`, `xl:`
 - Test across screen sizes
 
+## TailwindCSS 4 Setup
+
+- ✅ Use `@import "tailwindcss";` in CSS (no `tailwind.config.js`)
+- ✅ Add daisyUI plugin: `@plugin "daisyui";`
+- ✅ All config in CSS file (not JS config)
+- ❌ Never use `tailwind.config.js` (deprecated in v4)
+
+## DaisyUI Theme System
+
+- ✅ Use semantic colors: `base-100`, `base-content`, `primary`, etc.
+- ✅ Colors adapt automatically to light/dark themes
+- ✅ No need for `dark:` prefixes with daisyUI colors
+- ✅ Use `*-content` colors for text on colored backgrounds
+- ❌ Never use Tailwind color names: `bg-gray-100`, `text-black` (breaks themes)
+
+## Custom Themes
+
+- ✅ Define custom theme with `@plugin "daisyui/theme"`
+- ✅ Use OKLCH color format for better color control
+- ✅ Set `default: true` for default theme
+- ✅ Configure radius, size, border, depth, noise variables
+
+## Component Classes
+
+- ✅ Use `@layer components` for custom component classes
+- ✅ Use `@apply` to compose Tailwind utilities
+- ✅ Keep component classes minimal (prefer utilities)
+- ✅ Use kebab-case for component class names
+
+## Responsive Design
+
+- ✅ Mobile-first approach (base styles for mobile)
+- ✅ Use breakpoint prefixes: `sm:`, `md:`, `lg:`, `xl:`
+- ✅ Test across screen sizes
+- ✅ Use responsive grid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+
+## Animation & Transitions
+
+- ✅ Use Tailwind animation classes: `animate-fade-in`, `animate-pulse`
+- ✅ Use daisyUI loading components: `loading loading-spinner`
+- ✅ Custom animations in CSS with `@keyframes`
+- ✅ Use `transition-*` utilities for smooth transitions
+
+## Dark Mode
+
+- ✅ Use daisyUI theme controller: `theme-controller` class
+- ✅ Content adapts automatically with semantic colors
+- ✅ No manual dark mode handling needed
+- ✅ Use `swap` component for theme toggle
+
+## Spacing & Layout
+
+- ✅ Use consistent spacing: `space-y-4`, `space-x-2`
+- ✅ Use grid gap: `gap-4 md:gap-6 lg:gap-8`
+- ✅ Use container utilities: `container mx-auto px-4`
+- ✅ Use flexbox utilities: `flex items-center justify-center`
+
+## Typography
+
+- ✅ Use responsive typography: `text-2xl sm:text-3xl md:text-4xl`
+- ✅ Use opacity modifiers: `text-base-content/70`
+- ✅ Use truncation: `truncate`, `line-clamp-3`
+- ✅ Use semantic font weights: `font-bold`, `font-semibold`
+
 ## Checklist
 
 - [ ] Prefer Tailwind utilities over custom CSS
-- [ ] Using daisyUI semantic colors
+- [ ] Using daisyUI semantic colors (not Tailwind colors)
 - [ ] No global element selectors
-- [ ] Mobile-first responsive
+- [ ] Mobile-first responsive design
 - [ ] Proper file organization
-- [ ] No unnecessary `!important`
+- [ ] No unnecessary `!important` (use `!` suffix if needed)
+- [ ] TailwindCSS 4 setup (no config.js)
+- [ ] DaisyUI plugin configured
+- [ ] Custom themes use OKLCH colors
+- [ ] Component classes use `@layer components`
+- [ ] Responsive breakpoints used consistently
+- [ ] Dark mode works with theme controller
+- [ ] Spacing system is consistent
+- [ ] Typography is responsive
 
 

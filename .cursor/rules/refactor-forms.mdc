@@ -52,15 +52,93 @@ When refactoring this file, apply these rules:
 - ✅ Share between create and edit views
 - ✅ Use `<cms:embed>` for form partials
 
+## Form Structure & Attributes
+
+- ✅ Use `enctype='multipart/form-data'` for file uploads
+- ✅ Set `masterpage` and `mode` attributes correctly
+- ✅ Use `page_id="k_page_id"` for edit forms
+- ✅ Handle `k_success` and `k_error` properly
+- ✅ Use `anchor="0"` for delete forms
+
+## Validation Rules
+
+- ❌ Never validate on bound inputs
+- ✅ Define validation on editable regions in template
+- ✅ Bound inputs just bind, validation is inherited
+- ✅ Use `required="1"` and `validator` on editable regions
+- ✅ Display field-specific errors: `k_error_fieldname`
+
+## Security Patterns
+
+- ✅ Use `<cms:embed 'snippets/filters/authenticated.html' />`
+- ✅ Use ownership filters for edit/delete: `owns_content.html`
+- ✅ Set `content_owner=k_user_name` on create
+- ✅ Add anti-spam for public forms (honeypot, timestamp, human check)
+- ✅ Check `k_user_access_level` for admin operations
+
+## Error Handling
+
+- ✅ Display `k_error` with proper styling (alert component)
+- ✅ Show field-specific errors: `k_error_fieldname`
+- ✅ Use flash messages for success feedback
+- ✅ Add loading states during submission
+- ✅ Handle validation errors gracefully
+
+## Multi-Step Forms
+
+- ✅ Use Alpine.js for step navigation
+- ✅ Show progress with steps component
+- ✅ Validate each step before proceeding
+- ✅ Persist form data between steps
+- ✅ Show review step before final submission
+
+## Repeatable Form Fields
+
+- ✅ Use Alpine.js for dynamic field management
+- ✅ Serialize repeatable data to JSON
+- ✅ Use `frm_*` variables for form persistence
+- ✅ Validate repeatable items before submission
+- ✅ Handle empty repeatable regions
+
+## Auto-Save Drafts
+
+- ✅ Use localStorage for draft persistence
+- ✅ Auto-save on input changes (debounced)
+- ✅ Clear draft on successful submission
+- ✅ Restore draft on page load
+- ✅ Show draft indicator to user
+
+## Anti-Spam Protection
+
+- ✅ Add honeypot field (hidden from users)
+- ✅ Use timestamp for bot detection
+- ✅ Add human verification (simple math question)
+- ✅ Check all anti-spam measures in `k_success` block
+- ✅ Abort form processing if spam detected
+
+## Form Persistence
+
+- ✅ Use `_invalidate_cache="1"` on form save
+- ✅ Redirect after successful submission
+- ✅ Use flash messages for user feedback
+- ✅ Handle form resubmission (PRG pattern)
+
 ## Checklist
 
-- [ ] `enctype` for file uploads
+- [ ] `enctype='multipart/form-data'` for file uploads
 - [ ] Validation on editable regions (not inputs)
 - [ ] Authentication filter present
 - [ ] Ownership check on edit/delete
 - [ ] Setting `content_owner` on create
-- [ ] Error display with `k_error`
-- [ ] Success feedback with flash
-- [ ] Reusable form snippets
+- [ ] Error display with `k_error` and field-specific errors
+- [ ] Success feedback with flash messages
+- [ ] Reusable form snippets (DRY)
+- [ ] Anti-spam measures for public forms
+- [ ] Loading states during submission
+- [ ] Multi-step forms use Alpine.js navigation
+- [ ] Repeatable fields properly serialized
+- [ ] Auto-save drafts implemented (if needed)
+- [ ] Cache invalidation on form save
+- [ ] Proper redirect after submission
 
 

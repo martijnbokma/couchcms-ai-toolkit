@@ -1,0 +1,125 @@
+---
+description: Auto-load refactoring rules for Alpine.js components
+globs: ['{{paths.snippets}}/**/*.html', '*.php', '{{paths.javascript}}/**/*.js']
+alwaysApply: false
+---
+
+# Refactoring Rules for Alpine.js
+
+## 🚨 CRITICAL: Refactoring Workflow
+
+**When a refactoring request is made (e.g., "refactor @file.html" with Alpine.js), you MUST:**
+
+1. **First**: Load and follow `@ai-toolkit-shared/prompts/refactoring/router.md`
+2. **Router will**: Analyze the file, select appropriate specialist(s), request confirmation
+3. **Then**: Apply the rules below as part of the selected specialist workflow
+
+**Never skip the router analysis step - it ensures the correct specialist is selected.**
+
+---
+
+When refactoring this file, apply these rules:
+
+## CouchCMS Syntax Requirements
+
+- ❌ Never use `@click` shorthand in CouchCMS templates (colon conflicts)
+- ❌ Never use `:class` shorthand in CouchCMS templates
+- ✅ Always use `x-on:click` full syntax
+- ✅ Always use `x-bind:class` full syntax
+- ✅ Check layout files too for shorthand syntax issues
+
+## Component Complexity
+
+- ❌ Never put complex logic in `x-data` (> 50 lines)
+- ✅ Keep Alpine components simple and focused
+- ✅ Move complex logic to TypeScript modules
+- ✅ Export functions for Alpine use on `window`
+- ✅ Use `alpine:init` event for initialization
+
+## State Management
+
+- ❌ Never mutate objects/arrays directly (breaks reactivity)
+- ✅ Use spread operator: `items = [...items, newItem]`
+- ✅ Use immutable patterns for state updates
+- ✅ Use Alpine stores for global state
+- ✅ Use `$persist` for localStorage persistence
+
+## Performance
+
+- ✅ Use `x-show` for simple visibility (always renders, just hides)
+- ✅ Use `x-if` for conditional rendering (only renders when true)
+- ✅ Use `x-cloak` to prevent flash of unstyled content
+- ✅ Debounce expensive operations (search, API calls)
+- ✅ Use `x-intersect` for lazy loading
+
+## Accessibility
+
+- ✅ Add ARIA attributes: `aria-expanded`, `aria-controls`, `role`
+- ✅ Use semantic HTML elements
+- ✅ Ensure keyboard navigation works
+- ✅ Add focus management for modals/dropdowns
+- ✅ Use `x-on:keydown.escape` for closing modals
+
+## TypeScript Integration
+
+- ✅ Define interfaces for Alpine component data
+- ✅ Export typed functions for Alpine use
+- ✅ Register functions globally: `window.functionName = functionName`
+- ✅ Use type guards for runtime validation
+- ✅ Keep TypeScript logic separate from Alpine templates
+
+## Reusable Components
+
+- ✅ Extract repeated Alpine patterns into reusable components
+- ✅ Use `Alpine.data()` for component definitions
+- ✅ Pass configuration as parameters
+- ✅ Use Alpine stores for shared state
+- ✅ Create component snippets in `{{paths.components}}/`
+
+## Event Handling
+
+- ✅ Use `x-on:` for all event handlers in CouchCMS
+- ✅ Use modifiers: `.prevent`, `.stop`, `.debounce`, `.once`
+- ✅ Use `x-on:click.outside` for dropdowns
+- ✅ Use `x-on:keydown.escape.window` for global shortcuts
+- ✅ Clean up event listeners (Alpine handles this automatically)
+
+## Form Integration
+
+- ✅ Use `x-model` for two-way binding
+- ✅ Use `x-on:input` for real-time validation
+- ✅ Show validation errors with `x-show` or `x-if`
+- ✅ Disable submit button during submission
+- ✅ Use `x-bind:disabled` for button states
+
+## Modal Patterns
+
+- ✅ Use `x-show` with `x-bind:class` for modal state
+- ✅ Add `x-on:keydown.escape.window` for ESC key
+- ✅ Use `x-on:click.outside` for backdrop click
+- ✅ Manage focus trap for accessibility
+- ✅ Use `x-cloak` to prevent flash
+
+## Dropdown Patterns
+
+- ✅ Use `x-show` for dropdown visibility
+- ✅ Use `x-on:click.outside` to close on outside click
+- ✅ Add `aria-expanded` and `aria-controls`
+- ✅ Use `role="menu"` and `role="menuitem"`
+- ✅ Handle keyboard navigation
+
+## Checklist
+
+- [ ] No `@` or `:` shorthand in CouchCMS templates
+- [ ] Components follow single responsibility (< 50 lines)
+- [ ] Complex logic moved to TypeScript
+- [ ] ARIA attributes present for accessibility
+- [ ] Events properly debounced/throttled
+- [ ] State updates use immutable patterns
+- [ ] `x-cloak` used to prevent flash
+- [ ] Layout files checked for shorthand syntax
+- [ ] TypeScript integration via window exports
+- [ ] Reusable components extracted
+- [ ] Performance optimizations applied
+- [ ] Keyboard navigation works
+- [ ] Focus management implemented

@@ -432,13 +432,14 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData) {
 
     // Mapping of template files to output files
     const templateMap = {
-        'cursor.template.md': { output: '.cursorrules', dir: projectDir },
-        'claude.template.md': { output: 'CLAUDE.md', dir: projectDir },
-        'copilot.template.md': { output: 'copilot-instructions.md', dir: join(projectDir, '.github') },
-        'codewhisperer.template.md': { output: '.codewhisperer/settings.json', dir: projectDir },
-        'tabnine.template.md': { output: '.tabnine/settings.json', dir: projectDir },
-        'windsurf.template.md': { output: '.windsurf/rules.md', dir: projectDir },
-        'agent.template.md': { output: 'AGENT.md', dir: projectDir },
+        'cursor.template.md': { output: '.cursorrules', dir: projectDir, type: 'markdown' },
+        'claude.template.md': { output: 'CLAUDE.md', dir: projectDir, type: 'markdown' },
+        'copilot.template.md': { output: 'copilot-instructions.md', dir: join(projectDir, '.github'), type: 'markdown' },
+        'codewhisperer.template.md': { output: '.codewhisperer/rules.md', dir: projectDir, type: 'markdown' },
+        'tabnine.template.md': { output: '.tabnine/guidelines/couchcms-standards.md', dir: projectDir, type: 'markdown' },
+        'kiro.template.md': { output: '.kiro/steering/coding-standards.md', dir: projectDir, type: 'markdown' },
+        'windsurf.template.md': { output: '.windsurf/rules.md', dir: projectDir, type: 'markdown' },
+        'agent.template.md': { output: 'AGENT.md', dir: projectDir, type: 'markdown' },
     }
 
     const templateFiles = readdirSync(templatesDir).filter(f => f.endsWith('.template.md'))
@@ -477,6 +478,95 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData) {
             console.warn(`⚠️  Failed to generate from ${templateFile}: ${error.message}`)
         }
     }
+
+    // Generate Tabnine JSON settings.json (separate from Markdown template)
+    try {
+        const tabnineDir = join(projectDir, '.tabnine')
+        const tabnineSettingsPath = join(tabnineDir, 'settings.json')
+
+        if (!existsSync(tabnineDir)) {
+            mkdirSync(tabnineDir, { recursive: true })
+        }
+
+        const tabnineSettings = {
+            toolPermissions: {
+                readProjectFiles: 'askFirst',
+                createProjectFiles: 'askFirst',
+                applyCode: 'askFirst',
+                readTerminal: 'disable',
+                runCommand: 'askFirst',
+                listDirectory: 'autoApprove',
+                getDiagnostics: 'autoApprove',
+                workspaceSearch: 'askFirst',
+            },
+            inlineSuggest: {
+                enabled: true,
+            },
+            disableFileRegex: [],
+        }
+
+        writeFileSync(tabnineSettingsPath, JSON.stringify(tabnineSettings, null, 2))
+        console.log(`✅ Generated: .tabnine/settings.json`)
+        generatedCount++
+    } catch (error) {
+        console.warn(`⚠️  Failed to generate Tabnine settings.json: ${error.message}`)
+    }
+
+    // Generate CodeWhisperer README (CodeWhisperer doesn't use .codewhisperer folder)
+    try {
+        const codewhispererDir = join(projectDir, '.codewhisperer')
+        const codewhispererReadmePath = join(codewhispererDir, 'README.md')
+
+        if (!existsSync(codewhispererDir)) {
+            mkdirSync(codewhispererDir, { recursive: true })
+        }
+
+        const codewhispererReadme = `# CodeWhisperer Configuration
+
+## Important Note
+
+**Amazon CodeWhisperer does NOT use a \`.codewhisperer\` folder for project configuration.**
+
+CodeWhisperer integrates directly into supported IDEs (VS Code, JetBrains) and uses:
+- IDE settings (via \`settings.json\` in VS Code workspace settings)
+- AWS Management Console for user management and permissions
+
+## This Folder
+
+The \`rules.md\` file in this folder is **for reference only** and contains project-specific coding standards. It is **not automatically used** by CodeWhisperer.
+
+## How to Use CodeWhisperer with This Project
+
+1. **Install CodeWhisperer extension** in your IDE
+2. **Configure via IDE settings** - CodeWhisperer settings are managed in your IDE's settings panel
+3. **Reference \`rules.md\`** - Use the guidelines in \`rules.md\` as a manual reference for project standards
+
+## VS Code Configuration
+
+If using VS Code, you can add CodeWhisperer-specific settings to your workspace \`settings.json\`:
+
+\`\`\`json
+{
+  "aws.codeWhisperer.enableCodeSuggestions": true,
+  "aws.codeWhisperer.enableSecurityScans": true
+}
+\`\`\`
+
+## More Information
+
+- [AWS CodeWhisperer User Guide](https://docs.aws.amazon.com/codewhisperer/latest/userguide/)
+- [CodeWhisperer IDE Integration](https://docs.aws.amazon.com/codewhisperer/latest/userguide/setup.html)
+`
+
+        writeFileSync(codewhispererReadmePath, codewhispererReadme)
+        console.log(`✅ Generated: .codewhisperer/README.md`)
+        generatedCount++
+    } catch (error) {
+        console.warn(`⚠️  Failed to generate CodeWhisperer README: ${error.message}`)
+    }
+
+    // Kiro steering document is generated from template above
+    // Frontmatter with inclusion: always is already in the template
 
     return generatedCount
 }

@@ -1,0 +1,124 @@
+---
+description: Auto-load refactoring rules for CouchCMS views
+globs: ['{{paths.views}}/**/*.html', '*.php']
+alwaysApply: false
+---
+
+# Refactoring Rules for CouchCMS Views
+
+## 🚨 CRITICAL: Refactoring Workflow
+
+**When a refactoring request is made (e.g., "refactor @file.html" for views), you MUST:**
+
+1. **First**: Load and follow `@ai-toolkit-shared/prompts/refactoring/router.md`
+2. **Router will**: Analyze the file, select appropriate specialist(s), request confirmation
+3. **Then**: Apply the rules below as part of the selected specialist workflow
+
+**Never skip the router analysis step - it ensures the correct specialist is selected.**
+
+---
+
+When refactoring this file, apply these rules:
+
+## View Detection
+
+- ✅ Always check view type before displaying content
+- ✅ Use `k_is_page` for single page display
+- ✅ Use `k_is_list` for any listing
+- ✅ Distinguish between home, folder, and archive views
+- ✅ Use `k_is_home`, `k_is_folder`, `k_is_archive` for specific list types
+- ❌ Never assume view type without checking
+
+## View Structure
+
+- ✅ Use `cms:if k_is_page` for page view content
+- ✅ Use `cms:else` for list view content
+- ✅ Handle all view types: page, home, folder, archive
+- ✅ Use consistent layout structure across views
+- ✅ Place views in `{{paths.views}}/` directory
+
+## Page View Patterns
+
+- ✅ Display single page content with `k_page_title`, `k_page_content`
+- ✅ Show page metadata: `k_page_date`, `k_page_excerpt`
+- ✅ Provide navigation: back to list, next/previous page
+- ✅ Use `k_prev_page_link` and `k_next_page_link` for navigation
+- ✅ Display comments only in page view (if applicable)
+
+## List View Patterns
+
+- ✅ Use `<cms:pages>` for listing pages
+- ✅ Implement pagination for large result sets
+- ✅ Show folder/archive headers when applicable
+- ✅ Use breadcrumbs in folder and archive views
+- ✅ Display appropriate meta information
+
+## Folder View
+
+- ✅ Check `k_is_folder` within list view
+- ✅ Display `k_folder_title` and `k_folder_desc`
+- ✅ Use breadcrumbs for navigation
+- ✅ Filter pages by folder: `folder=k_folder_name`
+- ✅ Show folder context clearly
+
+## Archive View
+
+- ✅ Check `k_is_archive` within list view
+- ✅ Use `k_is_year`, `k_is_month`, `k_is_day` for specific archives
+- ✅ Display `k_archive_date` with appropriate format
+- ✅ Show archive context clearly
+- ✅ Filter pages by date range when needed
+
+## Home View
+
+- ✅ Check `k_is_home` for home-specific content
+- ✅ Distinguish from folder and archive views
+- ✅ Show "All Posts" or similar header
+- ✅ Display all pages (not filtered by folder/date)
+
+## View-Specific Variables
+
+- ✅ Use view-appropriate variables for each context
+- ✅ Page view: `k_page_*` variables
+- ✅ List view: `k_record_*`, `k_paginated_*` variables
+- ✅ Folder view: `k_folder_*` variables
+- ✅ Archive view: `k_archive_*` variables
+
+## Navigation
+
+- ✅ Provide clear navigation between views
+- ✅ Use `k_template_link` for back to list
+- ✅ Use `k_prev_page_link` and `k_next_page_link` for page navigation
+- ✅ Use breadcrumbs in folder/archive views
+- ✅ Make navigation accessible and user-friendly
+
+## URL Patterns
+
+- ✅ Understand URL mapping to views:
+  - `/` → Home view (list)
+  - `/folder-name/` → Folder view
+  - `/2010/05/` → Archive view
+  - `/page-name.html` → Page view
+- ✅ Handle URL patterns correctly for each view type
+
+## Performance
+
+- ✅ Use pagination for list views
+- ✅ Use reasonable limits (10-20 items)
+- ✅ Use `limit` and `orderby` for large result sets
+- ✅ Cache expensive queries when appropriate
+
+## Checklist
+
+- [ ] View type checked before displaying content
+- [ ] All view types handled (page, home, folder, archive)
+- [ ] Page view displays single page correctly
+- [ ] List view displays pages with pagination
+- [ ] Folder view shows folder context
+- [ ] Archive view shows date context
+- [ ] Navigation between views works
+- [ ] Breadcrumbs in folder/archive views
+- [ ] View-specific variables used correctly
+- [ ] Consistent layout structure
+- [ ] Performance optimizations applied
+- [ ] Accessibility requirements met

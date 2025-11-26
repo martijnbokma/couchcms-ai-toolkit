@@ -1,6 +1,7 @@
 ---
 id: tailwindcss
 name: "TailwindCSS"
+category: "frontend"
 version: "4.0"
 description: "TailwindCSS 4 patterns and best practices"
 required: false

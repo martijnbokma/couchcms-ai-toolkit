@@ -1,0 +1,138 @@
+---
+description: Auto-load refactoring rules for CouchCMS comments
+globs: ['snippets/**/*comment*.html', '*.php']
+alwaysApply: false
+---
+
+# Refactoring Rules for CouchCMS Comments
+
+## 🚨 CRITICAL: Refactoring Workflow
+
+**When a refactoring request is made (e.g., "refactor @file.html" for comments), you MUST:**
+
+1. **First**: Load and follow `@ai-toolkit-shared/prompts/refactoring/router.md`
+2. **Router will**: Analyze the file, select appropriate specialist(s), request confirmation
+3. **Then**: Apply the rules below as part of the selected specialist workflow
+
+**Never skip the router analysis step - it ensures the correct specialist is selected.**
+
+---
+
+When refactoring this file, apply these rules:
+
+## Template Configuration
+
+- ✅ Enable comments: `commentable='1'` in template tag
+- ✅ Check `k_is_commentable` before showing comment form
+- ✅ Comments typically only in page view
+- ❌ Never forget `commentable='1'` attribute
+
+## Comment Form
+
+- ✅ Use `<cms:form method="post">` for comment submission
+- ✅ Call `<cms:process_comment />` in `k_success` block
+- ✅ Check `k_process_comment_success` for success
+- ✅ Display `k_process_comment_error` for errors
+- ✅ Handle form errors with `k_error` variable
+
+## Form Fields
+
+- ✅ Show name/email/website fields only for logged-out users
+- ✅ Use `k_logged_out` to conditionally show fields
+- ✅ Use `k_author`, `k_email`, `k_link` for logged-out users
+- ✅ Use `k_comment` for comment text (required)
+- ✅ Show logged-in user info for authenticated users
+
+## CAPTCHA
+
+- ✅ Require CAPTCHA for logged-out users
+- ✅ Use `<cms:input type="captcha" name="captcha" format='i-r-t' />`
+- ✅ Only show CAPTCHA when `k_logged_out`
+- ✅ Validate CAPTCHA in form processing
+- ❌ Never skip CAPTCHA for public comments
+
+## Comment Display
+
+- ✅ Use `<cms:comments>` tag to list comments
+- ✅ Set `page_id=k_page_id` for page-specific comments
+- ✅ Use pagination for large comment sets
+- ✅ Display comment variables: `k_comment_author`, `k_comment`, `k_comment_date`
+- ✅ Use `k_comment_link` and `k_comment_anchor` for direct links
+
+## Comment Variables
+
+- ✅ Use `k_comment_author` for commenter name
+- ✅ Use `k_comment_author_website` for website link
+- ✅ Use `k_comment` for comment text
+- ✅ Use `k_comment_date` for comment date
+- ✅ Use `k_comment_author_initial` for avatar placeholder
+
+## Pagination
+
+- ✅ Use `paginate='1'` for large comment sets
+- ✅ Display pagination info with `k_paginated_top` and `k_paginated_bottom`
+- ✅ Show comment count: `k_total_records`
+- ✅ Use `<cms:paginator />` for navigation
+- ✅ Check `k_paginator_required` before showing pagination
+
+## Spam Prevention
+
+- ✅ Set `K_COMMENTS_REQUIRE_APPROVAL` to `1` in config
+- ✅ Set `K_COMMENTS_INTERVAL` (recommended: 300 seconds)
+- ✅ Require CAPTCHA for logged-out users
+- ✅ Validate all form fields
+- ✅ Use email validation for email field
+
+## Error Handling
+
+- ✅ Check `k_error` for form validation errors
+- ✅ Check `k_process_comment_error` for processing errors
+- ✅ Display field-specific errors: `k_error_k_author`, `k_error_k_email`
+- ✅ Show helpful error messages
+- ✅ Handle all error cases gracefully
+
+## Success Feedback
+
+- ✅ Show success message after comment submission
+- ✅ Inform users comment awaits moderation
+- ✅ Clear form after successful submission
+- ✅ Provide clear feedback to user
+
+## Empty State
+
+- ✅ Check `k_total_records='0'` for no comments
+- ✅ Display helpful message when no comments exist
+- ✅ Encourage first comment
+- ✅ Show comment form even when no comments
+
+## Comment Order
+
+- ✅ Use `order='asc'` for chronological display
+- ✅ Use `order='desc'` for newest first
+- ✅ Choose order based on UX requirements
+- ✅ Maintain consistent ordering
+
+## Security
+
+- ✅ Always validate comment input
+- ✅ Sanitize comment output
+- ✅ Use `rel="external nofollow"` for commenter websites
+- ✅ Require approval for all comments
+- ✅ Set comment interval to prevent flooding
+
+## Checklist
+
+- [ ] Template has `commentable='1'` attribute
+- [ ] Comment form checks `k_is_commentable`
+- [ ] `process_comment` tag called in `k_success` block
+- [ ] CAPTCHA required for logged-out users
+- [ ] Form fields conditionally shown based on login status
+- [ ] Comment display uses `<cms:comments>` tag
+- [ ] Pagination implemented for large comment sets
+- [ ] Spam prevention measures in place
+- [ ] Error handling implemented
+- [ ] Success feedback shown
+- [ ] Empty state handled
+- [ ] Comment order specified
+- [ ] Security measures applied
+- [ ] Comment variables used correctly

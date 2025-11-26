@@ -9,7 +9,12 @@ Auto-loading refactoring and workflow rules for Cursor IDE.
 | `refactor-html.mdc`       | `{{paths.snippets}}/**/*.html`, `*.php`                              | CouchCMS templates, Alpine.js |
 | `refactor-typescript.mdc` | `{{paths.typescript}}/**/*.ts`                                       | TypeScript files              |
 | `refactor-css.mdc`        | `{{paths.css}}/**/*.css`                                             | CSS/TailwindCSS files         |
-| `refactor-forms.mdc`      | `{{paths.forms}}/**/*.html`                                          | DataBound Forms               |
+| `refactor-forms.mdc`      | `{{paths.forms}}/**/*.html`, `{{paths.views}}/**/create*.html`, `{{paths.views}}/**/edit*.html` | DataBound Forms               |
+| `refactor-alpinejs.mdc`   | `{{paths.snippets}}/**/*.html`, `*.php`, `{{paths.javascript}}/**/*.js` | Alpine.js components          |
+| `refactor-views.mdc`      | `{{paths.views}}/**/*.html`, `*.php`                                 | CouchCMS views                |
+| `refactor-search.mdc`     | `{{paths.snippets}}/**/*search*.html`, `*.php`                      | CouchCMS search               |
+| `refactor-comments.mdc`   | `{{paths.snippets}}/**/*comment*.html`, `*.php`                     | CouchCMS comments             |
+| `refactor-users.mdc`      | `{{paths.snippets}}/**/*user*.html`, `{{paths.filters}}/**/*.html`, `*.php` | User management               |
 | `design.mdc`              | `**/*.html`, `**/*.php`, `**/*.css`, `**/*.js`                       | UI/UX design principles       |
 | `daisyui.mdc`             | `alwaysApply: true`                                                  | daisyUI 5 component library   |
 | `index.mdc`               | `**/*.php`, `**/*.html`, `**/*.ts`, `**/*.css`, `**/*.js`, `**/*.md` | Documentation bridge          |
@@ -29,6 +34,7 @@ Rules use `{{paths.xxx}}` variables that are replaced during sync:
 
 - `{{paths.snippets}}` → `snippets` (or configured path)
 - `{{paths.typescript}}` → `assets/ts` (or configured path)
+- `{{paths.javascript}}` → `assets/js` (or configured path)
 - `{{paths.css}}` → `assets/css` (or configured path)
 - `{{paths.forms}}` → `snippets/forms` (or configured path)
 - `{{paths.views}}` → `snippets/views` (or configured path)
@@ -55,10 +61,15 @@ bun ai-toolkit-shared/scripts/sync.js
 
 Auto-loaded based on file type:
 
-- `refactor-html.mdc` - HTML/PHP template refactoring
-- `refactor-typescript.mdc` - TypeScript refactoring
-- `refactor-css.mdc` - CSS/TailwindCSS refactoring
-- `refactor-forms.mdc` - Form refactoring
+- `refactor-html.mdc` - HTML/PHP template refactoring (CouchCMS, custom routes, pagination, relationships, repeatable regions)
+- `refactor-typescript.mdc` - TypeScript refactoring (type safety, Alpine.js integration, error handling)
+- `refactor-css.mdc` - CSS/TailwindCSS refactoring (TailwindCSS 4, daisyUI themes, responsive design)
+- `refactor-forms.mdc` - DataBound Forms refactoring (validation, security, multi-step, anti-spam)
+- `refactor-alpinejs.mdc` - Alpine.js component refactoring (CouchCMS syntax, state management, accessibility)
+- `refactor-views.mdc` - CouchCMS views refactoring (page/list/folder/archive views, navigation)
+- `refactor-search.mdc` - CouchCMS search refactoring (search variables, pagination, fulltext limitations)
+- `refactor-comments.mdc` - CouchCMS comments refactoring (comment forms, CAPTCHA, spam prevention)
+- `refactor-users.mdc` - User management refactoring (access control, authentication, permissions)
 
 ### Framework Rules
 

@@ -1,6 +1,7 @@
 ---
 id: daisyui
 name: "daisyUI"
+category: "frontend"
 version: "5.0"
 description: "daisyUI 5 components and theming"
 required: false

@@ -14,9 +14,24 @@ Provides consistent AI assistance across all your projects with modules, agents,
 - 📋 **Auto-Loading Rules** - Context-aware refactoring patterns
 - 🔧 **Zero Config** - Works out of the box
 
-## 🚀 Quick Start
+## ⚡ Prerequisites
 
-### New Project
+Before using this toolkit, ensure you have:
+
+- **Git** - For version control and submodule management
+- **Bun** (recommended) or **Node.js** (v18+) - JavaScript runtime
+  - Install Bun: `curl -fsSL https://bun.sh/install | bash`
+  - Or use Node.js: `npm install` works too
+
+**Important:** After adding the toolkit as a submodule, you **must** install its dependencies before running any scripts.
+
+## 🚀 Quick Start (30 seconds)
+
+The setup wizard has two modes:
+
+### Simple Mode (Recommended for Beginners)
+
+Just answer 2 questions - everything else uses smart defaults:
 
 ```bash
 # 1. Create project
@@ -26,11 +41,41 @@ mkdir my-project && cd my-project
 git init
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 
-# 3. Install & setup
-cd ai-toolkit-shared && bun install && cd ..
+# 3. Install toolkit dependencies (REQUIRED!)
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+
+# 4. Run setup wizard (choose "Simple" mode)
 bun ai-toolkit-shared/scripts/init.js
 
+# The wizard will ask:
+# - Project name
+# - Project description
+# - Setup mode: Choose "1" for Simple (recommended)
+
 # Done! ✨
+```
+
+**Simple mode gives you:**
+- ✅ `.project/standards.md` - Your configuration file
+- ✅ Standard modules (core + tailwindcss + alpinejs)
+- ✅ Standard agents (couchcms + tailwindcss + alpinejs)
+- ✅ `.cursorrules`, `CLAUDE.md`, `AGENT.md` - Auto-generated
+
+### Custom Mode (Full Control)
+
+For advanced users who want to customize everything:
+
+```bash
+# Same steps as above, but choose "Custom" mode in the wizard
+bun ai-toolkit-shared/scripts/init.js
+
+# Choose "2" for Custom mode, then:
+# - Select config file location
+# - Choose modules (presets: Minimal/Standard/Full/Custom)
+# - Choose agents (presets: Minimal/Standard/Full/Custom)
+# - Optional context directory
 ```
 
 ### Existing Project
@@ -40,22 +85,39 @@ bun ai-toolkit-shared/scripts/init.js
 cd your-project
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 
-# 2. Install & setup
-cd ai-toolkit-shared && bun install && cd ..
+# 2. Install toolkit dependencies (REQUIRED!)
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+
+# 3. Run setup wizard
 bun ai-toolkit-shared/scripts/init.js
 ```
 
-**Result:** You'll have `project.md`, `.cursorrules`, `CLAUDE.md`, and `AGENT.md` generated automatically.
+**Result:** You'll have `.project/standards.md` (or `project.md` in legacy mode), `.cursorrules`, `CLAUDE.md`, and `AGENT.md` generated automatically.
 
 ## 📚 Documentation
 
+### Start Here
+
 | Guide                                          | Description                                      |
 | ---------------------------------------------- | ------------------------------------------------ |
-| **[Getting Started](docs/GETTING-STARTED.md)** | Complete setup guide for new & existing projects |
+| **[Getting Started](docs/GETTING-STARTED.md)** | Complete setup guide - start here!              |
+| **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Common issues and solutions                      |
+
+### Learn More
+
+| Guide                                          | Description                                      |
+| ---------------------------------------------- | ------------------------------------------------ |
 | **[Command Reference](docs/COMMANDS.md)**      | Detailed `init`, `validate`, `sync` commands     |
 | **[Available Modules](docs/MODULES.md)**       | 6 knowledge modules with descriptions            |
 | **[Available Agents](docs/AGENTS.md)**         | 9 specialized AI agents                          |
-| **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Common issues and solutions                      |
+
+### Advanced
+
+| Guide                                          | Description                                      |
+| ---------------------------------------------- | ------------------------------------------------ |
+| **[Extending Modules](docs/EXTENDING-MODULES.md)** | How to extend modules from documentation      |
 | **[Contributing](CONTRIBUTING.md)**            | How to contribute from your project              |
 | **[Changelog](CHANGELOG.md)**                  | Version history and upgrade notes                |
 
@@ -70,6 +132,10 @@ bun ai-toolkit-shared/scripts/validate.js
 
 # Generate/update AI configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Extend modules from documentation (NEW!)
+bun ai-toolkit-shared/scripts/extend-modules.js --analyze
+bun ai-toolkit-shared/scripts/extend-modules.js --module comments
 ```
 
 ## 📦 What's Included
@@ -111,7 +177,9 @@ bun ai-toolkit-shared/scripts/sync.js
 bun ai-toolkit-shared/scripts/validate.js
 ```
 
-## 📝 Example project.md
+## 📝 Example Configuration
+
+After running the setup wizard, you'll have `.project/standards.md`:
 
 ```yaml
 ---
@@ -127,11 +195,14 @@ modules:
 agents:
     - couchcms
     - tailwindcss
+    - alpinejs
 ---
 # Project-Specific Rules
 
 Add your custom rules here...
 ```
+
+**Note:** In Simple mode, this file is automatically created at `.project/standards.md`. You can edit it anytime and run `bun ai-toolkit-shared/scripts/sync.js` to update AI configurations.
 
 ## 🆕 What's New in v1.1.0
 
@@ -167,9 +238,13 @@ ai-toolkit-shared/
 
 ## ⚡ Requirements
 
-- **Git** - Version control
-- **Bun or Node.js** - JavaScript runtime
+- **Git** - Version control (for submodule management)
+- **Bun** (recommended) or **Node.js** (v18+) - JavaScript runtime
+  - Bun: `curl -fsSL https://bun.sh/install | bash`
+  - Node.js: Download from [nodejs.org](https://nodejs.org/)
 - **CouchCMS Project** - Target project
+
+**Note:** After cloning the submodule, always run `bun install` (or `npm install`) in the `ai-toolkit-shared` directory before using any scripts.
 
 ## 🆘 Need Help?
 

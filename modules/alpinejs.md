@@ -1,6 +1,7 @@
 ---
 id: alpinejs
 name: "Alpine.js"
+category: "frontend"
 version: "3.x"
 description: "Alpine.js patterns and CouchCMS integration"
 required: false

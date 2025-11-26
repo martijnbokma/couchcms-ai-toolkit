@@ -70,100 +70,168 @@ async function init() {
 
     console.log("Let's set up your project configuration...\n")
 
-    // Ask if user wants standards.md (recommended) or project.md (legacy)
-    console.log('📋 Configuration file format:')
-    console.log('  1. standards.md (recommended - single source of truth)')
-    console.log('  2. project.md (legacy format)')
-    const configChoice = await prompt('Choice [1-2]', '1')
-    const useStandards = configChoice === '1'
+    // Ask for setup mode
+    console.log('🎯 Setup mode:')
+    console.log('  1. Simple (recommended for beginners) - Uses defaults, minimal questions')
+    console.log('  2. Custom - Full control over all options')
+    const modeChoice = await prompt('Choice [1-2]', '1')
+    const simpleMode = modeChoice === '1'
+
+    // In simple mode, use standards.md in .project/ directory
+    const useStandards = true
+    let configPath, configDir
+
+    if (simpleMode) {
+        // Simple mode: use recommended defaults
+        configPath = join(projectDir, '.project', 'standards.md')
+        configDir = join(projectDir, '.project')
+        console.log('\n✨ Simple mode: Using recommended defaults')
+        console.log('   - Configuration: .project/standards.md')
+        console.log('   - Modules: Standard preset (core + tailwindcss + alpinejs)')
+        console.log('   - Agents: Standard preset (couchcms + tailwindcss + alpinejs)')
+    } else {
+        // Custom mode: ask for configuration file format
+        console.log('\n📋 Configuration file format:')
+        console.log('  1. standards.md (recommended - single source of truth)')
+        console.log('  2. project.md (legacy format)')
+        const configChoice = await prompt('Choice [1-2]', '1')
+        const useStandardsCustom = configChoice === '1'
+
+        // Determine config file location
+        if (useStandardsCustom) {
+            console.log('\n📁 Where should standards.md be created?')
+            console.log('  1. .project/standards.md (recommended - project config directory)')
+            console.log('  2. docs/standards.md (documentation location)')
+            console.log('  3. standards.md (root directory)')
+            const locationChoice = await prompt('Choice [1-3]', '1')
+
+            if (locationChoice === '1') {
+                configPath = join(projectDir, '.project', 'standards.md')
+                configDir = join(projectDir, '.project')
+            } else if (locationChoice === '2') {
+                configPath = join(projectDir, 'docs', 'standards.md')
+                configDir = join(projectDir, 'docs')
+            } else {
+                configPath = join(projectDir, 'standards.md')
+                configDir = projectDir
+            }
+        } else {
+            configPath = join(projectDir, 'project.md')
+            configDir = projectDir
+        }
+    }
 
     // Gather project information
     const projectName = await prompt('Project name', 'my-project')
     const projectDescription = await prompt('Project description', 'My CouchCMS project')
 
-    // Determine toolkit path
-    console.log('\n📦 How do you want to use the toolkit?')
-    console.log('  1. As a git submodule (recommended)')
-    console.log('  2. Cloned in home directory')
-    const toolkitChoice = await prompt('Choice [1-2]', '1')
-
-    const toolkitPath = toolkitChoice === '2' ? '~/couchcms-ai-toolkit' : './ai-toolkit-shared'
-
-    // Determine config file location
-    let configPath
-    let configDir
-
-    if (useStandards) {
-        console.log('\n📁 Where should standards.md be created?')
-        console.log('  1. .project/standards.md (recommended - project config directory)')
-        console.log('  2. docs/standards.md (documentation location)')
-        console.log('  3. standards.md (root directory)')
-        const locationChoice = await prompt('Choice [1-3]', '1')
-
-        if (locationChoice === '1') {
-            configPath = join(projectDir, '.project', 'standards.md')
-            configDir = join(projectDir, '.project')
-        } else if (locationChoice === '2') {
-            configPath = join(projectDir, 'docs', 'standards.md')
-            configDir = join(projectDir, 'docs')
-        } else {
-            configPath = join(projectDir, 'standards.md')
-            configDir = projectDir
-        }
-    } else {
-        configPath = join(projectDir, 'project.md')
-        configDir = projectDir
+    // Determine toolkit path (only ask in custom mode)
+    let toolkitPath = './ai-toolkit-shared'
+    if (!simpleMode) {
+        console.log('\n📦 How do you want to use the toolkit?')
+        console.log('  1. As a git submodule (recommended)')
+        console.log('  2. Cloned in home directory')
+        const toolkitChoice = await prompt('Choice [1-2]', '1')
+        toolkitPath = toolkitChoice === '2' ? '~/couchcms-ai-toolkit' : './ai-toolkit-shared'
     }
 
     // Select modules
-    console.log('\n📚 Select modules to include:')
+    let selectedModules, selectedAgents, contextPath
 
-    const availableModules = [
-        { name: 'couchcms-core', description: 'Core CouchCMS patterns (always included)', required: true },
-        { name: 'tailwindcss', description: 'TailwindCSS 4 patterns' },
-        { name: 'daisyui', description: 'daisyUI 5 components' },
-        { name: 'alpinejs', description: 'Alpine.js integration' },
-        { name: 'typescript', description: 'TypeScript standards' },
-        { name: 'databound-forms', description: 'DataBound Forms' },
-    ]
+    if (simpleMode) {
+        // Simple mode: use standard preset
+        selectedModules = ['couchcms-core', 'tailwindcss', 'alpinejs']
+        selectedAgents = ['couchcms', 'tailwindcss', 'alpinejs']
+        contextPath = null // Don't create context directory in simple mode
+        console.log('\n📚 Using standard module preset:')
+        console.log('   ✓ couchcms-core - Core CouchCMS patterns')
+        console.log('   ✓ tailwindcss - TailwindCSS 4 patterns')
+        console.log('   ✓ alpinejs - Alpine.js integration')
+        console.log('\n🤖 Using standard agent preset:')
+        console.log('   ✓ couchcms - Core CouchCMS development')
+        console.log('   ✓ tailwindcss - TailwindCSS styling')
+        console.log('   ✓ alpinejs - Alpine.js development')
+    } else {
+        // Custom mode: ask for preset or individual selection
+        console.log('\n📚 Module selection:')
+        console.log('  1. Minimal (only couchcms-core)')
+        console.log('  2. Standard (core + tailwindcss + alpinejs)')
+        console.log('  3. Full (all modules)')
+        console.log('  4. Custom (choose individually)')
+        const modulePreset = await prompt('Choice [1-4]', '2')
 
-    const selectedModules = ['couchcms-core']
+        const availableModules = [
+            { name: 'couchcms-core', description: 'Core CouchCMS patterns (always included)', required: true },
+            { name: 'tailwindcss', description: 'TailwindCSS 4 patterns' },
+            { name: 'daisyui', description: 'daisyUI 5 components' },
+            { name: 'alpinejs', description: 'Alpine.js integration' },
+            { name: 'typescript', description: 'TypeScript standards' },
+            { name: 'databound-forms', description: 'DataBound Forms' },
+        ]
 
-    for (const mod of availableModules) {
-        if (mod.required) {
-            console.log(`   ✓ ${mod.name} - ${mod.description}`)
-            continue
+        selectedModules = ['couchcms-core']
+
+        if (modulePreset === '1') {
+            // Minimal - already set
+        } else if (modulePreset === '2') {
+            selectedModules.push('tailwindcss', 'alpinejs')
+        } else if (modulePreset === '3') {
+            selectedModules.push('tailwindcss', 'daisyui', 'alpinejs', 'typescript', 'databound-forms')
+        } else {
+            // Custom: ask individually
+            for (const mod of availableModules) {
+                if (mod.required) {
+                    console.log(`   ✓ ${mod.name} - ${mod.description}`)
+                    continue
+                }
+                const include = await confirm(`   Include ${mod.name}? (${mod.description})`, true)
+                if (include) {
+                    selectedModules.push(mod.name)
+                }
+            }
         }
 
-        const include = await confirm(`   Include ${mod.name}? (${mod.description})`, true)
-        if (include) {
-            selectedModules.push(mod.name)
+        // Select agents
+        console.log('\n🤖 Agent selection:')
+        console.log('  1. Minimal (only couchcms)')
+        console.log('  2. Standard (couchcms + tailwindcss + alpinejs)')
+        console.log('  3. Full (all agents)')
+        console.log('  4. Custom (choose individually)')
+        const agentPreset = await prompt('Choice [1-4]', '2')
+
+        const availableAgents = [
+            { name: 'couchcms', description: 'Core CouchCMS development' },
+            { name: 'databound-forms', description: 'Forms and CRUD' },
+            { name: 'alpinejs', description: 'Alpine.js development' },
+            { name: 'tailwindcss', description: 'TailwindCSS styling' },
+            { name: 'typescript', description: 'TypeScript development' },
+        ]
+
+        selectedAgents = []
+
+        if (agentPreset === '1') {
+            selectedAgents = ['couchcms']
+        } else if (agentPreset === '2') {
+            selectedAgents = ['couchcms', 'tailwindcss', 'alpinejs']
+        } else if (agentPreset === '3') {
+            selectedAgents = ['couchcms', 'databound-forms', 'alpinejs', 'tailwindcss', 'typescript']
+        } else {
+            // Custom: ask individually
+            for (const agent of availableAgents) {
+                const include = await confirm(`   Include ${agent.name}? (${agent.description})`, true)
+                if (include) {
+                    selectedAgents.push(agent.name)
+                }
+            }
         }
+
+        // Context directory (only in custom mode)
+        console.log('\n📋 Context directory:')
+        console.log('   Use .project/ai/context.md for detailed project documentation (>200 lines)')
+        console.log('   For simple projects, you can skip this and add rules directly to standards.md')
+        const useContext = await confirm('   Create project context directory?', false)
+        contextPath = useContext ? '.project/ai' : null
     }
-
-    // Select agents
-    console.log('\n🤖 Select AI agents to include:')
-
-    const availableAgents = [
-        { name: 'couchcms', description: 'Core CouchCMS development' },
-        { name: 'databound-forms', description: 'Forms and CRUD' },
-        { name: 'alpinejs', description: 'Alpine.js development' },
-        { name: 'tailwindcss', description: 'TailwindCSS styling' },
-        { name: 'typescript', description: 'TypeScript development' },
-    ]
-
-    const selectedAgents = []
-
-    for (const agent of availableAgents) {
-        const include = await confirm(`   Include ${agent.name}? (${agent.description})`, true)
-        if (include) {
-            selectedAgents.push(agent.name)
-        }
-    }
-
-    // Context directory
-    const useContext = await confirm('\n📋 Create project context directory?', true)
-    const contextPath = useContext ? '.project/ai' : null
 
     // Generate config file
     if (useStandards) {

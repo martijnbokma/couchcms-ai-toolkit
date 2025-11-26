@@ -2,6 +2,18 @@
 
 Common issues and solutions for the CouchCMS AI Toolkit.
 
+:::tip[Most Common Issue]
+**"Cannot find module" or "ENOENT" errors?** You likely forgot to install the toolkit's dependencies. After adding the submodule, always run:
+
+```bash
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+```
+
+See [Sync Issues](#sync-issues) below for details.
+:::
+
 ## Quick Diagnostics
 
 Start here:

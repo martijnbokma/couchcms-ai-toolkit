@@ -2,6 +2,19 @@
 
 Complete guide for setting up the toolkit in your project.
 
+## ⚡ Prerequisites
+
+Before you begin, ensure you have:
+
+1. **Git** installed and configured
+2. **Bun** (recommended) or **Node.js** (v18+) installed
+   - Install Bun: `curl -fsSL https://bun.sh/install | bash`
+   - Or use Node.js: Download from [nodejs.org](https://nodejs.org/)
+
+:::caution[Important]
+After adding the toolkit as a submodule, you **must** install its dependencies before running any scripts. The toolkit requires several npm packages (`gray-matter`, `yaml`, `handlebars`) that need to be installed first.
+:::
+
 ## For Brand New Projects
 
 Starting from scratch? Follow these steps:
@@ -25,7 +38,11 @@ git init
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 ```
 
-### 4. Install Toolkit Dependencies
+### 4. Install Toolkit Dependencies (REQUIRED!)
+
+:::warning[Critical Step]
+You **must** install the toolkit's dependencies before running any scripts. Without this step, the scripts will fail with module not found errors.
+:::
 
 ```bash
 cd ai-toolkit-shared
@@ -33,30 +50,62 @@ bun install  # or: npm install
 cd ..
 ```
 
+This installs the required packages:
+- `gray-matter` - Frontmatter parsing
+- `yaml` - YAML configuration handling
+- `handlebars` - Template rendering
+
 ### 5. Run Interactive Setup Wizard
 
 ```bash
 bun ai-toolkit-shared/scripts/init.js
 ```
 
-The wizard will guide you through:
+The wizard has two modes:
+
+#### Simple Mode (Recommended for Beginners)
+
+Choose option **1** when asked for setup mode. The wizard will:
+
+1. ✅ Ask for **project name** and **description**
+2. ✅ Use **recommended defaults** for everything else:
+   - Configuration file: `.project/standards.md`
+   - Modules: Standard preset (core + tailwindcss + alpinejs)
+   - Agents: Standard preset (couchcms + tailwindcss + alpinejs)
+   - No context directory (you can add one later if needed)
+
+**Result:** You're done in 30 seconds! ✨
+
+#### Custom Mode (Full Control)
+
+Choose option **2** for full customization. The wizard will guide you through:
 
 1. ✅ **Project name and description**
-2. ✅ **Module selection** (TailwindCSS, Alpine.js, TypeScript, etc.)
-3. ✅ **AI agent selection** (CouchCMS, Forms, Styling agents)
+2. ✅ **Configuration file format** (standards.md recommended)
+3. ✅ **Configuration file location** (.project/, docs/, or root)
 4. ✅ **Toolkit location** (submodule or home directory)
-5. ✅ **Context directory** (optional detailed documentation)
-6. ✅ **Automatic sync** (generates AI configurations)
+5. ✅ **Module selection** with presets:
+   - Minimal (only couchcms-core)
+   - Standard (core + tailwindcss + alpinejs)
+   - Full (all modules)
+   - Custom (choose individually)
+6. ✅ **AI agent selection** with presets:
+   - Minimal (only couchcms)
+   - Standard (couchcms + tailwindcss + alpinejs)
+   - Full (all agents)
+   - Custom (choose individually)
+7. ✅ **Context directory** (optional - see explanation below)
+8. ✅ **Automatic sync** (generates AI configurations)
 
 ### 6. What You Get
 
 After the wizard completes, your project will have:
 
-- ✅ `project.md` - Project configuration
+- ✅ `.project/standards.md` (or `project.md` in legacy mode) - Project configuration
 - ✅ `.cursorrules` - Cursor AI configuration
 - ✅ `CLAUDE.md` - Claude AI configuration
 - ✅ `AGENT.md` - Universal AI agent documentation
-- ✅ `.project/ai/context.md` - Project context (if you chose this)
+- ✅ `.project/ai/context.md` - Project context (only if you chose this in Custom mode)
 
 ## For Existing Projects
 
@@ -74,11 +123,15 @@ cd your-existing-project
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 ```
 
-### 3. Install Dependencies
+### 3. Install Dependencies (REQUIRED!)
+
+:::warning[Critical Step]
+You **must** install the toolkit's dependencies before running any scripts.
+:::
 
 ```bash
 cd ai-toolkit-shared
-bun install
+bun install  # or: npm install
 cd ..
 ```
 
@@ -148,11 +201,21 @@ Add your project-specific coding standards here...
 
 ### 3. Add Project Context (Optional)
 
+:::tip[When to Use Context Directory]
+Use `.project/ai/context.md` when:
+- Your project has **>200 lines** of custom rules
+- You want to **separate** configuration from detailed documentation
+- You're working in a **team** and need shared context
+- You have **extensive** code examples and patterns
+
+For simple projects, just add rules directly to `standards.md` - no context directory needed!
+:::
+
 You have two options:
 
-#### Option A: Simple (< 200 lines)
+#### Option A: Simple (< 200 lines) - Recommended
 
-Keep everything in `project.md`:
+Keep everything in `standards.md`:
 
 ```markdown
 ---
@@ -176,9 +239,11 @@ Keep everything in `project.md`:
 [Your examples here]
 ```
 
+**This is the recommended approach for most projects.**
+
 #### Option B: Split (> 200 lines)
 
-Keep `project.md` short, create `.project/ai/context.md`:
+Keep `standards.md` short, create `.project/ai/context.md`:
 
 ```bash
 mkdir -p .project/ai
@@ -205,6 +270,8 @@ name: My Project Context
 
 [Detailed documentation...]
 ```
+
+**Note:** The context directory is automatically created if you choose it in Custom mode, or you can create it manually later.
 
 ### 4. Run Sync
 
@@ -258,17 +325,59 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ## Common Questions
 
+### Q: Do I need to install Bun or Node.js?
+
+Yes! The toolkit scripts require a JavaScript runtime. You can use either:
+- **Bun** (recommended): Faster, modern runtime
+- **Node.js** (v18+): Traditional option, works with `npm install`
+
+### Q: Why do I need to run `bun install` in the submodule?
+
+The toolkit has its own dependencies (`gray-matter`, `yaml`, `handlebars`) that must be installed before the scripts can run. Without these packages, you'll get "module not found" errors.
+
+### Q: What's the difference between Simple and Custom mode?
+
+**Simple mode:**
+- Fast setup (30 seconds)
+- Uses recommended defaults
+- Perfect for beginners
+- You can always customize later by editing `.project/standards.md`
+
+**Custom mode:**
+- Full control over all options
+- Choose exact modules and agents
+- Select configuration file location
+- Optional context directory
+
+**Recommendation:** Start with Simple mode, then customize as needed.
+
+### Q: What is a "context directory" and when do I need it?
+
+The context directory (`.project/ai/context.md`) is for **detailed project documentation** that's too long for `standards.md`.
+
+**You need it when:**
+- You have >200 lines of custom rules
+- You want to separate config from detailed docs
+- You're working in a team
+
+**You don't need it when:**
+- Your project is simple
+- You have <200 lines of rules
+- You're just getting started
+
+**Tip:** Start without it, add it later if needed.
+
 ### Q: Can I use both a submodule and home directory installation?
 
 No, choose one method per project. The submodule method is recommended for better version control.
 
 ### Q: What if I want to change modules later?
 
-Edit `project.md`, then run `bun ai-toolkit-shared/scripts/sync.js` to regenerate configurations.
+Edit `.project/standards.md` (or `project.md`), then run `bun ai-toolkit-shared/scripts/sync.js` to regenerate configurations.
 
 ### Q: Can I have multiple projects using the same toolkit?
 
-Yes! Each project can have its own `project.md` configuration while sharing the same toolkit installation.
+Yes! Each project can have its own configuration file while sharing the same toolkit installation.
 
 ### Q: Do I need to commit the generated files?
 

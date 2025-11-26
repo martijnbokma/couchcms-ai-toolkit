@@ -47,14 +47,81 @@ When refactoring this file, apply these rules:
 - Avoid Tailwind color names: `bg-gray-100`, `text-black`
 - Mobile-first responsive: `sm:`, `md:`, `lg:` prefixes
 
+## Custom Routes
+
+- ✅ Use `K_IGNORE_CONTEXT` in `COUCH::invoke()` for custom routes
+- ✅ Define routes in template block: `<cms:route name='list' pattern='projects' />`
+- ✅ Use route variables: `k_route_name`, `k_route_param_*`
+- ✅ Add route constraints for validation: `constraints="id=\d+"`
+- ✅ Implement authentication filters for protected routes
+- ❌ Never forget `K_IGNORE_CONTEXT` (causes 404 on all routes)
+
+## Pagination
+
+- ✅ Use `paginate='1'` for large result sets
+- ✅ Display pagination info with `k_paginated_top` and `k_paginated_bottom`
+- ✅ Check `k_paginator_required` before showing pagination info
+- ✅ Show record counts: `k_record_from`, `k_record_to`, `k_total_records`
+- ✅ Use `<cms:paginator />` for navigation links
+- ✅ Handle edge cases (no results, single page)
+
+## Relationships
+
+- ✅ Define relationship in one template only (primary template)
+- ✅ Use descriptive relationship names (e.g., `artist_albums`)
+- ✅ Use `related_pages` in primary template context
+- ✅ Use `reverse_related_pages` with `masterpage` parameter
+- ✅ Always specify `masterpage` in `reverse_related_pages`
+- ✅ Use relationship parameters for filtering and ordering
+- ❌ Never define relationship in both templates (causes conflicts)
+
+## Repeatable Regions
+
+- ✅ Wrap editable regions in `<cms:repeatable>` tag
+- ✅ Use `show_repeatable` to display values (not `show`)
+- ✅ Use `col_width` for admin panel layout control
+- ✅ Use `nicedit` instead of `richtext` in repeatable regions
+- ✅ Check for empty repeatable regions before displaying
+- ✅ Use `k_count` and `k_total_records` for item numbering
+- ❌ Never use `richtext` in repeatable (use `nicedit`)
+
+## Template Structure
+
+- ✅ Use proper template inheritance: `<cms:extends>` immediately after `require_once`
+- ✅ Define templates in `<cms:block 'templates'>`
+- ✅ Use `<cms:block 'content'>` for page content
+- ✅ Always include `content_owner` and `is_published` system fields
+- ✅ Use `<cms:embed>` for reusable components
+- ✅ Place views in `snippets/views/`, components in `snippets/components/`
+
+## Caching & Performance
+
+- ✅ Use `<cms:cached>` for expensive queries
+- ✅ Invalidate cache on form submit: `_invalidate_cache="1"`
+- ✅ Use reasonable pagination limits (10-20 items)
+- ✅ Use `limit` and `orderby` for large relationship sets
+
+## JSON API
+
+- ✅ Set content type: `<cms:content_type 'application/json' />`
+- ✅ Use `<cms:escape_json>` for JSON output
+- ✅ Handle pagination in JSON: `<cms:if "<cms:not k_paginated_bottom />">,</cms:if>`
+
 ## Checklist
 
-- [ ] No `<cms:` in HTML comments
-- [ ] No `@` or `:` Alpine shorthand
+- [ ] No `<cms:` in HTML comments (use `[cms:`)
+- [ ] No `@` or `:` Alpine shorthand (use `x-on:`, `x-bind:`)
 - [ ] ARIA attributes for accessibility
 - [ ] DaisyUI semantic colors
 - [ ] Reusable snippets (DRY)
 - [ ] 4-space indentation
 - [ ] English-only code/comments
+- [ ] Custom routes use `K_IGNORE_CONTEXT`
+- [ ] Pagination enabled for large result sets
+- [ ] Relationships defined in one template only
+- [ ] Repeatable regions use `show_repeatable` (not `show`)
+- [ ] Template structure follows inheritance pattern
+- [ ] Authentication filters on protected routes
+- [ ] Ownership validation on edit/delete operations
 
 
