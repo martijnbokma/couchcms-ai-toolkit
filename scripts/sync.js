@@ -1121,7 +1121,25 @@ Add your project-specific instructions here...
         cleanGeneratedFiles(projectDir)
 
         // Resolve toolkit path
-        const toolkitPath = resolveToolkitPath(config.toolkit, projectDir)
+        // If config was in ai-toolkit-shared/, the toolkit is likely ai-toolkit-shared itself
+        // So we need to resolve toolkit path from the original config directory, not projectDir
+        let toolkitBaseDir = projectDir
+        if (needsParentDir && reason === 'ai-toolkit-shared/') {
+            // Config was in ai-toolkit-shared/, so toolkit is likely in that directory
+            // Use the ai-toolkit-shared directory as base for resolving toolkit path
+            toolkitBaseDir = dirname(configPath) // Use ai-toolkit-shared directory
+            // If toolkit is "." or not specified, it means the ai-toolkit-shared directory itself
+            if (!config.toolkit || config.toolkit === '.' || config.toolkit === './') {
+                // Toolkit is the ai-toolkit-shared directory itself
+                var toolkitPath = toolkitBaseDir
+            } else {
+                // Resolve toolkit path relative to ai-toolkit-shared directory
+                var toolkitPath = resolveToolkitPath(config.toolkit, toolkitBaseDir)
+            }
+        } else {
+            // Normal case: resolve toolkit path from project root
+            var toolkitPath = resolveToolkitPath(config.toolkit || '.', toolkitBaseDir)
+        }
 
         // Verify toolkit path exists
         if (!existsSync(toolkitPath)) {
