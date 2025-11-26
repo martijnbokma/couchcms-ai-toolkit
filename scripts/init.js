@@ -383,6 +383,14 @@ async function init() {
             standardsMd = standardsMd.replace(/# framework: true\n/g, '')
         }
 
+        // Ensure the directory exists before writing the file
+        if (configDir !== projectDir) {
+            if (!existsSync(configDir)) {
+                mkdirSync(configDir, { recursive: true })
+                console.log(`📁 Created directory: ${configDir.replace(projectDir + '/', '')}/`)
+            }
+        }
+
         writeFileSync(configPath, standardsMd)
         console.log(`✅ Created: ${configFileName}`)
     }

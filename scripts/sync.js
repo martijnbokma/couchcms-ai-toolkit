@@ -1117,13 +1117,6 @@ Add your project-specific instructions here...
 
         console.log(`📦 Project: ${config.name || 'Unnamed'}`)
 
-        // Ensure .project directory exists (recommended location for config)
-        const projectConfigDir = join(projectDir, '.project')
-        if (!existsSync(projectConfigDir)) {
-            mkdirSync(projectConfigDir, { recursive: true })
-            console.log(`📁 Created .project/ directory (recommended for project configuration)`)
-        }
-
         // Clean generated files before syncing
         cleanGeneratedFiles(projectDir)
 
