@@ -954,8 +954,12 @@ Add your project-specific instructions here...
 
         console.log(`📁 Paths: ${Object.keys(mergedConfig.paths).length} configured`)
 
-        // Ensure couchcms-core is always included
-        const moduleList = config.modules || ['couchcms-core']
+        // Ensure couchcms-core is always included - ensure it's always an array
+        let moduleList = config.modules || ['couchcms-core']
+        if (!Array.isArray(moduleList)) {
+            // If it's a string, convert to array; otherwise default to ['couchcms-core']
+            moduleList = typeof moduleList === 'string' ? [moduleList] : ['couchcms-core']
+        }
         if (!moduleList.includes('couchcms-core')) {
             moduleList.unshift('couchcms-core')
         }
@@ -965,8 +969,12 @@ Add your project-specific instructions here...
         // Load modules
         const modules = moduleList.map(name => loadModule(name, toolkitPath)).filter(Boolean)
 
-        // Load agents
-        const agentList = config.agents || []
+        // Load agents - ensure it's always an array
+        let agentList = config.agents || []
+        if (!Array.isArray(agentList)) {
+            // If it's a string, convert to array; otherwise default to empty array
+            agentList = typeof agentList === 'string' ? [agentList] : []
+        }
         const agents = agentList.map(name => loadAgent(name, toolkitPath)).filter(Boolean)
 
         if (agents.length > 0) {
@@ -1002,8 +1010,12 @@ Add your project-specific instructions here...
             templateData.project_rules = projectRules
         }
 
-        // Add module list for templates
-        templateData.module_list = (config.modules || ['couchcms-core']).join(', ')
+        // Add module list for templates - ensure it's always an array
+        let moduleListForTemplate = config.modules || ['couchcms-core']
+        if (!Array.isArray(moduleListForTemplate)) {
+            moduleListForTemplate = typeof moduleListForTemplate === 'string' ? [moduleListForTemplate] : ['couchcms-core']
+        }
+        templateData.module_list = moduleListForTemplate.join(', ')
 
         // Generate editor configurations from templates
         try {

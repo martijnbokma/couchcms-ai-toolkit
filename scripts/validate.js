@@ -129,7 +129,12 @@ async function validate() {
     }
 
     // Validate modules
-    const moduleList = config.modules || ['couchcms-core']
+    // Ensure modules is always an array
+    let moduleList = config.modules || ['couchcms-core']
+    if (!Array.isArray(moduleList)) {
+        // If it's a string, convert to array; otherwise default to ['couchcms-core']
+        moduleList = typeof moduleList === 'string' ? [moduleList] : ['couchcms-core']
+    }
     console.log(`📚 Modules: ${moduleList.join(', ')}`)
 
     for (const moduleName of moduleList) {
@@ -140,11 +145,17 @@ async function validate() {
         }
     }
 
-    // Validate agents
-    if (config.agents && config.agents.length > 0) {
-        console.log(`🤖 Agents: ${config.agents.join(', ')}`)
+    // Validate agents - ensure it's always an array
+    let agentList = config.agents || []
+    if (!Array.isArray(agentList)) {
+        // If it's a string, convert to array; otherwise default to empty array
+        agentList = typeof agentList === 'string' ? [agentList] : []
+    }
 
-        for (const agentName of config.agents) {
+    if (agentList.length > 0) {
+        console.log(`🤖 Agents: ${agentList.join(', ')}`)
+
+        for (const agentName of agentList) {
             const agentPath = join(toolkitPath, 'agents', `${agentName}.md`)
             if (!existsSync(agentPath)) {
                 warnings.push(`Agent not found: ${agentName}`)
