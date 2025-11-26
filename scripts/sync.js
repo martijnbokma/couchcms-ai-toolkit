@@ -912,21 +912,26 @@ Add your project-specific instructions here...
         }
 
         console.log(`📄 Found: ${configPath}`)
-        const projectDir = dirname(configPath)
+        // If config is in .project/, use parent directory as project root
+        // Otherwise, use the directory containing the config file
+        let projectDir = dirname(configPath)
+        if (configPath.includes('/.project/') || configPath.endsWith('.project/standards.md')) {
+            projectDir = dirname(projectDir) // Go up one level to project root
+        }
 
         // Parse configuration file
+        // Use the configPath we already found, don't search again
         let config, projectRules
         try {
-            const configData = loadConfig(projectDir)
-            if (!configData) {
-                throw new Error('Failed to load configuration')
-            }
-            config = configData.frontmatter
-            projectRules = configData.content
+            const content = readFileSync(configPath, 'utf8')
+            const { data: frontmatter, content: body } = matter(content)
+            config = frontmatter
+            projectRules = body
         } catch (error) {
-            const configFileName = getConfigFileName(projectDir) || 'standards.md'
-            console.error(`❌ Failed to parse ${configFileName}: ${error.message}`)
-            console.log(`\nEnsure ${configFileName} has valid YAML frontmatter.\n`)
+            // Use relative path for better error message
+            const relativePath = configPath.replace(projectDir + '/', '')
+            console.error(`❌ Failed to parse ${relativePath}: ${error.message}`)
+            console.log(`\nEnsure ${relativePath} has valid YAML frontmatter.\n`)
             process.exit(1)
         }
 
