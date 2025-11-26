@@ -65,3 +65,5 @@ agents:
 2. Follow the structure above
 3. Use `{{paths.xxx}}` for path variables
 4. Run `bun run ai:sync` to test
+
+
