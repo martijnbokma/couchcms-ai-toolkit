@@ -155,6 +155,15 @@ async function init() {
             { name: 'alpinejs', description: 'Alpine.js integration' },
             { name: 'typescript', description: 'TypeScript standards' },
             { name: 'databound-forms', description: 'DataBound Forms' },
+            { name: 'folders', description: 'Virtual folders and nested pages' },
+            { name: 'archives', description: 'Archive views by time periods' },
+            { name: 'relationships', description: 'Page relationships and related content' },
+            { name: 'repeatable-regions', description: 'Dynamic repeatable content blocks' },
+            { name: 'search', description: 'Fulltext search with MySQL' },
+            { name: 'pagination', description: 'Pagination for pages and results' },
+            { name: 'custom-routes', description: 'Custom URL routing' },
+            { name: 'users', description: 'User management and access control' },
+            { name: 'comments', description: 'Comment system with moderation' },
         ]
 
         selectedModules = ['couchcms-core']
@@ -164,7 +173,23 @@ async function init() {
         } else if (modulePreset === '2') {
             selectedModules.push('tailwindcss', 'alpinejs')
         } else if (modulePreset === '3') {
-            selectedModules.push('tailwindcss', 'daisyui', 'alpinejs', 'typescript', 'databound-forms')
+            // Full: all modules
+            selectedModules.push(
+                'tailwindcss',
+                'daisyui',
+                'alpinejs',
+                'typescript',
+                'databound-forms',
+                'folders',
+                'archives',
+                'relationships',
+                'repeatable-regions',
+                'search',
+                'pagination',
+                'custom-routes',
+                'users',
+                'comments'
+            )
         } else {
             // Custom: ask individually
             for (const mod of availableModules) {
@@ -189,10 +214,28 @@ async function init() {
 
         const availableAgents = [
             { name: 'couchcms', description: 'Core CouchCMS development' },
-            { name: 'databound-forms', description: 'Forms and CRUD' },
+            { name: 'databound-forms', description: 'Forms and CRUD operations' },
             { name: 'alpinejs', description: 'Alpine.js development' },
             { name: 'tailwindcss', description: 'TailwindCSS styling' },
             { name: 'typescript', description: 'TypeScript development' },
+            { name: 'search', description: 'Fulltext search implementation' },
+            { name: 'pagination', description: 'Pagination controls' },
+            { name: 'relationships', description: 'Page relationships' },
+            { name: 'views', description: 'Template views (List, Page, Folder, Archive)' },
+            { name: 'comments', description: 'Comment system with moderation' },
+            { name: 'users', description: 'User management and access control' },
+            { name: 'folders', description: 'Virtual folders for content organization' },
+            { name: 'repeatable-regions', description: 'Dynamic repeatable content blocks' },
+            { name: 'photo-gallery', description: 'Photo gallery with batch upload' },
+            { name: 'rss-feeds', description: 'RSS feed generation' },
+            { name: 'archives', description: 'Archive views by time periods' },
+            { name: 'nested-pages', description: 'Hierarchical page structures' },
+            { name: 'on-page-editing', description: 'Frontend inline editing' },
+            { name: 'admin-panel-theming', description: 'Admin panel customization' },
+            { name: 'custom-routes', description: 'Clean URLs and routing' },
+            { name: 'mysql', description: 'Database operations' },
+            { name: 'bun', description: 'Bun runtime and build tooling' },
+            { name: 'git', description: 'Version control workflows' },
         ]
 
         selectedAgents = []
@@ -202,7 +245,32 @@ async function init() {
         } else if (agentPreset === '2') {
             selectedAgents = ['couchcms', 'tailwindcss', 'alpinejs']
         } else if (agentPreset === '3') {
-            selectedAgents = ['couchcms', 'databound-forms', 'alpinejs', 'tailwindcss', 'typescript']
+            // Full: all agents
+            selectedAgents = [
+                'couchcms',
+                'databound-forms',
+                'alpinejs',
+                'tailwindcss',
+                'typescript',
+                'search',
+                'pagination',
+                'relationships',
+                'views',
+                'comments',
+                'users',
+                'folders',
+                'repeatable-regions',
+                'photo-gallery',
+                'rss-feeds',
+                'archives',
+                'nested-pages',
+                'on-page-editing',
+                'admin-panel-theming',
+                'custom-routes',
+                'mysql',
+                'bun',
+                'git',
+            ]
         } else {
             // Custom: ask individually
             for (const agent of availableAgents) {
@@ -250,8 +318,9 @@ async function init() {
             .replace(/"my-project"/g, `"${projectName}"`)
             .replace(/Brief description of your project/g, projectDescription)
             .replace(/"\.\/ai-toolkit"/g, `"${toolkitPath}"`)
+            // Replace modules list - match any modules list in the template
             .replace(
-                /modules:\n    - couchcms-core\n    - tailwindcss\n    - daisyui\n    - alpinejs\n    - typescript\n    - databound-forms/g,
+                /modules:\n(?:    - [^\n]+\n?)+/g,
                 `modules:\n${selectedModules.map(m => `    - ${m}`).join('\n')}`
             )
 

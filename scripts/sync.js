@@ -969,8 +969,19 @@ Add your project-specific instructions here...
         // Load modules
         const modules = moduleList.map(name => loadModule(name, toolkitPath)).filter(Boolean)
 
-        // Load agents - ensure it's always an array
-        let agentList = config.agents || []
+        // Load agents - check for active_agents first, then agents
+        // active_agents is the list of agent modules to load
+        // agents (if it's an object) is the AI tool configuration (cursor, copilot, etc.)
+        let agentList = config.active_agents || config.agents || []
+
+        // If agents is an object (AI tool config), it's not the agent list
+        if (agentList && typeof agentList === 'object' && !Array.isArray(agentList)) {
+            // Check if it has AI tool keys (cursor, copilot, etc.)
+            if ('cursor' in agentList || 'copilot' in agentList || 'claude' in agentList) {
+                agentList = [] // This is AI tool config, not agent modules
+            }
+        }
+
         if (!Array.isArray(agentList)) {
             // If it's a string, convert to array; otherwise default to empty array
             agentList = typeof agentList === 'string' ? [agentList] : []
