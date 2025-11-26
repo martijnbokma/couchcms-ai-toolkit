@@ -20,14 +20,66 @@ modules:
 
   # Backend
   - databound-forms
+  - custom-routes
+
+  # Content
+  - folders
+  - archives
+  - relationships
+  - repeatable-regions
+  - search
+  - pagination
+  - comments
+
+  # User Features
+  - users
 
   # Development
   - typescript
 
+# === FRAMEWORK (OPTIONAL) ===
+# Enable AAPF framework for disciplined AI agent behavior
+# Options:
+#   - framework: true                    # Full framework (doctrine + directives + playbooks + enhancements)
+#   - framework: { doctrine: true, directives: true, playbooks: true }  # Custom selection
+#   - framework: false                   # Disabled (default)
+framework: true
+
 # === AGENTS ===
 # All available agents
 agents:
+  # Core
   - couchcms
+  - databound-forms
+  - custom-routes
+
+  # Frontend
+  - alpinejs
+  - tailwindcss
+  - typescript
+
+  # Content Management
+  - views
+  - folders
+  - archives
+  - relationships
+  - repeatable-regions
+  - search
+  - pagination
+  - comments
+  - nested-pages
+  - photo-gallery
+  - rss-feeds
+  - on-page-editing
+
+  # User Features
+  - users
+
+  # Development Tools
+  - bun
+  - git
+  - mysql
+  - admin-panel-theming
 
 # === CONTEXT ===
 # Project context directory (optional)

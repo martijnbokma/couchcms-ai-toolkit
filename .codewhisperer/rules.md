@@ -93,7 +93,16 @@ action: "Remove for production"
 3. **daisyUI**: daisyUI 5 components and theming
 4. **Alpine.js**: Alpine.js patterns and CouchCMS integration
 5. **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
-6. **TypeScript**: TypeScript standards and patterns
+6. **Custom Routes**: Custom URL routing and clean URL patterns
+7. **Folders**: Content organization with virtual folders and nested pages
+8. **Archives**: Archive views for time-based content organization
+9. **Relationships**: Page relationships and related content patterns
+10. **Repeatable Regions**: Repeatable content blocks and dynamic regions
+11. **Search**: Search functionality with MySQL fulltext and relevance ranking
+12. **Pagination**: Pagination controls for pages, search results, and comments
+13. **Comments**: User comments with moderation and spam prevention
+14. **Users**: User management, access control, and authentication
+15. **TypeScript**: TypeScript standards and patterns
 
 ---
 
@@ -104,6 +113,15 @@ action: "Remove for production"
 - **daisyUI**: daisyUI 5 components and theming
 - **Alpine.js**: Alpine.js patterns and CouchCMS integration
 - **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+- **Custom Routes**: Custom URL routing and clean URL patterns
+- **Folders**: Content organization with virtual folders and nested pages
+- **Archives**: Archive views for time-based content organization
+- **Relationships**: Page relationships and related content patterns
+- **Repeatable Regions**: Repeatable content blocks and dynamic regions
+- **Search**: Search functionality with MySQL fulltext and relevance ranking
+- **Pagination**: Pagination controls for pages, search results, and comments
+- **Comments**: User comments with moderation and spam prevention
+- **Users**: User management, access control, and authentication
 - **TypeScript**: TypeScript standards and patterns
 
 ## 👥 PROJECT ROLES
