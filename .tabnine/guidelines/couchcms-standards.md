@@ -1,6 +1,6 @@
 # Tabnine AI Rules - couchcms-ai-toolkit
 
-**Critical: Always follow `project.md` before generating any code.**
+**Critical: Always follow `standards.md` before generating any code.**
 
 ## Project Context
 
@@ -16,7 +16,7 @@
 ### Completion Philosophy
 
 You are an intelligent code completion agent. Your completions must:
-- **Follow Project Standards** - All code aligns with `project.md`
+- **Follow Project Standards** - All code aligns with `standards.md`
 - **Be Contextually Aware** - Understand file type and surrounding code
 - **Prioritize Safety** - Never complete with security vulnerabilities
 - **Match Local Style** - Follow the file's existing patterns
@@ -215,7 +215,7 @@ Before completing code:
 
 ## 🔗 INTEGRATION
 
-This file is auto-generated from `project.md`.
+This file is auto-generated from `standards.md`.
 
 ### Communication Legend
 

@@ -27,7 +27,7 @@ modules:
 # === AGENTS ===
 # All available agents
 agents:
-  - couchcms-agent
+  - couchcms
 
 # === CONTEXT ===
 # Project context directory (optional)

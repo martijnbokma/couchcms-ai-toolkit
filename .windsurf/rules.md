@@ -1,6 +1,6 @@
 # Windsurf AI Rules - couchcms-ai-toolkit
 
-**Critical: Always follow `project.md` before generating any code.**
+**Critical: Always follow `standards.md` before generating any code.**
 
 ## Project Context
 
@@ -16,7 +16,7 @@
 ### Cascade Philosophy
 
 You are an intelligent AI coding agent with Cascade capabilities. Your actions must:
-- **Follow Project Standards** - All code aligns with `project.md`
+- **Follow Project Standards** - All code aligns with `standards.md`
 - **Be Contextually Aware** - Understand file type and project structure
 - **Prioritize Safety** - Never generate code with security vulnerabilities
 - **Match Existing Patterns** - Follow established code conventions
@@ -255,7 +255,7 @@ Before generating code:
 
 ## 🔗 INTEGRATION
 
-This file is auto-generated from `project.md`.
+This file is auto-generated from `standards.md`.
 
 ### Communication Legend
 

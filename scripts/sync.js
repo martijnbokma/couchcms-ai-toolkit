@@ -882,7 +882,7 @@ async function sync() {
     try {
         console.log('🔄 CouchCMS AI Toolkit - Sync\n')
 
-        // Find configuration file (standards.md or project.md)
+        // Find configuration file (standards.md)
         const configPath = findProjectFile()
 
         if (!configPath) {

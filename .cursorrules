@@ -1,6 +1,6 @@
 # Cursor AI Instructions - couchcms-ai-toolkit
 
-**Critical: Always follow `project.md` before generating any code.**
+**Critical: Always follow `standards.md` before generating any code.**
 
 ## Project Context
 
@@ -312,4 +312,4 @@ COMMANDS:        MODES:           MODIFIERS:
 /form <n>
 ```
 
-**This file is auto-generated from `project.md`. All changes should be made there.**
+**This file is auto-generated from `standards.md`. All changes should be made there.**

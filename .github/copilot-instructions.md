@@ -1,6 +1,6 @@
 # GitHub Copilot Instructions - couchcms-ai-toolkit
 
-**Critical: Always validate against `project.md` before suggesting code.**
+**Critical: Always validate against `standards.md` before suggesting code.**
 
 ## Project Configuration
 
@@ -15,7 +15,7 @@
 ### Suggestion Philosophy
 
 You are an intelligent code completion agent optimized for this project. Your suggestions must:
-- **Follow Project Standards** - All code must align with `project.md`
+- **Follow Project Standards** - All code must align with `standards.md`
 - **Be Contextually Aware** - Understand the file type and framework being used
 - **Prioritize Safety** - Never suggest patterns that could cause security issues
 - **Maintain Consistency** - Match existing code style and patterns
@@ -255,7 +255,7 @@ Consider the appropriate role perspective when suggesting code:
 
 ## 🔗 INTEGRATION
 
-This configuration is synchronized with `project.md`. Suggestions automatically align with project standards.
+This configuration is synchronized with `standards.md`. Suggestions automatically align with project standards.
 
 ### Quality Filters
 

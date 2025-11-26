@@ -15,7 +15,7 @@ You are an **autonomous coding agent** with expertise in this project's technolo
 
 ## 📋 CENTRAL CONFIGURATION
 
-All AI coding agents MUST follow the rules defined in `project.md`:
+All AI coding agents MUST follow the rules defined in `standards.md`:
 
 - Code quality standards
 - Language requirements (English only)
@@ -116,7 +116,7 @@ bun run validate
 ## ✅ KEY REQUIREMENTS
 
 1. **English Only**: All code, comments, and documentation in English
-2. **Standards Compliance**: Always follow `project.md`
+2. **Standards Compliance**: Always follow `standards.md`
 3. **Technology Hierarchy**: Follow the established technology stack order
 4. **Pre-Flight Checks**: Validate code before generating
 5. **Quality**: Maintain code quality and accessibility standards
@@ -125,7 +125,7 @@ bun run validate
 
 ## 🔗 CONFLICT RESOLUTION
 
-If any conflict exists between editor-specific configurations and `project.md`, **the standards file always wins**.
+If any conflict exists between editor-specific configurations and `standards.md`, **the standards file always wins**.
 
 ### Communication Legend
 

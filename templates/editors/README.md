@@ -166,4 +166,4 @@ To customize a template for your project:
 - [Smart Operations](../../framework/07-smart-operations.md) - Slash commands and modes
 - [Pre-flight Checks](../../preflight-checks.yaml) - Security patterns
 - [AI Toolkit Documentation](../../docs/GETTING-STARTED.md)
-- [Project Configuration](../project.md)
+- [Project Configuration](../standards.md)

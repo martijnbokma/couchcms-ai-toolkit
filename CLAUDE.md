@@ -1,6 +1,6 @@
 # Claude Coding Instructions - couchcms-ai-toolkit
 
-**Highly Critical: Always refer to `project.md` before generating, editing, or reviewing any code.**
+**Highly Critical: Always refer to `standards.md` before generating, editing, or reviewing any code.**
 
 ## Project Overview
 
@@ -323,7 +323,7 @@ function processData(data: any): any { ... }
 
 ## 🔗 INTEGRATION NOTES
 
-This instruction set is auto-generated from `project.md`. The system ensures:
+This instruction set is auto-generated from `standards.md`. The system ensures:
 
 - Consistency across all AI agents
 - Automatic updates when standards change
