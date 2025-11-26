@@ -1,74 +1,72 @@
-# Tabnine AI Rules - {{project.name}}
+# Amazon CodeWhisperer Rules - couchcms-ai-toolkit
 
-**Critical: Always follow `{{config_file_path}}` before generating any code.**
+**Critical: Always follow `project.md` before generating any code.**
 
 ## Project Context
 
-- **Type**: {{project.type}}
-- **Description**: {{project.description}}
-- **Languages**: {{join languages ", "}}
-- **Frameworks**: {{join frameworks ", "}}
+- **Type**: CouchCMS Web Application
+- **Description**: CouchCMS AI Toolkit - Development and maintenance configuration
+- **Languages**: 
+- **Frameworks**: 
 
 ---
 
-## 🎯 TABNINE BEHAVIOR
+## 🎯 CODEWHISPERER BEHAVIOR
 
-### Completion Philosophy
+### Code Generation Philosophy
 
-You are an intelligent code completion agent. Your completions must:
-- **Follow Project Standards** - All code aligns with `{{config_file_path}}`
-- **Be Contextually Aware** - Understand file type and surrounding code
-- **Prioritize Safety** - Never complete with security vulnerabilities
-- **Match Local Style** - Follow the file's existing patterns
+You are an intelligent code generation agent. Your suggestions must:
+- **Follow Project Standards** - All code aligns with `project.md`
+- **Be Contextually Aware** - Understand file type and framework
+- **Prioritize Safety** - Never generate code with security vulnerabilities
+- **Match Existing Patterns** - Follow established code conventions
 
-### Completion Priorities
+### Generation Priorities
 
-1. Match immediate code context
-2. Follow established project patterns
-3. Use proper naming conventions
-4. Include error handling
-5. Ensure type safety
+1. Match established project patterns
+2. Use proper naming conventions
+3. Include error handling
+4. Ensure type safety
+5. Follow accessibility standards (WCAG 2.1 AA)
 
 ---
 
-## 🛡️ PRE-COMPLETION VALIDATION
+## 🛡️ PRE-GENERATION VALIDATION
 
-Validate completions against these patterns:
+Validate generated code against these patterns:
 
-### CRITICAL (Never Complete)
-{{#if has_cms}}
+### CRITICAL (Block Generation)
 ```yaml
-# CouchCMS tags in HTML comments - EXECUTES!
+# CouchCMS tags in HTML comments - EXECUTES AND CRASHES!
 pattern: "<!--[^>]*<cms:[^>]*-->"
-fix: "Replace <cms: with [cms: in comments"
+action: "Replace <cms: with [cms: in comments"
 
 # <cms:else> must be self-closing
 pattern: "<cms:else></cms:else>"
-fix: "Use <cms:else /> instead"
+action: "Use <cms:else /> instead"
 
 # Alpine shorthand breaks CouchCMS
 pattern: "@click|:class|:disabled"
-fix: "Use x-on:click and x-bind:class"
-{{/if}}
+action: "Use x-on:click and x-bind:class"
 
 # XSS vulnerability
 pattern: "innerHTML\\s*=.*user|innerHTML\\s*=.*input"
-fix: "Use textContent or sanitize"
+action: "Use textContent or sanitize input"
 
 # eval() security risk
 pattern: "\\beval\\s*\\("
-fix: "Use alternative approach"
+action: "Use alternative approach"
 ```
 
 ### WARNING (Show Warning)
 ```yaml
 # Avoid TypeScript 'any' type
 pattern: ":\\s*any\\b"
-fix: "Define specific type"
+action: "Define specific type or interface"
 
 # console.log in production
 pattern: "console\\.log\\("
-fix: "Remove for production"
+action: "Remove for production"
 ```
 
 ---
@@ -78,42 +76,44 @@ fix: "Remove for production"
 ### Language Requirements
 
 - **English Only**: All code, comments, variable names MUST be in English
-- **No Exceptions**: Never complete with non-English text
+- **No Exceptions**: Never generate non-English text
 
 ### Formatting Standards
 
-- **Indentation**: {{standards.indentation}} spaces
+- **Indentation**: 4 spaces
 - **Naming Conventions**:
     - Variables: Follow language-specific conventions
-    - Classes: {{standards.naming.classes}}
-    - Files: {{standards.naming.php_files}} (PHP), {{standards.naming.typescript_files}} (TypeScript)
+    - Classes: 
+    - Files: kebab-case (PHP),  (TypeScript)
 
 ### Technology Hierarchy
 
-{{#each tech_hierarchy}}
-{{add @index 1}}. **{{name}}**: {{description}}
-{{/each}}
+1. **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+2. **TailwindCSS**: TailwindCSS 4 patterns and best practices
+3. **daisyUI**: daisyUI 5 components and theming
+4. **Alpine.js**: Alpine.js patterns and CouchCMS integration
+5. **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+6. **TypeScript**: TypeScript standards and patterns
 
 ---
 
 ## 📚 KNOWLEDGE MODULES
 
-{{#each modules}}
-- **{{name}}**: {{description}}
-{{/each}}
+- **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+- **TailwindCSS**: TailwindCSS 4 patterns and best practices
+- **daisyUI**: daisyUI 5 components and theming
+- **Alpine.js**: Alpine.js patterns and CouchCMS integration
+- **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+- **TypeScript**: TypeScript standards and patterns
 
 ## 👥 PROJECT ROLES
 
-{{#each roles}}
-- **{{name}}**: {{description}}
-{{/each}}
 
 ---
 
-{{#if has_cms}}
 ## 🔧 CMS PATTERNS
 
-### Template Completion
+### Template Structure
 
 ```php
 <?php require_once('couch/cms.php'); ?>
@@ -133,22 +133,20 @@ fix: "Remove for production"
 
 ### Critical CouchCMS Rules
 
-| Context | ❌ Never Complete | ✅ Always Complete |
+| Context | ❌ Never Generate | ✅ Always Generate |
 |---------|-------------------|-------------------|
 | Comments | `<!-- <cms:show /> -->` | `<!-- [cms:show /] -->` |
 | Conditionals | `<cms:else></cms:else>` | `<cms:else />` |
 | Alpine events | `@click="..."` | `x-on:click="..."` |
 | Alpine bindings | `:class="..."` | `x-bind:class="..."` |
 
-{{/if}}
 
-{{#if has_frontend}}
 ## 🎨 FRONTEND PATTERNS
 
-### Theme-Aware Completions
+### Theme-Aware Styling
 
 ```html
-<!-- ✅ Complete with theme-compatible colors -->
+<!-- ✅ Generate theme-compatible colors -->
 <div class="card bg-base-100 shadow-xl">
     <div class="card-body">
         <h2 class="card-title text-base-content">Title</h2>
@@ -156,14 +154,14 @@ fix: "Remove for production"
     </div>
 </div>
 
-<!-- ❌ Never complete with hardcoded colors -->
+<!-- ❌ Never generate hardcoded colors -->
 <div class="bg-white text-gray-800">...</div>
 ```
 
-### TypeScript Completions
+### TypeScript Standards
 
 ```typescript
-// ✅ Complete with proper typing
+// ✅ Generate with proper typing
 export interface UserProfile {
     id: string
     displayName: string
@@ -174,59 +172,51 @@ export function validateUser(user: UserProfile): boolean {
     return Boolean(user.id && user.displayName && user.email)
 }
 
-// ❌ Never complete with 'any' type
+// ❌ Never generate 'any' type
 function process(data: any): any { ... }
 ```
 
-{{/if}}
 
 ---
 
 ## ✅ QUALITY CHECKLIST
 
-Before completing code:
+Before generating code:
 
 - [ ] All text is in English
-- [ ] {{standards.indentation}}-space indentation
+- [ ] 4-space indentation
 - [ ] Proper naming conventions
 - [ ] No security vulnerabilities
-{{#if has_cms}}
 - [ ] No `<cms:` in HTML comments
 - [ ] Self-closing `<cms:else />` tags
 - [ ] Full Alpine syntax (`x-on:`, `x-bind:`)
-{{/if}}
-{{#if has_frontend}}
 - [ ] Theme-aware colors (daisyUI semantic)
 - [ ] Direct imports (no barrel files)
 - [ ] Proper TypeScript types (not `any`)
-{{/if}}
+- [ ] Accessibility (WCAG 2.1 AA)
 - [ ] Error handling implemented
 
 ---
 
 ## 🚫 ANTI-PATTERNS
 
-| Category | ❌ Never Complete | ✅ Always Complete |
+| Category | ❌ Never Generate | ✅ Always Generate |
 |----------|-------------------|-------------------|
 | Language | Non-English code | English only |
 | Security | `innerHTML = userInput` | `textContent` or sanitize |
 | Security | `eval()` usage | Alternative approaches |
-{{#if has_cms}}
 | CouchCMS | `<!-- <cms: -->` | `<!-- [cms: /] -->` |
 | CouchCMS | `<cms:else></cms:else>` | `<cms:else />` |
 | Alpine | `@click` shorthand | `x-on:click` |
-{{/if}}
-{{#if has_frontend}}
 | Styling | `bg-gray-100` | `bg-base-100` |
 | TypeScript | `any` type | Specific interface |
 | Imports | `from './components'` | Direct file imports |
-{{/if}}
 
 ---
 
 ## 🔗 INTEGRATION
 
-This file is auto-generated from `{{config_file_path}}`.
+This file is auto-generated from `project.md`.
 
 ### Communication Legend
 

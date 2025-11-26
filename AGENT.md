@@ -1,4 +1,4 @@
-# Universal AI Agent Instructions - {{project.name}}
+# Universal AI Agent Instructions - couchcms-ai-toolkit
 
 This project uses the **Universal AI Coding Standards** system for consistent AI agent behavior across all editors.
 
@@ -15,7 +15,7 @@ You are an **autonomous coding agent** with expertise in this project's technolo
 
 ## 📋 CENTRAL CONFIGURATION
 
-All AI coding agents MUST follow the rules defined in `{{config_file_path}}`:
+All AI coding agents MUST follow the rules defined in `project.md`:
 
 - Code quality standards
 - Language requirements (English only)
@@ -66,11 +66,9 @@ The system automatically generates specific instructions for each AI agent:
 
 Before generating code, scan for CRITICAL issues:
 
-{{#if has_cms}}
 - **CouchCMS tags in HTML comments** - Will execute and crash!
 - **Paired `<cms:else>` tags** - Must be self-closing
 - **Alpine shorthand** - Must use full `x-on:` syntax
-{{/if}}
 - **XSS vulnerabilities** - Never use `innerHTML` with user input
 - **Security risks** - Never use `eval()`
 - **Type safety** - Avoid TypeScript `any` type
@@ -79,27 +77,27 @@ Before generating code, scan for CRITICAL issues:
 
 ## 📦 PROJECT CONTEXT
 
-- **Type**: {{project.type}}
-- **Languages**: {{join languages ", "}}
-- **Frameworks**: {{join frameworks ", "}}
-- **Indentation**: {{standards.indentation}}-space
+- **Type**: CouchCMS Web Application
+- **Languages**: 
+- **Frameworks**: 
+- **Indentation**: 4-space
 - **Language**: English-only
 
 ---
 
 ## 📚 KNOWLEDGE MODULES
 
-{{#each modules}}
-- **{{name}}**: {{description}}
-{{/each}}
+- **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+- **TailwindCSS**: TailwindCSS 4 patterns and best practices
+- **daisyUI**: daisyUI 5 components and theming
+- **Alpine.js**: Alpine.js patterns and CouchCMS integration
+- **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+- **TypeScript**: TypeScript standards and patterns
 
 ---
 
 ## 👥 PROJECT ROLES
 
-{{#each roles}}
-- **{{name}}**: {{description}}
-{{/each}}
 
 ---
 
@@ -118,7 +116,7 @@ bun run validate
 ## ✅ KEY REQUIREMENTS
 
 1. **English Only**: All code, comments, and documentation in English
-2. **Standards Compliance**: Always follow `{{config_file_path}}`
+2. **Standards Compliance**: Always follow `project.md`
 3. **Technology Hierarchy**: Follow the established technology stack order
 4. **Pre-Flight Checks**: Validate code before generating
 5. **Quality**: Maintain code quality and accessibility standards
@@ -127,7 +125,7 @@ bun run validate
 
 ## 🔗 CONFLICT RESOLUTION
 
-If any conflict exists between editor-specific configurations and `{{config_file_path}}`, **the standards file always wins**.
+If any conflict exists between editor-specific configurations and `project.md`, **the standards file always wins**.
 
 ### Communication Legend
 

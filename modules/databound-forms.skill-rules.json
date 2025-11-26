@@ -1,0 +1,77 @@
+{
+  "databound-forms": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "CouchCMS DataBound Forms for CRUD operations",
+    "promptTriggers": {
+      "keywords": [
+        "form",
+        "databound",
+        "db_persist",
+        "validation",
+        "crud",
+        "create",
+        "update",
+        "delete",
+        "bound_",
+        "input",
+        "submit",
+        "k_success",
+        "k_error"
+      ],
+      "intentPatterns": [
+        "(create|add|build).*?(form|input|crud)",
+        "(edit|update|modify).*?(record|data|entry)",
+        "(delete|remove).*?(record|data|entry)",
+        "(validate|check).*?(input|form|data)",
+        "(save|persist|store).*?(data|form)",
+        "(list|display|show).*?(records|entries)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "snippets/forms/**/*.html",
+        "snippets/crud/**/*.html",
+        "forms/**/*.html",
+        "**/*form*.html",
+        "**/*edit*.html",
+        "**/*create*.html"
+      ],
+      "contentPatterns": [
+        "<cms:db_persist",
+        "<cms:db_persist_form",
+        "<cms:db_delete",
+        "<cms:input",
+        "bound_",
+        "k_success",
+        "k_error",
+        "k_bound_",
+        "cms:form",
+        "cms:if k_success"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "<cms:db_persist[^>]*>(?!.*k_success)",
+        "severity": "warning",
+        "message": "⚠️ db_persist without k_success check. Always handle success/error states."
+      },
+      {
+        "pattern": "<cms:input[^>]*type=['\"]text['\"][^>]*>(?!.*required)",
+        "severity": "info",
+        "message": "ℹ️ Text input without 'required'. Consider if validation is needed."
+      },
+      {
+        "pattern": "<cms:form[^>]*>(?!.*<cms:if k_error)",
+        "severity": "warning",
+        "message": "⚠️ Form without error handling. Add <cms:if k_error> for user feedback."
+      },
+      {
+        "pattern": "<cms:db_delete[^>]*>(?!.*masterpage)",
+        "severity": "error",
+        "message": "❌ db_delete requires masterpage parameter. Specify the template."
+      }
+    ]
+  }
+}

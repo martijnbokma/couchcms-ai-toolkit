@@ -1,13 +1,13 @@
-# Cursor AI Instructions - {{project.name}}
+# Cursor AI Instructions - couchcms-ai-toolkit
 
-**Critical: Always follow `{{config_file_path}}` before generating any code.**
+**Critical: Always follow `project.md` before generating any code.**
 
 ## Project Context
 
-- **Type**: {{project.type}}
-- **Description**: {{project.description}}
-- **Languages**: {{join languages ", "}}
-- **Frameworks**: {{join frameworks ", "}}
+- **Type**: CouchCMS Web Application
+- **Description**: CouchCMS AI Toolkit - Development and maintenance configuration
+- **Languages**: 
+- **Frameworks**: 
 
 ---
 
@@ -76,7 +76,6 @@ Only ask for clarification when:
 Before generating or modifying code, scan for these issues:
 
 ### CRITICAL (Block - Must Fix)
-{{#if has_cms}}
 ```yaml
 # CouchCMS tags in HTML comments are EXECUTED!
 pattern: "<!--[^>]*<cms:[^>]*-->"
@@ -85,7 +84,6 @@ fix: "Replace <cms: with [cms: in comments"
 # <cms:else> must be self-closing
 pattern: "<cms:else\\s*>[^/]"
 fix: "Use <cms:else /> not <cms:else></cms:else>"
-{{/if}}
 
 # Potential XSS vulnerability
 pattern: "innerHTML\\s*=.*user|innerHTML\\s*=.*input"
@@ -118,31 +116,34 @@ fix: "Remove for production or use logger"
 
 ### Code Standards
 
-- **Indentation**: {{standards.indentation}} spaces for all code
+- **Indentation**: 4 spaces for all code
 - **Naming Conventions**:
     - Variables: Follow language-specific conventions
-    - Classes: {{standards.naming.classes}}
-    - Files: {{standards.naming.php_files}} (PHP), {{standards.naming.typescript_files}} (TypeScript)
+    - Classes: 
+    - Files: kebab-case (PHP),  (TypeScript)
 
 ### Technology Hierarchy (Follow This Order)
 
-{{#each tech_hierarchy}}
-{{add @index 1}}. **{{name}}**: {{description}}
-{{/each}}
+1. **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+2. **TailwindCSS**: TailwindCSS 4 patterns and best practices
+3. **daisyUI**: daisyUI 5 components and theming
+4. **Alpine.js**: Alpine.js patterns and CouchCMS integration
+5. **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+6. **TypeScript**: TypeScript standards and patterns
 
 ---
 
 ## 📚 AVAILABLE KNOWLEDGE MODULES
 
-{{#each modules}}
-- **{{name}}**: {{description}}
-{{/each}}
+- **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+- **TailwindCSS**: TailwindCSS 4 patterns and best practices
+- **daisyUI**: daisyUI 5 components and theming
+- **Alpine.js**: Alpine.js patterns and CouchCMS integration
+- **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+- **TypeScript**: TypeScript standards and patterns
 
 ## 👥 PROJECT ROLES
 
-{{#each roles}}
-- **{{name}}**: {{description}}
-{{/each}}
 
 ---
 
@@ -152,10 +153,10 @@ Cursor automatically loads these rules based on file type:
 
 | Rule File | Glob Pattern | Purpose |
 |-----------|--------------|---------|
-| `refactor-html.mdc` | `{{paths.snippets}}/**/*.html`, `*.php` | CouchCMS templates, Alpine.js |
-| `refactor-typescript.mdc` | `{{paths.typescript}}/**/*.ts` | TypeScript files |
-| `refactor-css.mdc` | `{{paths.css}}/**/*.css` | CSS/TailwindCSS files |
-| `refactor-forms.mdc` | `{{paths.forms}}/**/*.html` | DataBound Forms |
+| `refactor-html.mdc` | `snippets/**/*.html`, `*.php` | CouchCMS templates, Alpine.js |
+| `refactor-typescript.mdc` | `assets/ts/**/*.ts` | TypeScript files |
+| `refactor-css.mdc` | `assets/css/**/*.css` | CSS/TailwindCSS files |
+| `refactor-forms.mdc` | `snippets/forms/**/*.html` | DataBound Forms |
 | `daisyui.mdc` | Always active | daisyUI 5 components |
 | `design.mdc` | Always active | UI/UX design principles |
 
@@ -163,7 +164,6 @@ Cursor automatically loads these rules based on file type:
 
 ---
 
-{{#if has_cms}}
 ## 🔧 CMS PATTERNS
 
 ### Template Structure
@@ -200,9 +200,7 @@ Cursor automatically loads these rules based on file type:
 - ❌ **NEVER** use `@click` or `:class` Alpine shorthand
 - ✅ Use `x-on:click` and `x-bind:class` full syntax
 
-{{/if}}
 
-{{#if has_frontend}}
 ## 🎨 FRONTEND PATTERNS
 
 ### Theme-Aware Styling
@@ -239,7 +237,6 @@ import { something } from './components'  // Use direct imports
 function process(data: any) { ... }       // Define specific type
 ```
 
-{{/if}}
 
 ---
 
@@ -248,19 +245,15 @@ function process(data: any) { ... }       // Define specific type
 Before generating code, verify:
 
 - [ ] All text is in English
-- [ ] {{standards.indentation}}-space indentation used
+- [ ] 4-space indentation used
 - [ ] Proper naming conventions followed
 - [ ] Pre-flight checks passed (no CRITICAL issues)
-{{#if has_cms}}
 - [ ] No `<cms:` in HTML comments
 - [ ] Self-closing `<cms:else />` tags
 - [ ] Authentication patterns implemented where needed
 - [ ] Full Alpine syntax (`x-on:`, `x-bind:`)
-{{/if}}
-{{#if has_frontend}}
 - [ ] Theme-aware colors (daisyUI semantic colors)
 - [ ] Direct imports (no barrel files)
-{{/if}}
 - [ ] Accessibility requirements met (WCAG 2.1 AA)
 - [ ] DRY principle applied
 - [ ] Error handling implemented
@@ -276,16 +269,12 @@ Before generating code, verify:
 | Language | Non-English code | English only |
 | Security | `innerHTML = userInput` | `textContent` or sanitize |
 | Security | `eval()` usage | Alternative approaches |
-{{#if has_cms}}
 | CouchCMS | `<!-- <cms:show /> -->` | `<!-- [cms:show /] -->` |
 | CouchCMS | `<cms:else></cms:else>` | `<cms:else />` |
 | Alpine | `@click="..."` | `x-on:click="..."` |
-{{/if}}
-{{#if has_frontend}}
 | Styling | `bg-gray-100` | `bg-base-100` |
 | TypeScript | `any` type | Specific type/interface |
 | Imports | `from './components'` | Direct file imports |
-{{/if}}
 
 ---
 
@@ -293,9 +282,12 @@ Before generating code, verify:
 
 Detailed documentation in `/docs/modules/`:
 
-{{#each modules}}
-- {{name}}: `/docs/modules/{{slug}}/`
-{{/each}}
+- CouchCMS Core: `/docs/modules/couchcms-core/`
+- TailwindCSS: `/docs/modules/tailwindcss/`
+- daisyUI: `/docs/modules/daisyui/`
+- Alpine.js: `/docs/modules/alpinejs/`
+- DataBound Forms: `/docs/modules/databound-forms/`
+- TypeScript: `/docs/modules/typescript/`
 
 ---
 
@@ -320,4 +312,4 @@ COMMANDS:        MODES:           MODIFIERS:
 /form <n>
 ```
 
-**This file is auto-generated from `{{config_file_path}}`. All changes should be made there.**
+**This file is auto-generated from `project.md`. All changes should be made there.**

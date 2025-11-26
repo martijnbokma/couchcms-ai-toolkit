@@ -1,0 +1,70 @@
+{
+  "alpinejs": {
+    "type": "interactivity",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Alpine.js reactive components and CouchCMS integration",
+    "promptTriggers": {
+      "keywords": [
+        "alpine",
+        "x-data",
+        "x-bind",
+        "x-on",
+        "x-show",
+        "x-if",
+        "x-for",
+        "x-model",
+        "x-effect",
+        "x-init",
+        "interactive",
+        "reactive",
+        "state",
+        "toggle",
+        "modal",
+        "dropdown"
+      ],
+      "intentPatterns": [
+        "(add|create|make).*?(interactive|dynamic|reactive)",
+        "(toggle|show|hide).*?(element|component|modal)",
+        "(state|data).*?(management|binding)",
+        "(click|hover|focus).*?(event|handler)",
+        "(form|input).*?(validation|binding)",
+        "(fetch|load|ajax).*?(data|content)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "components/**/*.html",
+        "snippets/**/*.html",
+        "snippets/components/**/*.html",
+        "**/*.html"
+      ],
+      "contentPatterns": [
+        "x-data",
+        "x-bind",
+        "x-on",
+        "@click",
+        "@change",
+        "@submit",
+        "x-show",
+        "x-if",
+        "x-for",
+        "x-model",
+        "$store",
+        "Alpine.store"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "x-data=\"[^\"]*<cms:",
+        "severity": "warning",
+        "message": "⚠️ CouchCMS tags inside x-data may cause issues. Consider using x-init for async data."
+      },
+      {
+        "pattern": "@click=\"[^\"]*location",
+        "severity": "info",
+        "message": "ℹ️ Consider using Alpine's $navigate or standard links for navigation."
+      }
+    ]
+  }
+}

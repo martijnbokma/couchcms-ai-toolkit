@@ -1,0 +1,41 @@
+{
+  "$schema": "https://claude.ai/schemas/claude-code-settings.json",
+  "version": "1.0.0",
+  "name": "couchcms-ai-toolkit",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "path": ".claude/hooks/skill-activation.js",
+        "description": "Auto-suggest relevant skills based on prompt"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "path": ".claude/hooks/post-edit-tracker.sh",
+        "description": "Track edited files for build checks"
+      }
+    ],
+    "Stop": [
+      {
+        "path": ".claude/hooks/preflight-check.sh",
+        "description": "Run CouchCMS-specific preflight checks"
+      }
+    ]
+  },
+  "skills": {
+    "autoLoad": [
+      "couchcms-core"
+    ],
+    "suggest": true,
+    "rulesPath": ".claude/skills/skill-rules.json"
+  },
+  "devDocs": {
+    "enabled": true,
+    "directory": "dev/active"
+  },
+  "defaults": {
+    "mode": "standard",
+    "autoApprove": false
+  }
+}

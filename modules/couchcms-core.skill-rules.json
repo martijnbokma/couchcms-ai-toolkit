@@ -1,0 +1,74 @@
+{
+  "couchcms-core": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "CouchCMS template engine patterns and best practices",
+    "promptTriggers": {
+      "keywords": [
+        "couchcms",
+        "couch",
+        "cms:",
+        "template",
+        "snippet",
+        "embed",
+        "editable",
+        "repeatable",
+        "relation",
+        "cloak",
+        "k_page",
+        "k_user",
+        "prettyurl",
+        "route"
+      ],
+      "intentPatterns": [
+        "(create|add|modify|update).*?(template|page|snippet|component)",
+        "(how to|best practice).*?(couchcms|couch|cms)",
+        "(fix|debug|error).*?(cms:|template|couch)",
+        "(list|show|display).*?(pages|content|data)",
+        "(form|input|validation).*?(cms|couch)",
+        "(user|auth|login|register).*?(couch|cms)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "views/**/*.html",
+        "templates/**/*.html",
+        "layouts/**/*.html",
+        "filters/**/*.html",
+        "components/**/*.html"
+      ],
+      "contentPatterns": [
+        "<cms:",
+        "cms:template",
+        "cms:editable",
+        "cms:embed",
+        "cms:show",
+        "cms:pages",
+        "cms:if",
+        "k_page_",
+        "k_user_",
+        "COUCH::invoke"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "<!--.*<cms:",
+        "severity": "critical",
+        "message": "⚠️ CRITICAL: <cms: tags in HTML comments will EXECUTE! Use [cms: for disabled tags."
+      },
+      {
+        "pattern": "<cms:else></cms:else>",
+        "severity": "error",
+        "message": "❌ <cms:else> is self-closing. Use <cms:else /> instead of paired tags."
+      },
+      {
+        "pattern": "<cms:else_if[^/]*></cms:else_if>",
+        "severity": "error",
+        "message": "❌ <cms:else_if> is self-closing. Use <cms:else_if ... /> instead."
+      }
+    ]
+  }
+}

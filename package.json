@@ -24,8 +24,8 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/your-user/couchcms-ai-toolkit.git"
+        "url": "https://github.com/martijnbokma/couchcms-ai-toolkit.git"
     },
-    "author": "",
+    "author": "Martijn Bokma, aashari, and all contributors",
     "license": "MIT"
 }

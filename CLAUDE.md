@@ -1,12 +1,12 @@
-# Claude Coding Instructions - {{project.name}}
+# Claude Coding Instructions - couchcms-ai-toolkit
 
-**Highly Critical: Always refer to `{{config_file_path}}` before generating, editing, or reviewing any code.**
+**Highly Critical: Always refer to `project.md` before generating, editing, or reviewing any code.**
 
 ## Project Overview
 
-- **Name**: {{project.name}}
-- **Type**: {{project.type}}
-- **Description**: {{project.description}}
+- **Name**: couchcms-ai-toolkit
+- **Type**: CouchCMS Web Application
+- **Description**: CouchCMS AI Toolkit - Development and maintenance configuration
 
 ---
 
@@ -73,7 +73,6 @@ Only ask for clarification when:
 Before generating or modifying code, scan for these issues:
 
 ### CRITICAL (Block - Must Fix)
-{{#if has_cms}}
 ```yaml
 # CouchCMS tags in HTML comments are EXECUTED!
 pattern: "<!--[^>]*<cms:[^>]*-->"
@@ -82,7 +81,6 @@ fix: "Replace <cms: with [cms: in comments"
 # <cms:else> must be self-closing
 pattern: "<cms:else\\s*>[^/]"
 fix: "Use <cms:else /> not <cms:else></cms:else>"
-{{/if}}
 
 # Potential XSS vulnerability
 pattern: "innerHTML\\s*=.*user|innerHTML\\s*=.*input"
@@ -129,36 +127,43 @@ Apply auto-fix? [Y/n]
 
 ### Code Quality Standards
 
-- **Indentation**: Use exactly {{standards.indentation}} spaces for all code
+- **Indentation**: Use exactly 4 spaces for all code
 - **Naming Conventions**:
-    - Variables: Follow language-specific conventions from `{{standards.naming}}`
-    - Classes: {{standards.naming.classes}}
-    - Files: {{standards.naming.php_files}} (PHP), {{standards.naming.typescript_files}} (TypeScript)
+    - Variables: Follow language-specific conventions from `[object Object]`
+    - Classes: 
+    - Files: kebab-case (PHP),  (TypeScript)
 
 ### Technology Stack Hierarchy
 
-{{#each tech_hierarchy}}
-{{add @index 1}}. **{{name}}**: {{description}}
-{{/each}}
+1. **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+2. **TailwindCSS**: TailwindCSS 4 patterns and best practices
+3. **daisyUI**: daisyUI 5 components and theming
+4. **Alpine.js**: Alpine.js patterns and CouchCMS integration
+5. **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+6. **TypeScript**: TypeScript standards and patterns
 
 ---
 
 ## 📚 ACTIVE KNOWLEDGE MODULES
 
-{{#each modules}}
-- **{{name}}**: {{description}}
-  - Reference: `/docs/modules/{{slug}}/`
-{{/each}}
+- **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+  - Reference: `/docs/modules/couchcms-core/`
+- **TailwindCSS**: TailwindCSS 4 patterns and best practices
+  - Reference: `/docs/modules/tailwindcss/`
+- **daisyUI**: daisyUI 5 components and theming
+  - Reference: `/docs/modules/daisyui/`
+- **Alpine.js**: Alpine.js patterns and CouchCMS integration
+  - Reference: `/docs/modules/alpinejs/`
+- **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+  - Reference: `/docs/modules/databound-forms/`
+- **TypeScript**: TypeScript standards and patterns
+  - Reference: `/docs/modules/typescript/`
 
 ## 👥 PROJECT ROLES
 
-{{#each roles}}
-- **{{name}}**: {{description}}
-{{/each}}
 
 ---
 
-{{#if has_cms}}
 ## 🔧 CMS DEVELOPMENT PATTERNS
 
 ### Template Structure (Required)
@@ -167,7 +172,7 @@ Apply auto-fix? [Y/n]
 <?php require_once('couch/cms.php'); ?>
 <cms:extends 'layouts/base.html' />
 <cms:block 'templates'>
-    <cms:template title='{{template_name}}' clonable='1' routable='1'>
+    <cms:template title='' clonable='1' routable='1'>
         <cms:editable name='content_owner' label='Content Owner' type='text' />
         <cms:editable name='is_published' label='Status' type='dropdown' values='0=Draft|1=Published' />
     </cms:template>
@@ -201,9 +206,7 @@ Apply auto-fix? [Y/n]
 - ❌ **NEVER** use `<cms:else></cms:else>` (will fail)
 - ✅ Use `<cms:else />` (self-closing)
 
-{{/if}}
 
-{{#if has_frontend}}
 ## 🎨 FRONTEND DEVELOPMENT STANDARDS
 
 ### Styling Approach
@@ -256,7 +259,6 @@ export class UserService {
 function processData(data: any): any { ... }
 ```
 
-{{/if}}
 
 ---
 
@@ -273,17 +275,13 @@ function processData(data: any): any { ... }
 
 - [ ] Run pre-flight checks on generated code
 - [ ] Use English only
-- [ ] Apply {{standards.indentation}}-space indentation
+- [ ] Apply 4-space indentation
 - [ ] Follow naming conventions
 - [ ] Implement proper error handling
-{{#if has_cms}}
 - [ ] No `<cms:` in HTML comments
 - [ ] Self-closing tags for `<cms:else />`, `<cms:else_if />`
-{{/if}}
-{{#if has_frontend}}
 - [ ] Use `x-on:` and `x-bind:` (not `@` or `:`)
 - [ ] Use daisyUI semantic colors (not Tailwind color names)
-{{/if}}
 
 ### After Code Generation
 
@@ -325,7 +323,7 @@ function processData(data: any): any { ... }
 
 ## 🔗 INTEGRATION NOTES
 
-This instruction set is auto-generated from `{{config_file_path}}`. The system ensures:
+This instruction set is auto-generated from `project.md`. The system ensures:
 
 - Consistency across all AI agents
 - Automatic updates when standards change

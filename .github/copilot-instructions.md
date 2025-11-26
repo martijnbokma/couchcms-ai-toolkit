@@ -1,12 +1,12 @@
-# GitHub Copilot Instructions - {{project.name}}
+# GitHub Copilot Instructions - couchcms-ai-toolkit
 
-**Critical: Always validate against `{{config_file_path}}` before suggesting code.**
+**Critical: Always validate against `project.md` before suggesting code.**
 
 ## Project Configuration
 
-- **Project**: {{project.name}} ({{project.type}})
-- **Languages**: {{join languages ", "}}
-- **Frameworks**: {{join frameworks ", "}}
+- **Project**: couchcms-ai-toolkit (CouchCMS Web Application)
+- **Languages**: 
+- **Frameworks**: 
 
 ---
 
@@ -15,7 +15,7 @@
 ### Suggestion Philosophy
 
 You are an intelligent code completion agent optimized for this project. Your suggestions must:
-- **Follow Project Standards** - All code must align with `{{config_file_path}}`
+- **Follow Project Standards** - All code must align with `project.md`
 - **Be Contextually Aware** - Understand the file type and framework being used
 - **Prioritize Safety** - Never suggest patterns that could cause security issues
 - **Maintain Consistency** - Match existing code style and patterns
@@ -35,7 +35,6 @@ You are an intelligent code completion agent optimized for this project. Your su
 Before suggesting code, validate against these patterns:
 
 ### CRITICAL (Never Suggest)
-{{#if has_cms}}
 ```yaml
 # CouchCMS tags in HTML comments - WILL EXECUTE!
 pattern: "<!--[^>]*<cms:[^>]*-->"
@@ -48,7 +47,6 @@ reason: "<cms:else> must be self-closing"
 # Alpine shorthand in CouchCMS - WILL BREAK
 pattern: "@click|:class|:disabled"
 reason: "CouchCMS parser conflicts with @ and : prefixes"
-{{/if}}
 
 # XSS vulnerability
 pattern: "innerHTML\\s*=.*user|innerHTML\\s*=.*input"
@@ -81,23 +79,25 @@ suggestion: "Remove for production or use logger"
 
 ### Formatting Standards
 
-- **Indentation**: {{standards.indentation}} spaces (never tabs)
-- **Line Length**: {{standards.line_length}} characters maximum
+- **Indentation**: 4 spaces (never tabs)
+- **Line Length**: 120 characters maximum
 - **Naming Conventions**:
     - Variables: Follow language-specific conventions
-    - Classes: {{standards.naming.classes}}
-    - Files: {{standards.naming.php_files}} (PHP), {{standards.naming.typescript_files}} (TypeScript)
+    - Classes: 
+    - Files: kebab-case (PHP),  (TypeScript)
 
 ### Technology Hierarchy
 
 When multiple approaches are possible, prefer this order:
-{{#each tech_hierarchy}}
-{{add @index 1}}. **{{name}}**: {{description}}
-{{/each}}
+1. **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+2. **TailwindCSS**: TailwindCSS 4 patterns and best practices
+3. **daisyUI**: daisyUI 5 components and theming
+4. **Alpine.js**: Alpine.js patterns and CouchCMS integration
+5. **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+6. **TypeScript**: TypeScript standards and patterns
 
 ---
 
-{{#if has_cms}}
 ## 🔧 CMS TEMPLATE PATTERNS
 
 ### Template Completion
@@ -138,9 +138,7 @@ Always suggest proper authentication patterns:
 | Alpine events | `@click="..."` | `x-on:click="..."` |
 | Alpine bindings | `:class="..."` | `x-bind:class="..."` |
 
-{{/if}}
 
-{{#if has_frontend}}
 ## 🎨 FRONTEND COMPLETIONS
 
 ### Theme-Aware Classes
@@ -192,7 +190,6 @@ import { UserService, validateEmail } from './index'
 import { something } from './components'
 ```
 
-{{/if}}
 
 ---
 
@@ -202,18 +199,14 @@ import { something } from './components'
 
 - [ ] Language is English
 - [ ] Naming convention matches language
-- [ ] Proper indentation ({{standards.indentation}} spaces)
+- [ ] Proper indentation (4 spaces)
 - [ ] No security vulnerabilities
-{{#if has_cms}}
 - [ ] No `<cms:` in HTML comments
 - [ ] Self-closing `<cms:else />` tags
 - [ ] Full Alpine.js syntax (`x-on:`, `x-bind:`)
-{{/if}}
-{{#if has_frontend}}
 - [ ] Theme-aware colors (not hardcoded)
 - [ ] Direct imports (not barrel)
 - [ ] Proper TypeScript types (not `any`)
-{{/if}}
 
 ### Auto-completion Behavior
 
@@ -228,17 +221,17 @@ import { something } from './components'
 ## 📚 MODULE INTEGRATION
 
 Reference these knowledge modules when suggesting code:
-{{#each modules}}
-- **{{name}}**: {{description}}
-{{/each}}
+- **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+- **TailwindCSS**: TailwindCSS 4 patterns and best practices
+- **daisyUI**: daisyUI 5 components and theming
+- **Alpine.js**: Alpine.js patterns and CouchCMS integration
+- **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+- **TypeScript**: TypeScript standards and patterns
 
 ## 👥 PROJECT ROLES
 
 Consider the appropriate role perspective when suggesting code:
 
-{{#each roles}}
-- **{{name}}**: {{description}}
-{{/each}}
 
 ---
 
@@ -249,16 +242,12 @@ Consider the appropriate role perspective when suggesting code:
 | Category | ❌ Anti-Pattern | Reason |
 |----------|-----------------|--------|
 | Language | Non-English names | Project requires English only |
-{{#if has_cms}}
 | CouchCMS | Comments with `<cms:` | Tags execute in comments |
 | CouchCMS | `<cms:else></cms:else>` | Must be self-closing |
 | Alpine | `@click`, `:class` | Conflicts with CouchCMS parser |
-{{/if}}
-{{#if has_frontend}}
 | Styling | `bg-gray-*`, `text-black` | Use theme-aware colors |
 | TypeScript | `any` type | Define specific types |
 | Imports | Barrel files | Use direct imports |
-{{/if}}
 | Security | `innerHTML = userInput` | XSS vulnerability |
 | Security | `eval()` | Security risk |
 
@@ -266,7 +255,7 @@ Consider the appropriate role perspective when suggesting code:
 
 ## 🔗 INTEGRATION
 
-This configuration is synchronized with `{{config_file_path}}`. Suggestions automatically align with project standards.
+This configuration is synchronized with `project.md`. Suggestions automatically align with project standards.
 
 ### Quality Filters
 

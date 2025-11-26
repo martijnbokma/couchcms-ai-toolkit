@@ -32,6 +32,211 @@ Forms, CRUD operations, validation, and security.
 
 ---
 
+### search
+
+Fulltext search implementation with MySQL relevance ranking.
+
+**Use for:**
+
+- Search form creation
+- Search result display
+- Relevance ranking
+- Search pagination
+- Multi-template search
+- Search term highlighting
+
+---
+
+### pagination
+
+Pagination for pages, search results, and comments.
+
+**Use for:**
+
+- Page navigation
+- Record counting
+- Next/previous links
+- Page number display
+- Pagination variables
+
+---
+
+### relationships
+
+Page relationships between templates.
+
+**Use for:**
+
+- Many-to-many relationships
+- One-to-many relationships
+- One-to-one relationships
+- Related content display
+- Bidirectional relationships
+
+---
+
+### views
+
+Template views - List, Page, Folder, and Archive views.
+
+**Use for:**
+
+- View detection
+- Page view implementation
+- List view implementation
+- Folder view implementation
+- Archive view implementation
+- URL pattern handling
+
+---
+
+### comments
+
+Comment system with moderation and spam prevention.
+
+**Use for:**
+
+- Comment forms
+- Comment display
+- Comment moderation
+- CAPTCHA integration
+- Comment pagination
+- Spam prevention
+
+---
+
+### users
+
+User management and access control.
+
+**Use for:**
+
+- User authentication
+- Access level management
+- Permission checks
+- User groups
+- Protected content
+- Login/logout handling
+
+---
+
+### folders
+
+Virtual folders for content organization.
+
+**Use for:**
+
+- Folder creation
+- Hierarchical organization
+- Folder navigation
+- Breadcrumbs
+- SEO-friendly URLs
+- Folder-based filtering
+
+---
+
+### repeatable-regions
+
+Dynamic repeatable content blocks.
+
+**Use for:**
+
+- Portfolio galleries
+- Image galleries
+- Dynamic content arrays
+- Sortable content
+- Multiple field groups
+- Tabular data input
+
+---
+
+### photo-gallery
+
+Photo gallery with batch upload and EXIF data.
+
+**Use for:**
+
+- Batch image upload
+- Gallery management
+- EXIF data extraction
+- Automatic thumbnails
+- Album organization
+- Image metadata
+
+---
+
+### rss-feeds
+
+RSS feed generation for content syndication.
+
+**Use for:**
+
+- RSS feed creation
+- XML feed generation
+- Content syndication
+- News distribution
+- Feed validation
+
+---
+
+### archives
+
+Archive views by time periods.
+
+**Use for:**
+
+- Yearly archives
+- Monthly archives
+- Daily archives
+- Archive navigation
+- Date-based organization
+
+---
+
+### nested-pages
+
+Hierarchical page structures and menus.
+
+**Use for:**
+
+- Site navigation
+- Dynamic menus
+- Breadcrumbs
+- Hierarchical organization
+- Pointer pages
+- Menu management
+
+---
+
+### on-page-editing
+
+Frontend inline and popup editing.
+
+**Use for:**
+
+- Inline text editing
+- Popup editing for images
+- Visual content management
+- Frontend editing interface
+- Edit toggle functionality
+
+---
+
+### admin-panel-theming
+
+Admin panel customization and theming.
+
+**Use for:**
+
+- Custom admin interface
+- Custom list screens
+- Custom form screens
+- Sidebar customization
+- Admin branding
+- Theme development
+
+---
+
 ### alpinejs
 
 Alpine.js development with CouchCMS integration.
@@ -136,6 +341,20 @@ Version control and collaboration workflows.
 agents:
     - couchcms
     - databound-forms
+    - search
+    - pagination
+    - relationships
+    - views
+    - comments
+    - users
+    - folders
+    - repeatable-regions
+    - photo-gallery
+    - rss-feeds
+    - archives
+    - nested-pages
+    - on-page-editing
+    - admin-panel-theming
 ```
 
 ### For Frontend-Heavy Project
@@ -154,9 +373,61 @@ agents:
 agents:
     - couchcms
     - databound-forms
+    - search
+    - pagination
     - tailwindcss
     - alpinejs
     - typescript
+    - git
+```
+
+### For Content-Heavy Sites
+
+```yaml
+agents:
+    - couchcms
+    - search
+    - pagination
+    - relationships
+    - views
+    - comments
+    - users
+    - folders
+    - repeatable-regions
+    - photo-gallery
+    - rss-feeds
+    - archives
+    - nested-pages
+    - databound-forms
+    - tailwindcss
+```
+
+### For Complete CouchCMS Toolkit
+
+```yaml
+agents:
+    - couchcms
+    - databound-forms
+    - search
+    - pagination
+    - relationships
+    - views
+    - comments
+    - users
+    - folders
+    - repeatable-regions
+    - photo-gallery
+    - rss-feeds
+    - archives
+    - nested-pages
+    - on-page-editing
+    - admin-panel-theming
+    - tailwindcss
+    - alpinejs
+    - typescript
+    - custom-routes
+    - mysql
+    - bun
     - git
 ```
 

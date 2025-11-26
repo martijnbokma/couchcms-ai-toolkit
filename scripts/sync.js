@@ -19,9 +19,10 @@
 import matter from 'gray-matter'
 import { parse as parseYaml } from 'yaml'
 import Handlebars from 'handlebars'
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, copyFileSync } from 'fs'
 import { join, dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
+import { getConfigFileName } from './utils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -341,7 +342,7 @@ ${generatePathsSection(paths)}
 /**
  * Prepare template data for rendering
  */
-function prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath) {
+function prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath, projectDir) {
     const { paths, standards, naming } = mergedConfig
 
     // Extract languages and frameworks from modules
@@ -384,6 +385,9 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
     // Prepare roles data (if available in config)
     const roles = config.roles || []
 
+    // Get config file path (standards.md or project.md)
+    const configFilePath = getConfigFileName(projectDir) || 'project.md'
+
     return {
         project: {
             name: config.name || 'Unnamed Project',
@@ -412,6 +416,7 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
         project_context: projectContext?.content || '',
         toolkit_path: toolkitPath,
         context_path: config.context || null,
+        config_file_path: configFilePath,
     }
 }
 
@@ -474,6 +479,134 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData) {
     }
 
     return generatedCount
+}
+
+/**
+ * Load skill rules from a module
+ */
+function loadModuleSkillRules(moduleName, toolkitPath) {
+    const skillRulesPath = join(toolkitPath, 'modules', `${moduleName}.skill-rules.json`)
+
+    if (!existsSync(skillRulesPath)) {
+        return null
+    }
+
+    try {
+        const content = readFileSync(skillRulesPath, 'utf8')
+        return JSON.parse(content)
+    } catch (error) {
+        console.warn(`⚠️  Failed to parse skill rules for ${moduleName}: ${error.message}`)
+        return null
+    }
+}
+
+/**
+ * Generate Claude Code configuration (.claude/ directory)
+ */
+function generateClaudeCodeConfig(toolkitPath, projectDir, moduleNames, mergedConfig) {
+    const claudeDir = join(projectDir, '.claude')
+    const skillsDir = join(claudeDir, 'skills')
+    const hooksDir = join(claudeDir, 'hooks')
+
+    // Create directories
+    if (!existsSync(claudeDir)) {
+        mkdirSync(claudeDir, { recursive: true })
+    }
+    if (!existsSync(skillsDir)) {
+        mkdirSync(skillsDir, { recursive: true })
+    }
+    if (!existsSync(hooksDir)) {
+        mkdirSync(hooksDir, { recursive: true })
+    }
+
+    // Combine skill rules from all modules
+    const combinedSkillRules = {}
+    let loadedCount = 0
+
+    for (const moduleName of moduleNames) {
+        const skillRules = loadModuleSkillRules(moduleName, toolkitPath)
+        if (skillRules) {
+            Object.assign(combinedSkillRules, skillRules)
+            loadedCount++
+        }
+    }
+
+    // Write combined skill-rules.json
+    if (Object.keys(combinedSkillRules).length > 0) {
+        const skillRulesPath = join(skillsDir, 'skill-rules.json')
+        writeFileSync(skillRulesPath, JSON.stringify(combinedSkillRules, null, 2))
+        console.log(`✅ Generated: .claude/skills/skill-rules.json (${loadedCount} modules)`)
+    }
+
+    // Copy hooks from toolkit
+    const toolkitHooksDir = join(toolkitPath, '.claude', 'hooks')
+    if (existsSync(toolkitHooksDir)) {
+        const hookFiles = readdirSync(toolkitHooksDir)
+        let copiedHooks = 0
+
+        for (const hookFile of hookFiles) {
+            const sourcePath = join(toolkitHooksDir, hookFile)
+            const targetPath = join(hooksDir, hookFile)
+
+            try {
+                copyFileSync(sourcePath, targetPath)
+                copiedHooks++
+            } catch (error) {
+                console.warn(`⚠️  Failed to copy hook ${hookFile}: ${error.message}`)
+            }
+        }
+
+        if (copiedHooks > 0) {
+            console.log(`✅ Synced: ${copiedHooks} hooks to .claude/hooks/`)
+        }
+    }
+
+    // Generate settings.json
+    const settings = {
+        $schema: 'https://claude.ai/schemas/claude-code-settings.json',
+        version: '1.0.0',
+        name: mergedConfig.name || 'CouchCMS Project',
+        hooks: {
+            UserPromptSubmit: [
+                {
+                    path: '.claude/hooks/skill-activation.js',
+                    description: 'Auto-suggest relevant skills based on prompt',
+                },
+            ],
+            PostToolUse: [
+                {
+                    matcher: 'Edit|Write|MultiEdit',
+                    path: '.claude/hooks/post-edit-tracker.sh',
+                    description: 'Track edited files for build checks',
+                },
+            ],
+            Stop: [
+                {
+                    path: '.claude/hooks/preflight-check.sh',
+                    description: 'Run CouchCMS-specific preflight checks',
+                },
+            ],
+        },
+        skills: {
+            autoLoad: ['couchcms-core'],
+            suggest: true,
+            rulesPath: '.claude/skills/skill-rules.json',
+        },
+        devDocs: {
+            enabled: true,
+            directory: 'dev/active',
+        },
+        defaults: {
+            mode: 'standard',
+            autoApprove: false,
+        },
+    }
+
+    const settingsPath = join(claudeDir, 'settings.json')
+    writeFileSync(settingsPath, JSON.stringify(settings, null, 2))
+    console.log(`✅ Generated: .claude/settings.json`)
+
+    return loadedCount
 }
 
 /**
@@ -629,7 +762,7 @@ Add your project-specific instructions here...
         }
 
         // Prepare template data
-        const templateData = prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath)
+        const templateData = prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath, projectDir)
 
         // Add project rules to template data
         if (projectRules && projectRules.trim()) {
@@ -656,6 +789,19 @@ Add your project-specific instructions here...
             syncCursorRules(toolkitPath, projectDir, mergedConfig)
         } catch (error) {
             console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
+        }
+
+        // Generate Claude Code configuration
+        try {
+            const skillRulesCount = generateClaudeCodeConfig(toolkitPath, projectDir, moduleList, {
+                ...mergedConfig,
+                name: config.name,
+            })
+            if (skillRulesCount > 0) {
+                console.log(`🤖 Claude Code: ${skillRulesCount} skill-rules configured`)
+            }
+        } catch (error) {
+            console.warn(`⚠️  Failed to generate Claude Code config: ${error.message}`)
         }
 
         console.log(`\n✨ Sync complete! ${modules.length} modules, ${agents.length} agents loaded.\n`)

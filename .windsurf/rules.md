@@ -1,13 +1,13 @@
-# Windsurf AI Rules - {{project.name}}
+# Windsurf AI Rules - couchcms-ai-toolkit
 
-**Critical: Always follow `{{config_file_path}}` before generating any code.**
+**Critical: Always follow `project.md` before generating any code.**
 
 ## Project Context
 
-- **Type**: {{project.type}}
-- **Description**: {{project.description}}
-- **Languages**: {{join languages ", "}}
-- **Frameworks**: {{join frameworks ", "}}
+- **Type**: CouchCMS Web Application
+- **Description**: CouchCMS AI Toolkit - Development and maintenance configuration
+- **Languages**: 
+- **Frameworks**: 
 
 ---
 
@@ -16,7 +16,7 @@
 ### Cascade Philosophy
 
 You are an intelligent AI coding agent with Cascade capabilities. Your actions must:
-- **Follow Project Standards** - All code aligns with `{{config_file_path}}`
+- **Follow Project Standards** - All code aligns with `project.md`
 - **Be Contextually Aware** - Understand file type and project structure
 - **Prioritize Safety** - Never generate code with security vulnerabilities
 - **Match Existing Patterns** - Follow established code conventions
@@ -68,7 +68,6 @@ You are an intelligent AI coding agent with Cascade capabilities. Your actions m
 Before generating or modifying code, scan for these issues:
 
 ### CRITICAL (Block - Must Fix)
-{{#if has_cms}}
 ```yaml
 # CouchCMS tags in HTML comments are EXECUTED!
 pattern: "<!--[^>]*<cms:[^>]*-->"
@@ -81,7 +80,6 @@ fix: "Use <cms:else /> instead"
 # Alpine shorthand breaks CouchCMS
 pattern: "@click|:class|:disabled"
 fix: "Use x-on:click and x-bind:class"
-{{/if}}
 
 # XSS vulnerability
 pattern: "innerHTML\\s*=.*user|innerHTML\\s*=.*input"
@@ -114,35 +112,37 @@ fix: "Remove for production or use logger"
 
 ### Formatting Standards
 
-- **Indentation**: {{standards.indentation}} spaces
+- **Indentation**: 4 spaces
 - **Naming Conventions**:
     - Variables: Follow language-specific conventions
-    - Classes: {{standards.naming.classes}}
-    - Files: {{standards.naming.php_files}} (PHP), {{standards.naming.typescript_files}} (TypeScript)
+    - Classes: 
+    - Files: kebab-case (PHP),  (TypeScript)
 
 ### Technology Hierarchy
 
-{{#each tech_hierarchy}}
-{{add @index 1}}. **{{name}}**: {{description}}
-{{/each}}
+1. **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+2. **TailwindCSS**: TailwindCSS 4 patterns and best practices
+3. **daisyUI**: daisyUI 5 components and theming
+4. **Alpine.js**: Alpine.js patterns and CouchCMS integration
+5. **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+6. **TypeScript**: TypeScript standards and patterns
 
 ---
 
 ## 📚 KNOWLEDGE MODULES
 
-{{#each modules}}
-- **{{name}}**: {{description}}
-{{/each}}
+- **CouchCMS Core**: Core CouchCMS patterns, templates, and security standards
+- **TailwindCSS**: TailwindCSS 4 patterns and best practices
+- **daisyUI**: daisyUI 5 components and theming
+- **Alpine.js**: Alpine.js patterns and CouchCMS integration
+- **DataBound Forms**: CouchCMS DataBound Forms implementation patterns
+- **TypeScript**: TypeScript standards and patterns
 
 ## 👥 PROJECT ROLES
 
-{{#each roles}}
-- **{{name}}**: {{description}}
-{{/each}}
 
 ---
 
-{{#if has_cms}}
 ## 🔧 CMS PATTERNS
 
 ### Template Structure
@@ -179,9 +179,7 @@ fix: "Remove for production or use logger"
 | Alpine events | `@click="..."` | `x-on:click="..."` |
 | Alpine bindings | `:class="..."` | `x-bind:class="..."` |
 
-{{/if}}
 
-{{#if has_frontend}}
 ## 🎨 FRONTEND PATTERNS
 
 ### Theme-Aware Styling
@@ -217,7 +215,6 @@ export function validateUser(user: UserProfile): boolean {
 function process(data: any): any { ... }
 ```
 
-{{/if}}
 
 ---
 
@@ -226,19 +223,15 @@ function process(data: any): any { ... }
 Before generating code:
 
 - [ ] All text is in English
-- [ ] {{standards.indentation}}-space indentation
+- [ ] 4-space indentation
 - [ ] Proper naming conventions
 - [ ] Pre-flight checks passed (no CRITICAL issues)
-{{#if has_cms}}
 - [ ] No `<cms:` in HTML comments
 - [ ] Self-closing `<cms:else />` tags
 - [ ] Full Alpine syntax (`x-on:`, `x-bind:`)
-{{/if}}
-{{#if has_frontend}}
 - [ ] Theme-aware colors (daisyUI semantic)
 - [ ] Direct imports (no barrel files)
 - [ ] Proper TypeScript types (not `any`)
-{{/if}}
 - [ ] Accessibility (WCAG 2.1 AA)
 - [ ] Error handling implemented
 
@@ -251,22 +244,18 @@ Before generating code:
 | Language | Non-English code | English only |
 | Security | `innerHTML = userInput` | `textContent` or sanitize |
 | Security | `eval()` usage | Alternative approaches |
-{{#if has_cms}}
 | CouchCMS | `<!-- <cms: -->` | `<!-- [cms: /] -->` |
 | CouchCMS | `<cms:else></cms:else>` | `<cms:else />` |
 | Alpine | `@click` shorthand | `x-on:click` |
-{{/if}}
-{{#if has_frontend}}
 | Styling | `bg-gray-100` | `bg-base-100` |
 | TypeScript | `any` type | Specific interface |
 | Imports | `from './components'` | Direct file imports |
-{{/if}}
 
 ---
 
 ## 🔗 INTEGRATION
 
-This file is auto-generated from `{{config_file_path}}`.
+This file is auto-generated from `project.md`.
 
 ### Communication Legend
 

@@ -1,0 +1,73 @@
+{
+  "daisyui": {
+    "type": "styling",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "daisyUI 5 component library for TailwindCSS",
+    "promptTriggers": {
+      "keywords": [
+        "daisyui",
+        "daisy",
+        "component",
+        "btn",
+        "card",
+        "modal",
+        "drawer",
+        "navbar",
+        "hero",
+        "alert",
+        "badge",
+        "tab",
+        "dropdown",
+        "toast"
+      ],
+      "intentPatterns": [
+        "(add|create|use).*?(button|card|modal|drawer|navbar)",
+        "(style|design).*?(component|ui)",
+        "(alert|notification|toast).*?(message|feedback)",
+        "(table|list|grid).*?(data|items)",
+        "(form|input).*?(styling|component)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/*.html",
+        "**/*.php",
+        "components/**/*",
+        "snippets/components/**/*"
+      ],
+      "contentPatterns": [
+        "class=\".*btn",
+        "class=\".*card",
+        "class=\".*modal",
+        "class=\".*drawer",
+        "class=\".*navbar",
+        "class=\".*alert",
+        "class=\".*badge",
+        "class=\".*tab",
+        "data-theme",
+        "base-100",
+        "base-content",
+        "primary",
+        "secondary"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "bg-(white|black|gray)",
+        "severity": "warning",
+        "message": "⚠️ Hardcoded colors detected. Use theme-aware colors (base-100, base-content, primary) for dark mode support."
+      },
+      {
+        "pattern": "text-(white|black|gray-[0-9]+)",
+        "severity": "warning",
+        "message": "⚠️ Hardcoded text colors. Use base-content or primary-content for theme compatibility."
+      },
+      {
+        "pattern": "border-(white|black|gray)",
+        "severity": "info",
+        "message": "ℹ️ Consider using base-300 or neutral for theme-aware borders."
+      }
+    ]
+  }
+}

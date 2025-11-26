@@ -1,0 +1,62 @@
+{
+  "tailwindcss": {
+    "type": "styling",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "TailwindCSS 4 utility-first CSS patterns",
+    "promptTriggers": {
+      "keywords": [
+        "tailwind",
+        "css",
+        "style",
+        "class",
+        "styling",
+        "responsive",
+        "dark mode",
+        "theme",
+        "color",
+        "layout",
+        "flex",
+        "grid",
+        "spacing"
+      ],
+      "intentPatterns": [
+        "(style|design|layout).*?(component|element|page)",
+        "(add|change|modify).*?(class|styling|color)",
+        "(responsive|mobile|tablet|desktop).*?(design|layout)",
+        "(dark|light).*?(mode|theme)",
+        "(flex|grid).*?(layout|container)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.css",
+        "tailwind.config.*",
+        "postcss.config.*",
+        "**/*.html",
+        "**/*.php"
+      ],
+      "contentPatterns": [
+        "@tailwind",
+        "@apply",
+        "@layer",
+        "theme(",
+        "class=\"",
+        "className=\"",
+        "bg-",
+        "text-",
+        "flex",
+        "grid",
+        "p-",
+        "m-"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "style=\"[^\"]*\"",
+        "severity": "warning",
+        "message": "⚠️ Inline styles detected. Consider using Tailwind utility classes instead."
+      }
+    ]
+  }
+}

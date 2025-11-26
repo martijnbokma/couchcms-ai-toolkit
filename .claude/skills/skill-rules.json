@@ -1,0 +1,420 @@
+{
+  "couchcms-core": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "CouchCMS template engine patterns and best practices",
+    "promptTriggers": {
+      "keywords": [
+        "couchcms",
+        "couch",
+        "cms:",
+        "template",
+        "snippet",
+        "embed",
+        "editable",
+        "repeatable",
+        "relation",
+        "cloak",
+        "k_page",
+        "k_user",
+        "prettyurl",
+        "route"
+      ],
+      "intentPatterns": [
+        "(create|add|modify|update).*?(template|page|snippet|component)",
+        "(how to|best practice).*?(couchcms|couch|cms)",
+        "(fix|debug|error).*?(cms:|template|couch)",
+        "(list|show|display).*?(pages|content|data)",
+        "(form|input|validation).*?(cms|couch)",
+        "(user|auth|login|register).*?(couch|cms)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.php",
+        "snippets/**/*.html",
+        "views/**/*.html",
+        "templates/**/*.html",
+        "layouts/**/*.html",
+        "filters/**/*.html",
+        "components/**/*.html"
+      ],
+      "contentPatterns": [
+        "<cms:",
+        "cms:template",
+        "cms:editable",
+        "cms:embed",
+        "cms:show",
+        "cms:pages",
+        "cms:if",
+        "k_page_",
+        "k_user_",
+        "COUCH::invoke"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "<!--.*<cms:",
+        "severity": "critical",
+        "message": "⚠️ CRITICAL: <cms: tags in HTML comments will EXECUTE! Use [cms: for disabled tags."
+      },
+      {
+        "pattern": "<cms:else></cms:else>",
+        "severity": "error",
+        "message": "❌ <cms:else> is self-closing. Use <cms:else /> instead of paired tags."
+      },
+      {
+        "pattern": "<cms:else_if[^/]*></cms:else_if>",
+        "severity": "error",
+        "message": "❌ <cms:else_if> is self-closing. Use <cms:else_if ... /> instead."
+      }
+    ]
+  },
+  "tailwindcss": {
+    "type": "styling",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "TailwindCSS 4 utility-first CSS patterns",
+    "promptTriggers": {
+      "keywords": [
+        "tailwind",
+        "css",
+        "style",
+        "class",
+        "styling",
+        "responsive",
+        "dark mode",
+        "theme",
+        "color",
+        "layout",
+        "flex",
+        "grid",
+        "spacing"
+      ],
+      "intentPatterns": [
+        "(style|design|layout).*?(component|element|page)",
+        "(add|change|modify).*?(class|styling|color)",
+        "(responsive|mobile|tablet|desktop).*?(design|layout)",
+        "(dark|light).*?(mode|theme)",
+        "(flex|grid).*?(layout|container)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.css",
+        "tailwind.config.*",
+        "postcss.config.*",
+        "**/*.html",
+        "**/*.php"
+      ],
+      "contentPatterns": [
+        "@tailwind",
+        "@apply",
+        "@layer",
+        "theme(",
+        "class=\"",
+        "className=\"",
+        "bg-",
+        "text-",
+        "flex",
+        "grid",
+        "p-",
+        "m-"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "style=\"[^\"]*\"",
+        "severity": "warning",
+        "message": "⚠️ Inline styles detected. Consider using Tailwind utility classes instead."
+      }
+    ]
+  },
+  "daisyui": {
+    "type": "styling",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "daisyUI 5 component library for TailwindCSS",
+    "promptTriggers": {
+      "keywords": [
+        "daisyui",
+        "daisy",
+        "component",
+        "btn",
+        "card",
+        "modal",
+        "drawer",
+        "navbar",
+        "hero",
+        "alert",
+        "badge",
+        "tab",
+        "dropdown",
+        "toast"
+      ],
+      "intentPatterns": [
+        "(add|create|use).*?(button|card|modal|drawer|navbar)",
+        "(style|design).*?(component|ui)",
+        "(alert|notification|toast).*?(message|feedback)",
+        "(table|list|grid).*?(data|items)",
+        "(form|input).*?(styling|component)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/*.html",
+        "**/*.php",
+        "components/**/*",
+        "snippets/components/**/*"
+      ],
+      "contentPatterns": [
+        "class=\".*btn",
+        "class=\".*card",
+        "class=\".*modal",
+        "class=\".*drawer",
+        "class=\".*navbar",
+        "class=\".*alert",
+        "class=\".*badge",
+        "class=\".*tab",
+        "data-theme",
+        "base-100",
+        "base-content",
+        "primary",
+        "secondary"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "bg-(white|black|gray)",
+        "severity": "warning",
+        "message": "⚠️ Hardcoded colors detected. Use theme-aware colors (base-100, base-content, primary) for dark mode support."
+      },
+      {
+        "pattern": "text-(white|black|gray-[0-9]+)",
+        "severity": "warning",
+        "message": "⚠️ Hardcoded text colors. Use base-content or primary-content for theme compatibility."
+      },
+      {
+        "pattern": "border-(white|black|gray)",
+        "severity": "info",
+        "message": "ℹ️ Consider using base-300 or neutral for theme-aware borders."
+      }
+    ]
+  },
+  "alpinejs": {
+    "type": "interactivity",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Alpine.js reactive components and CouchCMS integration",
+    "promptTriggers": {
+      "keywords": [
+        "alpine",
+        "x-data",
+        "x-bind",
+        "x-on",
+        "x-show",
+        "x-if",
+        "x-for",
+        "x-model",
+        "x-effect",
+        "x-init",
+        "interactive",
+        "reactive",
+        "state",
+        "toggle",
+        "modal",
+        "dropdown"
+      ],
+      "intentPatterns": [
+        "(add|create|make).*?(interactive|dynamic|reactive)",
+        "(toggle|show|hide).*?(element|component|modal)",
+        "(state|data).*?(management|binding)",
+        "(click|hover|focus).*?(event|handler)",
+        "(form|input).*?(validation|binding)",
+        "(fetch|load|ajax).*?(data|content)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "components/**/*.html",
+        "snippets/**/*.html",
+        "snippets/components/**/*.html",
+        "**/*.html"
+      ],
+      "contentPatterns": [
+        "x-data",
+        "x-bind",
+        "x-on",
+        "@click",
+        "@change",
+        "@submit",
+        "x-show",
+        "x-if",
+        "x-for",
+        "x-model",
+        "$store",
+        "Alpine.store"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "x-data=\"[^\"]*<cms:",
+        "severity": "warning",
+        "message": "⚠️ CouchCMS tags inside x-data may cause issues. Consider using x-init for async data."
+      },
+      {
+        "pattern": "@click=\"[^\"]*location",
+        "severity": "info",
+        "message": "ℹ️ Consider using Alpine's $navigate or standard links for navigation."
+      }
+    ]
+  },
+  "databound-forms": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "CouchCMS DataBound Forms for CRUD operations",
+    "promptTriggers": {
+      "keywords": [
+        "form",
+        "databound",
+        "db_persist",
+        "validation",
+        "crud",
+        "create",
+        "update",
+        "delete",
+        "bound_",
+        "input",
+        "submit",
+        "k_success",
+        "k_error"
+      ],
+      "intentPatterns": [
+        "(create|add|build).*?(form|input|crud)",
+        "(edit|update|modify).*?(record|data|entry)",
+        "(delete|remove).*?(record|data|entry)",
+        "(validate|check).*?(input|form|data)",
+        "(save|persist|store).*?(data|form)",
+        "(list|display|show).*?(records|entries)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "snippets/forms/**/*.html",
+        "snippets/crud/**/*.html",
+        "forms/**/*.html",
+        "**/*form*.html",
+        "**/*edit*.html",
+        "**/*create*.html"
+      ],
+      "contentPatterns": [
+        "<cms:db_persist",
+        "<cms:db_persist_form",
+        "<cms:db_delete",
+        "<cms:input",
+        "bound_",
+        "k_success",
+        "k_error",
+        "k_bound_",
+        "cms:form",
+        "cms:if k_success"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "<cms:db_persist[^>]*>(?!.*k_success)",
+        "severity": "warning",
+        "message": "⚠️ db_persist without k_success check. Always handle success/error states."
+      },
+      {
+        "pattern": "<cms:input[^>]*type=['\"]text['\"][^>]*>(?!.*required)",
+        "severity": "info",
+        "message": "ℹ️ Text input without 'required'. Consider if validation is needed."
+      },
+      {
+        "pattern": "<cms:form[^>]*>(?!.*<cms:if k_error)",
+        "severity": "warning",
+        "message": "⚠️ Form without error handling. Add <cms:if k_error> for user feedback."
+      },
+      {
+        "pattern": "<cms:db_delete[^>]*>(?!.*masterpage)",
+        "severity": "error",
+        "message": "❌ db_delete requires masterpage parameter. Specify the template."
+      }
+    ]
+  },
+  "typescript": {
+    "type": "language",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "TypeScript development patterns and type safety",
+    "promptTriggers": {
+      "keywords": [
+        "typescript",
+        "ts",
+        "type",
+        "interface",
+        "enum",
+        "generic",
+        "async",
+        "await",
+        "promise",
+        "import",
+        "export",
+        "module"
+      ],
+      "intentPatterns": [
+        "(create|add|define).*?(type|interface|function|class)",
+        "(fix|resolve).*?(type|typescript).*?(error|issue)",
+        "(convert|migrate).*?(javascript|js).*?(typescript|ts)",
+        "(async|await).*?(function|handler)",
+        "(import|export).*?(module|component)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.ts",
+        "*.tsx",
+        "tsconfig.json",
+        "assets/ts/**/*.ts",
+        "src/**/*.ts"
+      ],
+      "contentPatterns": [
+        "interface ",
+        "type ",
+        ": string",
+        ": number",
+        ": boolean",
+        "export ",
+        "import ",
+        "async ",
+        "await ",
+        "Promise<"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": ": any",
+        "severity": "warning",
+        "message": "⚠️ 'any' type detected. Consider using a specific type or interface."
+      },
+      {
+        "pattern": "// @ts-ignore",
+        "severity": "warning",
+        "message": "⚠️ @ts-ignore suppresses type errors. Fix the underlying type issue if possible."
+      },
+      {
+        "pattern": "as any",
+        "severity": "warning",
+        "message": "⚠️ Type assertion to 'any' bypasses type checking. Use specific types."
+      },
+      {
+        "pattern": "console\\.log",
+        "severity": "info",
+        "message": "ℹ️ console.log found. Remove for production or use proper logging."
+      }
+    ]
+  }
+}

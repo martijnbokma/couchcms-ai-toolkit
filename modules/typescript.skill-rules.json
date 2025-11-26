@@ -1,0 +1,74 @@
+{
+  "typescript": {
+    "type": "language",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "TypeScript development patterns and type safety",
+    "promptTriggers": {
+      "keywords": [
+        "typescript",
+        "ts",
+        "type",
+        "interface",
+        "enum",
+        "generic",
+        "async",
+        "await",
+        "promise",
+        "import",
+        "export",
+        "module"
+      ],
+      "intentPatterns": [
+        "(create|add|define).*?(type|interface|function|class)",
+        "(fix|resolve).*?(type|typescript).*?(error|issue)",
+        "(convert|migrate).*?(javascript|js).*?(typescript|ts)",
+        "(async|await).*?(function|handler)",
+        "(import|export).*?(module|component)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "*.ts",
+        "*.tsx",
+        "tsconfig.json",
+        "assets/ts/**/*.ts",
+        "src/**/*.ts"
+      ],
+      "contentPatterns": [
+        "interface ",
+        "type ",
+        ": string",
+        ": number",
+        ": boolean",
+        "export ",
+        "import ",
+        "async ",
+        "await ",
+        "Promise<"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": ": any",
+        "severity": "warning",
+        "message": "⚠️ 'any' type detected. Consider using a specific type or interface."
+      },
+      {
+        "pattern": "// @ts-ignore",
+        "severity": "warning",
+        "message": "⚠️ @ts-ignore suppresses type errors. Fix the underlying type issue if possible."
+      },
+      {
+        "pattern": "as any",
+        "severity": "warning",
+        "message": "⚠️ Type assertion to 'any' bypasses type checking. Use specific types."
+      },
+      {
+        "pattern": "console\\.log",
+        "severity": "info",
+        "message": "ℹ️ console.log found. Remove for production or use proper logging."
+      }
+    ]
+  }
+}

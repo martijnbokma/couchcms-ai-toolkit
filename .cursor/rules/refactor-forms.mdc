@@ -1,0 +1,66 @@
+---
+description: Auto-load refactoring rules for DataBound Forms
+globs: ['snippets/forms/**/*.html', 'snippets/views/**/create*.html', 'snippets/views/**/edit*.html']
+alwaysApply: false
+---
+
+# Refactoring Rules for DataBound Forms
+
+## 🚨 CRITICAL: Refactoring Workflow
+
+**When a refactoring request is made (e.g., "refactor @file.html" for forms), you MUST:**
+
+1. **First**: Load and follow `@ai-toolkit-shared/prompts/refactoring/router.md`
+2. **Router will**: Analyze the file, select appropriate specialist(s), request confirmation
+3. **Then**: Apply the rules below as part of the selected specialist workflow
+
+**Never skip the router analysis step - it ensures the correct specialist is selected.**
+
+---
+
+When refactoring this file, apply these rules:
+
+## Form Structure
+
+- ✅ Use `enctype='multipart/form-data'` for file uploads
+- ✅ Set `masterpage` and `mode` attributes
+- ✅ Handle `k_success` and `k_error` properly
+
+## Validation Placement
+
+- ❌ Never validate on bound inputs
+- ✅ Define validation on editable regions in template
+- ✅ Bound inputs just bind, validation is inherited
+
+## Security
+
+- ✅ Use `<cms:embed 'snippets/filters/authenticated.html' />`
+- ✅ Use ownership filters for edit/delete
+- ✅ Set `content_owner=k_user_name` on create
+- ✅ Add anti-spam for public forms
+
+## Error Handling
+
+- ✅ Display `k_error` with proper styling
+- ✅ Show field-specific errors: `k_error_fieldname`
+- ✅ Use flash messages for success feedback
+- ✅ Add loading states during submission
+
+## DRY Principle
+
+- ✅ Extract form fields into reusable snippets
+- ✅ Share between create and edit views
+- ✅ Use `<cms:embed>` for form partials
+
+## Checklist
+
+- [ ] `enctype` for file uploads
+- [ ] Validation on editable regions (not inputs)
+- [ ] Authentication filter present
+- [ ] Ownership check on edit/delete
+- [ ] Setting `content_owner` on create
+- [ ] Error display with `k_error`
+- [ ] Success feedback with flash
+- [ ] Reusable form snippets
+
+
