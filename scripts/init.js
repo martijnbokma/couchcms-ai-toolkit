@@ -9,7 +9,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
-import { join, resolve, dirname } from 'path'
+import { join, resolve, dirname, basename } from 'path'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -50,7 +50,22 @@ async function confirm(question, defaultYes = true) {
 async function init() {
     console.log('🚀 CouchCMS AI Toolkit - Interactive Setup\n')
 
-    const projectDir = process.cwd()
+    let projectDir = process.cwd()
+
+    // Detect if running from toolkit directory (ai-toolkit-shared)
+    // If so, use parent directory as project root
+    const currentDirName = basename(projectDir)
+    const hasToolkitStructure = existsSync(join(projectDir, 'modules')) &&
+                                 existsSync(join(projectDir, 'scripts')) &&
+                                 existsSync(join(projectDir, 'templates'))
+
+    if (currentDirName === 'ai-toolkit-shared' || hasToolkitStructure) {
+        const originalDir = projectDir
+        projectDir = dirname(projectDir)
+        console.log(`📁 Detected toolkit directory, using parent as project root`)
+        console.log(`   Toolkit: ${originalDir}`)
+        console.log(`   Project: ${projectDir}\n`)
+    }
 
     // Check for existing config files
     const { findConfigFile, hasStandards, getConfigFileName } = await import('./utils.js')
