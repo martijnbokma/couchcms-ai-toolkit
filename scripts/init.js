@@ -53,12 +53,12 @@ async function init() {
     const projectDir = process.cwd()
 
     // Check for existing config files
-    const { findConfigFile, hasStandards } = await import('./utils.js')
+    const { findConfigFile, hasStandards, getConfigFileName } = await import('./utils.js')
     const existingConfig = findConfigFile(projectDir)
     const hasStandardsFile = hasStandards(projectDir)
 
     if (existingConfig) {
-        const configName = existingConfig.includes('standards.md') ? 'standards.md' : 'project.md'
+        const configName = getConfigFileName(projectDir) || 'standards.md'
         console.log(`⚠️  ${configName} already exists in this directory\n`)
         const overwrite = await confirm(`Overwrite existing ${configName}?`, false)
 
@@ -90,33 +90,21 @@ async function init() {
         console.log('   - Modules: Standard preset (core + tailwindcss + alpinejs)')
         console.log('   - Agents: Standard preset (couchcms + tailwindcss + alpinejs)')
     } else {
-        // Custom mode: ask for configuration file format
-        console.log('\n📋 Configuration file format:')
-        console.log('  1. standards.md (recommended - single source of truth)')
-        console.log('  2. project.md (legacy format)')
-        const configChoice = await prompt('Choice [1-2]', '1')
-        const useStandardsCustom = configChoice === '1'
+        // Custom mode: ask for configuration file location
+        console.log('\n📁 Where should standards.md be created?')
+        console.log('  1. .project/standards.md (recommended - project config directory)')
+        console.log('  2. docs/standards.md (documentation location)')
+        console.log('  3. standards.md (root directory)')
+        const locationChoice = await prompt('Choice [1-3]', '1')
 
-        // Determine config file location
-        if (useStandardsCustom) {
-            console.log('\n📁 Where should standards.md be created?')
-            console.log('  1. .project/standards.md (recommended - project config directory)')
-            console.log('  2. docs/standards.md (documentation location)')
-            console.log('  3. standards.md (root directory)')
-            const locationChoice = await prompt('Choice [1-3]', '1')
-
-            if (locationChoice === '1') {
-                configPath = join(projectDir, '.project', 'standards.md')
-                configDir = join(projectDir, '.project')
-            } else if (locationChoice === '2') {
-                configPath = join(projectDir, 'docs', 'standards.md')
-                configDir = join(projectDir, 'docs')
-            } else {
-                configPath = join(projectDir, 'standards.md')
-                configDir = projectDir
-            }
+        if (locationChoice === '1') {
+            configPath = join(projectDir, '.project', 'standards.md')
+            configDir = join(projectDir, '.project')
+        } else if (locationChoice === '2') {
+            configPath = join(projectDir, 'docs', 'standards.md')
+            configDir = join(projectDir, 'docs')
         } else {
-            configPath = join(projectDir, 'project.md')
+            configPath = join(projectDir, 'standards.md')
             configDir = projectDir
         }
     }
@@ -225,11 +213,15 @@ async function init() {
             }
         }
 
-        // Context directory (only in custom mode)
-        console.log('\n📋 Context directory:')
-        console.log('   Use .project/ai/context.md for detailed project documentation (>200 lines)')
-        console.log('   For simple projects, you can skip this and add rules directly to standards.md')
-        const useContext = await confirm('   Create project context directory?', false)
+        // Context directory (only in custom mode, and only for extensive documentation)
+        console.log('\n📋 Context directory (optional):')
+        console.log('   .project/ai/context.md is ONLY for extensive project documentation (>1000 lines)')
+        console.log('   For most projects, add all rules directly to standards.md body')
+        console.log('   Use context.md only if:')
+        console.log('     - You have >1000 lines of documentation')
+        console.log('     - You want to separate config from extensive docs')
+        console.log('     - You\'re working in a team with extensive shared context')
+        const useContext = await confirm('   Create project context directory? (Usually not needed)', false)
         contextPath = useContext ? '.project/ai' : null
     }
 
@@ -274,42 +266,6 @@ async function init() {
 
         writeFileSync(configPath, standardsMd)
         console.log(`✅ Created: ${configFileName}`)
-    } else {
-        // Generate project.md (legacy)
-        console.log('\n📝 Generating project.md...')
-
-        const projectMd = `---
-name: "${projectName}"
-description: "${projectDescription}"
-toolkit: "${toolkitPath}"
-
-modules:
-${selectedModules.map(m => `  - ${m}`).join('\n')}
-
-${selectedAgents.length > 0 ? `agents:\n${selectedAgents.map(a => `  - ${a}`).join('\n')}\n` : ''}${contextPath ? `context: "${contextPath}"\n` : ''}
----
-
-# ${projectName}
-
-## Project-Specific Rules
-
-Add your project-specific coding rules and guidelines here.
-
-## Technical Decisions
-
-Document key technical decisions:
-
-- Why did we choose certain technologies?
-- What are the trade-offs?
-- What should be avoided?
-
-## Code Examples
-
-Add project-specific code examples that demonstrate your preferred patterns.
-`
-
-        writeFileSync(configPath, projectMd)
-        console.log('✅ Created: project.md')
     }
 
     // Create context directory if requested
@@ -404,11 +360,11 @@ Document common development workflows:
     console.log('\n✨ Setup complete!\n')
     console.log('Next steps:\n')
 
-    const configFileName = useStandards
-        ? configPath.includes('docs/')
-            ? 'docs/standards.md'
-            : 'standards.md'
-        : 'project.md'
+    const configFileName = configPath.includes('.project/')
+        ? '.project/standards.md'
+        : configPath.includes('docs/')
+          ? 'docs/standards.md'
+          : 'standards.md'
 
     console.log(`  1. Review and customize ${configFileName}`)
 
@@ -419,9 +375,7 @@ Document common development workflows:
     console.log('  3. Run "bun run sync" to generate AI configurations')
     console.log('  4. Run "bun run validate" to check setup\n')
 
-    if (useStandards) {
-        console.log('💡 Tip: standards.md is now the single source of truth for all AI agents!\n')
-    }
+    console.log('💡 Tip: standards.md is your single source of truth for all AI agents!\n')
 
     console.log('Happy coding! 🎉\n')
 

@@ -101,7 +101,7 @@ Choose option **2** for full customization. The wizard will guide you through:
 
 After the wizard completes, your project will have:
 
-- ✅ `.project/standards.md` (or `project.md` in legacy mode) - Project configuration
+- ✅ `.project/standards.md` - Project configuration
 - ✅ `.cursorrules` - Cursor AI configuration
 - ✅ `CLAUDE.md` - Claude AI configuration
 - ✅ `AGENT.md` - Universal AI agent documentation
@@ -141,7 +141,7 @@ cd ..
 bun ai-toolkit-shared/scripts/init.js
 ```
 
-**Note**: The wizard will detect if you already have a `project.md` and ask if you want to overwrite it.
+**Note**: The wizard will detect if you already have a `standards.md` and ask if you want to overwrite it.
 
 ## Manual Setup (Advanced Users)
 
@@ -166,9 +166,9 @@ git clone https://github.com/martijnbokma/couchcms-ai-toolkit.git ~/couchcms-ai-
 cd ~/couchcms-ai-toolkit && bun install
 ```
 
-### 2. Create project.md
+### 2. Create standards.md
 
-Create `project.md` in your project root:
+Create `standards.md` in your project root (or `.project/standards.md` for recommended location):
 
 ```markdown
 ---
@@ -191,6 +191,14 @@ agents:
     - tailwindcss # TailwindCSS styling
     - typescript # TypeScript development
 
+# Optional: Enable AAPF framework for disciplined AI agent behavior
+framework: true  # or configure specific categories:
+# framework:
+#   doctrine: true      # Core principles (always active)
+#   directives: true    # Communication guidelines (always active)
+#   playbooks: true     # Workflow templates (optional)
+#   enhancements: true  # Advanced features (optional)
+
 context: '.project/ai' # Optional: separate context file
 ---
 
@@ -199,79 +207,73 @@ context: '.project/ai' # Optional: separate context file
 Add your project-specific coding standards here...
 ```
 
-### 3. Add Project Context (Optional)
+### 3. Understanding Configuration Files
 
-:::tip[When to Use Context Directory]
-Use `.project/ai/context.md` when:
-- Your project has **>200 lines** of custom rules
-- You want to **separate** configuration from detailed documentation
-- You're working in a **team** and need shared context
-- You have **extensive** code examples and patterns
-
-For simple projects, just add rules directly to `standards.md` - no context directory needed!
+:::tip[Quick Reference]
+For a complete guide to configuration files, see [CONFIG-FILES-GUIDE.md](CONFIG-FILES-GUIDE.md).
 :::
 
-You have two options:
+The toolkit uses **one primary file** for configuration and rules:
 
-#### Option A: Simple (< 200 lines) - Recommended
+#### `.project/standards.md` (Primary Configuration File)
 
-Keep everything in `standards.md`:
+This is your **single source of truth** for everything:
 
 ```markdown
 ---
-# ... config above ...
+# YAML Frontmatter - Configuration
+name: 'my-project'
+toolkit: './ai-toolkit-shared'
+modules: [...]
+agents: [...]
 ---
 
-# Project Rules
+# Markdown Body - Project Rules & Documentation
 
-## Content Types
-
-- Films: Single video projects
-- Series: Multi-episode content
+## Project Rules
+[Your coding standards...]
 
 ## Architecture
+[Project structure...]
 
-- TailwindCSS + daisyUI
-- Alpine.js for interactivity
-
-## Code Examples
-
-[Your examples here]
+## Patterns
+[Common patterns...]
 ```
 
-**This is the recommended approach for most projects.**
+**Structure:**
+- **YAML frontmatter**: Configuration (modules, agents, paths, etc.)
+- **Markdown body**: All your project rules and documentation
 
-#### Option B: Split (> 200 lines)
+**This is all you need for 95% of projects!**
 
-Keep `standards.md` short, create `.project/ai/context.md`:
+#### `.project/ai/context.md` (Optional - Rarely Needed)
+
+:::caution[When to Use Context Directory]
+Only use `.project/ai/context.md` if:
+- Your `standards.md` body exceeds **>1000 lines**
+- You want to separate configuration from extensive documentation
+- You're working in a large team with extensive shared context
+
+**For most projects, just use `standards.md` - no context directory needed!**
+:::
+
+If you do need it (very rare), create `.project/ai/context.md`:
 
 ```bash
 mkdir -p .project/ai
 ```
-
-Create `.project/ai/context.md`:
 
 ```markdown
 ---
 name: My Project Context
 ---
 
-# Detailed Project Context
+# Extensive Project Documentation
 
-## Content Architecture
-
-[Extensive details...]
-
-## Code Patterns
-
-[Many examples...]
-
-## Component Library
-
-[Detailed documentation...]
+[Only for >1000 lines of documentation...]
 ```
 
-**Note:** The context directory is automatically created if you choose it in Custom mode, or you can create it manually later.
+**Note:** The context directory is only available in Custom mode and defaults to "no" (not needed for most projects).
 
 ### 4. Run Sync
 
@@ -299,7 +301,7 @@ After setup:
     bun ai-toolkit-shared/scripts/validate.js
     ```
 
-2. **Customize project.md** with your specific rules
+2. **Customize standards.md** with your specific rules
 
 3. **Add detailed context** (if using `.project/ai/context.md`)
 
@@ -353,19 +355,51 @@ The toolkit has its own dependencies (`gray-matter`, `yaml`, `handlebars`) that 
 
 ### Q: What is a "context directory" and when do I need it?
 
-The context directory (`.project/ai/context.md`) is for **detailed project documentation** that's too long for `standards.md`.
+The context directory (`.project/ai/context.md`) is **rarely needed**. It's only for extensive project documentation (>1000 lines).
 
 **You need it when:**
-- You have >200 lines of custom rules
-- You want to separate config from detailed docs
-- You're working in a team
+- Your `standards.md` body exceeds 1000 lines
+- You want to separate configuration from extensive documentation
+- You're working in a large team with extensive shared context
 
 **You don't need it when:**
-- Your project is simple
-- You have <200 lines of rules
+- Your project is typical size (<1000 lines of rules)
 - You're just getting started
+- You have a simple to medium-sized project
 
-**Tip:** Start without it, add it later if needed.
+**Recommendation:** Start with only `standards.md`. Add `context.md` only if your `standards.md` becomes very large (>1000 lines).
+
+### Q: What is the "framework" option in standards.md?
+
+The `framework` option enables the **Autonomous Agent Prompting Framework (AAPF)**, which provides disciplined, evidence-first operational principles for AI agents.
+
+**When to enable:**
+- ✅ You want structured, systematic AI agent workflows
+- ✅ You need autonomous problem-solving with verification
+- ✅ You prefer evidence-based decision making
+- ✅ You want playbooks for complex tasks (feature development, bug fixing, retrospectives)
+
+**Configuration options:**
+
+```yaml
+# Minimal: Only core principles + communication guidelines
+framework:
+  doctrine: true
+  directives: true
+
+# Standard: Include workflow playbooks
+framework:
+  doctrine: true
+  directives: true
+  playbooks: true
+
+# Full: Everything including advanced features
+framework: true
+```
+
+**See Also:**
+- [Framework README](../framework/README.md) - Complete framework documentation
+- [Available Modules](MODULES.md#ai-agent-framework-optional) - Framework details
 
 ### Q: Can I use both a submodule and home directory installation?
 
@@ -373,7 +407,7 @@ No, choose one method per project. The submodule method is recommended for bette
 
 ### Q: What if I want to change modules later?
 
-Edit `.project/standards.md` (or `project.md`), then run `bun ai-toolkit-shared/scripts/sync.js` to regenerate configurations.
+Edit `.project/standards.md`, then run `bun ai-toolkit-shared/scripts/sync.js` to regenerate configurations.
 
 ### Q: Can I have multiple projects using the same toolkit?
 
@@ -390,6 +424,9 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed troubleshooting guide.
 ## See Also
 
 - [Command Reference](COMMANDS.md)
-- [Configuration Options](CONFIGURATION.md)
+- [Configuration Guide](CONFIG-FILES-GUIDE.md)
 - [Available Modules](MODULES.md)
 - [Available Agents](AGENTS.md)
+- [Project Rules Guide](PROJECT-RULES.md) - Cursor Project Rules
+- [User Rules Guide](USER-RULES.md) - Cursor User Rules
+- [Custom Commands Guide](CUSTOM-COMMANDS.md) - Cursor Custom Commands

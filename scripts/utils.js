@@ -10,13 +10,12 @@ import { join } from 'path'
 import matter from 'gray-matter'
 
 /**
- * Find configuration file (standards.md or project.md)
+ * Find configuration file (standards.md)
  *
  * Detection priority:
  * 1. .project/standards.md (recommended - project configuration directory)
  * 2. docs/standards.md (documentation location)
  * 3. standards.md (root directory)
- * 4. project.md (fallback for legacy support)
  *
  * @param {string} projectDir - Project root directory
  * @returns {string|null} - Path to config file or null if not found
@@ -26,7 +25,6 @@ export function findConfigFile(projectDir) {
         join(projectDir, '.project', 'standards.md'), // Recommended - project config directory
         join(projectDir, 'docs', 'standards.md'), // Documentation location
         join(projectDir, 'standards.md'), // Root directory
-        join(projectDir, 'project.md'), // Fallback for legacy support
     ]
 
     for (const path of candidates) {
@@ -39,7 +37,7 @@ export function findConfigFile(projectDir) {
 }
 
 /**
- * Load configuration file (standards.md or project.md)
+ * Load configuration file (standards.md)
  *
  * @param {string} projectDir - Project root directory
  * @returns {object|null} - Parsed config with { path, frontmatter, content } or null
@@ -58,7 +56,6 @@ export function loadConfig(projectDir) {
         path: configPath,
         frontmatter,
         content: body,
-        isStandards: configPath.includes('standards.md'),
     }
 }
 
@@ -66,7 +63,7 @@ export function loadConfig(projectDir) {
  * Get config file name for display
  *
  * @param {string} projectDir - Project root directory
- * @returns {string} - Config file name (standards.md or project.md)
+ * @returns {string} - Config file name (standards.md)
  */
 export function getConfigFileName(projectDir) {
     const config = loadConfig(projectDir)
@@ -75,17 +72,13 @@ export function getConfigFileName(projectDir) {
         return null
     }
 
-    if (config.isStandards) {
-        if (config.path.includes('.project/')) {
-            return '.project/standards.md'
-        }
-        if (config.path.includes('docs/')) {
-            return 'docs/standards.md'
-        }
-        return 'standards.md'
+    if (config.path.includes('.project/')) {
+        return '.project/standards.md'
     }
-
-    return 'project.md'
+    if (config.path.includes('docs/')) {
+        return 'docs/standards.md'
+    }
+    return 'standards.md'
 }
 
 /**
@@ -96,5 +89,5 @@ export function getConfigFileName(projectDir) {
  */
 export function hasStandards(projectDir) {
     const config = loadConfig(projectDir)
-    return config && config.isStandards
+    return config !== null
 }

@@ -94,15 +94,34 @@ cd ..
 bun ai-toolkit-shared/scripts/init.js
 ```
 
-**Result:** You'll have `.project/standards.md` (or `project.md` in legacy mode), `.cursorrules`, `CLAUDE.md`, and `AGENT.md` generated automatically.
+**Result:** You'll have `.project/standards.md`, `.cursorrules`, `CLAUDE.md`, and `AGENT.md` generated automatically.
 
 ## 📚 Documentation
+
+### Core Guides
+
+- **[Getting Started](docs/GETTING-STARTED.md)** - Complete setup guide
+- **[Commands Reference](docs/COMMANDS.md)** - All toolkit commands
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+
+### Rules & Configuration
+
+- **[Project Rules](docs/PROJECT-RULES.md)** - Guide to Cursor Project Rules
+- **[User Rules](docs/USER-RULES.md)** - Guide to Cursor User Rules
+- **[Custom Commands](docs/CUSTOM-COMMANDS.md)** - Guide to Cursor Custom Commands
+- **[Configuration Guide](docs/CONFIG-FILES-GUIDE.md)** - Project configuration explained
+
+### Modules & Agents
+
+- **[Modules](docs/MODULES.md)** - Available knowledge modules
+- **[Agents](docs/AGENTS.md)** - Available AI agents
 
 ### Start Here
 
 | Guide                                          | Description                                      |
 | ---------------------------------------------- | ------------------------------------------------ |
 | **[Getting Started](docs/GETTING-STARTED.md)** | Complete setup guide - start here!              |
+| **[Config Files Guide](docs/CONFIG-FILES-GUIDE.md)** | Understanding standards.md, project.md, and context.md |
 | **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Common issues and solutions                      |
 
 ### Learn More
@@ -112,6 +131,9 @@ bun ai-toolkit-shared/scripts/init.js
 | **[Command Reference](docs/COMMANDS.md)**      | Detailed `init`, `validate`, `sync` commands     |
 | **[Available Modules](docs/MODULES.md)**       | 6 knowledge modules with descriptions            |
 | **[Available Agents](docs/AGENTS.md)**         | 9 specialized AI agents                          |
+| **[Project Rules](docs/PROJECT-RULES.md)**     | Guide to Cursor Project Rules                    |
+| **[User Rules](docs/USER-RULES.md)**           | Guide to Cursor User Rules                       |
+| **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Guide to Cursor Custom Commands                  |
 
 ### Advanced
 
@@ -132,6 +154,13 @@ bun ai-toolkit-shared/scripts/validate.js
 
 # Generate/update AI configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Update submodule (keep toolkit up-to-date)
+cd ai-toolkit-shared && bun run update-submodule
+
+# Prepare for contributing (switch to master, create branch)
+cd ai-toolkit-shared && bun run prepare-contribution
+cd ai-toolkit-shared && bun run prepare-contribution --branch feature/my-feature
 
 # Extend modules from documentation (NEW!)
 bun ai-toolkit-shared/scripts/extend-modules.js --analyze
@@ -175,14 +204,20 @@ bun ai-toolkit-shared/scripts/sync.js
 
 # 4. Validate
 bun ai-toolkit-shared/scripts/validate.js
+
+# 5. Keep toolkit up-to-date (when needed)
+cd ai-toolkit-shared && bun run update-submodule && cd ..
+git add ai-toolkit-shared
+git commit -m "Update couchcms-ai-toolkit submodule"
 ```
 
-## 📝 Example Configuration
+## 📝 Configuration File
 
 After running the setup wizard, you'll have `.project/standards.md`:
 
 ```yaml
 ---
+# YAML Frontmatter - Configuration
 name: 'my-project'
 description: 'My CouchCMS project'
 toolkit: './ai-toolkit-shared'
@@ -197,12 +232,26 @@ agents:
     - tailwindcss
     - alpinejs
 ---
-# Project-Specific Rules
+
+# Markdown Body - Project Rules
+
+## Project-Specific Rules
 
 Add your custom rules here...
+
+## Architecture
+
+Describe your project architecture...
+
+## Code Patterns
+
+Document common patterns...
 ```
 
-**Note:** In Simple mode, this file is automatically created at `.project/standards.md`. You can edit it anytime and run `bun ai-toolkit-shared/scripts/sync.js` to update AI configurations.
+**Key Points:**
+- **One file for everything**: Configuration (YAML) + Rules (Markdown) in `standards.md`
+- **Location**: `.project/standards.md` (recommended) or `standards.md` (root)
+- **Optional context.md**: Only needed for >1000 lines of documentation (rare)
 
 ## 🆕 What's New in v1.1.0
 
@@ -216,12 +265,86 @@ See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## 🤝 Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+**You can contribute directly from your project!** No need to clone the toolkit separately.
 
-- Step-by-step workflow for contributing via submodule
-- How to add new modules or agents
-- Common mistakes to avoid
-- PR guidelines
+### Quick Start for Contributors
+
+**Option 1: Using the helper script (recommended)**
+
+```bash
+# 1. Navigate to the submodule
+cd ai-toolkit-shared
+
+# 2. Prepare your contribution environment
+bun run prepare-contribution
+
+# 3. Create a feature branch (or use --branch flag)
+bun run prepare-contribution --branch feature/your-feature-name
+
+# 4. Make your changes
+code modules/your-module.md  # or agents/, docs/, etc.
+
+# 5. Test your changes
+cd ..  # Back to project root
+bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/validate.js
+
+# 6. Commit and push
+cd ai-toolkit-shared
+git add .
+git commit -m "feat: add your feature"
+git push origin feature/your-feature-name
+
+# 7. Create Pull Request on GitHub
+```
+
+**Option 2: Manual workflow**
+
+```bash
+# 1. Navigate to the submodule
+cd ai-toolkit-shared
+
+# 2. Switch to master branch (submodules are often in detached HEAD)
+git checkout master
+git pull origin master
+
+# 3. Create a feature branch
+git checkout -b feature/your-feature-name
+
+# 4. Make your changes
+code modules/your-module.md  # or agents/, docs/, etc.
+
+# 5. Test your changes
+cd ..  # Back to project root
+bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/validate.js
+
+# 6. Commit and push
+cd ai-toolkit-shared
+git add .
+git commit -m "feat: add your feature"
+git push origin feature/your-feature-name
+
+# 7. Create Pull Request on GitHub
+```
+
+### What Can You Contribute?
+
+- ✅ **New Modules** - Add support for frameworks (Vue.js, React, etc.)
+- ✅ **Improve Modules** - Fix typos, add examples, clarify instructions
+- ✅ **New Agents** - Create specialized AI agents
+- ✅ **Documentation** - Improve README, troubleshooting, examples
+- ✅ **Prompts** - Add reusable AI prompts for common tasks
+- ✅ **Bug Fixes** - Fix issues you encounter
+
+### Full Guide
+
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for:
+- 📋 Complete step-by-step workflow
+- 🎨 Module and agent templates
+- 🚫 Common mistakes to avoid
+- 🆘 Troubleshooting guide
+- 💡 Tips for successful contributions
 
 ## 📊 Project Structure
 
@@ -245,6 +368,30 @@ ai-toolkit-shared/
 - **CouchCMS Project** - Target project
 
 **Note:** After cloning the submodule, always run `bun install` (or `npm install`) in the `ai-toolkit-shared` directory before using any scripts.
+
+## 🔄 Keeping the Toolkit Up-to-Date
+
+When using the toolkit as a git submodule, keep it updated to get the latest features and fixes:
+
+```bash
+# Option 1: Using the update script (recommended)
+cd ai-toolkit-shared
+bun run update-submodule
+cd ..
+
+# Option 2: Using git submodule command (from parent repo)
+git submodule update --remote ai-toolkit-shared
+
+# After updating, commit the change in your parent repository
+git add ai-toolkit-shared
+git commit -m "Update couchcms-ai-toolkit submodule"
+```
+
+The `update-submodule` script will:
+- ✅ Fetch the latest changes from the remote repository
+- ✅ Pull updates for your current branch
+- ✅ Show you the latest commit information
+- ✅ Provide helpful tips for committing the update
 
 ## 🆘 Need Help?
 

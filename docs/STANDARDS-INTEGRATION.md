@@ -4,7 +4,7 @@ How to integrate `standards.md` as the single source of truth in the AI toolkit.
 
 ## Overview
 
-The AI toolkit can automatically detect and use `standards.md` as the primary configuration source, with `project.md` as a fallback. This makes the toolkit truly universal and reusable across any project type.
+The AI toolkit uses `standards.md` as the single source of truth for project configuration. This makes the toolkit simple, clear, and easy to use.
 
 ## Detection Priority
 
@@ -22,8 +22,6 @@ The toolkit searches for configuration files in this order:
 3. **`standards.md`** (root directory)
     - Simple path
     - More visible
-
-4. **`project.md`** (fallback - legacy support)
 
 ## File Structure
 
@@ -73,9 +71,9 @@ The toolkit scripts (`init.js`, `sync.js`, `validate.js`) automatically detect `
 // Pseudo-code for detection
 function findConfigFile(projectDir) {
     const candidates = [
+        join(projectDir, '.project', 'standards.md'), // Recommended
         join(projectDir, 'docs', 'standards.md'),
         join(projectDir, 'standards.md'),
-        join(projectDir, 'project.md'), // fallback
     ]
 
     for (const path of candidates) {
@@ -99,9 +97,9 @@ All prompts automatically reference `standards.md` when present:
 
 This prompt automatically uses standards from:
 
+- `.project/standards.md` (if exists - recommended)
 - `docs/standards.md` (if exists)
 - `standards.md` (if exists)
-- `project.md` (fallback)
 ```
 
 ### 3. Validator Integration
@@ -176,7 +174,7 @@ See [standards.md](../../docs/standards.md) for:
 
 The init script now:
 
-1. Checks for existing `standards.md` or `project.md`
+1. Checks for existing `standards.md`
 2. Offers to create `docs/standards.md` if none exists
 3. Generates template with YAML frontmatter
 4. Includes all standard sections
@@ -188,7 +186,7 @@ The sync script now:
 1. Detects `standards.md` first
 2. Parses YAML frontmatter for project config
 3. Extracts standards for prompt generation
-4. Falls back to `project.md` if needed
+4. Creates `standards.md` if not found
 
 ### validate.js
 

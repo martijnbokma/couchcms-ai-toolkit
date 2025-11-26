@@ -2,12 +2,12 @@
 /**
  * CouchCMS AI Toolkit - Sync Script
  *
- * Generates editor configurations from project.md, toolkit modules,
+ * Generates editor configurations from standards.md, toolkit modules,
  * agents, and project-specific context.
  *
  * Features:
  * - Loads default configuration from defaults.yaml
- * - Merges project-specific overrides from project.md
+ * - Merges project-specific overrides from standards.md
  * - Replaces {{paths.xxx}} variables in output
  * - Supports modules, agents, and project context
  *
@@ -22,7 +22,7 @@ import Handlebars from 'handlebars'
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, copyFileSync } from 'fs'
 import { join, dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { getConfigFileName } from './utils.js'
+import { getConfigFileName, findConfigFile, loadConfig } from './utils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -113,18 +113,15 @@ function replaceVariables(content, variables, prefix = '') {
 }
 
 /**
- * Find project.md in current directory or parent directories
+ * Find configuration file (standards.md) in current directory or parent directories
  */
 function findProjectFile(startDir = process.cwd()) {
     let currentDir = startDir
-    const possibleNames = ['project.md', 'PROJECT.md']
 
     while (currentDir !== '/') {
-        for (const name of possibleNames) {
-            const projectPath = join(currentDir, name)
-            if (existsSync(projectPath)) {
-                return projectPath
-            }
+        const configPath = findConfigFile(currentDir)
+        if (configPath) {
+            return configPath
         }
         currentDir = dirname(currentDir)
     }
@@ -185,6 +182,99 @@ function loadAgent(agentName, toolkitPath) {
 
     console.warn(`⚠️  Agent not found: ${agentName}`)
     return null
+}
+
+/**
+ * Load framework category files
+ */
+function loadFrameworkCategory(frameworkDir, category) {
+    const categoryDir = join(frameworkDir, category)
+
+    if (!existsSync(categoryDir)) {
+        return ''
+    }
+
+    const files = readdirSync(categoryDir)
+        .filter(f => f.endsWith('.md'))
+        .sort() // Ensure consistent ordering
+
+    let content = ''
+
+    for (const file of files) {
+        const filePath = join(categoryDir, file)
+        const fileContent = readFileSync(filePath, 'utf8')
+        const { content: fileContentBody } = matter(fileContent)
+        content += `\n${fileContentBody}\n\n---\n`
+    }
+
+    return content
+}
+
+/**
+ * Load framework from toolkit based on configuration
+ */
+function loadFramework(config, toolkitPath) {
+    // Check if framework is enabled
+    if (!config.framework) {
+        return null
+    }
+
+    const frameworkDir = join(toolkitPath, 'framework')
+
+    if (!existsSync(frameworkDir)) {
+        console.warn(`⚠️  Framework directory not found: ${frameworkDir}`)
+        return null
+    }
+
+    let frameworkContent = '# AAPF Framework\n\n'
+
+    // Determine what to load based on config
+    const frameworkConfig = config.framework === true
+        ? { doctrine: true, directives: true, playbooks: true, enhancements: true }
+        : typeof config.framework === 'object'
+            ? config.framework
+            : { doctrine: true, directives: true }
+
+    // Always load doctrine (core principles)
+    if (frameworkConfig.doctrine !== false) {
+        const doctrine = loadFrameworkCategory(frameworkDir, 'doctrine')
+        if (doctrine) {
+            frameworkContent += `## Operational Doctrine\n\n${doctrine}\n`
+        }
+    }
+
+    // Always load directives (communication guidelines)
+    if (frameworkConfig.directives !== false) {
+        const directives = loadFrameworkCategory(frameworkDir, 'directives')
+        if (directives) {
+            frameworkContent += `## Directives\n\n${directives}\n`
+        }
+    }
+
+    // Optionally load playbooks (workflow templates)
+    if (frameworkConfig.playbooks === true) {
+        const playbooks = loadFrameworkCategory(frameworkDir, 'playbooks')
+        if (playbooks) {
+            frameworkContent += `## Playbooks\n\n${playbooks}\n`
+        }
+    }
+
+    // Optionally load enhancements (advanced features)
+    if (frameworkConfig.enhancements === true) {
+        const enhancements = loadFrameworkCategory(frameworkDir, 'enhancements')
+        if (enhancements) {
+            frameworkContent += `## Enhancements\n\n${enhancements}\n`
+        }
+    }
+
+    return {
+        name: 'framework',
+        content: frameworkContent,
+        meta: {
+            enabled: true,
+            categories: Object.keys(frameworkConfig).filter(k => frameworkConfig[k] === true)
+        }
+    }
 }
 
 /**
@@ -328,7 +418,7 @@ ${generatePathsSection(paths)}
         content += `\n# Project Context\n\n${projectContext.content}\n\n---\n`
     }
 
-    // Add project-specific rules from project.md
+    // Add project-specific rules from standards.md
     if (projectRules && projectRules.trim()) {
         content += `\n# Project-Specific Rules\n\n${projectRules}\n`
     }
@@ -342,7 +432,7 @@ ${generatePathsSection(paths)}
 /**
  * Prepare template data for rendering
  */
-function prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath, projectDir) {
+function prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath, projectDir, framework) {
     const { paths, standards, naming } = mergedConfig
 
     // Extract languages and frameworks from modules
@@ -385,8 +475,11 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
     // Prepare roles data (if available in config)
     const roles = config.roles || []
 
-    // Get config file path (standards.md or project.md)
-    const configFilePath = getConfigFileName(projectDir) || 'project.md'
+    // Get config file path (standards.md)
+    const configFilePath = getConfigFileName(projectDir) || 'standards.md'
+
+    // Add timestamp for templates
+    const timestamp = new Date().toISOString()
 
     return {
         project: {
@@ -417,6 +510,9 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
         toolkit_path: toolkitPath,
         context_path: config.context || null,
         config_file_path: configFilePath,
+        framework: framework ? framework.content : '',
+        framework_enabled: framework !== null,
+        timestamp: timestamp,
     }
 }
 
@@ -440,6 +536,8 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData) {
         'kiro.template.md': { output: '.kiro/steering/coding-standards.md', dir: projectDir, type: 'markdown' },
         'windsurf.template.md': { output: '.windsurf/rules.md', dir: projectDir, type: 'markdown' },
         'agent.template.md': { output: 'AGENT.md', dir: projectDir, type: 'markdown' },
+        'user-rules.template.md': { output: 'USER-RULES.md', dir: projectDir, type: 'markdown' },
+        'project-rules.template.md': { output: 'PROJECT-RULES-TEMPLATE.md', dir: projectDir, type: 'markdown' },
     }
 
     const templateFiles = readdirSync(templatesDir).filter(f => f.endsWith('.template.md'))
@@ -742,55 +840,93 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
 }
 
 /**
+ * Sync Cursor commands from toolkit to project
+ */
+function syncCursorCommands(toolkitPath, projectDir, mergedConfig) {
+    const commandsSource = join(toolkitPath, 'commands')
+    const commandsTarget = join(projectDir, '.cursor', 'commands')
+
+    if (!existsSync(commandsSource)) {
+        return // No commands in toolkit
+    }
+
+    // Create target directory if needed
+    if (!existsSync(commandsTarget)) {
+        mkdirSync(commandsTarget, { recursive: true })
+    }
+
+    // Get all .md files from toolkit commands (skip README.md)
+    const commandFiles = readdirSync(commandsSource).filter(f => f.endsWith('.md') && f !== 'README.md')
+
+    for (const commandFile of commandFiles) {
+        const sourcePath = join(commandsSource, commandFile)
+        const targetPath = join(commandsTarget, commandFile)
+
+        let content = readFileSync(sourcePath, 'utf8')
+
+        // Replace {{paths.xxx}} variables
+        content = replaceVariables(content, mergedConfig)
+
+        writeFileSync(targetPath, content)
+    }
+
+    if (commandFiles.length > 0) {
+        console.log(`✅ Synced: ${commandFiles.length} Cursor commands to .cursor/commands/`)
+    }
+}
+
+/**
  * Main sync function
  */
 async function sync() {
     try {
         console.log('🔄 CouchCMS AI Toolkit - Sync\n')
 
-        // Find project.md
-        const projectPath = findProjectFile()
+        // Find configuration file (standards.md or project.md)
+        const configPath = findProjectFile()
 
-        if (!projectPath) {
-            console.error('❌ No project.md found in current directory or parent directories.')
-            console.log('\nCreate a project.md file with:\n')
+        if (!configPath) {
+            const configFileName = getConfigFileName(process.cwd()) || 'standards.md'
+            console.error(`❌ No configuration file found in current directory or parent directories.`)
+            console.log(`\nCreate a ${configFileName} file with:\n`)
             console.log(`---
 name: "my-project"
 description: "Project description"
-toolkit: "./ai-toolkit"
+toolkit: "./ai-toolkit-shared"
 modules:
   - couchcms-core
   - tailwindcss
-  - daisyui
   - alpinejs
 agents:
-  - couchcms-agent
-context: ".project/ai"
-paths:
-  css: "src/css"        # Override default if needed
-  typescript: "src/ts"  # Override default if needed
+  - couchcms
+  - tailwindcss
+  - alpinejs
 ---
 
 # Project-Specific Rules
 
 Add your project-specific instructions here...
 `)
+            console.log('\n💡 Tip: Use .project/standards.md for the recommended location.')
             process.exit(1)
         }
 
-        console.log(`📄 Found: ${projectPath}`)
-        const projectDir = dirname(projectPath)
+        console.log(`📄 Found: ${configPath}`)
+        const projectDir = dirname(configPath)
 
-        // Parse project.md
+        // Parse configuration file
         let config, projectRules
         try {
-            const projectContent = readFileSync(projectPath, 'utf8')
-            const parsed = matter(projectContent)
-            config = parsed.data
-            projectRules = parsed.content
+            const configData = loadConfig(projectDir)
+            if (!configData) {
+                throw new Error('Failed to load configuration')
+            }
+            config = configData.frontmatter
+            projectRules = configData.content
         } catch (error) {
-            console.error(`❌ Failed to parse project.md: ${error.message}`)
-            console.log('\nEnsure project.md has valid YAML frontmatter.\n')
+            const configFileName = getConfigFileName(projectDir) || 'standards.md'
+            console.error(`❌ Failed to parse ${configFileName}: ${error.message}`)
+            console.log(`\nEnsure ${configFileName} has valid YAML frontmatter.\n`)
             process.exit(1)
         }
 
@@ -802,7 +938,7 @@ Add your project-specific instructions here...
         // Verify toolkit path exists
         if (!existsSync(toolkitPath)) {
             console.error(`❌ Toolkit path not found: ${toolkitPath}`)
-            console.log("\nCheck the 'toolkit' path in your project.md\n")
+            console.log(`\nCheck the 'toolkit' path in your ${getConfigFileName(projectDir) || 'standards.md'}\n`)
             process.exit(1)
         }
 
@@ -837,6 +973,13 @@ Add your project-specific instructions here...
             console.log(`🤖 Agents: ${agents.map(a => a.name).join(', ')}`)
         }
 
+        // Load framework (if enabled)
+        const framework = loadFramework(config, toolkitPath)
+        if (framework) {
+            const categories = framework.meta.categories || []
+            console.log(`📐 Framework: ${categories.length > 0 ? categories.join(', ') : 'enabled'}`)
+        }
+
         // Load project context
         const projectContext = loadProjectContext(config.context, projectDir)
         if (projectContext) {
@@ -852,7 +995,7 @@ Add your project-specific instructions here...
         }
 
         // Prepare template data
-        const templateData = prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath, projectDir)
+        const templateData = prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath, projectDir, framework)
 
         // Add project rules to template data
         if (projectRules && projectRules.trim()) {
@@ -881,6 +1024,13 @@ Add your project-specific instructions here...
             console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
         }
 
+        // Sync Cursor commands
+        try {
+            syncCursorCommands(toolkitPath, projectDir, mergedConfig)
+        } catch (error) {
+            console.warn(`⚠️  Failed to sync Cursor commands: ${error.message}`)
+        }
+
         // Generate Claude Code configuration
         try {
             const skillRulesCount = generateClaudeCodeConfig(toolkitPath, projectDir, moduleList, {
@@ -898,8 +1048,9 @@ Add your project-specific instructions here...
     } catch (error) {
         console.error(`\n❌ Sync failed: ${error.message}\n`)
         console.log('Troubleshooting:')
-        console.log('  1. Verify project.md has valid YAML frontmatter')
-        console.log('  2. Check toolkit path in project.md')
+            const configFileName = getConfigFileName(process.cwd()) || 'standards.md'
+            console.log(`  1. Verify ${configFileName} has valid YAML frontmatter`)
+            console.log(`  2. Check toolkit path in ${configFileName}`)
         console.log('  3. Ensure all referenced modules exist')
         console.log("  4. Run 'bun run validate' for detailed diagnostics\n")
         process.exit(1)

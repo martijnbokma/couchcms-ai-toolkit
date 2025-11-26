@@ -1,98 +1,159 @@
-# AI Prompting Framework (AAPF)
+# The Autonomous Agent Prompting Framework (AAPF)
 
-Core AI agent prompting rules and communication patterns.
+A disciplined, evidence-first prompting framework designed to elevate AI agents from simple command executors to **Autonomous Principal Engineers**.
 
-## Files
+**Philosophy:** Autonomy through discipline. Trust through verification.
 
-| File                              | Purpose                                   |
-| --------------------------------- | ----------------------------------------- |
-| `00-cursor-ai-prompting-rules.md` | Base rules for Cursor AI                  |
-| `01-core.md`                      | Core prompting principles                 |
-| `02-request.md`                   | How to make requests                      |
-| `03-refresh.md`                   | Context refresh/debugging patterns        |
-| `04-retro.md`                     | Retrospective patterns                    |
-| `05-concise.md`                   | Concise communication                     |
-| `06-no-absolute-right.md`         | Flexibility principles                    |
-| `07-smart-operations.md`          | **NEW** Slash commands, intent detection  |
+This framework is not just a collection of prompts; it is a complete operational system for managing AI agents. It enforces a rigorous workflow of reconnaissance, planning, safe execution, and self-improvement, ensuring every action the agent takes is deliberate, verifiable, and aligned with senior engineering best practices.
 
-## Smart Operations (v2.0)
+---
 
-The framework now includes enhanced productivity features:
+## Framework Structure
 
-### Quick Actions (Slash Commands)
+The framework is organized into four main categories:
 
-```
-/fix @file          Fix issues in file
-/refactor @file     Refactor file
-/review @file       Code review
-/component <name>   Create component bundle
-/view <name>        Create view templates
-/form <name>        Create DataBound form
-/sync               Sync AI configs
-/validate           Validate project
-```
+### 1. Doctrine (Always Active)
 
-### Communication Modes
-
-```
-/quick    Minimal output, maximum efficiency
-/verbose  Detailed explanations
-/standard Default balanced mode
-```
-
-### Pre-Flight Checks
-
-All code modifications are automatically scanned against `preflight-checks.yaml` before being applied:
-
-- **CRITICAL**: Blocks execution (CouchCMS tags in comments, XSS, eval)
-- **WARNING**: Shows warning, asks to proceed
-- **INFO**: Informs only
-
-### Smart Defaults
-
-File types automatically load relevant agents/modules per `smart-defaults.yaml`:
-
-| File Pattern | Auto-Loaded Context |
-|--------------|---------------------|
-| `*.php` | couchcms agent, couchcms-core module |
-| `*.ts` | typescript agent, typescript module |
-| `snippets/forms/*.html` | databound-forms agent + module |
-| `snippets/components/*.html` | couchcms + alpinejs agents |
-
-## Usage
-
-These files define how AI agents should communicate and respond. They can be:
-
-1. **Referenced directly** in conversations
-2. **Included in rules** for consistent AI behavior
-3. **Used as templates** for custom prompting patterns
-
-## Integration
-
-To use in your project's `.cursorrules` or agent definitions:
-
-```markdown
-# Communication Style
-
-Follow the AAPF framework principles:
-
-- Core: Direct, actionable responses
-- Concise: Minimal but complete
-- Flexible: No absolute right answers
-- Smart: Use slash commands for efficiency
-```
-
-## Configuration Files
+The core operational principles that govern all agent behavior.
 
 | File | Purpose |
 |------|---------|
-| `preflight-checks.yaml` | Code quality checks before modification |
-| `smart-defaults.yaml` | File type → agent/module mappings |
-| `defaults.yaml` | Project path and naming conventions |
+| `doctrine/operational-doctrine.md` | Core prompting principles - the "constitution" that defines agent identity, research protocols, safety guardrails, and professional standards |
+
+**Installation:** This is the first and most critical step. The doctrine should be installed as the agent's primary system instruction set.
+
+### 2. Playbooks (Optional - Use When Needed)
+
+Structured "mission briefing" templates for specific workflows. Paste into chat to initiate a task.
+
+| File | Purpose | When to Use |
+|------|---------|-------------|
+| `playbooks/request.md` | Standard Operating Procedure for Constructive Work | Building new features, refactoring code, or making any planned change |
+| `playbooks/refresh.md` | Root Cause Analysis & Remediation Protocol | When a bug is persistent and previous, simpler attempts have failed |
+| `playbooks/retro.md` | Metacognitive Self-Improvement Loop | At the end of a session to capture learnings and improve the doctrine |
+
+**Status Markers:** The agent uses these markers in reports:
+- `✅`: Objective completed successfully
+- `⚠️`: A recoverable issue was encountered and fixed autonomously
+- `🚧`: Blocked; awaiting input or a resource
+
+### 3. Directives (Always Active)
+
+Communication guidelines that modify agent behavior for professional, concise interaction.
+
+| File | Purpose |
+|------|---------|
+| `directives/concise.md` | Mandates radically concise, information-dense communication, removing all conversational filler |
+| `directives/communication.md` | Avoids sycophantic language and maintains professional, technical communication |
+
+### 4. Enhancements (Optional - Advanced Features)
+
+Advanced productivity features for experienced users.
+
+| File | Purpose |
+|------|---------|
+| `enhancements/smart-operations.md` | Slash commands, intent detection, pre-flight checks, and communication modes |
+
+**Smart Operations Features:**
+- **Quick Actions**: `/fix @file`, `/refactor @file`, `/review @file`, `/component <name>`, `/view <name>`, `/form <name>`
+- **Workflow Commands**: `/sync`, `/validate`, `/status`
+- **Communication Modes**: `/quick`, `/verbose`, `/standard`
+- **Pre-Flight Checks**: Automatic code quality scanning before modifications
+- **Smart Context**: Auto-load relevant agents/modules based on file type
+
+---
+
+## Core Philosophy
+
+This framework is built on five foundational principles:
+
+1. **Research-First, Always:** The agent must never act on assumption. Every action is preceded by a thorough investigation of the current system state.
+2. **Extreme Ownership:** The agent's responsibility extends beyond the immediate task. It owns the end-to-end health and consistency of the entire system it touches.
+3. **Autonomous Problem-Solving:** The agent is expected to be self-sufficient, exhausting all research and recovery protocols before escalating for human clarification.
+4. **Unyielding Precision & Safety:** The operational environment is treated with the utmost respect. Every command is executed safely, and the workspace is kept pristine.
+5. **Metacognitive Self-Improvement:** The agent is designed to learn. It reflects on its performance and systematically improves its own core directives.
+
+---
+
+## How to Use This Framework
+
+### Typical Session Workflow
+
+1. **Initiate with a Playbook:**
+   - Copy the full text of the appropriate playbook (e.g., `playbooks/request.md`)
+   - Replace the placeholder line at the top with your specific, high-level goal
+   - **(Optional)** If you need specific behavior, append directive content to the end
+   - Paste the entire combined text into the chat
+
+2. **Observe Disciplined Execution:**
+   - The agent will announce its operational phase (Reconnaissance, Planning, etc.)
+   - It will perform non-destructive research first, presenting a digest of findings
+   - It will execute its plan, providing verifiable evidence and running tests autonomously
+   - It will conclude with a mandatory self-audit to prove correctness
+
+3. **Review the Final Report:**
+   - The agent provides a final summary with status markers
+   - All evidence is transparently available in the chat log
+   - Workspace is left clean
+
+4. **Close the Loop with a Retro:**
+   - Once satisfied, paste the contents of `playbooks/retro.md` into the chat
+   - The agent will analyze the session and propose updates to its Doctrine if durable lessons were learned
+
+### Integration with CouchCMS AI Toolkit
+
+The framework can be enabled in your `standards.md` (or `.project/standards.md`):
+
+```yaml
+# Minimal: Only doctrine + directives (always active)
+framework:
+  doctrine: true
+  directives: true
+
+# Standard: Include playbooks
+framework:
+  doctrine: true
+  directives: true
+  playbooks: true
+
+# Full: Everything including enhancements
+framework: true  # or
+framework:
+  doctrine: true
+  directives: true
+  playbooks: true
+  enhancements: true
+```
+
+When enabled, the framework is automatically integrated into all AI configurations (`.cursorrules`, `CLAUDE.md`, etc.) via the sync script.
+
+---
+
+## Guiding Principles
+
+- **Be Specific:** In your initial request, clearly state *what* you want and *why* it's important
+- **Trust the Process:** The framework is designed for autonomy. Intervene only when the agent explicitly escalates
+- **End with a Retro:** Regularly using `playbooks/retro.md` is key to creating a learning agent and keeping the Doctrine evergreen
+
+---
+
+## Documentation
+
+| File | Purpose |
+|------|---------|
+| `docs/testing.md` | Test scenarios and evaluation criteria for the framework |
+| `ATTRIBUTION.md` | Credits, sync status, and license information |
+
+---
 
 ## Related Documentation
 
-- `docs/IMPROVEMENTS-PROPOSAL.md` - Full analysis and future enhancements
+- `docs/GETTING-STARTED.md` - Toolkit setup guide
+- `docs/MODULES.md` - Available knowledge modules
 - `agents/` - Specialized AI agents
 - `modules/` - Knowledge modules
 - `prompts/` - Reusable prompts and workflows
+
+---
+
+**Welcome to a more disciplined, reliable, and truly autonomous way of working with AI.**

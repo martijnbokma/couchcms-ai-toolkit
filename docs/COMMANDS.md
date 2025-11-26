@@ -28,7 +28,7 @@ bun ai-toolkit-shared/scripts/init.js
 The wizard will:
 
 1. **Check for existing configuration**
-    - Detects if `project.md` already exists
+    - Detects if `standards.md` already exists
     - Asks if you want to overwrite (defaults to No)
 
 2. **Gather project information**
@@ -144,8 +144,8 @@ bun ai-toolkit-shared/scripts/validate.js
 
 ### What It Checks
 
-1. **Project.md Existence**
-    - Checks if `project.md` exists
+1. **Configuration File Existence**
+    - Checks if `standards.md` exists
     - Validates file is readable
 
 2. **YAML Frontmatter**
@@ -184,7 +184,7 @@ $ bun ai-toolkit-shared/scripts/validate.js
 
 🔍 CouchCMS AI Toolkit - Validation
 
-📄 Found: project.md
+📄 Found: .project/standards.md
 🛠️  Toolkit: ./ai-toolkit-shared
 📚 Modules: couchcms-core, tailwindcss, daisyui, alpinejs, typescript
 🤖 Agents: couchcms, databound-forms, alpinejs, tailwindcss
@@ -224,12 +224,10 @@ $ bun ai-toolkit-shared/scripts/validate.js
 
 🔍 CouchCMS AI Toolkit - Validation
 
-❌ Error: project.md not found
+❌ Error: No configuration file found
 
-Please create project.md with:
-  bun ai-toolkit-shared/scripts/init.js
-
-Or see: docs/GETTING-STARTED.md
+Create a standards.md file to use the toolkit.
+💡 Tip: Use .project/standards.md for the recommended location.
 ```
 
 ### Compliance Score
@@ -243,7 +241,7 @@ The validation provides a compliance score (0-100%):
 
 ### When to Use
 
-- After creating or modifying `project.md`
+- After creating or modifying `standards.md`
 - Before committing configuration changes
 - When troubleshooting AI configuration issues
 - As part of CI/CD pipeline
@@ -326,19 +324,20 @@ bun ai-toolkit-shared/scripts/sync.js
 ### Process Flow
 
 ```
-project.md
+standards.md
     ↓
-1. Read configuration
+1. Read configuration (YAML frontmatter)
+2. Read project rules (Markdown body)
     ↓
-2. Load selected modules
+3. Load selected modules
     ↓
-3. Load selected agents
+4. Load selected agents
     ↓
-4. Load project context
+5. Load project context (if context.md exists)
     ↓
-5. Combine all content
+6. Combine all content
     ↓
-6. Generate output files
+7. Generate output files
     ↓
 ✅ Done!
 ```
@@ -386,11 +385,11 @@ $ bun ai-toolkit-shared/scripts/sync.js
 Run sync after:
 
 - Initial project setup
-- Changing modules in `project.md`
-- Adding/removing agents in `project.md`
+- Changing modules in `standards.md`
+- Adding/removing agents in `standards.md`
 - Updating toolkit (`git pull`)
-- Modifying project context files
-- Changing any configuration in `project.md`
+- Modifying project context files (if using `context.md`)
+- Changing any configuration in `standards.md`
 
 ### Errors & Warnings
 
@@ -413,13 +412,15 @@ Troubleshooting:
   - Available: couchcms-core, tailwindcss, daisyui, alpinejs, typescript, databound-forms
 ```
 
-#### Missing project.md
+#### Missing Configuration File
 
 ```bash
-❌ Error: project.md not found
+❌ Error: No configuration file found
 
 Run setup wizard:
   bun ai-toolkit-shared/scripts/init.js
+
+💡 Tip: Use .project/standards.md for the recommended location.
 ```
 
 ### Advanced Usage
@@ -460,8 +461,8 @@ bun ai-toolkit-shared/scripts/init.js
 # 2. Validate configuration
 bun ai-toolkit-shared/scripts/validate.js
 
-# 3. Customize project.md (optional)
-code project.md
+# 3. Customize standards.md (optional)
+code .project/standards.md
 
 # 4. Re-sync after changes
 bun ai-toolkit-shared/scripts/sync.js
@@ -470,8 +471,8 @@ bun ai-toolkit-shared/scripts/sync.js
 ### Updating Configuration
 
 ```bash
-# 1. Edit project.md
-code project.md
+# 1. Edit standards.md
+code .project/standards.md
 
 # 2. Validate changes
 bun ai-toolkit-shared/scripts/validate.js
@@ -502,8 +503,8 @@ bun ai-toolkit-shared/scripts/sync.js
 # 1. Validate to find issues
 bun ai-toolkit-shared/scripts/validate.js
 
-# 2. Fix issues in project.md
-code project.md
+# 2. Fix issues in standards.md
+code .project/standards.md
 
 # 3. Validate again
 bun ai-toolkit-shared/scripts/validate.js

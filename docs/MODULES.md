@@ -403,7 +403,7 @@ couchcms-core (required by all)
 
 ## Adding Modules to Your Project
 
-Edit `project.md`:
+Edit `standards.md` (or `.project/standards.md`):
 
 ```yaml
 modules:
@@ -433,6 +433,66 @@ All modules include:
 - **Rules** - Critical guidelines and anti-patterns
 
 Use `bun scripts/analyze-modules.js` to check module organization and quality.
+
+---
+
+---
+
+## AI Agent Framework (Optional)
+
+### framework (AAPF)
+
+The **Autonomous Agent Prompting Framework (AAPF)** provides disciplined, evidence-first operational principles for AI agents.
+
+**Category:** `framework` (special - not a module)
+
+**Includes:**
+
+- **Doctrine** - Core operational principles (always active when enabled)
+- **Directives** - Communication guidelines (always active when enabled)
+- **Playbooks** - Structured workflows for specific tasks (optional)
+- **Enhancements** - Advanced features like slash commands (optional)
+
+**Structure:**
+
+```
+framework/
+├── doctrine/          # Core principles (always loaded)
+├── directives/        # Communication guidelines (always loaded)
+├── playbooks/         # Workflow templates (optional)
+├── enhancements/      # Advanced features (optional)
+└── docs/              # Documentation
+```
+
+**Configuration:**
+
+```yaml
+# Minimal: Only doctrine + directives
+framework:
+  doctrine: true
+  directives: true
+
+# Standard: Include playbooks
+framework:
+  doctrine: true
+  directives: true
+  playbooks: true
+
+# Full: Everything
+framework: true
+```
+
+**When to Use:**
+
+- ✅ You want structured, disciplined AI agent behavior
+- ✅ You need systematic workflows for complex tasks
+- ✅ You want autonomous problem-solving with verification
+- ✅ You prefer evidence-based decision making
+
+**See Also:**
+
+- [Framework README](../../framework/README.md) - Complete framework documentation
+- [Framework Testing](../../framework/docs/testing.md) - Test scenarios and evaluation
 
 ---
 

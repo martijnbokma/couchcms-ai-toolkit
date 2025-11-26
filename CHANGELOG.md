@@ -5,6 +5,70 @@ All notable changes to the CouchCMS AI Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Project Rules Guide** (`docs/PROJECT-RULES.md`) - Complete guide to Cursor Project Rules
+    - Explanation of rule types (Always Apply, Apply Intelligently, etc.)
+    - How to create custom Project Rules
+    - Integration with toolkit's auto-syncing rules
+    - Best practices and examples
+    - Troubleshooting guide
+
+- **User Rules Guide** (`docs/USER-RULES.md`) - Complete guide to Cursor User Rules
+    - When to use User Rules vs Project Rules
+    - How to set up User Rules in Cursor Settings
+    - Best practices for global preferences
+    - Integration with toolkit's Project Rules
+    - Template and examples
+
+- **User Rules Template** (`templates/editors/user-rules.template.md`)
+    - Ready-to-use template for Cursor User Rules
+    - Includes communication style, code preferences, workflow
+    - Automatically generated as `USER-RULES.md` during sync
+
+- **Project Rules Template** (`templates/editors/project-rules.template.md`)
+    - Template for creating custom Project Rules
+    - Examples for different rule types
+    - Best practices included
+    - Automatically generated as `PROJECT-RULES-TEMPLATE.md` during sync
+
+- **Sync script enhancement** - Now generates `USER-RULES.md` and `PROJECT-RULES-TEMPLATE.md`
+    - Adds timestamp to template data
+    - Includes both templates in sync process
+
+- **Custom Commands Guide** (`docs/CUSTOM-COMMANDS.md`) - Complete guide to Cursor Custom Commands
+    - What are Custom Commands and when to use them
+    - Project Commands vs User Commands
+    - How to create custom commands
+    - Integration with toolkit's auto-syncing commands
+    - Best practices and examples
+    - Troubleshooting guide
+
+- **Toolkit Commands** (`commands/`) - Pre-built commands for CouchCMS projects
+    - `code-review.md` - Comprehensive code review checklist
+    - `create-component.md` - Create CouchCMS components
+    - `refactor-file.md` - Refactor using toolkit patterns
+    - `validate-code.md` - Validate against project standards
+    - `create-form.md` - Create DataBound Forms
+    - `create-view.md` - Create CouchCMS views
+    - `fix-issues.md` - Fix common issues automatically
+    - `add-authentication.md` - Add authentication to templates
+    - `README.md` - Commands documentation
+
+- **Sync script enhancement** - Now syncs Custom Commands
+    - New `syncCursorCommands()` function
+    - Automatically copies commands from toolkit to `.cursor/commands/`
+    - Replaces path variables in commands
+    - Integrates with existing sync workflow
+
+### Changed
+
+- **README.md** - Added Rules & Configuration section with links to new guides
+- **GETTING-STARTED.md** - Added links to Project Rules, User Rules, and Custom Commands guides
+- **sync.js** - Added command syncing functionality
+
 ## [1.1.0] - 2025-11-25
 
 ### Added

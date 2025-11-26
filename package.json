@@ -6,7 +6,9 @@
     "scripts": {
         "sync": "bun scripts/sync.js",
         "validate": "bun scripts/validate.js",
-        "init": "bun scripts/init.js"
+        "init": "bun scripts/init.js",
+        "update-submodule": "bun scripts/update-submodule.js",
+        "prepare-contribution": "bun scripts/prepare-contribution.js"
     },
     "dependencies": {
         "gray-matter": "^4.0.3",

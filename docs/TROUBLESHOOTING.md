@@ -29,14 +29,14 @@ The validation output will point you to specific problems.
 
 ## Validation Issues
 
-### ❌ "project.md not found"
+### ❌ "No configuration file found"
 
-**Problem**: No project configuration file exists.
+**Problem**: No configuration file (`standards.md`) exists.
 
 **Solution**:
 
 ```bash
-# Run setup wizard to create project.md
+# Run setup wizard to create standards.md
 bun ai-toolkit-shared/scripts/init.js
 ```
 
@@ -46,7 +46,7 @@ Or create manually following [GETTING-STARTED.md](GETTING-STARTED.md).
 
 ### ❌ "Invalid YAML frontmatter"
 
-**Problem**: Syntax error in project.md YAML.
+**Problem**: Syntax error in `standards.md` YAML.
 
 **Common causes**:
 
@@ -58,8 +58,8 @@ Or create manually following [GETTING-STARTED.md](GETTING-STARTED.md).
 **Solution**:
 
 ```bash
-# Check your project.md syntax
-cat project.md
+# Check your standards.md syntax
+cat .project/standards.md
 
 # Look for these issues:
 # - name: my-project     ✓ Good
@@ -206,12 +206,12 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ### ⚠️ "No modules loaded"
 
-**Problem**: Empty or missing `modules:` array in project.md.
+**Problem**: Empty or missing `modules:` array in `standards.md`.
 
 **Solution**:
 
 ```yaml
-# project.md must have at least couchcms-core
+# standards.md must have at least couchcms-core
 modules:
     - couchcms-core # Always required
 ```
@@ -229,7 +229,7 @@ modules:
 bun ai-toolkit-shared/scripts/validate.js
 
 # 2. Check error messages - they include hints
-# 3. Fix issues in project.md
+# 3. Fix issues in standards.md
 # 4. Run sync again
 ```
 
@@ -313,7 +313,7 @@ git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-too
 **Solution**:
 
 ```bash
-# If you specified context in project.md:
+# If you specified context in standards.md:
 context: '.project/ai'
 
 # Create the directory and file:
@@ -323,7 +323,9 @@ touch .project/ai/context.md
 # Add some content to context.md
 ```
 
-Or remove the `context:` line from project.md if not needed.
+Or remove the `context:` line from `standards.md` if not needed.
+
+**Note:** For most projects, you don't need `context.md`. Just add all rules to the `standards.md` body.
 
 ---
 
@@ -334,7 +336,7 @@ Or remove the `context:` line from project.md if not needed.
 **Solution**:
 
 ```bash
-# Check your project.md for custom paths
+# Check your standards.md for custom paths
 # Create missing directories:
 mkdir -p path/to/directory
 ```
@@ -473,7 +475,7 @@ Or copy key sections into your prompts.
 # 1. Check CHANGELOG
 cat ai-toolkit-shared/CHANGELOG.md
 
-# 2. Update project.md if needed
+# 2. Update standards.md if needed
 # (CHANGELOG will list required changes)
 
 # 3. Rerun sync
@@ -493,7 +495,7 @@ bun ai-toolkit-shared/scripts/sync.js
 bun ai-toolkit-shared/scripts/validate.js
 
 # Fix warnings/errors
-# Update project.md as needed
+# Update standards.md as needed
 # Validate again
 ```
 
@@ -516,8 +518,8 @@ code .cursorrules
 
 ```bash
 # ✓ Right - edit source configuration
-code project.md
-# ... or ...
+code .project/standards.md
+# ... or if using context.md ...
 code .project/ai/context.md
 # Then regenerate:
 bun ai-toolkit-shared/scripts/sync.js
@@ -527,12 +529,12 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ### ❌ Forgetting to Sync
 
-**Problem**: Changed project.md but AI still uses old rules.
+**Problem**: Changed `standards.md` but AI still uses old rules.
 
 **Remember**:
 
 ```bash
-# After ANY change to project.md:
+# After ANY change to standards.md:
 bun ai-toolkit-shared/scripts/sync.js
 
 # Optional but recommended:
@@ -545,7 +547,7 @@ bun ai-toolkit-shared/scripts/validate.js  # Before sync
 
 **Problem**: Path confusion between projects.
 
-**Check your project.md**:
+**Check your standards.md**:
 
 ```yaml
 # For THIS project's submodule:
@@ -565,8 +567,8 @@ toolkit: "ai-toolkit-shared"  # ✗ Missing ./
 
 ```bash
 # Full diagnostic
-echo "=== Project.md ==="
-cat project.md
+echo "=== Configuration File ==="
+cat .project/standards.md  # or standards.md
 echo ""
 echo "=== Validation ==="
 bun ai-toolkit-shared/scripts/validate.js
@@ -583,7 +585,7 @@ ls -la .cursorrules CLAUDE.md AGENT.md
 1. **GitHub Issues**: https://github.com/martijnbokma/couchcms-ai-toolkit/issues
 2. **Include**:
     - Output of validation command
-    - Your project.md (remove sensitive info)
+    - Your `standards.md` (remove sensitive info)
     - Error messages
     - What you've tried
 

@@ -6,13 +6,49 @@ Thank you for your interest in contributing! This guide explains **how to contri
 
 You can contribute to this toolkit **directly from your project** without cloning the toolkit separately. The submodule setup makes this easy!
 
+**Key Points:**
+- ✅ Work directly in your project's submodule directory
+- ✅ No need to clone the toolkit separately
+- ✅ Changes are isolated in feature branches
+- ✅ Simple workflow: branch → edit → test → commit → push → PR
+
 ## 📋 Prerequisites
 
-- Git installed
-- Bun (or npm/node) installed
-- Your project uses this toolkit as a submodule
+- ✅ Git installed
+- ✅ Bun (or npm/node) installed
+- ✅ Your project uses this toolkit as a submodule
+- ✅ You have write access to fork the repository (or you're a collaborator)
+
+**Note:** If you don't have write access, you'll need to:
+1. Fork the repository on GitHub
+2. Update your submodule to point to your fork (or add your fork as a remote)
+3. Push to your fork and create a PR from there
 
 ## 🔄 Contribution Workflow
+
+### Quick Start (Using Helper Script)
+
+```bash
+# From your project root
+cd ai-toolkit-shared
+
+# Run the preparation script
+bun run prepare-contribution
+
+# Or create a branch directly
+bun run prepare-contribution --branch feature/your-feature-name
+```
+
+The script will:
+- ✅ Check your git state
+- ✅ Switch to master branch
+- ✅ Pull latest updates
+- ✅ Show you next steps
+- ✅ Optionally create your feature branch
+
+### Manual Workflow
+
+If you prefer to do it manually, follow these steps:
 
 ### Step 1: Navigate to the Submodule
 
@@ -29,9 +65,22 @@ git branch
 
 # Check if there are uncommitted changes
 git status
+
+# Check remote configuration
+git remote -v
+# Should show: https://github.com/martijnbokma/couchcms-ai-toolkit.git
 ```
 
 **Important**: Submodules are often in "detached HEAD" state. We need to fix this first.
+
+**If you're contributing from a fork:**
+```bash
+# Add your fork as a remote (if not already added)
+git remote add fork https://github.com/YOUR-USERNAME/couchcms-ai-toolkit.git
+
+# Or update existing remote
+git remote set-url origin https://github.com/YOUR-USERNAME/couchcms-ai-toolkit.git
+```
 
 ### Step 3: Switch to Master Branch
 
@@ -44,6 +93,11 @@ git checkout master
 
 # Pull latest updates
 git pull origin master
+
+# If you're using a fork, also fetch from upstream
+git remote add upstream https://github.com/martijnbokma/couchcms-ai-toolkit.git  # First time only
+git fetch upstream
+git merge upstream/master  # Sync with upstream
 ```
 
 ### Step 4: Create a Feature Branch
@@ -119,19 +173,54 @@ git commit -m "feat: add Vue.js module
 ```bash
 # Push to the remote repository
 git push origin feature/your-feature-name
+
+# If this is your first push, set upstream:
+git push -u origin feature/your-feature-name
+```
+
+**If you're using a fork:**
+```bash
+# Push to your fork
+git push fork feature/your-feature-name
+# or if fork is your origin:
+git push origin feature/your-feature-name
 ```
 
 ### Step 9: Create a Pull Request
 
+**If you have direct access:**
 1. Go to https://github.com/martijnbokma/couchcms-ai-toolkit
 2. You'll see a banner: "Compare & pull request"
 3. Click it and fill in:
-    - **Title**: Clear, descriptive title
-    - **Description**:
-        - What does this change?
-        - Why is it needed?
-        - How to test it?
+    - **Title**: Clear, descriptive title (e.g., "feat: add Vue.js module")
+    - **Description**: Use the template below
 4. Click "Create pull request"
+
+**If you're using a fork:**
+1. Go to https://github.com/YOUR-USERNAME/couchcms-ai-toolkit
+2. Click "Compare & pull request" or go to the main repo and click "New Pull Request"
+3. Select your fork and branch
+4. Fill in the PR details
+
+**PR Description Template:**
+```markdown
+## What does this change?
+Brief description of what you added/changed/fixed.
+
+## Why is it needed?
+Explain the problem it solves or the improvement it makes.
+
+## How to test it?
+1. Step 1
+2. Step 2
+3. Expected result
+
+## Checklist
+- [ ] Code follows project style
+- [ ] Changes are tested (`bun run sync` works)
+- [ ] Documentation is updated
+- [ ] Commit messages are clear
+```
 
 ### Step 10: After PR is Merged
 

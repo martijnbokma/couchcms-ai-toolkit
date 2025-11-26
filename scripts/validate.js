@@ -8,28 +8,25 @@
  *   bun ai-toolkit/scripts/validate.js
  */
 
-import matter from 'gray-matter'
 import { readFileSync, existsSync } from 'fs'
-import { join, dirname, resolve } from 'path'
+import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
+import { findConfigFile, loadConfig, getConfigFileName } from './utils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const TOOLKIT_ROOT = resolve(__dirname, '..')
 
 /**
- * Find project.md in current directory or parent directories
+ * Find configuration file (standards.md) in current directory or parent directories
  */
 function findProjectFile(startDir = process.cwd()) {
     let currentDir = startDir
-    const possibleNames = ['project.md', 'PROJECT.md']
 
     while (currentDir !== '/') {
-        for (const name of possibleNames) {
-            const projectPath = join(currentDir, name)
-            if (existsSync(projectPath)) {
-                return projectPath
-            }
+        const configPath = findConfigFile(currentDir)
+        if (configPath) {
+            return configPath
         }
         currentDir = dirname(currentDir)
     }
@@ -67,31 +64,37 @@ async function validate() {
     const warnings = []
     let score = 100
 
-    // Find project.md
-    const projectPath = findProjectFile()
+    // Find configuration file
+    const configPath = findProjectFile()
 
-    if (!projectPath) {
-        console.error('❌ No project.md found')
-        console.log('\nCreate a project.md file to use the toolkit.\n')
+    if (!configPath) {
+        const configFileName = getConfigFileName(process.cwd()) || 'standards.md'
+        console.error(`❌ No configuration file found`)
+        console.log(`\nCreate a ${configFileName} file to use the toolkit.`)
+        console.log('💡 Tip: Use .project/standards.md for the recommended location.\n')
         process.exit(1)
     }
 
-    console.log(`📄 Found: ${projectPath}`)
-    const projectDir = dirname(projectPath)
+    console.log(`📄 Found: ${configPath}`)
+    const projectDir = dirname(configPath)
 
-    // Parse project.md
+    // Parse configuration file
     let config
     try {
-        const projectContent = readFileSync(projectPath, 'utf8')
-        const parsed = matter(projectContent)
-        config = parsed.data
+        const configData = loadConfig(projectDir)
+        if (!configData) {
+            throw new Error('Failed to load configuration')
+        }
+        config = configData.frontmatter
     } catch (error) {
-        errors.push(`Failed to parse project.md: ${error.message}`)
+        const configFileName = getConfigFileName(projectDir) || 'standards.md'
+        errors.push(`Failed to parse ${configFileName}: ${error.message}`)
         score -= 50
     }
 
     if (!config) {
-        console.error('❌ Invalid project.md format\n')
+        const configFileName = getConfigFileName(projectDir) || 'standards.md'
+        console.error(`❌ Invalid ${configFileName} format\n`)
         process.exit(1)
     }
 

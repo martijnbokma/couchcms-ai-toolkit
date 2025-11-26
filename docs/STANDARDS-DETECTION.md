@@ -22,11 +22,6 @@ The toolkit searches for configuration files in this priority order:
     - More visible
     - Still works perfectly
 
-4. **`project.md`** (fallback)
-    - Legacy support
-    - Backward compatibility
-    - Will be phased out
-
 ## How It Works
 
 ### In Scripts
@@ -36,7 +31,7 @@ All toolkit scripts (`init.js`, `sync.js`, `validate.js`) use the `findConfigFil
 ```javascript
 import { findConfigFile, loadConfig } from './utils.js'
 
-// Automatically finds standards.md or project.md
+// Automatically finds standards.md
 const configPath = findConfigFile(process.cwd())
 
 // Loads and parses the file
@@ -54,9 +49,9 @@ All prompts automatically include:
 
 This prompt automatically uses standards from:
 
+- `.project/standards.md` (if exists - recommended)
 - `docs/standards.md` (if exists)
 - `standards.md` (if exists)
-- `project.md` (fallback)
 ```
 
 ### In Validators
@@ -123,7 +118,8 @@ import { hasStandards } from './utils.js'
 if (hasStandards(process.cwd())) {
     console.log('✓ standards.md found')
 } else {
-    console.log('⚠️  No standards.md found, using project.md')
+    console.log('❌ No standards.md found')
+    console.log('Run: bun ai-toolkit-shared/scripts/init.js')
 }
 ```
 
@@ -148,29 +144,26 @@ import { getConfigFileName } from './utils.js'
 
 const fileName = getConfigFileName(process.cwd())
 console.log(`Using: ${fileName}`)
-// Output: "docs/standards.md" or "standards.md" or "project.md"
+// Output: ".project/standards.md" or "docs/standards.md" or "standards.md"
 ```
 
 ## Migration Path
 
-### From project.md to standards.md
+**Note:** If you have an old `project.md` file, you must migrate to `standards.md`.
 
-1. **Create standards.md**:
+### Simple Migration
+
+1. **Rename project.md to standards.md**:
 
     ```bash
-    # Copy project.md content
-    cp project.md docs/standards.md
+    # Rename to recommended location
+    mv project.md .project/standards.md
+
+    # Or to root
+    mv project.md standards.md
     ```
 
-2. **Add YAML frontmatter**:
-
-    ```yaml
-    ---
-    project:
-        name: 'my-project'
-        # ... rest of config
-    ---
-    ```
+2. **No content changes needed** - the file format is the same!
 
 3. **Update content**:
     - Add full standards documentation
@@ -184,10 +177,10 @@ console.log(`Using: ${fileName}`)
     ```
 
 5. **Remove project.md** (optional):
-    ```bash
-    # After confirming standards.md works
-    rm project.md
-    ```
+```bash
+# After migration, project.md is no longer needed
+# (The toolkit no longer supports project.md)
+```
 
 ## Benefits
 
@@ -226,12 +219,12 @@ bun ai-toolkit-shared/scripts/validate.js
 
 ```bash
 # Check priority order
-# 1. docs/standards.md
-# 2. standards.md
-# 3. project.md
+# 1. .project/standards.md (recommended)
+# 2. docs/standards.md
+# 3. standards.md
 
 # Remove lower priority files if needed
-rm standards.md  # If you want docs/standards.md
+rm standards.md  # If you want .project/standards.md
 ```
 
 ### YAML Parse Errors
