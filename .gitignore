@@ -22,6 +22,9 @@ Thumbs.db
 *.tmp
 .temp/
 
+# Backup files
+*.bak.*
+
 # Environment files
 .env
 .env.local
