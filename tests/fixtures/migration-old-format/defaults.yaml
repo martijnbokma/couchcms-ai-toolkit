@@ -1,0 +1,22 @@
+# Old format defaults.yaml for migration testing
+
+paths:
+  css: "assets/css"
+  typescript: "assets/ts"
+  javascript: "assets/js"
+  components: "snippets/components"
+  views: "snippets/views"
+
+standards:
+  indentation: 4
+  language: "english"
+  lineLength: 120
+
+naming:
+  php_variables: "snake_case"
+  php_functions: "snake_case"
+  cms_fields: "snake_case"
+  ts_variables: "camelCase"
+  ts_functions: "camelCase"
+  ts_classes: "PascalCase"
+  css_classes: "kebab-case"

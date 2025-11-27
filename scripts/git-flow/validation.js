@@ -5,7 +5,7 @@
  * Provides validation functions for branch names, states, and workflow rules.
  */
 
-import { ToolkitError } from '../utils.js';
+import { ToolkitError } from '../utils/utils.js';
 import {
     getCurrentBranch,
     getBranchAge,

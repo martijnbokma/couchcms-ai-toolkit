@@ -6,9 +6,20 @@ Provides consistent AI assistance across all your projects with modules, agents,
 
 ## ✨ Features
 
-- 🎯 **Interactive Setup Wizard** - Get started in 2 minutes
-- ✅ **Project Validation** - Compliance checking (0-100% score)
-- 🔄 **Auto-Generated Configs** - Cursor, Claude, Copilot ready
+### Smart Setup
+- 🔍 **Auto-Detection** - Automatically detects project type, frameworks, and languages
+- �  **Project Presets** - Choose from 8 common project types (blog, ecommerce, webapp, etc.)
+- 🎯 **Interactive Setup Wizard** - Get started in 2 minutes with 4 setup modes
+- ✅ **Health Check** - Validate installation and check for updates
+
+### Developer Experience
+- 👀 **Watch Mode** - Auto-sync configs when standards.md changes
+- 🔄 **Update Notifier** - Get notified when toolkit updates are available
+- 🎨 **Interactive Browser** - Browse and select modules/agents with keyboard navigation
+- 📊 **Project Validation** - Compliance checking (0-100% score)
+
+### Configuration
+- 🔄 **Auto-Generated Configs** - Cursor, Claude, Copilot, Windsurf, Kiro ready
 - 📦 **15 Knowledge Modules** - CouchCMS, TailwindCSS, Alpine.js, TypeScript, daisyUI, DataBound Forms, Search, Pagination, Users, Comments, and more
 - 🤖 **23 AI Agents** - Specialized guidance for daily development
 - 📋 **Auto-Loading Rules** - Context-aware refactoring patterns
@@ -26,7 +37,25 @@ After adding the submodule, **always** run `bun install` in `ai-toolkit-shared/`
 
 ## 🚀 Quick Start
 
-Get started in 3 steps:
+### One-Command Install (Recommended)
+
+```bash
+# Using curl (works everywhere)
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
+
+# Or using Bun
+bun x https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js
+```
+
+This automatically:
+- ✅ Adds toolkit as git submodule
+- ✅ Installs dependencies
+- ✅ Runs setup wizard
+- ✅ Generates all configs
+
+**Done in 30 seconds!** 🚀
+
+### Manual Install (3 steps)
 
 ```bash
 # 1. Add toolkit as submodule
@@ -39,18 +68,51 @@ cd ai-toolkit-shared && bun install && cd ..
 bun ai-toolkit-shared/scripts/init.js
 ```
 
-**Choose "Simple" mode** (recommended) - answers 2 questions, uses smart defaults.
+**Choose "Auto" mode** (recommended) - automatically detects your project type, frameworks, and recommends modules.
 
-**Result:** `.project/standards.md`, `.cursorrules`, `CLAUDE.md`, and `AGENT.md` are generated automatically.
+**Other modes:**
+- **Preset** - Choose from common project types (blog, ecommerce, webapp, etc.)
+- **Simple** - Quick setup with standard defaults
+- **Custom** - Full control over all options
+
+**Result:** Configuration file and all IDE configs (`.cursorrules`, `.claude/`, etc.) are generated automatically.
 
 📖 **For detailed setup instructions**, see [Getting Started Guide](docs/GETTING-STARTED.md).
 
+📖 **Upgrading from old format?** See [Migration Guide](docs/MIGRATION.md).
+
+## 📋 Project Presets
+
+Choose from 8 predefined configurations during setup:
+
+| Preset | Description | Modules |
+|--------|-------------|---------|
+| **Landing Page** | Simple landing page | Core, TailwindCSS, Alpine.js |
+| **Blog** | Blog with comments & search | Core, TailwindCSS, Alpine.js, Comments, Search, Pagination |
+| **E-commerce** | Online store | Core, TailwindCSS, Alpine.js, DataBound Forms, Users, Search |
+| **Web Application** | Full-featured webapp | Core, TailwindCSS, Alpine.js, TypeScript, DataBound Forms, Users |
+| **Portfolio** | Portfolio showcase | Core, TailwindCSS, Alpine.js |
+| **Documentation** | Documentation site | Core, TailwindCSS, Alpine.js, Search, Pagination |
+| **Minimal** | Bare minimum | Core only |
+| **Full Stack** | Everything included | All modules and agents |
+
+Select during `init` or browse interactively with `bun scripts/browse.js`
+
 ## 📚 Documentation
+
+### 🚀 Start Here
+
+| Guide | Description | Time |
+|-------|-------------|------|
+| **[Quick Start](docs/QUICK-START.md)** | Installatie in 5 minuten | 5 min |
+| **[How It Works](docs/HOW-IT-WORKS.md)** | Complete uitleg voor iedereen | 15 min |
+| **[Cheat Sheet](docs/CHEAT-SHEET.md)** | Snelle referentie | 2 min |
 
 ### Essential Guides
 
 | Guide | When to Use |
 |-------|-------------|
+| **[New Features v2.1.0](docs/NEW-FEATURES.md)** | Learn about latest features |
 | **[Getting Started](docs/GETTING-STARTED.md)** | First-time setup - start here |
 | **[Git Workflow](docs/GIT-WORKFLOW.md)** | Collaborating with team - branching strategy |
 | **[Commands Reference](docs/COMMANDS.md)** | Using `init`, `validate`, `sync` |
@@ -60,7 +122,8 @@ bun ai-toolkit-shared/scripts/init.js
 
 | Guide | Purpose |
 |-------|---------|
-| **[Config Files Guide](docs/CONFIG-FILES.md)** | Understanding `standards.md` |
+| **[Config Files Guide](docs/CONFIG-FILES.md)** | Understanding `config.yaml` and `standards.md` |
+| **[Migration Guide](docs/MIGRATION.md)** | Upgrading to new config format |
 | **[Project Rules](docs/PROJECT-RULES.md)** | Cursor Project Rules |
 | **[User Rules](docs/USER-RULES.md)** | Cursor User Rules |
 | **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Cursor Custom Commands |
@@ -85,14 +148,27 @@ bun ai-toolkit-shared/scripts/init.js
 ### Setup & Configuration
 
 ```bash
-# Interactive setup (first time)
+# Interactive setup (first time) - with auto-detection!
 bun ai-toolkit-shared/scripts/init.js
+
+# Health check - validate installation and check for updates
+bun ai-toolkit-shared/scripts/health.js
+
+# Generate/update AI configs
+bun ai-toolkit-shared/scripts/sync.js
+
+# Watch mode - auto-sync on config changes
+bun ai-toolkit-shared/scripts/sync.js --watch
+
+# Interactive module browser
+bun ai-toolkit-shared/scripts/browse.js          # Browse modules
+bun ai-toolkit-shared/scripts/browse.js --agents # Browse agents
 
 # Validate configuration
 bun ai-toolkit-shared/scripts/validate.js
 
-# Generate/update AI configs
-bun ai-toolkit-shared/scripts/sync.js
+# Migrate from old configuration format
+bun ai-toolkit-shared/scripts/migrate.js
 
 # Update submodule (keep toolkit up-to-date)
 cd ai-toolkit-shared && bun run update-submodule
@@ -250,24 +326,39 @@ bun ai-toolkit-shared/scripts/validate.js
 
 ## 📝 Configuration
 
-Your configuration lives in `.project/standards.md`:
+Your configuration lives in `config.yaml` (new format) or `.project/standards.md` (legacy format):
 
-- **YAML frontmatter**: Modules, agents, paths
-- **Markdown body**: Project rules and documentation
+### New Format (Recommended)
+- **config.yaml**: Single YAML file with all configuration
+- Simpler, clearer, and easier to maintain
+- See [Migration Guide](docs/MIGRATION.md) to upgrade
 
-**One file for everything** - that's all you need for 95% of projects.
+### Legacy Format (Still Supported)
+- **`.project/standards.md`**: YAML frontmatter + Markdown body
+- Still works, but consider migrating to new format
 
 📖 See [Config Files Guide](docs/CONFIG-FILES.md) for details.
 
-## 🆕 What's New in v1.1.0
+## 🆕 What's New in v2.1.0
 
-- ✅ Interactive setup wizard
-- ✅ Project validation with compliance score
-- ✅ Enhanced error messages
-- ✅ Complete documentation overhaul
-- ✅ Contributing guide
+### Smart Setup & Detection
+- ✅ **Auto-Detection** - Automatically detects project type, frameworks, and languages from your codebase
+- ✅ **Project Presets** - 8 predefined configurations for common project types
+- ✅ **4 Setup Modes** - Auto, Preset, Simple, and Custom modes for every use case
 
-See [CHANGELOG.md](CHANGELOG.md) for details.
+### Enhanced Developer Experience
+- ✅ **Watch Mode** - Auto-sync configs when standards.md changes (`--watch` flag)
+- ✅ **Health Check** - Validate installation, check for updates, and diagnose issues
+- ✅ **Update Notifier** - Get notified when toolkit updates are available
+- ✅ **Interactive Browser** - Browse and select modules/agents with keyboard navigation
+
+### Previous (v2.0.0)
+- ✅ **Simplified Configuration** - Single `config.yaml` file replaces multiple config files
+- ✅ **Modular Architecture** - Refactored scripts into reusable library modules
+- ✅ **50% Faster Sync** - Performance optimizations with caching and selective file writing
+- ✅ **Streamlined Editor Support** - Focus on actively used editors (Cursor, Claude, Windsurf, Kiro, Copilot)
+
+See [CHANGELOG.md](CHANGELOG.md) for complete details and [Migration Guide](docs/MIGRATION.md) for upgrade instructions.
 
 ## 🤝 Contributing
 

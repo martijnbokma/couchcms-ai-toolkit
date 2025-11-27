@@ -5,7 +5,7 @@
  * Implements the release branch workflow for Gitflow.
  */
 
-import { ToolkitError } from '../utils.js';
+import { ToolkitError } from '../utils/utils.js';
 import {
     createBranch,
     pushBranch,

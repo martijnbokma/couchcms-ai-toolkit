@@ -18,6 +18,10 @@ Thumbs.db
 *.swo
 *~
 
+# Generated editor configs (toolkit generates these)
+.tabnine/
+.codewhisperer/
+
 # Temporary files
 *.tmp
 .temp/

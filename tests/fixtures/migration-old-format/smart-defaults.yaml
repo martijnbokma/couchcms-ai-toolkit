@@ -1,0 +1,19 @@
+# Old format smart-defaults.yaml for migration testing
+
+file_contexts:
+  "*.php":
+    agents: [couchcms]
+    modules: [couchcms-core]
+    
+  "*.ts":
+    agents: [typescript]
+    modules: [typescript]
+    
+  "snippets/components/*.html":
+    agents: [couchcms, alpinejs]
+    modules: [couchcms-core, alpinejs]
+
+template_aliases:
+  component-basic: "templates/components/basic.html"
+  view-list: "templates/views/list.html"
+  form-basic: "templates/forms/basic.html"

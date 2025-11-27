@@ -1,0 +1,157 @@
+# CouchCMS AI Toolkit - Project Presets
+#
+# Predefined configurations for common project types
+
+presets:
+  landing-page:
+    name: "Landing Page"
+    description: "Simple landing page with CouchCMS"
+    modules:
+      - couchcms-core
+      - tailwindcss
+      - alpinejs
+    agents:
+      - couchcms
+      - tailwindcss
+      - alpinejs
+    framework:
+      enabled: false
+
+  blog:
+    name: "Blog"
+    description: "Blog with comments, search, and pagination"
+    modules:
+      - couchcms-core
+      - tailwindcss
+      - alpinejs
+      - comments
+      - search
+      - pagination
+    agents:
+      - couchcms
+      - tailwindcss
+      - alpinejs
+      - comments
+      - search
+    framework:
+      enabled: false
+
+  ecommerce:
+    name: "E-commerce"
+    description: "Online store with products, cart, and checkout"
+    modules:
+      - couchcms-core
+      - tailwindcss
+      - alpinejs
+      - databound-forms
+      - users
+      - search
+      - pagination
+    agents:
+      - couchcms
+      - tailwindcss
+      - alpinejs
+      - databound-forms
+      - users
+    framework:
+      enabled: false
+
+  webapp:
+    name: "Web Application"
+    description: "Full-featured web application with authentication"
+    modules:
+      - couchcms-core
+      - tailwindcss
+      - alpinejs
+      - typescript
+      - databound-forms
+      - users
+      - search
+    agents:
+      - couchcms
+      - tailwindcss
+      - alpinejs
+      - databound-forms
+      - users
+    framework:
+      enabled: true
+      categories:
+        - doctrine
+        - directives
+
+  portfolio:
+    name: "Portfolio"
+    description: "Portfolio website with projects showcase"
+    modules:
+      - couchcms-core
+      - tailwindcss
+      - alpinejs
+    agents:
+      - couchcms
+      - tailwindcss
+      - alpinejs
+    framework:
+      enabled: false
+
+  documentation:
+    name: "Documentation Site"
+    description: "Documentation with search and navigation"
+    modules:
+      - couchcms-core
+      - tailwindcss
+      - alpinejs
+      - search
+      - pagination
+    agents:
+      - couchcms
+      - tailwindcss
+      - search
+    framework:
+      enabled: false
+
+  minimal:
+    name: "Minimal"
+    description: "Bare minimum - CouchCMS core only"
+    modules:
+      - couchcms-core
+    agents:
+      - couchcms
+    framework:
+      enabled: false
+
+  full:
+    name: "Full Stack"
+    description: "Everything included - all modules and agents"
+    modules:
+      - couchcms-core
+      - tailwindcss
+      - alpinejs
+      - typescript
+      - daisyui
+      - htmx
+      - databound-forms
+      - users
+      - comments
+      - search
+      - pagination
+      - relations
+      - repeatable-regions
+      - mosaic
+      - nicedit
+    agents:
+      - couchcms
+      - tailwindcss
+      - alpinejs
+      - databound-forms
+      - users
+      - comments
+      - search
+      - relations
+      - repeatable-regions
+      - mosaic
+    framework:
+      enabled: true
+      categories:
+        - doctrine
+        - directives
+        - playbooks
