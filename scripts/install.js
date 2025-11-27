@@ -115,6 +115,23 @@ async function installToolkit() {
         return true
     }
     
+    // Check if submodule exists but directory is missing
+    try {
+        const gitmodules = exec('git config --file .gitmodules --get submodule.ai-toolkit-shared.url', { 
+            silent: true, 
+            ignoreError: true 
+        })
+        
+        if (gitmodules) {
+            print('⚠️  Submodule exists in .gitmodules but directory is missing', 'yellow')
+            print('   Cleaning up old submodule configuration...', 'blue')
+            exec(`git submodule deinit -f ${TOOLKIT_DIR}`, { ignoreError: true })
+            exec(`git rm -f ${TOOLKIT_DIR}`, { ignoreError: true })
+            exec(`rm -rf .git/modules/${TOOLKIT_DIR}`, { ignoreError: true })
+            print('   Cleaned up old submodule', 'green')
+        }
+    } catch {}
+    
     // Add as submodule
     print(`   Adding submodule from ${REPO_URL}...`, 'blue')
     exec(`git submodule add ${REPO_URL} ${TOOLKIT_DIR}`)

@@ -1,6 +1,6 @@
 {
     "name": "couchcms-ai-toolkit",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Universal AI Development Toolkit for CouchCMS Projects",
     "type": "module",
     "main": "scripts/sync.js",
