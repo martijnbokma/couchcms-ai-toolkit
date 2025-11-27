@@ -65,6 +65,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **.gitignore** - Added `*.bak.*` pattern to exclude backup files
+    - Prevents backup files from being tracked in git
+    - Improves repository cleanliness
+
 - **README.md** - Added Rules & Configuration section with links to new guides
 - **GETTING-STARTED.md** - Added links to Project Rules, User Rules, and Custom Commands guides
 - **sync.js** - Added command syncing functionality
@@ -172,9 +176,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Bun compatibility** - Fixed `setRawMode` issue in `sync.js` and `init.js`
+    - Added runtime check for `process.stdin.setRawMode` before calling
+    - Prevents errors when running scripts with Bun runtime
+    - Maintains backwards compatibility with Node.js
+    - Scripts now work seamlessly in both Bun and Node.js environments
+
 - Path resolution for Windows compatibility
 - Missing templates directory structure
 - Auto-formatting compatibility in generated files
+
+### Removed
+
+- **Backup files** - Removed obsolete backup files from `scripts/` directory
+    - Removed `sync.js.bak.20251126`
+    - Removed `init.js.bak.20251126`
+    - Removed `validate.js.bak.20251126`
+    - Removed `utils.js.bak.20251126`
+    - Removed `update-submodule.js.bak.20251126`
+    - These files are now excluded via `.gitignore` pattern
 
 ## [1.0.0] - 2025-11-01
 

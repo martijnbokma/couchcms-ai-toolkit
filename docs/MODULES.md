@@ -501,4 +501,4 @@ framework: true
 - [Extending Modules](EXTENDING-MODULES.md) - How to extend modules from documentation
 - [Available Agents](AGENTS.md) - Specialized AI agents
 - [Getting Started](GETTING-STARTED.md) - Setup guide
-- [Module Organization Analysis](MODULE-ORGANIZATION.md) - Detailed organization guide
+- [Module Guide](MODULE-GUIDE.md) - Complete module organization and improvement guide

@@ -59,7 +59,7 @@ bun ai-toolkit-shared/scripts/init.js
 
 | Guide | Purpose |
 |-------|---------|
-| **[Config Files Guide](docs/CONFIG-FILES-GUIDE.md)** | Understanding `standards.md` |
+| **[Config Files Guide](docs/CONFIG-FILES.md)** | Understanding `standards.md` |
 | **[Project Rules](docs/PROJECT-RULES.md)** | Cursor Project Rules |
 | **[User Rules](docs/USER-RULES.md)** | Cursor User Rules |
 | **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Cursor Custom Commands |
@@ -138,7 +138,7 @@ Your configuration lives in `.project/standards.md`:
 
 **One file for everything** - that's all you need for 95% of projects.
 
-📖 See [Config Files Guide](docs/CONFIG-FILES-GUIDE.md) for details.
+📖 See [Config Files Guide](docs/CONFIG-FILES.md) for details.
 
 ## 🆕 What's New in v1.1.0
 

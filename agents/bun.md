@@ -108,11 +108,11 @@ Bun.serve({
     port: 3000,
     fetch(request) {
         const url = new URL(request.url)
-        
+
         if (url.pathname === '/api/health') {
             return Response.json({ status: 'ok' })
         }
-        
+
         return new Response('Not Found', { status: 404 })
     },
 })
@@ -180,13 +180,13 @@ async function runBuild() {
     if (buildProcess) {
         buildProcess.kill()
     }
-    
+
     console.log('Building...')
     buildProcess = spawn(['bun', 'run', 'build'], {
         stdout: 'inherit',
         stderr: 'inherit',
     })
-    
+
     await buildProcess.exited
 }
 
@@ -265,6 +265,47 @@ await result.exited
 
 ---
 
+## Runtime Compatibility
+
+### Node.js API Compatibility
+
+When writing scripts that support both Bun and Node.js, always check for API availability before calling Node.js-specific methods:
+
+```typescript title="runtime-compatible.ts"
+// ✅ GOOD: Check before calling
+if (typeof process.stdin.setRawMode === 'function') {
+    process.stdin.setRawMode(false)
+}
+
+// ❌ BAD: Direct call (fails in Bun)
+process.stdin.setRawMode(false)
+```
+
+### Common Incompatibilities
+
+| Node.js API | Bun Status | Solution |
+|-------------|------------|----------|
+| `process.stdin.setRawMode()` | Not available | Use feature detection |
+| `process.binding()` | Limited | Use Bun-specific APIs |
+| Some built-in modules | Different APIs | Check Bun documentation |
+
+### Best Practices
+
+1. **Feature Detection:** Always check if API exists before calling
+   ```typescript
+   if (typeof someAPI === 'function') {
+       someAPI()
+   }
+   ```
+
+2. **Prefer Bun APIs:** Use Bun-native APIs when available (faster, better integration)
+   ```typescript
+   // Prefer Bun.file() over fs/promises
+   const content = await Bun.file('data.json').text()
+   ```
+
+3. **Test Both Runtimes:** When possible, test scripts with both Bun and Node.js
+
 ## Troubleshooting
 
 | Problem | Cause | Solution |
@@ -273,6 +314,7 @@ await result.exited
 | Module not found | Not installed | Run `bun install` |
 | Build error | TypeScript issue | Check `tsconfig.json` |
 | Slow first run | No cache | Normal, subsequent runs are fast |
+| `setRawMode` error | Bun compatibility | Add runtime check (see Runtime Compatibility section) |
 
 ### Debug Commands
 

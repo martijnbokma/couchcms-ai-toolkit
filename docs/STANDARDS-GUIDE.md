@@ -1,6 +1,6 @@
 # standards.md Integration Guide
 
-How to integrate `standards.md` as the single source of truth in the AI toolkit.
+Complete guide to integrating `standards.md` as the single source of truth in the AI toolkit.
 
 ## Overview
 
@@ -56,6 +56,7 @@ naming:
     typescript_variables: 'camelCase'
     css_classes: 'kebab-case'
 ---
+
 # Universal AI Coding Standards
 
 [Your project-specific standards here...]
@@ -112,61 +113,79 @@ The `prompts/validators/standards.md` validator automatically:
 4. **Validates** prompts against standards
 5. **Reports** compliance score
 
+## Usage Examples
+
+### Check if Standards Exist
+
+```javascript
+import { hasStandards } from './utils.js'
+
+if (hasStandards(process.cwd())) {
+    console.log('✓ standards.md found')
+} else {
+    console.log('❌ No standards.md found')
+    console.log('Run: bun ai-toolkit-shared/scripts/init.js')
+}
+```
+
+### Load Configuration
+
+```javascript
+import { loadConfig } from './utils.js'
+
+const config = loadConfig(process.cwd())
+
+if (config) {
+    console.log(`Found: ${config.path}`)
+    console.log(`Is standards: ${config.isStandards}`)
+    console.log('Frontmatter:', config.frontmatter)
+}
+```
+
+### Get Config File Name
+
+```javascript
+import { getConfigFileName } from './utils.js'
+
+const fileName = getConfigFileName(process.cwd())
+console.log(`Using: ${fileName}`)
+// Output: ".project/standards.md" or "docs/standards.md" or "standards.md"
+```
+
 ## Migration from project.md
 
-### Option 1: Rename (Simple)
+**Note:** If you have an old `project.md` file, you must migrate to `standards.md`.
 
-```bash
-# If you have project.md, rename it
-mv project.md .project/standards.md
+### Simple Migration
 
-# Create .project directory if needed
-mkdir -p .project
+1. **Rename project.md to standards.md**:
 
-# Update any references
-# The toolkit will automatically detect it
-```
+    ```bash
+    # Rename to recommended location
+    mv project.md .project/standards.md
 
-### Option 2: Keep Both (Gradual)
+    # Or to root
+    mv project.md standards.md
+    ```
 
-```bash
-# Keep project.md for now
-# Create .project/standards.md with full standards
-# Toolkit will prefer .project/standards.md
-# Remove project.md later when ready
-```
+2. **No content changes needed** - the file format is the same!
 
-### Option 3: Convert Content
+3. **Update content**:
+    - Add full standards documentation
+    - Include quality checklists
+    - Add code examples
 
-```bash
-# Extract standards from project.md
-# Create .project/standards.md with:
-# - YAML frontmatter (project config)
-# - Full standards documentation
-# - Quality checklists
-```
+4. **Test detection**:
 
-## Usage in Prompts
+    ```bash
+    bun ai-toolkit-shared/scripts/validate.js
+    ```
 
-### Automatic Reference
-
-All prompts automatically include:
-
-```markdown
-**Critical: Always follow project standards (standards.md) before generating any code.**
-```
-
-### Manual Reference
-
-You can also explicitly reference standards:
-
-```markdown
-See [standards.md](../../docs/standards.md) for:
-
-- Coding standards
-- Naming conventions
-- Technology stack requirements
-```
+5. **Remove project.md** (optional):
+    ```bash
+    # After migration, project.md is no longer needed
+    # (The toolkit no longer supports project.md)
+    ```
 
 ## Script Updates
 
@@ -339,6 +358,7 @@ grep "standards.md" CLAUDE.md
 
 ## See Also
 
+- [Configuration Files Guide](CONFIG-FILES.md)
 - [Getting Started](GETTING-STARTED.md)
 - [Command Reference](COMMANDS.md)
 - [Standards Validator](../prompts/validators/standards.md)

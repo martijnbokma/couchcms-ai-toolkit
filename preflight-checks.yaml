@@ -248,6 +248,28 @@ general:
     auto_fix: false
 
 # =============================================================================
+# RUNTIME COMPATIBILITY CHECKS
+# =============================================================================
+# Checks for cross-runtime compatibility (Bun, Node.js, etc.)
+
+runtime_compatibility:
+  # Unsafe setRawMode call - not available in Bun
+  unsafe_setrawmode:
+    pattern: "process\\.stdin\\.setRawMode\\([^)]*\\)"
+    severity: WARNING
+    message: "setRawMode may not be available in Bun runtime - add runtime check"
+    fix: "Wrap in typeof check: if (typeof process.stdin.setRawMode === 'function') { process.stdin.setRawMode(false) }"
+    auto_fix: false
+    example:
+      bad: "process.stdin.setRawMode(false)"
+      good: "if (typeof process.stdin.setRawMode === 'function') { process.stdin.setRawMode(false) }"
+    reference: "agents/bun.md#runtime-compatibility"
+    ignore_in:
+      - "*.test.*"
+      - "*.spec.*"
+      - "node_modules/**"
+
+# =============================================================================
 # EXECUTION CONFIGURATION
 # =============================================================================
 # How pre-flight checks are executed and which files to check

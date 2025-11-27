@@ -1,6 +1,6 @@
 # Configuration Files Guide
 
-Clear explanation of configuration files in the CouchCMS AI Toolkit.
+Complete guide to configuration files in the CouchCMS AI Toolkit.
 
 ## Quick Summary
 
@@ -77,6 +77,7 @@ The toolkit looks for `standards.md` in this order:
 
 For 95% of projects, this is **all you need**. Everything goes in this one file.
 
+---
 
 ## `.project/ai/context.md` (Optional - Rarely Needed)
 
@@ -156,6 +157,121 @@ name: My Project Context
 
 ---
 
+## Automatic Detection
+
+The toolkit automatically detects and uses `standards.md` as the single source of truth.
+
+### Detection Logic
+
+The toolkit searches for configuration files in this priority order:
+
+1. **`.project/standards.md`** (recommended)
+    - Project configuration directory
+    - Consistent with `.project/ai/context.md` structure
+    - Logical location for project-specific config
+    - Keeps root directory clean
+
+2. **`docs/standards.md`** (documentation location)
+    - Clear organization
+    - Follows documentation conventions
+    - Easy to find and maintain
+
+3. **`standards.md`** (root directory)
+    - Simple path
+    - More visible
+    - Still works perfectly
+
+### How It Works
+
+#### In Scripts
+
+All toolkit scripts (`init.js`, `sync.js`, `validate.js`) use the `findConfigFile()` utility:
+
+```javascript
+import { findConfigFile, loadConfig } from './utils.js'
+
+// Automatically finds standards.md
+const configPath = findConfigFile(process.cwd())
+
+// Loads and parses the file
+const config = loadConfig(process.cwd())
+```
+
+#### In Prompts
+
+All prompts automatically include:
+
+```markdown
+**Critical: Always follow project standards before generating any code.**
+
+## Standards Reference
+
+This prompt automatically uses standards from:
+
+- `.project/standards.md` (if exists - recommended)
+- `docs/standards.md` (if exists)
+- `standards.md` (if exists)
+```
+
+#### In Validators
+
+The standards validator (`prompts/validators/standards.md`) automatically:
+
+1. Detects `standards.md` location
+2. Parses YAML frontmatter
+3. Extracts coding standards
+4. Validates prompts against standards
+5. Reports compliance score
+
+---
+
+## File Format
+
+### Required Structure
+
+```yaml
+---
+project:
+    name: 'my-project'
+    type: 'couchcms-webapp'
+    description: 'Project description'
+languages:
+    - php,typescript,css,html
+frameworks:
+    - couchcms,tailwindcss_v4,alpinejs
+standards:
+    indentation: 4
+    line_length: 120
+    language: 'english'
+---
+
+# Universal AI Coding Standards
+
+[Your standards documentation here...]
+```
+
+### YAML Frontmatter
+
+The YAML frontmatter contains:
+
+- **project**: Name, type, description
+- **languages**: Supported languages
+- **frameworks**: Technology stack
+- **standards**: Coding rules (indentation, line length, etc.)
+- **naming**: Naming conventions per language
+
+### Markdown Content
+
+The markdown content contains:
+
+- Coding standards
+- Best practices
+- Quality checklists
+- Project-specific rules
+- Code examples
+
+---
+
 ## Generated Files (Auto-Created)
 
 These files are **automatically generated** from your configuration:
@@ -195,7 +311,6 @@ Do you have a configuration file?
 
 **Answer:** Probably not. Only if your `standards.md` body exceeds 1000 lines.
 
-
 ### Q: Can I put everything in standards.md?
 
 **Answer:** Yes! That's the recommended approach. Only split if it becomes >1000 lines.
@@ -225,3 +340,11 @@ For most projects, just use `standards.md` body - no `context.md` needed.
 - **Optional extension**: `context.md` (only for >1000 lines, rare)
 
 **Keep it simple** - most projects only need `standards.md`!
+
+---
+
+## See Also
+
+- [Getting Started](GETTING-STARTED.md)
+- [Command Reference](COMMANDS.md)
+- [Standards Validator](../prompts/validators/standards.md)

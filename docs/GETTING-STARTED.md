@@ -210,7 +210,7 @@ Add your project-specific coding standards here...
 ### 3. Understanding Configuration Files
 
 :::tip[Quick Reference]
-For a complete guide to configuration files, see [CONFIG-FILES-GUIDE.md](CONFIG-FILES-GUIDE.md).
+For a complete guide to configuration files, see [CONFIG-FILES.md](CONFIG-FILES.md).
 :::
 
 The toolkit uses **one primary file** for configuration and rules:
@@ -424,7 +424,7 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed troubleshooting guide.
 ## See Also
 
 - [Command Reference](COMMANDS.md)
-- [Configuration Guide](CONFIG-FILES-GUIDE.md)
+- [Configuration Guide](CONFIG-FILES.md)
 - [Available Modules](MODULES.md)
 - [Available Agents](AGENTS.md)
 - [Project Rules Guide](PROJECT-RULES.md) - Cursor Project Rules

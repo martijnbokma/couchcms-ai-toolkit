@@ -186,7 +186,7 @@ After editing, run: `bun ai-toolkit-shared/scripts/sync.js`
 - **[Available Agents](AGENTS.md)** - All 23 agents explained
 - **[Commands Reference](COMMANDS.md)** - Detailed command docs
 - **[Troubleshooting](TROUBLESHOOTING.md)** - Common issues
-- **[Configuration Guide](CONFIG-FILES-GUIDE.md)** - standards.md explained
+- **[Configuration Guide](CONFIG-FILES.md)** - standards.md explained
 
 ---
 
