@@ -17,6 +17,7 @@
         "extend-modules": "bun scripts/extend-modules.js",
         "git-flow": "bun scripts/git-flow.js",
         "git-flow-init": "bun scripts/git-flow-init.js",
+        "release": "bun scripts/quick-release.js",
         "test": "bun test"
     },
     "dependencies": {

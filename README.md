@@ -172,6 +172,26 @@ git commit -m "Add functionality"
 bun scripts/git-flow.js feature finish my-feature
 ```
 
+### Quick Release (Solo Developer)
+
+```bash
+# One command to release!
+bun run release 1.0.0
+
+# Or with npm
+npm run release 1.0.0
+```
+
+This automatically:
+- Updates version in package.json
+- Updates CHANGELOG.md
+- Commits changes
+- Merges to main
+- Creates and pushes tag
+- Merges back to develop
+
+**Done in seconds!** 🚀
+
 ### Branch Types
 
 - **main** - Production code (always stable)
