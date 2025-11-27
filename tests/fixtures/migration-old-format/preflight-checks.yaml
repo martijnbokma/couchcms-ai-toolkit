@@ -1,0 +1,6 @@
+# Old format preflight-checks.yaml for migration testing
+
+validation:
+  required_modules: [couchcms-core]
+  max_line_length: 200
+  enforce_english: true

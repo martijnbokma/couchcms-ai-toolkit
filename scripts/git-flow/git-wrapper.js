@@ -7,7 +7,7 @@
  */
 
 import { $ } from 'bun';
-import { ToolkitError } from '../utils.js';
+import { ToolkitError } from '../utils/utils.js';
 
 /**
  * Execute a Git command with error handling

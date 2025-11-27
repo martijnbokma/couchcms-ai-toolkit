@@ -101,11 +101,13 @@ Choose option **2** for full customization. The wizard will guide you through:
 
 After the wizard completes, your project will have:
 
-- ✅ `.project/standards.md` - Project configuration
+- ✅ `config.yaml` (new format) or `.project/standards.md` (legacy format) - Project configuration
 - ✅ `.cursorrules` - Cursor AI configuration
 - ✅ `CLAUDE.md` - Claude AI configuration
 - ✅ `AGENT.md` - Universal AI agent documentation
-- ✅ `.project/ai/context.md` - Project context (only if you chose this in Custom mode)
+- ✅ `.windsurf/rules.md` - Windsurf AI configuration
+- ✅ `.kiro/steering/coding-standards.md` - Kiro AI configuration
+- ✅ `.github/copilot-instructions.md` - GitHub Copilot configuration
 
 ## For Existing Projects
 
@@ -166,40 +168,91 @@ git clone https://github.com/martijnbokma/couchcms-ai-toolkit.git ~/couchcms-ai-
 cd ~/couchcms-ai-toolkit && bun install
 ```
 
-### 2. Create standards.md
+### 2. Create Configuration File
 
-Create `standards.md` in your project root (or `.project/standards.md` for recommended location):
+#### Option A: New Format (Recommended)
+
+Create `config.yaml` in your project root:
+
+```yaml
+# Project settings
+project:
+  name: "my-project"
+  description: "Brief project description"
+  type: "CouchCMS Web Application"
+
+# Toolkit location
+toolkit:
+  path: "./ai-toolkit-shared"  # or "~/couchcms-ai-toolkit"
+
+# Editors to generate configs for
+editors:
+  - cursor
+  - claude
+  - windsurf
+  - kiro
+  - copilot
+
+# Modules to load
+modules:
+  - couchcms-core      # Always included
+  - tailwindcss        # If using TailwindCSS
+  - daisyui            # If using daisyUI
+  - alpinejs           # If using Alpine.js
+  - typescript         # If using TypeScript
+  - databound-forms    # If using DataBound Forms
+
+# Agents to load
+agents:
+  - couchcms           # Core CouchCMS development
+  - databound-forms    # Forms and CRUD operations
+  - alpinejs           # Alpine.js development
+  - tailwindcss        # TailwindCSS styling
+  - typescript         # TypeScript development
+
+# Framework configuration (optional)
+framework:
+  enabled: false
+  # OR enable specific components:
+  # doctrine: true
+  # directives: true
+  # playbooks: true
+
+# Coding standards
+standards:
+  indentation: 4
+  language: "english"
+  lineLength: 120
+
+# Naming conventions
+naming:
+  php_variables: "snake_case"
+  php_functions: "snake_case"
+  ts_variables: "camelCase"
+  ts_functions: "camelCase"
+```
+
+#### Option B: Legacy Format (Still Supported)
+
+Create `.project/standards.md`:
 
 ```markdown
 ---
 name: 'my-project'
 description: 'Brief project description'
-toolkit: './ai-toolkit-shared' # or "~/couchcms-ai-toolkit"
+toolkit: './ai-toolkit-shared'
 
 modules:
-    - couchcms-core # Always included
-    - tailwindcss # If using TailwindCSS
-    - daisyui # If using daisyUI
-    - alpinejs # If using Alpine.js
-    - typescript # If using TypeScript
-    - databound-forms # If using DataBound Forms
+    - couchcms-core
+    - tailwindcss
+    - alpinejs
 
 agents:
-    - couchcms # Core CouchCMS development
-    - databound-forms # Forms and CRUD operations
-    - alpinejs # Alpine.js development
-    - tailwindcss # TailwindCSS styling
-    - typescript # TypeScript development
+    - couchcms
+    - tailwindcss
+    - alpinejs
 
-# Optional: Enable AAPF framework for disciplined AI agent behavior
-framework: true  # or configure specific categories:
-# framework:
-#   doctrine: true      # Core principles (always active)
-#   directives: true    # Communication guidelines (always active)
-#   playbooks: true     # Workflow templates (optional)
-#   enhancements: true  # Advanced features (optional)
-
-context: '.project/ai' # Optional: separate context file
+framework: false
 ---
 
 # Project-Specific Rules
@@ -207,44 +260,71 @@ context: '.project/ai' # Optional: separate context file
 Add your project-specific coding standards here...
 ```
 
+**Note:** The legacy format still works, but we recommend migrating to the new `config.yaml` format. See [Migration Guide](MIGRATION.md) for details.
+
 ### 3. Understanding Configuration Files
 
 :::tip[Quick Reference]
 For a complete guide to configuration files, see [CONFIG-FILES.md](CONFIG-FILES.md).
 :::
 
-The toolkit uses **one primary file** for configuration and rules:
+The toolkit supports two configuration formats:
 
-#### `.project/standards.md` (Primary Configuration File)
+#### `config.yaml` (New Format - Recommended)
 
-This is your **single source of truth** for everything:
+A single YAML file with all configuration:
+
+```yaml
+project:
+  name: "my-project"
+  type: "CouchCMS Web Application"
+
+toolkit:
+  path: "./ai-toolkit-shared"
+
+editors:
+  - cursor
+  - claude
+  - windsurf
+  - kiro
+  - copilot
+
+modules:
+  - couchcms-core
+  - tailwindcss
+
+agents:
+  - couchcms
+  - tailwindcss
+
+standards:
+  indentation: 4
+  language: "english"
+```
+
+**Benefits:**
+- Simpler structure
+- All settings in one place
+- Easier to maintain
+- Better validation
+
+#### `.project/standards.md` (Legacy Format - Still Supported)
+
+YAML frontmatter + Markdown body:
 
 ```markdown
 ---
-# YAML Frontmatter - Configuration
 name: 'my-project'
 toolkit: './ai-toolkit-shared'
 modules: [...]
 agents: [...]
 ---
 
-# Markdown Body - Project Rules & Documentation
-
-## Project Rules
+# Project Rules & Documentation
 [Your coding standards...]
-
-## Architecture
-[Project structure...]
-
-## Patterns
-[Common patterns...]
 ```
 
-**Structure:**
-- **YAML frontmatter**: Configuration (modules, agents, paths, etc.)
-- **Markdown body**: All your project rules and documentation
-
-**This is all you need for 95% of projects!**
+**Note:** This format still works, but we recommend migrating to `config.yaml`. See [Migration Guide](MIGRATION.md) for upgrade instructions.
 
 #### `.project/ai/context.md` (Optional - Rarely Needed)
 
@@ -321,9 +401,14 @@ git pull origin master
 bun install  # Update dependencies if needed
 cd ..
 
+# If upgrading from old format, migrate configuration
+bun ai-toolkit-shared/scripts/migrate.js
+
 # Regenerate configurations
 bun ai-toolkit-shared/scripts/sync.js
 ```
+
+📖 **Upgrading from old format?** See [Migration Guide](MIGRATION.md) for detailed instructions.
 
 ## Common Questions
 
