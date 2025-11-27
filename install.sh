@@ -111,6 +111,16 @@ install_toolkit() {
         return 0
     fi
     
+    # Check if submodule exists but directory is missing
+    if git config --file .gitmodules --get submodule.ai-toolkit-shared.url &> /dev/null; then
+        print_warning "Submodule exists in .gitmodules but directory is missing"
+        print_info "Removing old submodule configuration..."
+        git submodule deinit -f "$TOOLKIT_DIR" 2>/dev/null || true
+        git rm -f "$TOOLKIT_DIR" 2>/dev/null || true
+        rm -rf ".git/modules/$TOOLKIT_DIR" 2>/dev/null || true
+        print_info "Cleaned up old submodule"
+    fi
+    
     # Add as submodule
     print_info "Adding submodule from $REPO_URL..."
     git submodule add "$REPO_URL" "$TOOLKIT_DIR"

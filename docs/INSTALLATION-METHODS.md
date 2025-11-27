@@ -2,9 +2,11 @@
 
 Multiple ways to install the toolkit, choose what works best for you.
 
-## 🚀 Method 1: Bash Installer (Recommended)
+## 🚀 Method 1: Bash Installer (Public Repos Only)
 
 **Works on:** macOS, Linux, Windows (Git Bash/WSL)
+
+**⚠️ Important:** This only works if the repository is **public**. For private repos, see Method 3 or [Private Repo Guide](PRIVATE-REPO-INSTALL.md).
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
@@ -18,6 +20,7 @@ curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/ma
 
 **Cons:**
 - ❌ Requires curl
+- ❌ Only works for public repositories
 
 ---
 
@@ -104,12 +107,14 @@ bun ai-toolkit-shared/scripts/init.js
 
 ## 📊 Comparison
 
-| Method | Commands | Time | Best For |
-|--------|----------|------|----------|
-| **Bash Installer** | 1 | 30s | Everyone (recommended) |
-| **Bun Installer** | 3 | 30s | Bun users |
-| **Manual** | 3 | 1m | Learning/troubleshooting |
-| **Git Clone** | 3 | 1m | Development/contribution |
+| Method | Commands | Time | Best For | Public Repo | Private Repo |
+|--------|----------|------|----------|-------------|--------------|
+| **Bash Installer** | 1 | 30s | Public repos | ✅ | ❌ |
+| **Bun Installer** | 3 | 30s | Bun users (public) | ✅ | ❌ |
+| **Manual** | 3 | 1m | Everyone | ✅ | ✅ |
+| **Git Clone** | 3 | 1m | Development | ✅ | ✅ |
+
+**For private repositories:** See [Private Repo Installation Guide](PRIVATE-REPO-INSTALL.md)
 
 ---
 

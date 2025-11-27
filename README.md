@@ -39,6 +39,8 @@ After adding the submodule, **always** run `bun install` in `ai-toolkit-shared/`
 
 ### Quick Install (3 steps)
 
+**Note:** For private repositories, use this method. For public repos, see one-command install below.
+
 Get started in under a minute:
 
 ```bash
@@ -61,16 +63,18 @@ bun ai-toolkit-shared/scripts/init.js
 
 **Result:** Configuration file and all IDE configs (`.cursorrules`, `.claude/`, etc.) are generated automatically.
 
-### One-Command Install (Coming Soon)
+### One-Command Install (Public Repos Only)
 
-**Note:** The one-command installer will be available after v2.1.0 is merged to master and released.
+**Note:** This only works if the repository is public. For private repositories, use the 3-step method above.
 
-For now, use the 3-step manual installation above.
-
-After release, you'll be able to use:
+After making the repo public and releasing v2.1.0:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 ```
+
+**Current Status:**
+- ⏳ Waiting for v2.1.0 release to master
+- 🔒 Repository must be public for curl access
 
 📖 **[See all installation methods](docs/INSTALLATION-METHODS.md)** - Bash, Bun, Manual, Git Clone
 
