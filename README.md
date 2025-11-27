@@ -37,25 +37,9 @@ After adding the submodule, **always** run `bun install` in `ai-toolkit-shared/`
 
 ## 🚀 Quick Start
 
-### One-Command Install (Recommended)
+### Quick Install (3 steps)
 
-```bash
-# Using curl (works everywhere)
-curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
-
-# Or using Bun
-bun x https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js
-```
-
-This automatically:
-- ✅ Adds toolkit as git submodule
-- ✅ Installs dependencies
-- ✅ Runs setup wizard
-- ✅ Generates all configs
-
-**Done in 30 seconds!** 🚀
-
-### Manual Install (3 steps)
+Get started in under a minute:
 
 ```bash
 # 1. Add toolkit as submodule
@@ -76,6 +60,19 @@ bun ai-toolkit-shared/scripts/init.js
 - **Custom** - Full control over all options
 
 **Result:** Configuration file and all IDE configs (`.cursorrules`, `.claude/`, etc.) are generated automatically.
+
+### One-Command Install (After v2.1.0 Release)
+
+Once v2.1.0 is released on GitHub, you can use:
+
+```bash
+# Using curl (works everywhere)
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
+```
+
+This will automatically do all 3 steps above.
+
+📖 **[See all installation methods](docs/INSTALLATION-METHODS.md)** - Bash, Bun, Manual, Git Clone
 
 📖 **For detailed setup instructions**, see [Getting Started Guide](docs/GETTING-STARTED.md).
 

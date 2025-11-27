@@ -27,7 +27,9 @@ curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/ma
 ### Option 2: With Bun
 
 ```bash
-bun x https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js
+bun install.js
+rm install.js
 ```
 
 ### Option 3: Manual Installation

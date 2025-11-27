@@ -18,7 +18,7 @@ git init
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 
 # Of test Bun installer
-bun x https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js && bun install.js && rm install.js
 ```
 
 ### 2. Auto-Detection System
@@ -168,7 +168,7 @@ couchcms-ai-toolkit/
 mkdir test-toolkit && cd test-toolkit
 git init
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
-# Or: bun x https://raw.githubusercontent.com/.../scripts/install.js
+# Or: curl -fsSL https://raw.githubusercontent.com/.../scripts/install.js -o install.js && bun install.js && rm install.js
 
 # 1. Health check
 cd couchcms-ai-toolkit

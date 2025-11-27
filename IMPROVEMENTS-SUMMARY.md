@@ -24,7 +24,7 @@ De toolkit dramatisch eenvoudiger en gebruiksvriendelijker maken door intelligen
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 
 # Of via Bun
-bun x https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js && bun install.js && rm install.js
 ```
 
 **Voordelen:**

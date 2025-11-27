@@ -20,7 +20,7 @@
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 
 # Via Bun
-bun x https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js && bun install.js && rm install.js
 ```
 
 **Impact:** Van 3 stappen naar 1 commando!

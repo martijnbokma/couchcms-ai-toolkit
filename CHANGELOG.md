@@ -92,7 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `install.sh` - Bash installer for universal compatibility
   - Works directly from GitHub (no npm publish needed)
   - Usage: `curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash`
-  - Or: `bun x https://raw.githubusercontent.com/.../scripts/install.js`
+  - Or: Download and run with Bun
 - **Automated Setup** - Installer handles everything:
   - Adds toolkit as git submodule
   - Installs dependencies (Bun or npm)

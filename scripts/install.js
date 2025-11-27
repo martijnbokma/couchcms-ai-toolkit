@@ -5,9 +5,11 @@
  * Installs toolkit as git submodule and runs setup
  * 
  * Usage:
- *   bun x https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js
+ *   curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js
+ *   bun install.js
+ *   rm install.js
  *   
- * Or with curl:
+ * Or with curl (bash):
  *   curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
  */
 
