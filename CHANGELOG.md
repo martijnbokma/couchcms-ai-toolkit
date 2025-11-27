@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Merge release v1.0.0 back to develop
 
 
+## [1.0.1] - 2025-11-27
+
+### Other
+- refactor: simplify toolkit structure and consolidate configuration
+- Merge release v1.0.0 back to develop
+
+
 ## [1.0.0] - 2025-11-27
 
 ### Added
