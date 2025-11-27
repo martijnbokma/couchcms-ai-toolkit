@@ -5,6 +5,46 @@ All notable changes to the CouchCMS AI Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-11-27
+
+### Added
+- implement cleanup functionality for generated files
+- expand documentation for new content organization features
+- update README and add quick reference documentation
+- enhance documentation and add new command templates
+- enhance documentation and add new refactoring rules
+- add comprehensive configuration files for AI toolkit
+
+### Fixed
+- update references from `project.md` to `standards.md` across multiple files
+
+### Other
+- feat(release): auto-generate changelog from git commits
+- feat(release): add quick-release script for solo developer workflow
+- feat(git-workflow): implement git flow management system with CI/CD integration
+- ``` chore: update ai-toolkit-shared submodule to dirty state ```
+- feat(init): add framework configuration options to init process
+- feat(init, sync): enhance module and agent configuration
+- fix(sync, validate): ensure module and agent lists are always arrays
+- refactor: update README and agent documentation formatting
+- fix(validate): update resolveToolkitPath function to accept project directory
+- feat(config): update project configuration and add new dependencies
+- feat(refactoring): add router system and update rules for universal usage
+- refactor(prompts): make all prompts framework-agnostic and universal
+
+
+## [1.0.0] - 2025-11-27
+
+### Added
+- 
+
+### Changed
+- 
+
+### Fixed
+- 
+
+
 ## [Unreleased]
 
 ### Added

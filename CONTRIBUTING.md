@@ -24,15 +24,54 @@ You can contribute to this toolkit **directly from your project** without clonin
 2. Update your submodule to point to your fork (or add your fork as a remote)
 3. Push to your fork and create a PR from there
 
+## 🌿 Git Workflow
+
+This project uses **Gitflow** for organized collaboration. If you're new to this workflow, see our [complete Git Workflow guide](docs/GIT-WORKFLOW.md).
+
+### Quick Reference
+
+```bash
+# Start a feature
+bun scripts/git-flow.js feature start your-feature-name
+
+# Work on it (commit often)
+git add .
+git commit -m "feat: add functionality"
+
+# Finish and create PR
+bun scripts/git-flow.js feature finish your-feature-name
+```
+
+**New to Gitflow?** Read:
+- 📖 [Getting Started Guide](docs/git-workflow/getting-started.md) - 10 minute setup
+- 🎓 [Feature Workflow](docs/git-workflow/feature-workflow.md) - Daily development
+- ❓ [Troubleshooting](docs/git-workflow/troubleshooting.md) - Common issues
+
 ## 🔄 Contribution Workflow
 
-### Quick Start (Using Helper Script)
+### Quick Start (Using Git Flow)
 
 ```bash
 # From your project root
 cd ai-toolkit-shared
 
-# Run the preparation script
+# Start a feature using git-flow
+bun scripts/git-flow.js feature start your-feature-name
+
+# Or use the legacy preparation script
+bun run prepare-contribution --branch feature/your-feature-name
+```
+
+The git-flow script will:
+- ✅ Check your git state
+- ✅ Create feature branch from develop
+- ✅ Switch to your feature branch
+- ✅ Ready to work!
+
+### Legacy Helper Script
+
+```bash
+# Run the preparation script (old method)
 bun run prepare-contribution
 
 # Or create a branch directly
@@ -102,6 +141,20 @@ git merge upstream/master  # Sync with upstream
 
 ### Step 4: Create a Feature Branch
 
+**Using git-flow (recommended):**
+
+```bash
+# Create feature branch from develop
+bun scripts/git-flow.js feature start add-vue-module
+
+# Examples:
+bun scripts/git-flow.js feature start add-vue-module
+bun scripts/git-flow.js feature start fix-alpine-docs-typo
+bun scripts/git-flow.js feature start improve-readme
+```
+
+**Or manually:**
+
 ```bash
 # Create and switch to a new branch
 git checkout -b feature/your-feature-name
@@ -168,7 +221,22 @@ git commit -m "feat: add Vue.js module
 - `refactor:` - Code refactoring
 - `chore:` - Maintenance tasks
 
-### Step 8: Push Your Branch
+### Step 8: Finish Your Feature
+
+**Using git-flow (recommended):**
+
+```bash
+# This will push and create PR automatically
+bun scripts/git-flow.js feature finish your-feature-name
+```
+
+This automatically:
+- ✅ Pushes your branch to GitHub
+- ✅ Creates a Pull Request to develop
+- ✅ Applies PR template
+- ✅ Requests reviews
+
+**Or manually:**
 
 ```bash
 # Push to the remote repository
@@ -186,12 +254,14 @@ git push fork feature/your-feature-name
 git push origin feature/your-feature-name
 ```
 
-### Step 9: Create a Pull Request
+### Step 9: Create a Pull Request (if not using git-flow)
 
 **If you have direct access:**
 1. Go to https://github.com/martijnbokma/couchcms-ai-toolkit
 2. You'll see a banner: "Compare & pull request"
 3. Click it and fill in:
+    - **Base**: `develop` (not main!)
+    - **Compare**: `feature/your-feature-name`
     - **Title**: Clear, descriptive title (e.g., "feat: add Vue.js module")
     - **Description**: Use the template below
 4. Click "Create pull request"
@@ -199,7 +269,11 @@ git push origin feature/your-feature-name
 **If you're using a fork:**
 1. Go to https://github.com/YOUR-USERNAME/couchcms-ai-toolkit
 2. Click "Compare & pull request" or go to the main repo and click "New Pull Request"
-3. Select your fork and branch
+3. Select:
+    - **Base repository**: martijnbokma/couchcms-ai-toolkit
+    - **Base**: `develop`
+    - **Head repository**: YOUR-USERNAME/couchcms-ai-toolkit
+    - **Compare**: `feature/your-feature-name`
 4. Fill in the PR details
 
 **PR Description Template:**
@@ -224,14 +298,18 @@ Explain the problem it solves or the improvement it makes.
 
 ### Step 10: After PR is Merged
 
-Once your PR is merged into master:
+Once your PR is merged into develop:
 
 ```bash
-# Switch back to master
-git checkout master
+# Switch back to develop
+git checkout develop
 
 # Pull the merged changes
-git pull origin master
+git pull origin develop
+
+# Your feature branch is automatically deleted on GitHub
+# Delete it locally too
+git branch -d feature/your-feature-name
 
 # Go back to your project root
 cd ..
@@ -241,6 +319,8 @@ git add ai-toolkit-shared
 git commit -m "chore: update ai-toolkit-shared with new features"
 git push
 ```
+
+**Note:** Features are merged to `develop` first. They will be included in the next release to `main`.
 
 ## 🎨 What Can You Contribute?
 

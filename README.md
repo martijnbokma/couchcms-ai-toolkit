@@ -52,6 +52,7 @@ bun ai-toolkit-shared/scripts/init.js
 | Guide | When to Use |
 |-------|-------------|
 | **[Getting Started](docs/GETTING-STARTED.md)** | First-time setup - start here |
+| **[Git Workflow](docs/GIT-WORKFLOW.md)** | Collaborating with team - branching strategy |
 | **[Commands Reference](docs/COMMANDS.md)** | Using `init`, `validate`, `sync` |
 | **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Something not working |
 
@@ -81,6 +82,8 @@ bun ai-toolkit-shared/scripts/init.js
 
 ## 🎯 Commands
 
+### Setup & Configuration
+
 ```bash
 # Interactive setup (first time)
 bun ai-toolkit-shared/scripts/init.js
@@ -94,14 +97,130 @@ bun ai-toolkit-shared/scripts/sync.js
 # Update submodule (keep toolkit up-to-date)
 cd ai-toolkit-shared && bun run update-submodule
 
-# Prepare for contributing (switch to master, create branch)
-cd ai-toolkit-shared && bun run prepare-contribution
-cd ai-toolkit-shared && bun run prepare-contribution --branch feature/my-feature
-
-# Extend modules from documentation (NEW!)
+# Extend modules from documentation
 bun ai-toolkit-shared/scripts/extend-modules.js --analyze
 bun ai-toolkit-shared/scripts/extend-modules.js --module comments
 ```
+
+### Git Workflow (Team Collaboration)
+
+```bash
+# Feature workflow (daily work)
+bun scripts/git-flow.js feature start my-feature    # Start new feature
+bun scripts/git-flow.js feature finish my-feature   # Create PR
+bun scripts/git-flow.js feature list                # List all features
+
+# Release workflow (release managers)
+bun scripts/git-flow.js release start 1.2.0         # Start release
+bun scripts/git-flow.js release finish 1.2.0        # Deploy release
+
+# Hotfix workflow (emergency fixes)
+bun scripts/git-flow.js hotfix start critical-fix   # Start hotfix
+bun scripts/git-flow.js hotfix finish critical-fix  # Deploy hotfix
+
+# Utilities
+bun scripts/git-flow.js check-stale                 # Find old branches
+bun scripts/git-flow.js changelog                   # Generate changelog
+```
+
+### Contributing
+
+```bash
+# Prepare for contributing (switch to master, create branch)
+cd ai-toolkit-shared && bun run prepare-contribution
+cd ai-toolkit-shared && bun run prepare-contribution --branch feature/my-feature
+```
+
+## 🌿 Git Workflow
+
+This toolkit uses **Gitflow** for team collaboration - a simple branching strategy that keeps production stable while enabling parallel development.
+
+### Quick Setup
+
+Initialize Gitflow in your repository:
+
+```bash
+# One-time setup
+bun scripts/git-flow-init.js
+```
+
+This creates the `develop` branch and sets up the workflow structure.
+
+📖 **Detailed setup:** [Setup Guide](docs/git-workflow/SETUP.md)
+
+### Quick Overview
+
+```
+main (production)    ──●────────●────────●──→  Stable, live code
+                        ↑        ↑        ↑
+develop (integration)──●──●──●──●──●──●──●──→  Features come together
+                        ↑  ↑  ↑     ↑  ↑  ↑
+feature branches     ──●  ●  ●     ●  ●  ●     Your work (isolated)
+```
+
+### Daily Workflow
+
+```bash
+# Start new feature
+bun scripts/git-flow.js feature start my-feature
+
+# Work on it
+git add .
+git commit -m "Add functionality"
+
+# Finish and create PR
+bun scripts/git-flow.js feature finish my-feature
+```
+
+### Quick Release (Solo Developer)
+
+```bash
+# One command to release!
+bun run release 1.0.0
+
+# Or with npm
+npm run release 1.0.0
+```
+
+This automatically:
+- Updates version in package.json
+- Updates CHANGELOG.md
+- Commits changes
+- Merges to main
+- Creates and pushes tag
+- Merges back to develop
+
+**Done in seconds!** 🚀
+
+### Branch Types
+
+- **main** - Production code (always stable)
+- **develop** - Integration branch (features merge here)
+- **feature/** - Your daily work (isolated from others)
+- **release/** - Preparing new versions
+- **hotfix/** - Emergency production fixes
+
+### For Team Members
+
+**New to the project?**
+- 📖 [Getting Started Guide](docs/git-workflow/getting-started.md) - Setup in 10 minutes
+- 🎓 [Feature Workflow](docs/git-workflow/feature-workflow.md) - Daily development
+- ❓ [Troubleshooting](docs/git-workflow/troubleshooting.md) - Common issues
+
+**For release managers:**
+- 📦 [Release Workflow](docs/git-workflow/release-workflow.md) - Creating releases
+- 🚨 [Hotfix Workflow](docs/git-workflow/hotfix-workflow.md) - Emergency fixes
+
+**Complete guide:**
+- 📚 [Git Workflow Documentation](docs/GIT-WORKFLOW.md) - Everything you need
+
+### Why This Works
+
+- ✅ **Simple** - Only 3 commands for daily work
+- ✅ **Safe** - Protected branches prevent accidents
+- ✅ **Parallel** - Everyone works without conflicts
+- ✅ **Reviewed** - All code goes through PR review
+- ✅ **Tested** - Automated checks before merge
 
 ## 📦 What's Included
 
