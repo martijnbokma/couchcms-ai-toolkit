@@ -81,3 +81,34 @@ naming:
   ts_files: "kebab-case"         # TypeScript file names: my-file.ts
   css_files: "kebab-case"        # CSS file names: my-file.css
   component_files: "kebab-case"  # Component file names: my-component.html
+
+# =============================================================================
+# GIT WORKFLOW (GITFLOW)
+# =============================================================================
+# Configuration for the Gitflow branching model and automation scripts.
+#
+# Schema:
+#   branches: object - Branch name configuration
+#     main: string - Production branch name (default: "main")
+#     develop: string - Integration branch name (default: "develop")
+#   patterns: object - Branch naming patterns (prefixes)
+#     feature: string - Feature branch prefix (default: "feature/")
+#     release: string - Release branch prefix (default: "release/")
+#     hotfix: string - Hotfix branch prefix (default: "hotfix/")
+#   stale_days: integer - Days before branch is considered stale (default: 30)
+#   auto_delete: boolean - Auto-delete merged branches (default: true)
+#   require_pr: boolean - Require pull requests for merges (default: true)
+
+gitflow:
+  branches:
+    main: "main"              # Production branch (stable, deployed code)
+    develop: "develop"        # Integration branch (features merge here)
+
+  patterns:
+    feature: "feature/"       # Feature branches: feature/my-feature
+    release: "release/"       # Release branches: release/1.2.0
+    hotfix: "hotfix/"         # Hotfix branches: hotfix/critical-fix
+
+  stale_days: 30              # Flag branches older than 30 days
+  auto_delete: true           # Delete branches after successful merge
+  require_pr: true            # Require pull requests (no direct commits)

@@ -14,12 +14,18 @@
         "init": "bun scripts/init.js",
         "update-submodule": "bun scripts/update-submodule.js",
         "prepare-contribution": "bun scripts/prepare-contribution.js",
-        "extend-modules": "bun scripts/extend-modules.js"
+        "extend-modules": "bun scripts/extend-modules.js",
+        "git-flow": "bun scripts/git-flow.js",
+        "git-flow-init": "bun scripts/git-flow-init.js",
+        "test": "bun test"
     },
     "dependencies": {
         "gray-matter": "^4.0.3",
         "yaml": "^2.3.4",
         "handlebars": "^4.7.8"
+    },
+    "devDependencies": {
+        "fast-check": "^3.15.0"
     },
     "keywords": [
         "couchcms",
