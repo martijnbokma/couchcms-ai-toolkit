@@ -93,9 +93,54 @@ function updatePackageVersion(version) {
 }
 
 /**
- * Update CHANGELOG.md
+ * Get commits since last tag
  */
-function updateChangelog(version) {
+async function getCommitsSinceLastTag() {
+    try {
+        // Get last tag
+        const lastTag = (await $`git describe --tags --abbrev=0`.quiet()).stdout.toString().trim();
+        // Get commits since last tag
+        const commits = (await $`git log ${lastTag}..HEAD --pretty=format:"%s"`.quiet()).stdout.toString().trim();
+        return commits.split('\n').filter(c => c);
+    } catch {
+        // No tags yet, get all commits
+        const commits = (await $`git log --pretty=format:"%s"`.quiet()).stdout.toString().trim();
+        return commits.split('\n').filter(c => c);
+    }
+}
+
+/**
+ * Categorize commits by type
+ */
+function categorizeCommits(commits) {
+    const categories = {
+        added: [],
+        changed: [],
+        fixed: [],
+        other: []
+    };
+
+    commits.forEach(commit => {
+        const lower = commit.toLowerCase();
+        if (lower.startsWith('feat:') || lower.startsWith('add:') || lower.includes('added')) {
+            categories.added.push(commit.replace(/^(feat|add):\s*/i, ''));
+        } else if (lower.startsWith('fix:') || lower.includes('fixed')) {
+            categories.fixed.push(commit.replace(/^fix:\s*/i, ''));
+        } else if (lower.startsWith('change:') || lower.startsWith('update:') || lower.includes('changed')) {
+            categories.changed.push(commit.replace(/^(change|update):\s*/i, ''));
+        } else if (!lower.startsWith('chore:') && !lower.startsWith('docs:')) {
+            // Skip chore and docs commits
+            categories.other.push(commit);
+        }
+    });
+
+    return categories;
+}
+
+/**
+ * Update CHANGELOG.md with auto-generated content
+ */
+async function updateChangelog(version) {
     const changelogPath = 'CHANGELOG.md';
     const today = new Date().toISOString().split('T')[0];
     
@@ -107,42 +152,61 @@ function updateChangelog(version) {
         changelog = '# Changelog\n\nAll notable changes to this project will be documented in this file.\n\n';
     }
 
+    // Get commits and categorize
+    console.log('   📝 Analyzing commits...');
+    const commits = await getCommitsSinceLastTag();
+    const categories = categorizeCommits(commits);
+
+    // Build changelog entry
+    let newEntry = `## [${version}] - ${today}\n\n`;
+
+    if (categories.added.length > 0) {
+        newEntry += '### Added\n';
+        categories.added.forEach(commit => {
+            newEntry += `- ${commit}\n`;
+        });
+        newEntry += '\n';
+    }
+
+    if (categories.changed.length > 0) {
+        newEntry += '### Changed\n';
+        categories.changed.forEach(commit => {
+            newEntry += `- ${commit}\n`;
+        });
+        newEntry += '\n';
+    }
+
+    if (categories.fixed.length > 0) {
+        newEntry += '### Fixed\n';
+        categories.fixed.forEach(commit => {
+            newEntry += `- ${commit}\n`;
+        });
+        newEntry += '\n';
+    }
+
+    if (categories.other.length > 0) {
+        newEntry += '### Other\n';
+        categories.other.forEach(commit => {
+            newEntry += `- ${commit}\n`;
+        });
+        newEntry += '\n';
+    }
+
+    // If no categorized commits, add a generic entry
+    if (categories.added.length === 0 && categories.changed.length === 0 && 
+        categories.fixed.length === 0 && categories.other.length === 0) {
+        newEntry += '### Changed\n- Version bump and improvements\n\n';
+    }
+
     // Add new version entry at the top (after header)
     const lines = changelog.split('\n');
     const headerEnd = lines.findIndex(line => line.startsWith('## '));
     const insertIndex = headerEnd === -1 ? 3 : headerEnd;
 
-    const newEntry = `## [${version}] - ${today}
-
-### Added
-- 
-
-### Changed
-- 
-
-### Fixed
-- 
-
-`;
-
     lines.splice(insertIndex, 0, newEntry);
     writeFileSync(changelogPath, lines.join('\n'));
     
-    console.log('\n📝 CHANGELOG.md updated with template.');
-    console.log('   Please edit CHANGELOG.md to add release notes, then press Enter to continue...');
-    
-    // Wait for user to edit
-    const readline = require('readline').createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-    
-    return new Promise((resolve) => {
-        readline.question('', () => {
-            readline.close();
-            resolve();
-        });
-    });
+    console.log('   ✅ CHANGELOG.md auto-generated from commits');
 }
 
 /**
