@@ -25,6 +25,10 @@
         "git-flow": "bun scripts/git-flow/main.js",
         "git-flow-init": "bun scripts/git-flow/init.js",
         "release": "bun scripts/utils/quick-release.js",
+        "release:auto": "bun scripts/utils/quick-release.js --auto",
+        "release:major": "bun scripts/utils/quick-release.js --major",
+        "release:minor": "bun scripts/utils/quick-release.js --minor",
+        "release:patch": "bun scripts/utils/quick-release.js --patch",
         "test": "bun test"
     },
     "dependencies": {

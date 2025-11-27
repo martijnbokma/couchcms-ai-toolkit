@@ -16,7 +16,9 @@ Successfully implemented **8 major features** that make the CouchCMS AI Toolkit 
 curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash
 ```
 
-**Status:** Ready (works after git push)
+**Status:** Ready (works after merge to master and push)
+
+**Note:** Currently in feature/develop branch. The installer URL points to `master` branch, so it will return 404 until merged and pushed.
 
 ---
 
@@ -268,20 +270,35 @@ Total: ~30 seconds
 - ✅ No breaking changes
 
 ### What's Needed
-1. Manual testing (see TEST-NEW-FEATURES.md)
-2. Git commit and push
-3. Create git tag v2.1.0
-4. Create GitHub release
-5. Test one-command install
+1. Manual testing (see TESTING-BEFORE-RELEASE.md)
+2. Merge to master (if in feature branch)
+3. Git commit and push to master
+4. Create git tag v2.1.0
+5. Push tag to GitHub
+6. Create GitHub release
+7. Test one-command install (will work after push to master)
 
-### Release Command
+### Release Commands
 ```bash
-# After testing, run:
+# 1. Test locally first (see TESTING-BEFORE-RELEASE.md)
+
+# 2. If in feature branch, merge to master
+git checkout master
+git merge your-feature-branch
+
+# 3. Commit (if needed)
 git add .
 git commit -m "feat: v2.1.0 - Major improvements"
+
+# 4. Create and push tag
 git tag -a v2.1.0 -m "Release v2.1.0"
 git push origin master
 git push origin v2.1.0
+
+# 5. Now test one-command install (will work!)
+cd /tmp/test-install
+git init
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 ```
 
 ## 📚 Documentation Structure

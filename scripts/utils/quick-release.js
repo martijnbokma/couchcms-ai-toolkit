@@ -20,16 +20,20 @@ import { handleError } from './utils.js';
 function parseArgs() {
     const args = process.argv.slice(2);
     
-    if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
+    if (args.includes('--help') || args.includes('-h')) {
         showHelp();
         process.exit(0);
     }
 
-    const version = args[0];
+    const version = args.find(arg => !arg.startsWith('--')) || null;
     const skipChangelog = args.includes('--skip-changelog');
     const dryRun = args.includes('--dry-run');
+    const auto = args.includes('--auto') || version === null;
+    const bumpType = args.includes('--major') ? 'major' : 
+                     args.includes('--minor') ? 'minor' : 
+                     args.includes('--patch') ? 'patch' : null;
 
-    return { version, skipChangelog, dryRun };
+    return { version, skipChangelog, dryRun, auto, bumpType };
 }
 
 /**
@@ -40,29 +44,51 @@ function showHelp() {
 🚀 Quick Release - Solo Developer Edition
 
 Usage:
-  bun scripts/quick-release.js <version> [options]
+  bun scripts/quick-release.js [version] [options]
 
 Arguments:
-  version       Version number (e.g., 1.0.0, 2.1.3)
+  version       Version number (e.g., 1.0.0, 2.1.3) - optional if using --auto
 
 Options:
-  --skip-changelog    Skip changelog update
+  --auto             Auto-detect version bump from commits (default if no version)
+  --major            Force major version bump (X.0.0)
+  --minor            Force minor version bump (0.X.0)
+  --patch            Force patch version bump (0.0.X)
+  --skip-changelog   Skip changelog update
   --dry-run          Show what would happen without doing it
   --help, -h         Show this help
 
 Examples:
-  bun scripts/quick-release.js 1.0.0
-  bun scripts/quick-release.js 1.2.0 --skip-changelog
-  bun scripts/quick-release.js 2.0.0 --dry-run
+  # Auto-detect version from commits (recommended)
+  bun scripts/quick-release.js --auto
+  bun scripts/quick-release.js  # same as --auto
+
+  # Specify version manually
+  bun scripts/quick-release.js 2.1.0
+
+  # Force specific bump type
+  bun scripts/quick-release.js --major  # 2.0.0 → 3.0.0
+  bun scripts/quick-release.js --minor  # 2.0.0 → 2.1.0
+  bun scripts/quick-release.js --patch  # 2.0.0 → 2.0.1
+
+  # Dry run
+  bun scripts/quick-release.js --auto --dry-run
+
+Auto-detection rules:
+  - BREAKING CHANGE in commits → Major bump (X.0.0)
+  - feat: commits → Minor bump (0.X.0)
+  - fix: commits → Patch bump (0.0.X)
+  - No significant changes → Patch bump (0.0.X)
 
 What it does:
-  1. ✅ Updates package.json version
-  2. ✅ Updates CHANGELOG.md (unless --skip-changelog)
-  3. ✅ Commits changes
-  4. ✅ Merges to master
-  5. ✅ Creates and pushes tag
-  6. ✅ Merges back to develop
-  7. ✅ Pushes everything
+  1. ✅ Determines version (auto or manual)
+  2. ✅ Updates package.json version
+  3. ✅ Updates CHANGELOG.md (unless --skip-changelog)
+  4. ✅ Commits changes
+  5. ✅ Merges to master
+  6. ✅ Creates and pushes tag
+  7. ✅ Merges back to develop
+  8. ✅ Pushes everything
 
 All in one command! 🎉
 `);
@@ -93,6 +119,40 @@ function updatePackageVersion(version) {
 }
 
 /**
+ * Get current version from package.json
+ */
+function getCurrentVersion() {
+    const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
+    return packageJson.version;
+}
+
+/**
+ * Parse version string to components
+ */
+function parseVersion(version) {
+    const [major, minor, patch] = version.split('.').map(Number);
+    return { major, minor, patch };
+}
+
+/**
+ * Bump version based on type
+ */
+function bumpVersion(currentVersion, bumpType) {
+    const { major, minor, patch } = parseVersion(currentVersion);
+    
+    switch (bumpType) {
+        case 'major':
+            return `${major + 1}.0.0`;
+        case 'minor':
+            return `${major}.${minor + 1}.0`;
+        case 'patch':
+            return `${major}.${minor}.${patch + 1}`;
+        default:
+            throw new Error(`Invalid bump type: ${bumpType}`);
+    }
+}
+
+/**
  * Get commits since last tag
  */
 async function getCommitsSinceLastTag() {
@@ -107,6 +167,72 @@ async function getCommitsSinceLastTag() {
         const commits = (await $`git log --pretty=format:"%s"`.quiet()).stdout.toString().trim();
         return commits.split('\n').filter(c => c);
     }
+}
+
+/**
+ * Determine version bump type from commits
+ */
+function determineBumpType(commits) {
+    let hasBreaking = false;
+    let hasFeat = false;
+    let hasFix = false;
+
+    commits.forEach(commit => {
+        const lower = commit.toLowerCase();
+        
+        // Check for breaking changes
+        if (lower.includes('breaking change') || 
+            lower.includes('breaking:') ||
+            commit.includes('!:')) {
+            hasBreaking = true;
+        }
+        
+        // Check for features
+        if (lower.startsWith('feat:') || lower.startsWith('feature:')) {
+            hasFeat = true;
+        }
+        
+        // Check for fixes
+        if (lower.startsWith('fix:')) {
+            hasFix = true;
+        }
+    });
+
+    // Determine bump type based on conventional commits
+    if (hasBreaking) {
+        return 'major';
+    } else if (hasFeat) {
+        return 'minor';
+    } else if (hasFix) {
+        return 'patch';
+    } else {
+        // Default to patch for other changes
+        return 'patch';
+    }
+}
+
+/**
+ * Auto-determine next version
+ */
+async function autoDetectVersion(forceBumpType = null) {
+    const currentVersion = getCurrentVersion();
+    const commits = await getCommitsSinceLastTag();
+    
+    if (commits.length === 0) {
+        console.log('⚠️  No commits since last tag. Using patch bump.');
+        return bumpVersion(currentVersion, 'patch');
+    }
+
+    const bumpType = forceBumpType || determineBumpType(commits);
+    const newVersion = bumpVersion(currentVersion, bumpType);
+    
+    console.log(`📊 Version Analysis:`);
+    console.log(`   Current: ${currentVersion}`);
+    console.log(`   Commits: ${commits.length}`);
+    console.log(`   Bump type: ${bumpType}`);
+    console.log(`   New version: ${newVersion}\n`);
+    
+    return newVersion;
 }
 
 /**
@@ -325,8 +451,15 @@ async function quickRelease(version, options) {
  */
 async function main() {
     try {
-        const { version, skipChangelog, dryRun } = parseArgs();
-        await quickRelease(version, { skipChangelog, dryRun });
+        const { version, skipChangelog, dryRun, auto, bumpType } = parseArgs();
+        
+        // Determine version
+        let finalVersion = version;
+        if (auto || !version) {
+            finalVersion = await autoDetectVersion(bumpType);
+        }
+        
+        await quickRelease(finalVersion, { skipChangelog, dryRun });
         process.exit(0);
     } catch (error) {
         handleError(error, 'Quick release');

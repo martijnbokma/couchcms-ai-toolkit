@@ -61,16 +61,16 @@ bun ai-toolkit-shared/scripts/init.js
 
 **Result:** Configuration file and all IDE configs (`.cursorrules`, `.claude/`, etc.) are generated automatically.
 
-### One-Command Install (After v2.1.0 Release)
+### One-Command Install (Coming Soon)
 
-Once v2.1.0 is released on GitHub, you can use:
+**Note:** The one-command installer will be available after v2.1.0 is merged to master and released.
 
+For now, use the 3-step manual installation above.
+
+After release, you'll be able to use:
 ```bash
-# Using curl (works everywhere)
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 ```
-
-This will automatically do all 3 steps above.
 
 📖 **[See all installation methods](docs/INSTALLATION-METHODS.md)** - Bash, Bun, Manual, Git Clone
 

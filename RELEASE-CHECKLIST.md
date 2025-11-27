@@ -28,6 +28,47 @@ Steps to release the new version with all improvements.
 - [x] presets.yaml created
 - [x] All documentation files created
 
+## 🧪 Testing Before Release
+
+### Test from Feature Branch
+
+If you want to test the installer before merging to master:
+
+```bash
+# Option 1: Test locally
+cd /path/to/test-project
+git init
+
+# Copy install.sh to test project
+cp /path/to/couchcms-ai-toolkit/install.sh .
+
+# Run locally
+bash install.sh
+
+# Option 2: Test from your branch on GitHub
+# Replace 'your-branch' with your actual branch name
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/your-branch/install.sh | bash
+```
+
+### Manual Testing Checklist
+
+See [TEST-NEW-FEATURES.md](TEST-NEW-FEATURES.md) for complete test plan.
+
+Quick smoke test:
+```bash
+# 1. Health check
+bun scripts/health.js
+
+# 2. Browse modules
+bun scripts/browse.js
+
+# 3. Test auto-detection
+bun scripts/init.js
+
+# 4. Test watch mode
+bun scripts/sync.js --watch
+```
+
 ## 🚀 Release Steps
 
 ### Step 1: Commit All Changes
@@ -79,7 +120,22 @@ See CHANGELOG.md for full details."
 git tag -l -n9 v2.1.0
 ```
 
-### Step 3: Push to GitHub
+### Step 3: Merge to Master (if in feature branch)
+
+If you're in a feature/develop branch:
+
+```bash
+# Check current branch
+git branch
+
+# If not on master, merge to master
+git checkout master
+git merge your-feature-branch
+
+# Or create a Pull Request on GitHub
+```
+
+### Step 4: Push to GitHub
 
 ```bash
 # Push commits
@@ -89,7 +145,9 @@ git push origin master
 git push origin v2.1.0
 ```
 
-### Step 4: Create GitHub Release
+**Important:** The one-command installer (`install.sh`) only works after pushing to master!
+
+### Step 5: Create GitHub Release
 
 1. Go to: https://github.com/martijnbokma/couchcms-ai-toolkit/releases/new
 2. Choose tag: `v2.1.0`
@@ -179,7 +237,7 @@ See [CHANGELOG.md](CHANGELOG.md) for complete details.
 
 5. Click "Publish release"
 
-### Step 5: Verify Installation
+### Step 6: Verify Installation
 
 Test the one-command install:
 
@@ -196,7 +254,7 @@ curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/ma
 bun ai-toolkit-shared/scripts/health.js
 ```
 
-### Step 6: Update Documentation Links
+### Step 7: Update Documentation Links
 
 If needed, update any documentation that references the old installation method.
 
