@@ -223,7 +223,7 @@ bun scripts/sync.js
 ### 4. Customize Per Project
 
 - Modules are starting points, not final rules
-- Add project-specific patterns in `project.md`
+- Add project-specific patterns in `standards.md` (or `.project/standards.md`)
 - Override module defaults when needed
 
 ## Troubleshooting

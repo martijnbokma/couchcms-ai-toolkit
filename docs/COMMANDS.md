@@ -52,8 +52,8 @@ The wizard will:
     - Asks if you want `.project/ai/` for detailed context
     - Creates directory and template `context.md` if yes
 
-7. **Generate project.md**
-    - Creates fully configured `project.md`
+7. **Generate standards.md**
+    - Creates fully configured `standards.md` (or `.project/standards.md`)
     - Includes all your selections
 
 8. **Run initial sync**
@@ -94,8 +94,8 @@ Choice [1-2] [1]: 1
 
 📋 Create project context directory? [Y/n]: y
 
-📝 Generating project.md...
-✅ Created: project.md
+📝 Generating standards.md...
+✅ Created: .project/standards.md
 ✅ Created: .project/ai/
 ✅ Created: .project/ai/context.md
 
@@ -105,7 +105,7 @@ Choice [1-2] [1]: 1
 
 Next steps:
 
-  1. Review and customize project.md
+  1. Review and customize .project/standards.md
   2. Add project-specific details to .project/ai/context.md
   3. Run "bun run sync" to generate AI configurations
   4. Run "bun run validate" to check setup
@@ -202,7 +202,7 @@ $ bun ai-toolkit-shared/scripts/validate.js
 
 🔍 CouchCMS AI Toolkit - Validation
 
-📄 Found: project.md
+📄 Found: .project/standards.md
 🛠️  Toolkit: ./ai-toolkit-shared
 📚 Modules: couchcms-core, tailwindcss, vue
 🤖 Agents: couchcms, nonexistent-agent
@@ -260,7 +260,7 @@ If validation fails:
 
     ```bash
     # Look for missing quotes, colons, indentation
-    cat project.md
+    cat .project/standards.md
     ```
 
 2. **Verify module names**
@@ -286,7 +286,7 @@ If validation fails:
 
 ## bun run sync
 
-Generates AI configuration files from your `project.md` and toolkit modules.
+Generates AI configuration files from your `standards.md` (or `.project/standards.md`) and toolkit modules.
 
 ### Usage
 
@@ -349,7 +349,7 @@ $ bun ai-toolkit-shared/scripts/sync.js
 
 🔄 CouchCMS AI Toolkit - Sync
 
-📄 Reading: project.md
+📄 Reading: .project/standards.md
 🛠️  Toolkit: ./ai-toolkit-shared
 
 📦 Loading modules:
@@ -399,7 +399,7 @@ Run sync after:
 ❌ Error: Toolkit not found at './ai-toolkit-shared'
 
 Troubleshooting:
-  1. Check toolkit path in project.md
+  1. Check toolkit path in standards.md (or .project/standards.md)
   2. For submodule: cd ai-toolkit-shared && git pull
   3. For home dir: verify ~/couchcms-ai-toolkit exists
 ```

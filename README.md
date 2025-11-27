@@ -16,132 +16,68 @@ Provides consistent AI assistance across all your projects with modules, agents,
 
 ## ⚡ Prerequisites
 
-Before using this toolkit, ensure you have:
-
-- **Git** - For version control and submodule management
+- **Git** - For submodule management
 - **Bun** (recommended) or **Node.js** (v18+) - JavaScript runtime
   - Install Bun: `curl -fsSL https://bun.sh/install | bash`
-  - Or use Node.js: `npm install` works too
 
-**Important:** After adding the toolkit as a submodule, you **must** install its dependencies before running any scripts.
+:::caution[Important]
+After adding the submodule, **always** run `bun install` in `ai-toolkit-shared/` before using any scripts.
+:::
 
-## 🚀 Quick Start (30 seconds)
+## 🚀 Quick Start
 
-The setup wizard has two modes:
-
-### Simple Mode (Recommended for Beginners)
-
-Just answer 2 questions - everything else uses smart defaults:
+Get started in 3 steps:
 
 ```bash
-# 1. Create project
-mkdir my-project && cd my-project
-
-# 2. Add toolkit
-git init
+# 1. Add toolkit as submodule
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 
-# 3. Install toolkit dependencies (REQUIRED!)
-cd ai-toolkit-shared
-bun install  # or: npm install
-cd ..
-
-# 4. Run setup wizard (choose "Simple" mode)
-bun ai-toolkit-shared/scripts/init.js
-
-# The wizard will ask:
-# - Project name
-# - Project description
-# - Setup mode: Choose "1" for Simple (recommended)
-
-# Done! ✨
-```
-
-**Simple mode gives you:**
-- ✅ `.project/standards.md` - Your configuration file
-- ✅ Standard modules (core + tailwindcss + alpinejs)
-- ✅ Standard agents (couchcms + tailwindcss + alpinejs)
-- ✅ `.cursorrules`, `CLAUDE.md`, `AGENT.md` - Auto-generated
-
-### Custom Mode (Full Control)
-
-For advanced users who want to customize everything:
-
-```bash
-# Same steps as above, but choose "Custom" mode in the wizard
-bun ai-toolkit-shared/scripts/init.js
-
-# Choose "2" for Custom mode, then:
-# - Select config file location
-# - Choose modules (presets: Minimal/Standard/Full/Custom)
-# - Choose agents (presets: Minimal/Standard/Full/Custom)
-# - Optional context directory
-```
-
-### Existing Project
-
-```bash
-# 1. Add toolkit
-cd your-project
-git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
-
-# 2. Install toolkit dependencies (REQUIRED!)
-cd ai-toolkit-shared
-bun install  # or: npm install
-cd ..
+# 2. Install dependencies (REQUIRED!)
+cd ai-toolkit-shared && bun install && cd ..
 
 # 3. Run setup wizard
 bun ai-toolkit-shared/scripts/init.js
 ```
 
-**Result:** You'll have `.project/standards.md`, `.cursorrules`, `CLAUDE.md`, and `AGENT.md` generated automatically.
+**Choose "Simple" mode** (recommended) - answers 2 questions, uses smart defaults.
+
+**Result:** `.project/standards.md`, `.cursorrules`, `CLAUDE.md`, and `AGENT.md` are generated automatically.
+
+📖 **For detailed setup instructions**, see [Getting Started Guide](docs/GETTING-STARTED.md).
 
 ## 📚 Documentation
 
-### Core Guides
+### Essential Guides
 
-- **[Getting Started](docs/GETTING-STARTED.md)** - Complete setup guide
-- **[Commands Reference](docs/COMMANDS.md)** - All toolkit commands
-- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+| Guide | When to Use |
+|-------|-------------|
+| **[Getting Started](docs/GETTING-STARTED.md)** | First-time setup - start here |
+| **[Commands Reference](docs/COMMANDS.md)** | Using `init`, `validate`, `sync` |
+| **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Something not working |
 
-### Rules & Configuration
+### Configuration
 
-- **[Project Rules](docs/PROJECT-RULES.md)** - Guide to Cursor Project Rules
-- **[User Rules](docs/USER-RULES.md)** - Guide to Cursor User Rules
-- **[Custom Commands](docs/CUSTOM-COMMANDS.md)** - Guide to Cursor Custom Commands
-- **[Configuration Guide](docs/CONFIG-FILES-GUIDE.md)** - Project configuration explained
+| Guide | Purpose |
+|-------|---------|
+| **[Config Files Guide](docs/CONFIG-FILES-GUIDE.md)** | Understanding `standards.md` |
+| **[Project Rules](docs/PROJECT-RULES.md)** | Cursor Project Rules |
+| **[User Rules](docs/USER-RULES.md)** | Cursor User Rules |
+| **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Cursor Custom Commands |
 
-### Modules & Agents
+### Reference
 
-- **[Modules](docs/MODULES.md)** - Available knowledge modules
-- **[Agents](docs/AGENTS.md)** - Available AI agents
-
-### Start Here
-
-| Guide                                          | Description                                      |
-| ---------------------------------------------- | ------------------------------------------------ |
-| **[Getting Started](docs/GETTING-STARTED.md)** | Complete setup guide - start here!              |
-| **[Config Files Guide](docs/CONFIG-FILES-GUIDE.md)** | Understanding standards.md, project.md, and context.md |
-| **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Common issues and solutions                      |
-
-### Learn More
-
-| Guide                                          | Description                                      |
-| ---------------------------------------------- | ------------------------------------------------ |
-| **[Command Reference](docs/COMMANDS.md)**      | Detailed `init`, `validate`, `sync` commands     |
-| **[Available Modules](docs/MODULES.md)**       | 15 knowledge modules with descriptions           |
-| **[Available Agents](docs/AGENTS.md)**         | 23 specialized AI agents                         |
-| **[Project Rules](docs/PROJECT-RULES.md)**     | Guide to Cursor Project Rules                    |
-| **[User Rules](docs/USER-RULES.md)**           | Guide to Cursor User Rules                       |
-| **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Guide to Cursor Custom Commands                  |
+| Guide | Content |
+|-------|---------|
+| **[Modules](docs/MODULES.md)** | 15 knowledge modules |
+| **[Agents](docs/AGENTS.md)** | 23 AI agents |
 
 ### Advanced
 
-| Guide                                          | Description                                      |
-| ---------------------------------------------- | ------------------------------------------------ |
-| **[Extending Modules](docs/EXTENDING-MODULES.md)** | How to extend modules from documentation      |
-| **[Contributing](CONTRIBUTING.md)**            | How to contribute from your project              |
-| **[Changelog](CHANGELOG.md)**                  | Version history and upgrade notes                |
+| Guide | For |
+|-------|-----|
+| **[Extending Modules](docs/EXTENDING-MODULES.md)** | Creating custom modules |
+| **[Contributing](CONTRIBUTING.md)** | Contributing to toolkit |
+| **[Changelog](CHANGELOG.md)** | Version history |
 
 ## 🎯 Commands
 
@@ -169,89 +105,40 @@ bun ai-toolkit-shared/scripts/extend-modules.js --module comments
 
 ## 📦 What's Included
 
-### Modules
+- **15 Knowledge Modules** - CouchCMS, TailwindCSS, Alpine.js, TypeScript, daisyUI, and more
+- **23 AI Agents** - Specialized guidance for development tasks
+- **Auto-Loading Rules** - Context-aware refactoring patterns
 
-- `couchcms-core` - Core patterns (always included)
-- `tailwindcss` - TailwindCSS 4 patterns
-- `daisyui` - daisyUI 5 components
-- `alpinejs` - Alpine.js + CouchCMS integration
-- `typescript` - TypeScript standards
-- `databound-forms` - Forms & CRUD
+📖 See [Modules](docs/MODULES.md) and [Agents](docs/AGENTS.md) for complete list.
 
-### Agents
-
-- `couchcms` - Core CouchCMS development
-- `databound-forms` - Forms and validation
-- `alpinejs` - Alpine.js development
-- `tailwindcss` - Styling with TailwindCSS + daisyUI
-- `typescript` - TypeScript development
-- `custom-routes` - Clean URLs
-- `mysql` - Database operations
-- `bun` - Build tooling
-- `git` - Version control
-
-## 🔄 Workflow
+## 🔄 Typical Workflow
 
 ```bash
 # 1. Setup (once)
 bun ai-toolkit-shared/scripts/init.js
 
-# 2. Customize
-code project.md  # Edit your configuration
+# 2. Customize configuration
+code .project/standards.md
 
-# 3. Sync
+# 3. Sync after changes
 bun ai-toolkit-shared/scripts/sync.js
 
-# 4. Validate
+# 4. Validate setup
 bun ai-toolkit-shared/scripts/validate.js
-
-# 5. Keep toolkit up-to-date (when needed)
-cd ai-toolkit-shared && bun run update-submodule && cd ..
-git add ai-toolkit-shared
-git commit -m "Update couchcms-ai-toolkit submodule"
 ```
 
-## 📝 Configuration File
+📖 See [Commands Reference](docs/COMMANDS.md) for all commands.
 
-After running the setup wizard, you'll have `.project/standards.md`:
+## 📝 Configuration
 
-```yaml
----
-# YAML Frontmatter - Configuration
-name: 'my-project'
-description: 'My CouchCMS project'
-toolkit: './ai-toolkit-shared'
+Your configuration lives in `.project/standards.md`:
 
-modules:
-    - couchcms-core
-    - tailwindcss
-    - alpinejs
+- **YAML frontmatter**: Modules, agents, paths
+- **Markdown body**: Project rules and documentation
 
-agents:
-    - couchcms
-    - tailwindcss
-    - alpinejs
----
+**One file for everything** - that's all you need for 95% of projects.
 
-# Markdown Body - Project Rules
-
-## Project-Specific Rules
-
-Add your custom rules here...
-
-## Architecture
-
-Describe your project architecture...
-
-## Code Patterns
-
-Document common patterns...
-```
-
-**Key Points:**
-- **One file for everything**: Configuration (YAML) + Rules (Markdown) in `standards.md`
-- **Location**: `.project/standards.md` (recommended) or `standards.md` (root)
-- **Optional context.md**: Only needed for >1000 lines of documentation (rare)
+📖 See [Config Files Guide](docs/CONFIG-FILES-GUIDE.md) for details.
 
 ## 🆕 What's New in v1.1.0
 
@@ -265,86 +152,15 @@ See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## 🤝 Contributing
 
-**You can contribute directly from your project!** No need to clone the toolkit separately.
-
-### Quick Start for Contributors
-
-**Option 1: Using the helper script (recommended)**
+Contribute directly from your project:
 
 ```bash
-# 1. Navigate to the submodule
 cd ai-toolkit-shared
-
-# 2. Prepare your contribution environment
-bun run prepare-contribution
-
-# 3. Create a feature branch (or use --branch flag)
-bun run prepare-contribution --branch feature/your-feature-name
-
-# 4. Make your changes
-code modules/your-module.md  # or agents/, docs/, etc.
-
-# 5. Test your changes
-cd ..  # Back to project root
-bun ai-toolkit-shared/scripts/sync.js
-bun ai-toolkit-shared/scripts/validate.js
-
-# 6. Commit and push
-cd ai-toolkit-shared
-git add .
-git commit -m "feat: add your feature"
-git push origin feature/your-feature-name
-
-# 7. Create Pull Request on GitHub
+bun run prepare-contribution --branch feature/your-feature
+# Make changes, test, commit, push, create PR
 ```
 
-**Option 2: Manual workflow**
-
-```bash
-# 1. Navigate to the submodule
-cd ai-toolkit-shared
-
-# 2. Switch to master branch (submodules are often in detached HEAD)
-git checkout master
-git pull origin master
-
-# 3. Create a feature branch
-git checkout -b feature/your-feature-name
-
-# 4. Make your changes
-code modules/your-module.md  # or agents/, docs/, etc.
-
-# 5. Test your changes
-cd ..  # Back to project root
-bun ai-toolkit-shared/scripts/sync.js
-bun ai-toolkit-shared/scripts/validate.js
-
-# 6. Commit and push
-cd ai-toolkit-shared
-git add .
-git commit -m "feat: add your feature"
-git push origin feature/your-feature-name
-
-# 7. Create Pull Request on GitHub
-```
-
-### What Can You Contribute?
-
-- ✅ **New Modules** - Add support for frameworks (Vue.js, React, etc.)
-- ✅ **Improve Modules** - Fix typos, add examples, clarify instructions
-- ✅ **New Agents** - Create specialized AI agents
-- ✅ **Documentation** - Improve README, troubleshooting, examples
-- ✅ **Prompts** - Add reusable AI prompts for common tasks
-- ✅ **Bug Fixes** - Fix issues you encounter
-
-### Full Guide
-
-See **[CONTRIBUTING.md](CONTRIBUTING.md)** for:
-- 📋 Complete step-by-step workflow
-- 🎨 Module and agent templates
-- 🚫 Common mistakes to avoid
-- 🆘 Troubleshooting guide
-- 💡 Tips for successful contributions
+📖 See [CONTRIBUTING.md](CONTRIBUTING.md) for complete guide.
 
 ## 📊 Project Structure
 
@@ -359,49 +175,23 @@ ai-toolkit-shared/
 └── README.md             # This file
 ```
 
-## ⚡ Requirements
-
-- **Git** - Version control (for submodule management)
-- **Bun** (recommended) or **Node.js** (v18+) - JavaScript runtime
-  - Bun: `curl -fsSL https://bun.sh/install | bash`
-  - Node.js: Download from [nodejs.org](https://nodejs.org/)
-- **CouchCMS Project** - Target project
-
-**Note:** After cloning the submodule, always run `bun install` (or `npm install`) in the `ai-toolkit-shared` directory before using any scripts.
-
-## 🔄 Keeping the Toolkit Up-to-Date
-
-When using the toolkit as a git submodule, keep it updated to get the latest features and fixes:
-
-```bash
-# Option 1: Using the update script (recommended)
-cd ai-toolkit-shared
-bun run update-submodule
-cd ..
-
-# Option 2: Using git submodule command (from parent repo)
-git submodule update --remote ai-toolkit-shared
-
-# After updating, commit the change in your parent repository
-git add ai-toolkit-shared
-git commit -m "Update couchcms-ai-toolkit submodule"
-```
-
-The `update-submodule` script will:
-- ✅ Fetch the latest changes from the remote repository
-- ✅ Pull updates for your current branch
-- ✅ Show you the latest commit information
-- ✅ Provide helpful tips for committing the update
-
 ## 🆘 Need Help?
 
 1. Check [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
-2. Validate your setup: `bun ai-toolkit-shared/scripts/validate.js`
+2. Validate setup: `bun ai-toolkit-shared/scripts/validate.js`
 3. Open an [issue](https://github.com/martijnbokma/couchcms-ai-toolkit/issues)
 
 ## 📄 License
 
 MIT
+
+## 🙏 Acknowledgments
+
+This toolkit is inspired by and builds upon excellent work from the community:
+
+- **[diet103/claude-code-infrastructure-showcase](https://github.com/diet103/claude-code-infrastructure-showcase)** - Inspiration for skill auto-activation patterns, modular skill structure, and hooks-based automation. Their 6 months of production experience with Claude Code provided valuable insights into scalable AI development infrastructure.
+
+- **[aashari/AAPF Framework](https://gist.github.com/aashari/07cc9c1b6c0debbeb4f4d94a3a81339e)** - The Autonomous Agent Prompting Framework that forms the foundation of our operational doctrine. See [framework/ATTRIBUTION.md](framework/ATTRIBUTION.md) for details.
 
 ---
 

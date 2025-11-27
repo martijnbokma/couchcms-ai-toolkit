@@ -102,7 +102,7 @@ ls ai-toolkit-shared/modules/
 # - typescript.md
 # - databound-forms.md
 
-# 2. Fix typo in project.md
+# 2. Fix typo in standards.md (or .project/standards.md)
 # Wrong: - tailwind
 # Right: - tailwindcss
 
@@ -124,7 +124,7 @@ cd ..
 # 1. Check available agents
 ls ai-toolkit-shared/agents/
 
-# 2. Fix typo in project.md
+# 2. Fix typo in standards.md (or .project/standards.md)
 # 3. Update toolkit if agent is new
 cd ai-toolkit-shared && git pull origin master && cd ..
 ```
@@ -138,8 +138,8 @@ cd ai-toolkit-shared && git pull origin master && cd ..
 **Solution**:
 
 ```bash
-# Check your project.md toolkit path
-grep "toolkit:" project.md
+# Check your standards.md toolkit path
+grep "toolkit:" .project/standards.md
 
 # For submodule:
 toolkit: "./ai-toolkit-shared"  # ✓ Correct

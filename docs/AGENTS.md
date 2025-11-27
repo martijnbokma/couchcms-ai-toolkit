@@ -448,7 +448,7 @@ AI assistants use these to provide context-aware suggestions.
 
 ## Adding Agents to Your Project
 
-Edit `project.md`:
+Edit `standards.md` (or `.project/standards.md`):
 
 ```yaml
 agents:

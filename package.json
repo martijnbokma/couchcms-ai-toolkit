@@ -3,12 +3,18 @@
     "version": "1.1.0",
     "description": "Universal AI Development Toolkit for CouchCMS Projects",
     "type": "module",
+    "main": "scripts/sync.js",
+    "engines": {
+        "node": ">=18.0.0",
+        "bun": ">=1.0.0"
+    },
     "scripts": {
         "sync": "bun scripts/sync.js",
         "validate": "bun scripts/validate.js",
         "init": "bun scripts/init.js",
         "update-submodule": "bun scripts/update-submodule.js",
-        "prepare-contribution": "bun scripts/prepare-contribution.js"
+        "prepare-contribution": "bun scripts/prepare-contribution.js",
+        "extend-modules": "bun scripts/extend-modules.js"
     },
     "dependencies": {
         "gray-matter": "^4.0.3",
@@ -28,6 +34,22 @@
         "type": "git",
         "url": "https://github.com/martijnbokma/couchcms-ai-toolkit.git"
     },
-    "author": "Martijn Bokma, aashari, and all contributors",
+    "homepage": "https://github.com/martijnbokma/couchcms-ai-toolkit#readme",
+    "bugs": {
+        "url": "https://github.com/martijnbokma/couchcms-ai-toolkit/issues"
+    },
+    "author": {
+        "name": "Martijn Bokma, aashari, and all contributors"
+    },
+    "contributors": [
+        {
+            "name": "aashari",
+            "url": "https://github.com/aashari"
+        },
+        {
+            "name": "diet103",
+            "url": "https://github.com/diet103"
+        }
+    ],
     "license": "MIT"
 }

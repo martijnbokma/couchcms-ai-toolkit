@@ -146,12 +146,32 @@ When using this framework:
 - `smart-defaults.yaml` - Context loading and intent patterns
 - `docs/standards.md` - Project standards (referenced by framework)
 
+## Additional Credits
+
+### Claude Code Infrastructure Patterns
+
+**diet103/claude-code-infrastructure-showcase** - https://github.com/diet103/claude-code-infrastructure-showcase
+
+This repository provided valuable inspiration for:
+
+- **Skill auto-activation patterns** - Hooks-based skill triggering
+- **Modular skill structure** - Progressive disclosure with resource files
+- **Production-tested patterns** - Real-world patterns from 6 months of use
+- **Dev docs system** - Context preservation across resets
+
+**Note**: While this toolkit uses different patterns (modules/agents vs skills), the underlying principles of auto-activation, modular structure, and production-tested patterns were influential in the toolkit's design.
+
 ## Questions or Contributions
 
 For questions about the **AAPF framework concepts**, refer to:
 
 - Original Gist: https://gist.github.com/aashari/07cc9c1b6c0debbeb4f4d94a3a81339e
 - Author's profile: https://github.com/aashari
+
+For questions about **Claude Code infrastructure patterns**, refer to:
+
+- Claude Code Infrastructure Showcase: https://github.com/diet103/claude-code-infrastructure-showcase
+- Author's profile: https://github.com/diet103
 
 For questions about **toolkit integration and enhancements**, refer to:
 

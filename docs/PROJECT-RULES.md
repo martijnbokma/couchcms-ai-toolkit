@@ -292,7 +292,7 @@ These are invoked with `@rule-name` in chat.
 ### Path Variables Not Replaced
 
 1. **Run sync script**: `bun ai-toolkit-shared/scripts/sync.js`
-2. **Check `project.md`** - Verify path configuration
+2. **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration
 3. **Verify `defaults.yaml`** - Check toolkit has path definitions
 
 ### Rules Not Applying

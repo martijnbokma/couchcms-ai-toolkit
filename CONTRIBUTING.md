@@ -217,7 +217,7 @@ Explain the problem it solves or the improvement it makes.
 
 ## Checklist
 - [ ] Code follows project style
-- [ ] Changes are tested (`bun run sync` works)
+- [ ] Changes are tested (`bun ai-toolkit-shared/scripts/sync.js` works)
 - [ ] Documentation is updated
 - [ ] Commit messages are clear
 ```
@@ -400,7 +400,7 @@ git push origin feature/my-feature
 Before submitting your PR:
 
 - [ ] Code follows project style
-- [ ] Changes are tested (`bun run sync` works)
+- [ ] Changes are tested (`bun ai-toolkit-shared/scripts/sync.js` works)
 - [ ] Documentation is updated
 - [ ] Commit messages are clear
 - [ ] Branch is up to date with master
@@ -490,9 +490,8 @@ cd .. # Your project root
 bun ai-toolkit-shared/scripts/sync.js
 bun ai-toolkit-shared/scripts/validate.js
 
-# Test in a real project
-bun run sync
 # Check generated .cursorrules file
+cat .cursorrules | grep -i "your-change"
 ```
 
 ### 3. Document Your Changes
@@ -510,8 +509,8 @@ Many projects now use Vue.js instead of Alpine.js
 
 ## How to Test?
 
-1. Add `vue` to modules in project.md
-2. Run `bun run sync`
+1. Add `vue` to modules in `.project/standards.md`
+2. Run `bun ai-toolkit-shared/scripts/sync.js`
 3. Check `.cursorrules` includes Vue.js rules
 ```
 
