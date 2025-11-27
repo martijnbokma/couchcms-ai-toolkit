@@ -890,7 +890,10 @@ async function init() {
 
 // Setup stdin for interactive input
 process.stdin.setEncoding('utf8')
-process.stdin.setRawMode(false)
+// setRawMode is not available in Bun, so check if it exists before calling
+if (typeof process.stdin.setRawMode === 'function') {
+    process.stdin.setRawMode(false)
+}
 
 // Run
 init().catch(error => {
