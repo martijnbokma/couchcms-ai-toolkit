@@ -1,144 +1,28 @@
 # Configuration Files Guide
 
-Complete guide to configuration files in the CouchCMS AI Toolkit.
+Complete guide to configuration in the CouchCMS AI Toolkit.
 
 ## Quick Summary
 
-| File | Purpose | Format | Status |
-|------|---------|--------|--------|
-| **`config.yaml`** | Primary configuration file | YAML | ✅ Recommended (New) |
-| **`.project/standards.md`** | Legacy configuration file | YAML + Markdown | ⚠️ Supported (Legacy) |
+The toolkit uses a single configuration file: **`standards.md`** in your project root.
 
-📖 **Upgrading from old format?** See [Migration Guide](MIGRATION.md) for step-by-step instructions.
-
----
-
-## `config.yaml` (New Format - Recommended)
-
-**This is the new, simplified configuration format introduced in v2.0.0.**
-
-### Why Use config.yaml?
-
-- ✅ **Simpler** - Single YAML file instead of multiple config files
-- ✅ **Clearer** - All settings in one place, easy to find
-- ✅ **Better Validation** - Built-in schema validation
-- ✅ **Easier Maintenance** - No need to manage multiple files
-- ✅ **Performance** - Faster loading and processing
-
-### Structure
-
-```yaml
-# Project settings
-project:
-  name: "my-project"
-  description: "My CouchCMS project"
-  type: "CouchCMS Web Application"
-
-# Toolkit location
-toolkit:
-  path: "./ai-toolkit-shared"
-
-# Editors to generate configs for
-editors:
-  - cursor
-  - claude
-  - windsurf
-  - kiro
-  - copilot
-
-# Modules to load
-modules:
-  - couchcms-core
-  - tailwindcss
-  - alpinejs
-
-# Agents to load
-agents:
-  - couchcms
-  - tailwindcss
-  - alpinejs
-
-# Framework configuration
-framework:
-  enabled: false
-  # OR enable specific components:
-  # doctrine: true
-  # directives: true
-  # playbooks: true
-
-# Project paths
-paths:
-  css: "assets/css"
-  typescript: "assets/ts"
-  javascript: "assets/js"
-  components: "snippets/components"
-
-# Coding standards
-standards:
-  indentation: 4
-  language: "english"
-  lineLength: 120
-
-# Naming conventions
-naming:
-  php_variables: "snake_case"
-  php_functions: "snake_case"
-  ts_variables: "camelCase"
-  ts_functions: "camelCase"
-  css_classes: "kebab-case"
-
-# File contexts (auto-load modules based on file type)
-file_contexts:
-  "*.php":
-    agents: [couchcms]
-    modules: [couchcms-core]
-  "*.ts":
-    agents: [typescript]
-    modules: [typescript]
-
-# Template aliases
-template_aliases:
-  component-basic: "templates/components/basic.html"
-  view-list: "templates/views/list.html"
-
-# Validation rules
-validation:
-  required_modules: [couchcms-core]
-  max_line_length: 200
-  enforce_english: true
-```
-
-### What It Contains
-
-All configuration in a single, well-structured YAML file:
-
-- **Project Settings** - Name, description, type
-- **Toolkit Configuration** - Path to toolkit
-- **Editor Selection** - Which editors to generate configs for
-- **Modules & Agents** - Knowledge modules and AI agents to load
-- **Framework** - AAPF framework configuration
-- **Paths** - Project directory structure
-- **Standards** - Coding standards (indentation, language, line length)
-- **Naming Conventions** - Per-language naming rules
-- **File Contexts** - Auto-load modules based on file type
-- **Template Aliases** - Shortcuts for common templates
-- **Validation Rules** - Configuration validation settings
-
-### Location
-
-The toolkit looks for `config.yaml` in the project root directory.
-
-### When to Use
-
-✅ **Always** - This is the recommended format for all new projects.
-
-If you're starting a new project or can migrate, use this format. It's simpler and easier to maintain than the legacy format.
+| File | Purpose | Format | Location |
+|------|---------|--------|----------|
+| **`standards.md`** | Project configuration | YAML frontmatter + Markdown | Project root |
 
 ---
 
-## `.project/standards.md` (Legacy Format - Still Supported)
+## `standards.md` - Single Source of Truth
 
-**This is the legacy configuration format. It still works, but we recommend migrating to `config.yaml`.**
+The toolkit uses a single configuration file with YAML frontmatter for settings and Markdown for project-specific rules.
+
+### Why This Format?
+
+- ✅ **Simple** - One file for everything
+- ✅ **Flexible** - Configuration + documentation in one place
+- ✅ **Clear** - YAML for structure, Markdown for rules
+- ✅ **Version Control Friendly** - Easy to track changes
+- ✅ **Self-Documenting** - Configuration and docs together
 
 ### Structure
 
@@ -158,6 +42,8 @@ agents:
     - couchcms
     - tailwindcss
     - alpinejs
+
+framework: false
 ---
 
 # Markdown Body - Project Rules & Documentation
@@ -174,186 +60,275 @@ agents:
 
 ### What It Contains
 
-1. **YAML Frontmatter** (Configuration):
-   - Project name and description
-   - Toolkit path
-   - Selected modules
-   - Selected agents
-   - Basic configuration
+#### 1. YAML Frontmatter (Configuration)
 
-2. **Markdown Body** (Rules & Documentation):
-   - Project-specific coding rules
-   - Architecture decisions
-   - Code patterns
-   - Workflows
+**Required Fields:**
+```yaml
+name: "my-project"              # Project name
+toolkit: "./ai-toolkit-shared"  # Path to toolkit
+modules:                        # At least one module
+  - couchcms-core
+```
 
-### Location Priority
+**Optional Fields:**
+```yaml
+description: "My CouchCMS project"  # Project description
+
+agents:                         # AI agents to load
+  - couchcms
+  - tailwindcss
+
+framework: false                # AAPF framework
+# OR enable specific components:
+# framework:
+#   doctrine: true
+#   directives: true
+#   playbooks: true
+
+context: ".project/ai"          # Context directory (optional)
+```
+
+#### 2. Markdown Body (Rules & Documentation)
+
+The Markdown section contains your project-specific rules:
+
+- Coding standards
+- Architecture decisions
+- Common patterns
+- Workflows
+- Team conventions
+
+This content is included in generated AI configurations, giving AI assistants context about your project.
+
+### Location
 
 The toolkit looks for `standards.md` in this order:
 
-1. `.project/standards.md` ⭐ **Recommended**
-2. `docs/standards.md`
-3. `standards.md` (root directory)
+1. `standards.md` (root directory) ⭐ **Recommended**
+2. `.project/standards.md` (legacy location)
+3. `docs/standards.md` (alternative location)
 
-### When to Use
-
-⚠️ **Legacy projects only** - If you have an existing project using this format, it will continue to work. However, we recommend migrating to `config.yaml` for better maintainability.
-
-### Migration
-
-To migrate from `standards.md` to `config.yaml`:
-
-```bash
-bun ai-toolkit-shared/scripts/migrate.js
-```
-
-See [Migration Guide](MIGRATION.md) for detailed instructions.
-
----
-
-## Configuration Format Comparison
-
-### New Format (config.yaml)
-
-```
-config.yaml
-└── All configuration in YAML
-```
-
-**Benefits:**
-- ✅ Single file for all configuration
-- ✅ Pure YAML (no mixed formats)
-- ✅ Better validation
-- ✅ Easier to maintain
-- ✅ Faster processing
-
-### Legacy Format (standards.md)
-
-```
-.project/standards.md
-├── YAML: Configuration
-└── Markdown: Rules & docs
-```
-
-**Limitations:**
-- ⚠️ Mixed format (YAML + Markdown)
-- ⚠️ Less structured
-- ⚠️ Harder to validate
-- ⚠️ Slower processing
-
-**Recommendation:** Migrate to `config.yaml` for better experience.
-
----
-
-## Automatic Detection
-
-The toolkit automatically detects and uses the appropriate configuration format.
-
-### Detection Logic
-
-The toolkit searches for configuration files in this priority order:
-
-1. **`config.yaml`** (root directory)
-    - New format (recommended)
-    - Single YAML file
-    - Fastest to load and process
-
-2. **`.project/standards.md`** (project config directory)
-    - Legacy format
-    - YAML frontmatter + Markdown body
-    - Still fully supported
-
-3. **`docs/standards.md`** (documentation location)
-    - Legacy format
-    - Alternative location
-
-4. **`standards.md`** (root directory)
-    - Legacy format
-    - Simplest path
-
-### How It Works
-
-#### In Scripts
-
-All toolkit scripts (`init.js`, `sync.js`, `validate.js`, `migrate.js`) automatically detect the configuration format:
-
-```javascript
-import { loadConfig } from './lib/config-loader.js'
-
-// Automatically detects and loads config.yaml or standards.md
-const config = loadConfig(projectDir, toolkitPath)
-```
-
-#### Backward Compatibility
-
-The toolkit maintains full backward compatibility:
-
-- If `config.yaml` exists, it takes priority
-- If only `standards.md` exists, it's used automatically
-- Both formats generate identical output
-- No breaking changes for existing projects
-
-#### Migration Path
-
-When you're ready to migrate:
-
-```bash
-bun ai-toolkit-shared/scripts/migrate.js
-```
-
-This automatically:
-1. Detects old configuration files
-2. Merges them into `config.yaml`
-3. Backs up old files
-4. Validates new configuration
+**Best Practice:** Keep it in the root directory for easy access.
 
 ---
 
 ## Configuration Schema
 
-### config.yaml Schema
-
-For complete schema documentation, see [CONFIG-SCHEMA.md](CONFIG-SCHEMA.md).
-
-**Required Fields:**
+### Required Fields
 
 ```yaml
-project:
-  name: "my-project"        # Required
-  
-toolkit:
-  path: "./ai-toolkit-shared"  # Required
+---
+name: "my-project"              # Project identifier
+toolkit: "./ai-toolkit-shared"  # Path to toolkit (relative)
+modules:                        # Knowledge modules (at least one)
+  - couchcms-core
+---
+```
+
+### Optional Fields
+
+```yaml
+---
+description: "Project description"  # Human-readable description
+
+agents:                         # AI agents (optional)
+  - couchcms
+  - tailwindcss
+
+framework: false                # AAPF framework (default: false)
+# OR:
+# framework: true               # Enable all components
+# OR:
+# framework:                    # Enable specific components
+#   doctrine: true
+#   directives: true
+#   playbooks: true
+#   enhancements: false
+
+context: ".project/ai"          # Context directory (optional)
+---
+```
+
+### Available Modules
+
+Core:
+- `couchcms-core` (required for CouchCMS projects)
+
+Frontend:
+- `tailwindcss`, `daisyui`, `alpinejs`, `typescript`
+
+Backend:
+- `databound-forms`, `custom-routes`
+
+Content:
+- `folders`, `archives`, `relationships`, `repeatable-regions`
+- `search`, `pagination`, `comments`
+
+User Features:
+- `users`
+
+📖 See [Modules Guide](MODULES.md) for complete list.
+
+### Available Agents
+
+Core:
+- `couchcms`, `databound-forms`, `custom-routes`
+
+Frontend:
+- `alpinejs`, `tailwindcss`, `typescript`
+
+Content:
+- `views`, `folders`, `archives`, `relationships`, `repeatable-regions`
+- `search`, `pagination`, `comments`, `nested-pages`, `photo-gallery`
+- `rss-feeds`, `on-page-editing`
+
+User Features:
+- `users`
+
+Development:
+- `bun`, `git`, `mysql`, `admin-panel-theming`
+
+📖 See [Agents Guide](AGENTS.md) for complete list.
+
+---
+
+## Generated Files (Auto-Created)
+
+These files are **automatically generated** from your `standards.md`:
+
+- `.cursorrules` - Cursor AI configuration
+- `.claude/skills/` - Claude Code skills
+- `.claude/settings.json` - Claude Code settings
+- `.github/copilot-instructions.md` - GitHub Copilot config
+- `.windsurf/rules.md` - Windsurf configuration
+- `.kiro/steering/` - Kiro steering files
+- `.cursor/rules/*.mdc` - Auto-loading Cursor rules
+
+**Do not edit these manually** - they're regenerated by `sync.js`.
+
+---
+
+## Workflow
+
+### 1. Initial Setup
+
+Run the interactive setup wizard:
+
+```bash
+bun ai-toolkit-shared/scripts/init.js
+```
+
+This creates `standards.md` with your selected modules and agents.
+
+### 2. Customize Configuration
+
+Edit `standards.md` to add project-specific rules:
+
+```bash
+code standards.md
+```
+
+### 3. Sync Configuration
+
+Generate/update AI configs:
+
+```bash
+bun ai-toolkit-shared/scripts/sync.js
+```
+
+### 4. Validate
+
+Check configuration is valid:
+
+```bash
+bun ai-toolkit-shared/scripts/validate.js
+```
+
+### 5. Watch Mode (Optional)
+
+Auto-sync when `standards.md` changes:
+
+```bash
+bun ai-toolkit-shared/scripts/sync.js --watch
+```
+
+---
+
+## Examples
+
+### Minimal Configuration
+
+```yaml
+---
+name: "my-blog"
+toolkit: "./ai-toolkit-shared"
+modules:
+  - couchcms-core
+---
+
+# My Blog
+
+Simple blog with CouchCMS.
+```
+
+### Full-Featured Project
+
+```yaml
+---
+name: "my-webapp"
+description: "Full-featured web application"
+toolkit: "./ai-toolkit-shared"
 
 modules:
-  - couchcms-core           # At least one required
+  - couchcms-core
+  - tailwindcss
+  - daisyui
+  - alpinejs
+  - typescript
+  - databound-forms
+  - users
+  - search
+  - pagination
+
+agents:
+  - couchcms
+  - tailwindcss
+  - alpinejs
+  - typescript
+  - databound-forms
+  - users
+
+framework:
+  doctrine: true
+  directives: true
+  playbooks: true
+---
+
+# My Web Application
+
+## Coding Standards
+
+- Use TypeScript for all frontend code
+- Follow TailwindCSS utility-first approach
+- Alpine.js for interactive components
+- DataBound Forms for all forms
+
+## Architecture
+
+- Components in `snippets/components/`
+- Views in `snippets/views/`
+- Forms in `snippets/forms/`
+- TypeScript in `assets/ts/`
+
+## Patterns
+
+### Component Structure
+[Your patterns...]
 ```
 
-**Optional Fields:**
+---
 
-```yaml
-project:
-  description: "..."        # Optional
-  type: "..."              # Optional
-
-editors:                   # Optional (defaults to all)
-  - cursor
-  - claude
-  - windsurf
-  - kiro
-  - copilot
-
-agents: []                 # Optional
-framework:                 # Optional
-  enabled: false
-paths: {}                  # Optional
-standards: {}              # Optional
-naming: {}                 # Optional
-file_contexts: {}          # Optional
-template_aliases: {}       # Optional
-validation: {}             # Optional
-```
-
-### Validation
+## Validation
 
 The toolkit validates your configuration automatically:
 
@@ -362,105 +337,96 @@ bun ai-toolkit-shared/scripts/validate.js
 ```
 
 This checks:
-- Required fields are present
-- Module names are valid
-- Agent names are valid
-- Paths exist
-- YAML syntax is correct
-
----
-
-## Generated Files (Auto-Created)
-
-These files are **automatically generated** from your configuration:
-
-- `.cursorrules` - Cursor AI configuration
-- `CLAUDE.md` - Claude AI configuration
-- `AGENT.md` - Universal AI agent documentation
-- `.github/copilot-instructions.md` - GitHub Copilot config
-- `.cursor/rules/*.mdc` - Auto-loading Cursor rules
-
-**Do not edit these manually** - they're regenerated by `sync.js`.
-
----
-
-## Decision Tree
-
-```
-Starting a new project?
-├── Yes → Use config.yaml (new format)
-│   └── Run: bun ai-toolkit-shared/scripts/init.js
-└── No → Have existing configuration?
-    ├── Using standards.md?
-    │   └── Consider migrating to config.yaml
-    │       └── Run: bun ai-toolkit-shared/scripts/migrate.js
-    └── Using config.yaml?
-        └── Perfect! You're all set.
-```
-
----
-
-## Common Questions
-
-### Q: Which format should I use?
-
-**Answer:** Use `config.yaml` (new format) for all new projects. It's simpler and easier to maintain.
-
-### Q: Can I still use standards.md?
-
-**Answer:** Yes! The legacy format is still fully supported. However, we recommend migrating to `config.yaml` when convenient.
-
-### Q: How do I migrate from standards.md to config.yaml?
-
-**Answer:** Run the migration script:
-
-```bash
-bun ai-toolkit-shared/scripts/migrate.js
-```
-
-See [Migration Guide](MIGRATION.md) for detailed instructions.
-
-### Q: What if I have both config.yaml and standards.md?
-
-**Answer:** The toolkit will use `config.yaml` and ignore `standards.md`. Remove or rename `standards.md` to avoid confusion.
-
-### Q: Will migration break my existing setup?
-
-**Answer:** No! The migration script:
-- Backs up all old files
-- Validates the new configuration
-- Automatically rolls back if anything fails
-- Generates identical output for supported editors
-
-### Q: What happened to Tabnine and CodeWhisperer support?
-
-**Answer:** These editors are no longer actively supported. The toolkit now focuses on:
-- Cursor
-- Claude Code
-- Windsurf
-- Kiro
-- GitHub Copilot
-
-If you need Tabnine or CodeWhisperer, use an older version of the toolkit or create custom templates.
+- ✅ Required fields are present
+- ✅ Module names are valid
+- ✅ Agent names are valid
+- ✅ Toolkit path exists
+- ✅ YAML syntax is correct
 
 ---
 
 ## Best Practices
 
-1. ✅ **Use `config.yaml`** for new projects (simpler and clearer)
-2. ✅ **Migrate existing projects** to `config.yaml` when convenient
-3. ✅ **Keep configuration organized** - use the provided schema structure
-4. ✅ **Validate regularly** - run `bun ai-toolkit-shared/scripts/validate.js`
-5. ❌ **Don't edit generated files** (.cursorrules, CLAUDE.md, etc.) - they're regenerated on sync
+1. ✅ **Keep it simple** - Start with minimal config, add as needed
+2. ✅ **Document your rules** - Use Markdown section for project conventions
+3. ✅ **Validate regularly** - Run `validate.js` after changes
+4. ✅ **Use watch mode** - Auto-sync during development
+5. ✅ **Version control** - Commit `standards.md`, ignore generated files
+6. ❌ **Don't edit generated files** - They're regenerated on sync
+
+---
+
+## Common Questions
+
+### Q: Where should I put standards.md?
+
+**Answer:** In your project root directory. This is the simplest and most discoverable location.
+
+### Q: Can I use a different location?
+
+**Answer:** Yes, the toolkit also checks `.project/standards.md` and `docs/standards.md`, but root is recommended.
+
+### Q: What if I have multiple projects?
+
+**Answer:** Each project has its own `standards.md`. The toolkit is added as a submodule to each project.
+
+### Q: How do I add custom rules?
+
+**Answer:** Add them in the Markdown section (after the `---`). They'll be included in generated configs.
+
+### Q: Do I need to run sync after every change?
+
+**Answer:** Yes, or use watch mode: `bun scripts/sync.js --watch`
+
+### Q: What happened to config.yaml?
+
+**Answer:** It was removed in favor of the simpler `standards.md` format. One file is easier to maintain.
+
+---
+
+## Troubleshooting
+
+### Configuration not found
+
+**Error:** `Configuration file not found`
+
+**Solution:** Create `standards.md` in project root:
+```bash
+bun ai-toolkit-shared/scripts/init.js
+```
+
+### Invalid YAML syntax
+
+**Error:** `Failed to parse YAML frontmatter`
+
+**Solution:** Check YAML syntax in frontmatter:
+- Proper indentation (2 or 4 spaces)
+- No tabs
+- Quotes around strings with special characters
+
+### Module not found
+
+**Error:** `Module 'xyz' not found`
+
+**Solution:** Check module name spelling. See [Modules Guide](MODULES.md) for valid names.
+
+### Sync fails
+
+**Error:** Various sync errors
+
+**Solution:**
+1. Validate config: `bun scripts/validate.js`
+2. Check toolkit path is correct
+3. Ensure toolkit dependencies are installed: `cd ai-toolkit-shared && bun install`
 
 ---
 
 ## Summary
 
-- **New projects**: Use `config.yaml` (recommended)
-- **Existing projects**: Migrate from `standards.md` to `config.yaml`
-- **Migration**: Run `bun ai-toolkit-shared/scripts/migrate.js`
-- **Validation**: Run `bun ai-toolkit-shared/scripts/validate.js`
+- **One file**: `standards.md` in project root
+- **Two parts**: YAML frontmatter (config) + Markdown (rules)
+- **Simple workflow**: Edit → Sync → Validate
+- **Auto-generated**: All IDE configs created from this file
 
 **Keep it simple** - one configuration file, clearly structured!
 
@@ -470,4 +436,6 @@ If you need Tabnine or CodeWhisperer, use an older version of the toolkit or cre
 
 - [Getting Started](GETTING-STARTED.md)
 - [Command Reference](COMMANDS.md)
-- [Standards Validator](../prompts/validators/standards.md)
+- [Modules Guide](MODULES.md)
+- [Agents Guide](AGENTS.md)
+- [Troubleshooting](TROUBLESHOOTING.md)

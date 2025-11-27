@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# CouchCMS AI Toolkit - One-Command Installer (Bash)
+# CouchCMS AI Toolkit - One-Command Installer
 #
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
@@ -12,20 +12,25 @@
 
 set -e
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-BOLD='\033[1m'
-NC='\033[0m' # No Color
+# Configuration
+readonly REPO_URL="https://github.com/martijnbokma/couchcms-ai-toolkit.git"
+readonly TOOLKIT_DIR="ai-toolkit-shared"
 
-REPO_URL="https://github.com/martijnbokma/couchcms-ai-toolkit.git"
-TOOLKIT_DIR="ai-toolkit-shared"
+# Colors
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly BOLD='\033[1m'
+readonly NC='\033[0m'
+
+# Runtime detection
+HAS_BUN=false
+HAS_NODE=false
 
 # Print functions
 print_header() {
-    echo -e "${BOLD}============================================================${NC}"
+    echo -e "\n${BOLD}============================================================${NC}"
     echo -e "${BOLD}🚀 CouchCMS AI Toolkit - One-Command Installer${NC}"
     echo -e "${BOLD}============================================================${NC}\n"
 }
@@ -52,7 +57,7 @@ print_info() {
 
 # Check prerequisites
 check_prerequisites() {
-    print_step "\n🔍 Checking prerequisites..."
+    print_step "🔍 Checking prerequisites..."
     
     # Check git
     if ! command -v git &> /dev/null; then
@@ -63,9 +68,6 @@ check_prerequisites() {
     print_success "Git installed"
     
     # Check bun or node
-    HAS_BUN=false
-    HAS_NODE=false
-    
     if command -v bun &> /dev/null; then
         HAS_BUN=true
         print_success "Bun installed"
@@ -90,7 +92,7 @@ check_prerequisites() {
 
 # Install toolkit
 install_toolkit() {
-    print_step "\n📦 Installing CouchCMS AI Toolkit..."
+    print_step "📦 Installing CouchCMS AI Toolkit..."
     
     # Check if already installed
     if [ -d "$TOOLKIT_DIR" ]; then
@@ -104,21 +106,19 @@ install_toolkit() {
         fi
         
         print_info "Updating toolkit..."
-        cd "$TOOLKIT_DIR"
-        git pull
-        cd ..
+        (cd "$TOOLKIT_DIR" && git pull)
         print_success "Toolkit updated"
         return 0
     fi
     
     # Check if submodule exists but directory is missing
-    if git config --file .gitmodules --get submodule.ai-toolkit-shared.url &> /dev/null; then
+    if git config --file .gitmodules --get "submodule.$TOOLKIT_DIR.url" &> /dev/null; then
         print_warning "Submodule exists in .gitmodules but directory is missing"
-        print_info "Removing old submodule configuration..."
+        print_info "Cleaning up old submodule configuration..."
         git submodule deinit -f "$TOOLKIT_DIR" 2>/dev/null || true
         git rm -f "$TOOLKIT_DIR" 2>/dev/null || true
         rm -rf ".git/modules/$TOOLKIT_DIR" 2>/dev/null || true
-        print_info "Cleaned up old submodule"
+        print_success "Cleaned up old submodule"
     fi
     
     # Add as submodule
@@ -131,40 +131,41 @@ install_toolkit() {
 
 # Install dependencies
 install_dependencies() {
-    print_step "\n📚 Installing dependencies..."
+    print_step "📚 Installing dependencies..."
     
-    cd "$TOOLKIT_DIR"
+    # Make scripts executable
+    print_info "Making scripts executable..."
+    chmod +x "$TOOLKIT_DIR/scripts/"*.js 2>/dev/null || true
     
+    # Install dependencies
     if [ "$HAS_BUN" = true ]; then
         print_info "Using Bun..."
-        bun install
+        (cd "$TOOLKIT_DIR" && bun install)
     else
         print_info "Using npm..."
-        npm install
+        (cd "$TOOLKIT_DIR" && npm install)
     fi
     
-    cd ..
     print_success "Dependencies installed"
 }
 
 # Run setup
 run_setup() {
-    print_step "\n🚀 Running setup wizard..."
-    print_warning "(You can run this again later with: bun ai-toolkit-shared/scripts/init.js)\n"
-    
-    cd "$TOOLKIT_DIR"
+    print_step "🚀 Running setup wizard..."
+    print_info "(You can run this again later with: bun $TOOLKIT_DIR/scripts/init.js)\n"
     
     if [ "$HAS_BUN" = true ]; then
-        bun scripts/init.js
+        (cd "$TOOLKIT_DIR" && bun scripts/init.js)
     else
-        node scripts/init.js
+        (cd "$TOOLKIT_DIR" && node scripts/init.js)
     fi
-    
-    cd ..
 }
 
 # Display success message
 display_success() {
+    local runtime_cmd="bun"
+    [ "$HAS_NODE" = true ] && runtime_cmd="node"
+    
     echo -e "\n${GREEN}============================================================${NC}"
     echo -e "${GREEN}🎉 CouchCMS AI Toolkit installed successfully!${NC}"
     echo -e "${GREEN}============================================================${NC}"
@@ -172,13 +173,13 @@ display_success() {
     echo -e "\n${BLUE}📚 Next steps:${NC}"
     print_info "1. Your AI configs are ready in .cursorrules, .claude/, etc."
     print_info "2. Start coding - your AI assistant knows CouchCMS!"
-    print_info "3. Update config: edit .project/standards.md or config.yaml"
-    print_info "4. Re-sync: bun ai-toolkit-shared/scripts/sync.js"
+    print_info "3. Update config: edit .project/standards.md"
+    print_info "4. Re-sync: $runtime_cmd $TOOLKIT_DIR/scripts/sync.js"
     
     echo -e "\n${BLUE}💡 Useful commands:${NC}"
-    print_info "bun ai-toolkit-shared/scripts/health.js      # Check installation"
-    print_info "bun ai-toolkit-shared/scripts/sync.js --watch # Auto-sync on changes"
-    print_info "bun ai-toolkit-shared/scripts/browse.js      # Browse modules"
+    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/health.js      # Check installation"
+    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/sync.js --watch # Auto-sync on changes"
+    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/browse.js      # Browse modules"
     
     echo -e "\n${BLUE}📖 Documentation:${NC}"
     print_info "https://github.com/martijnbokma/couchcms-ai-toolkit#readme"
@@ -186,34 +187,47 @@ display_success() {
     echo -e "\n${GREEN}✨ Happy coding!${NC}\n"
 }
 
+# Error handler
+handle_error() {
+    local runtime_cmd="bun"
+    command -v node &> /dev/null && runtime_cmd="node"
+    
+    echo -e "\n${RED}❌ Installation failed${NC}"
+    echo -e "${YELLOW}💡 Try manual installation:${NC}"
+    print_info "git submodule add $REPO_URL $TOOLKIT_DIR"
+    print_info "cd $TOOLKIT_DIR && $runtime_cmd install && cd .."
+    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/init.js"
+    exit 1
+}
+
 # Main installation flow
 main() {
     print_header
     
-    # Step 1: Check prerequisites
+    # Check prerequisites
     check_prerequisites
     
-    # Step 2: Install toolkit
+    # Install toolkit
     if install_toolkit; then
-        NEWLY_INSTALLED=true
+        local newly_installed=true
     else
-        NEWLY_INSTALLED=false
+        local newly_installed=false
     fi
     
-    # Step 3: Install dependencies
+    # Install dependencies
     install_dependencies
     
-    # Step 4: Run setup (only if newly installed)
-    if [ "$NEWLY_INSTALLED" = true ]; then
+    # Run setup (only if newly installed)
+    if [ "$newly_installed" = true ]; then
         run_setup
     fi
     
-    # Step 5: Success message
+    # Success message
     display_success
 }
 
-# Error handler
-trap 'echo -e "\n${RED}❌ Installation failed${NC}"; echo -e "${YELLOW}💡 Try manual installation:${NC}"; echo "   git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared"; echo "   cd ai-toolkit-shared && bun install && cd .."; echo "   bun ai-toolkit-shared/scripts/init.js"; exit 1' ERR
+# Set error trap
+trap handle_error ERR
 
-# Run main
+# Run installer
 main

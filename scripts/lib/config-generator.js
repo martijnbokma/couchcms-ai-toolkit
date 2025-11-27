@@ -291,10 +291,12 @@ export function cleanGeneratedFiles(projectDir, confirmed = false) {
     const filesToRemove = [
         // Root files
         '.cursorrules',
-        'CLAUDE.md',
-        'AGENT.md',
         'USER-RULES.md',
         'PROJECT-RULES-TEMPLATE.md',
+
+        // Legacy files (no longer generated)
+        'CLAUDE.md',
+        'AGENT.md',
 
         // .github
         '.github/copilot-instructions.md',

@@ -116,7 +116,7 @@ cd ai-toolkit-shared && bun run sync:watch
 ### How It Works
 
 1. Runs initial sync
-2. Watches `standards.md` (or `config.yaml`) for changes
+2. Watches `standards.md` for changes
 3. Auto-syncs 500ms after last change (debounced)
 4. Shows sync results
 5. Continues watching
@@ -128,7 +128,7 @@ cd ai-toolkit-shared && bun run sync:watch
 ...
 ✨ Sync complete in 234ms
 
-👀 Watching .project/standards.md for changes...
+👀 Watching standards.md for changes...
    Press Ctrl+C to stop
 
 # After you edit standards.md:

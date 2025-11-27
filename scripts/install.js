@@ -145,6 +145,12 @@ async function installDependencies() {
     
     const toolkitPath = join(process.cwd(), TOOLKIT_DIR)
     
+    // Make scripts executable
+    try {
+        print('   Making scripts executable...', 'blue')
+        exec('chmod +x scripts/*.js', { cwd: toolkitPath, ignoreError: true })
+    } catch {}
+    
     // Check if bun is available
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
     
@@ -181,7 +187,7 @@ async function displaySuccess() {
     print('\n📚 Next steps:', 'blue')
     print('   1. Your AI configs are ready in .cursorrules, .claude/, etc.')
     print('   2. Start coding - your AI assistant knows CouchCMS!')
-    print('   3. Update config: edit .project/standards.md or config.yaml')
+    print('   3. Update config: edit .project/standards.md')
     print('   4. Re-sync: bun ai-toolkit-shared/scripts/sync.js')
     
     print('\n💡 Useful commands:', 'blue')

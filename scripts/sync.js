@@ -117,7 +117,9 @@ async function generateConfigurations(config, resources, toolkitPath, projectDir
     )
 
     // Determine which editors to generate for
-    const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot']
+    // Note: 'claude' generates .claude/ directory (modern), not CLAUDE.md (legacy)
+    // Note: 'agent' generates AGENT.md (generic fallback, optional)
+    const editors = config.editors || ['cursor', 'windsurf', 'kiro', 'copilot']
     console.log(`🎨 Rendering templates for: ${editors.join(', ')}`)
 
     // Render templates

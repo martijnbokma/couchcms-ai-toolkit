@@ -123,8 +123,7 @@ Select during `init` or browse interactively with `bun scripts/browse.js`
 
 | Guide | Purpose |
 |-------|---------|
-| **[Config Files Guide](docs/CONFIG-FILES.md)** | Understanding `config.yaml` and `standards.md` |
-| **[Migration Guide](docs/MIGRATION.md)** | Upgrading to new config format |
+| **[Config Files Guide](docs/CONFIG-FILES.md)** | Understanding `standards.md` configuration |
 | **[Project Rules](docs/PROJECT-RULES.md)** | Cursor Project Rules |
 | **[User Rules](docs/USER-RULES.md)** | Cursor User Rules |
 | **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Cursor Custom Commands |
@@ -327,16 +326,29 @@ bun ai-toolkit-shared/scripts/validate.js
 
 ## 📝 Configuration
 
-Your configuration lives in `config.yaml` (new format) or `.project/standards.md` (legacy format):
+Your configuration lives in **`standards.md`** (root directory):
 
-### New Format (Recommended)
-- **config.yaml**: Single YAML file with all configuration
-- Simpler, clearer, and easier to maintain
-- See [Migration Guide](docs/MIGRATION.md) to upgrade
+```yaml
+---
+name: my-project
+toolkit: ./ai-toolkit-shared
+modules:
+  - couchcms-core
+  - tailwindcss
+  - alpinejs
+agents:
+  - couchcms
+  - tailwindcss
+---
 
-### Legacy Format (Still Supported)
-- **`.project/standards.md`**: YAML frontmatter + Markdown body
-- Still works, but consider migrating to new format
+# Project-Specific Rules
+Your custom rules here...
+```
+
+**After editing, run:**
+```bash
+bun ai-toolkit-shared/scripts/sync.js
+```
 
 📖 See [Config Files Guide](docs/CONFIG-FILES.md) for details.
 
@@ -354,7 +366,7 @@ Your configuration lives in `config.yaml` (new format) or `.project/standards.md
 - ✅ **Interactive Browser** - Browse and select modules/agents with keyboard navigation
 
 ### Previous (v2.0.0)
-- ✅ **Simplified Configuration** - Single `config.yaml` file replaces multiple config files
+- ✅ **Simplified Configuration** - Single `standards.md` file with YAML frontmatter
 - ✅ **Modular Architecture** - Refactored scripts into reusable library modules
 - ✅ **50% Faster Sync** - Performance optimizations with caching and selective file writing
 - ✅ **Streamlined Editor Support** - Focus on actively used editors (Cursor, Claude, Windsurf, Kiro, Copilot)

@@ -15,6 +15,7 @@
         "validate": "bun scripts/validate.js",
         "init": "bun scripts/init.js",
         "migrate": "bun scripts/migrate.js",
+        "reinstall": "bun scripts/reinstall.js",
         "health": "bun scripts/health.js",
         "browse": "bun scripts/browse.js",
         "browse:modules": "bun scripts/browse.js --modules",

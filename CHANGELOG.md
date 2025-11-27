@@ -171,11 +171,11 @@ The following editors are no longer supported:
 
 #### Configuration Format Changes
 
-- **New Format:** Single `config.yaml` file (recommended)
-- **Legacy Format:** `.project/standards.md` still supported but deprecated
-- **Removed Files:** `defaults.yaml`, `smart-defaults.yaml`, `preflight-checks.yaml` merged into `config.yaml`
+- **Simplified Format:** Single `standards.md` file in project root
+- **Removed Files:** `defaults.yaml`, `smart-defaults.yaml`, `preflight-checks.yaml` no longer needed
+- **Location Change:** Moved from `.project/standards.md` to root `standards.md`
 
-**Migration:** Run `bun scripts/migrate.js` to automatically migrate from old to new format.
+**Note:** The intermediate `config.yaml` format (v2.0.0) has been replaced with the simpler `standards.md` approach.
 
 #### Removed Features from smart-defaults.yaml
 
@@ -190,20 +190,13 @@ The following features have been removed as they were unused or over-engineered:
 
 #### Configuration
 
-- **`config.yaml`** - New consolidated configuration format
-  - Single YAML file for all configuration
-  - Simpler structure, easier to maintain
+- **`standards.md`** - Simplified configuration format
+  - Single file with YAML frontmatter + Markdown
+  - Configuration and project rules in one place
   - Better validation and error messages
-  - Comprehensive schema documentation
+  - Self-documenting structure
 
 #### Scripts & Tools
-
-- **`scripts/migrate.js`** - Automated migration tool
-  - Detects old configuration files
-  - Merges into new `config.yaml` format
-  - Backs up old files automatically
-  - Validates migrated configuration
-  - Automatic rollback on failure
 
 - **Modular Script Architecture** (`scripts/lib/`)
   - `config-loader.js` - Configuration loading and validation
@@ -224,8 +217,8 @@ The following features have been removed as they were unused or over-engineered:
   - Rollback instructions
   - Troubleshooting section
 
-- **`docs/CONFIG-SCHEMA.md`** - Configuration schema documentation
-  - Complete schema reference
+- **`docs/CONFIG-FILES.md`** - Configuration documentation
+  - Complete configuration reference
   - Field descriptions and examples
   - Validation rules
   - Common scenarios
@@ -265,17 +258,16 @@ The following features have been removed as they were unused or over-engineered:
   - Improved user experience
 
 - **`scripts/validate.js`** - Enhanced validation
-  - Validates new `config.yaml` format
-  - Backward compatible with `standards.md`
+  - Validates `standards.md` format
   - Better error messages with suggestions
 
 #### Configuration
 
-- **Consolidated Configuration** - Multiple files merged into one
-  - `defaults.yaml` → `config.yaml`
-  - `smart-defaults.yaml` → `config.yaml`
-  - `preflight-checks.yaml` → `config.yaml`
-  - `standards.md` → `config.yaml` (optional migration)
+- **Simplified Configuration** - Single file approach
+  - `defaults.yaml` → removed (built into toolkit)
+  - `smart-defaults.yaml` → removed (built into toolkit)
+  - `preflight-checks.yaml` → removed (built into toolkit)
+  - All configuration in `standards.md`
 
 - **Simplified smart-defaults.yaml** - Removed unused sections (70% smaller)
   - Kept: `file_contexts`, `template_aliases`
