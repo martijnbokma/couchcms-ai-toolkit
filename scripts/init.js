@@ -154,16 +154,25 @@ async function init() {
     console.log(`   Languages: ${detected.languages.join(', ')}`)
     console.log()
 
-    // Ask for setup mode
-    console.log('🎯 Setup mode:')
-    console.log('  1. Auto (recommended) - Use detected settings')
-    console.log('  2. Preset - Choose from common project types')
-    console.log('  3. Simple - Quick setup with defaults')
-    console.log('  4. Custom - Full control over all options')
-    const modeChoice = await prompt('Choice [1-4]', '1')
-    const autoMode = modeChoice === '1'
-    const presetMode = modeChoice === '2'
-    const simpleMode = modeChoice === '3'
+    // Ask for setup mode (unless auto mode from installer)
+    let autoMode, presetMode, simpleMode
+    
+    if (process.env.TOOLKIT_AUTO_MODE === 'true') {
+        console.log('🎯 Setup mode: Auto (from installer)')
+        autoMode = true
+        presetMode = false
+        simpleMode = false
+    } else {
+        console.log('🎯 Setup mode:')
+        console.log('  1. Auto (recommended) - Use detected settings')
+        console.log('  2. Preset - Choose from common project types')
+        console.log('  3. Simple - Quick setup with defaults')
+        console.log('  4. Custom - Full control over all options')
+        const modeChoice = await prompt('Choice [1-4]', '1')
+        autoMode = modeChoice === '1'
+        presetMode = modeChoice === '2'
+        simpleMode = modeChoice === '3'
+    }
     
     // Select preset if in preset mode
     let selectedPreset = null
@@ -197,12 +206,11 @@ async function init() {
     }
 
     // Gather project information (Questions 1-2 in simple/auto mode)
-    const projectName = autoMode 
-        ? detected.name 
-        : await prompt('\n📝 Project name', detected.name)
-    const projectDescription = autoMode
-        ? detected.description
-        : await prompt('Project description', detected.description)
+    // Check if provided via environment (from installer)
+    const projectName = process.env.TOOLKIT_PROJECT_NAME || 
+        (autoMode ? detected.name : await prompt('\n📝 Project name', detected.name))
+    const projectDescription = process.env.TOOLKIT_PROJECT_DESC ||
+        (autoMode ? detected.description : await prompt('Project description', detected.description))
 
     // Determine toolkit path (Question 3 in custom mode only)
     let toolkitPath = './ai-toolkit-shared'

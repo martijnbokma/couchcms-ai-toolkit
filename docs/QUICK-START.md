@@ -146,6 +146,8 @@ Your AI now knows:
 
 ### Common Commands
 
+**Note:** Always use `bun` or `node` to run scripts:
+
 ```bash
 # Check if everything is OK
 bun ai-toolkit-shared/scripts/health.js
@@ -163,14 +165,29 @@ bun ai-toolkit-shared/scripts/sync.js --watch
 bun ai-toolkit-shared/scripts/browse.js
 ```
 
+**Tip:** If you get "permission denied", use `bun` or `node` instead of running the script directly.
+
 ## 📚 Next Steps
 
 ### Customize Configuration
 
-Edit `.project/standards.md` to:
-- Add/remove modules
-- Activate agents
-- Add project-specific rules
+Your configuration is in **`.project/standards.md`**:
+
+```yaml
+---
+modules:
+  - couchcms-core
+  - tailwindcss
+  - alpinejs
+  - databound-forms  # ← Add modules here
+agents:
+  - couchcms
+  - tailwindcss
+  - databound-forms  # ← Add agents here
+---
+
+# Your project rules here
+```
 
 After changes:
 ```bash
@@ -179,12 +196,14 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ### Add Modules
 
-Interactive browsing:
+**Option 1: Interactive (Easy)**
 ```bash
 bun ai-toolkit-shared/scripts/browse.js
 ```
 
-Or manually in `.project/standards.md`:
+**Option 2: Manual**
+
+Edit `.project/standards.md`:
 ```yaml
 modules:
   - couchcms-core
@@ -192,6 +211,11 @@ modules:
   - alpinejs
   - databound-forms  # ← Add
   - users            # ← Add
+```
+
+Then sync:
+```bash
+bun ai-toolkit-shared/scripts/sync.js
 ```
 
 ### Use Watch Mode

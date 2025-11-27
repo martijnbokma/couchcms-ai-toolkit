@@ -101,12 +101,12 @@ Choose option **2** for full customization. The wizard will guide you through:
 
 After the wizard completes, your project will have:
 
-- ✅ `config.yaml` (new format) or `.project/standards.md` (legacy format) - Project configuration
+- ✅ `standards.md` - Project configuration
 - ✅ `.cursorrules` - Cursor AI configuration
-- ✅ `CLAUDE.md` - Claude AI configuration
-- ✅ `AGENT.md` - Universal AI agent documentation
+- ✅ `.claude/skills/` - Claude Code skills
+- ✅ `.claude/settings.json` - Claude Code settings
 - ✅ `.windsurf/rules.md` - Windsurf AI configuration
-- ✅ `.kiro/steering/coding-standards.md` - Kiro AI configuration
+- ✅ `.kiro/steering/` - Kiro steering files
 - ✅ `.github/copilot-instructions.md` - GitHub Copilot configuration
 
 ## For Existing Projects
@@ -170,71 +170,7 @@ cd ~/couchcms-ai-toolkit && bun install
 
 ### 2. Create Configuration File
 
-#### Option A: New Format (Recommended)
-
-Create `config.yaml` in your project root:
-
-```yaml
-# Project settings
-project:
-  name: "my-project"
-  description: "Brief project description"
-  type: "CouchCMS Web Application"
-
-# Toolkit location
-toolkit:
-  path: "./ai-toolkit-shared"  # or "~/couchcms-ai-toolkit"
-
-# Editors to generate configs for
-editors:
-  - cursor
-  - claude
-  - windsurf
-  - kiro
-  - copilot
-
-# Modules to load
-modules:
-  - couchcms-core      # Always included
-  - tailwindcss        # If using TailwindCSS
-  - daisyui            # If using daisyUI
-  - alpinejs           # If using Alpine.js
-  - typescript         # If using TypeScript
-  - databound-forms    # If using DataBound Forms
-
-# Agents to load
-agents:
-  - couchcms           # Core CouchCMS development
-  - databound-forms    # Forms and CRUD operations
-  - alpinejs           # Alpine.js development
-  - tailwindcss        # TailwindCSS styling
-  - typescript         # TypeScript development
-
-# Framework configuration (optional)
-framework:
-  enabled: false
-  # OR enable specific components:
-  # doctrine: true
-  # directives: true
-  # playbooks: true
-
-# Coding standards
-standards:
-  indentation: 4
-  language: "english"
-  lineLength: 120
-
-# Naming conventions
-naming:
-  php_variables: "snake_case"
-  php_functions: "snake_case"
-  ts_variables: "camelCase"
-  ts_functions: "camelCase"
-```
-
-#### Option B: Legacy Format (Still Supported)
-
-Create `.project/standards.md`:
+Create `standards.md` in your project root:
 
 ```markdown
 ---
@@ -260,71 +196,33 @@ framework: false
 Add your project-specific coding standards here...
 ```
 
-**Note:** The legacy format still works, but we recommend migrating to the new `config.yaml` format. See [Migration Guide](MIGRATION.md) for details.
-
 ### 3. Understanding Configuration Files
 
 :::tip[Quick Reference]
 For a complete guide to configuration files, see [CONFIG-FILES.md](CONFIG-FILES.md).
 :::
 
-The toolkit supports two configuration formats:
-
-#### `config.yaml` (New Format - Recommended)
-
-A single YAML file with all configuration:
-
-```yaml
-project:
-  name: "my-project"
-  type: "CouchCMS Web Application"
-
-toolkit:
-  path: "./ai-toolkit-shared"
-
-editors:
-  - cursor
-  - claude
-  - windsurf
-  - kiro
-  - copilot
-
-modules:
-  - couchcms-core
-  - tailwindcss
-
-agents:
-  - couchcms
-  - tailwindcss
-
-standards:
-  indentation: 4
-  language: "english"
-```
-
-**Benefits:**
-- Simpler structure
-- All settings in one place
-- Easier to maintain
-- Better validation
-
-#### `.project/standards.md` (Legacy Format - Still Supported)
-
-YAML frontmatter + Markdown body:
+The toolkit uses `standards.md` with YAML frontmatter + Markdown body:
 
 ```markdown
 ---
 name: 'my-project'
 toolkit: './ai-toolkit-shared'
-modules: [...]
-agents: [...]
+modules:
+  - couchcms-core
+  - tailwindcss
+agents:
+  - couchcms
+  - tailwindcss
 ---
 
 # Project Rules & Documentation
 [Your coding standards...]
 ```
 
-**Note:** This format still works, but we recommend migrating to `config.yaml`. See [Migration Guide](MIGRATION.md) for upgrade instructions.
+**Structure:**
+- **YAML frontmatter** - Configuration (modules, agents, etc.)
+- **Markdown body** - Project-specific rules and documentation
 
 #### `.project/ai/context.md` (Optional - Rarely Needed)
 

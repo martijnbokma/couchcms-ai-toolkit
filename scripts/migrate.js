@@ -285,7 +285,7 @@ function parseAndMergeOldConfigs(oldFiles) {
         toolkit: {
             path: './ai-toolkit-shared',
         },
-        editors: ['cursor', 'claude', 'windsurf', 'kiro', 'copilot'],
+        editors: ['cursor', 'windsurf', 'kiro', 'copilot'],
         modules: [],
         agents: [],
         framework: false,

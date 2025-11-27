@@ -33,7 +33,7 @@ The validation output will point you to specific problems.
 
 ### ❌ "No configuration file found"
 
-**Problem**: No configuration file (`config.yaml` or `standards.md`) exists.
+**Problem**: No configuration file (`standards.md`) exists.
 
 **Solution**:
 
@@ -44,13 +44,11 @@ bun ai-toolkit-shared/scripts/init.js
 
 Or create manually following [GETTING-STARTED.md](GETTING-STARTED.md).
 
-**Note:** The toolkit looks for `config.yaml` first, then falls back to `standards.md` (legacy format).
-
 ---
 
 ### ❌ "Invalid YAML syntax"
 
-**Problem**: Syntax error in `config.yaml` or `standards.md` YAML.
+**Problem**: Syntax error in `standards.md` YAML frontmatter.
 
 **Common causes**:
 
@@ -63,32 +61,14 @@ Or create manually following [GETTING-STARTED.md](GETTING-STARTED.md).
 **Solution**:
 
 ```bash
-# Check your config.yaml syntax
-cat config.yaml
-
-# Or if using legacy format:
-cat .project/standards.md
+# Check your standards.md syntax
+cat standards.md
 
 # Look for these issues:
 # - name: my-project     ✓ Good
 # - name my-project       ✗ Missing colon
 # - name: "my-project"   ✓ Good (quotes optional for simple strings)
 # - name: "it's mine"    ✓ Good (quotes required for apostrophes)
-```
-
-**Valid YAML example (config.yaml)**:
-
-```yaml
-project:
-  name: "my-project"
-  description: "My CouchCMS project"
-
-toolkit:
-  path: "./ai-toolkit-shared"
-
-modules:
-  - couchcms-core
-  - tailwindcss
 ```
 
 **Valid YAML example (standards.md frontmatter)**:
@@ -195,114 +175,13 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ## Migration Issues
 
-### ❌ "Migration failed: validation errors"
+### ⚠️ "Upgrading from old version"
 
-**Problem**: The migrated `config.yaml` has validation errors.
-
-**Solution**:
-
-```bash
-# Check what's wrong
-bun ai-toolkit-shared/scripts/validate.js
-
-# Fix issues in old config files
-# Then run migration again
-bun ai-toolkit-shared/scripts/migrate.js
-```
-
-The migration script automatically rolls back on failure, so your old configuration is safe.
-
----
-
-### ❌ "config.yaml already exists"
-
-**Problem**: Migration won't overwrite existing `config.yaml`.
+**Problem**: You have old configuration files from pre-v2.0 versions.
 
 **Solution**:
 
-```bash
-# Option 1: Force overwrite (careful!)
-bun ai-toolkit-shared/scripts/migrate.js --force
-
-# Option 2: Backup and remove existing config
-mv config.yaml config.yaml.backup
-bun ai-toolkit-shared/scripts/migrate.js
-
-# Option 3: Manually merge configurations
-# Compare config.yaml and config.yaml.backup
-# Merge manually as needed
-```
-
----
-
-### ⚠️ "Some settings were not migrated"
-
-**Problem**: Custom settings in old files weren't migrated.
-
-**Solution**:
-
-```bash
-# Check backup files
-ls -la .config-backup/
-
-# Review old files
-cat .config-backup/defaults.yaml.*
-cat .config-backup/smart-defaults.yaml.*
-
-# Manually add missing settings to config.yaml
-code config.yaml
-```
-
-See [Migration Guide](MIGRATION.md) for details on what gets migrated.
-
----
-
-### ❌ "Sync fails after migration"
-
-**Problem**: Generated configs are broken after migration.
-
-**Solution**:
-
-```bash
-# 1. Validate configuration
-bun ai-toolkit-shared/scripts/validate.js
-
-# 2. Check for syntax errors
-cat config.yaml
-
-# 3. If needed, rollback
-rm config.yaml
-mv .config-backup/standards.md.* standards.md
-mv .config-backup/defaults.yaml.* defaults.yaml
-mv .config-backup/smart-defaults.yaml.* smart-defaults.yaml
-
-# 4. Try sync with old format
-bun ai-toolkit-shared/scripts/sync.js
-```
-
----
-
-### ⚠️ "Performance is slower after migration"
-
-**Problem**: Sync seems slower with new format.
-
-**This shouldn't happen!** The new format should be faster. If you're experiencing slowness:
-
-```bash
-# 1. Clear any caches
-rm -rf .cache/
-
-# 2. Reinstall dependencies
-cd ai-toolkit-shared
-rm -rf node_modules
-bun install
-cd ..
-
-# 3. Run sync with timing
-time bun ai-toolkit-shared/scripts/sync.js
-```
-
-If still slow, please report an issue with timing details.
+See [Migration Guide](MIGRATION.md) for step-by-step instructions on upgrading from very old versions.
 
 ---
 
@@ -492,31 +371,16 @@ mkdir -p path/to/directory
 
 **Solutions**:
 
-1. **Migrate to new format** (if using legacy format)
-
-    ```bash
-    # New format is 50% faster
-    bun ai-toolkit-shared/scripts/migrate.js
-    ```
-
-2. **Remove unused modules**
+1. **Remove unused modules**
 
     ```yaml
-    # config.yaml - only include modules you actually use
+    # standards.md - only include modules you actually use
     modules:
       - couchcms-core
       - tailwindcss  # Remove if not using
     ```
 
-3. **Disable unused editors**
-
-    ```yaml
-    # config.yaml - only generate for editors you use
-    editors:
-      - cursor  # Remove others if not using
-    ```
-
-4. **Clear module cache**
+2. **Clear module cache**
 
     ```bash
     # If cache is corrupted
@@ -524,7 +388,7 @@ mkdir -p path/to/directory
     bun ai-toolkit-shared/scripts/sync.js
     ```
 
-5. **Update toolkit**
+3. **Update toolkit**
 
     ```bash
     cd ai-toolkit-shared
@@ -533,7 +397,7 @@ mkdir -p path/to/directory
     cd ..
     ```
 
-6. **Upgrade Bun**
+4. **Upgrade Bun**
     ```bash
     bun upgrade
     ```
@@ -549,10 +413,6 @@ mkdir -p path/to/directory
 ```bash
 # Skip optional checks
 bun ai-toolkit-shared/scripts/validate.js --quick
-
-# Or update validation rules in config.yaml
-validation:
-  skip_optional: true
 ```
 
 ---

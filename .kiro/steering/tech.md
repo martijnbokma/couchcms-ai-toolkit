@@ -53,7 +53,7 @@ couchcms-ai-toolkit/
 ## Configuration Format
 
 YAML frontmatter + Markdown body in `standards.md`:
-- Frontmatter: modules, agents, paths, framework settings
+- Frontmatter: modules, agents, framework settings
 - Body: Project-specific rules and documentation
 
 ## Target Platforms
@@ -62,6 +62,5 @@ Generates configs for:
 - Cursor IDE (.cursorrules, .cursor/rules/)
 - Claude Code (.claude/skills/, .claude/settings.json)
 - GitHub Copilot (.github/copilot-instructions.md)
-- Codewhisperer (.codewhisperer/rules.md)
 - Windsurf (.windsurf/rules.md)
-- Tabnine (.tabnine/guidelines/)
+- Kiro (.kiro/steering/)

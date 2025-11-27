@@ -22,17 +22,17 @@ import {
     listFeatures,
     deleteFeature,
     checkStaleFeatures
-} from './git-flow/feature.js';
+} from './feature.js';
 import {
     startRelease,
     finishRelease,
     listReleases
-} from './git-flow/release.js';
+} from './release.js';
 import {
     startHotfix,
     finishHotfix,
     listHotfixes
-} from './git-flow/hotfix.js';
+} from './hotfix.js';
 
 /**
  * Display help information

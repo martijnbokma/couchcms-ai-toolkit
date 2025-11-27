@@ -3,9 +3,7 @@
 ## Root Configuration
 
 - `standards.md` - Main configuration file (YAML frontmatter + Markdown)
-- `defaults.yaml` - Default module/agent configurations
-- `smart-defaults.yaml` - Smart defaults for common project types
-- `preflight-checks.yaml` - Validation rules
+- `presets.yaml` - Project presets for common project types
 - `package.json` - Dependencies and scripts
 
 ## Core Directories
@@ -63,9 +61,8 @@ These are created by `sync.js`:
 - `.cursor/` - Cursor IDE configs
 - `.claude/` - Claude Code configs
 - `.github/` - GitHub Copilot configs
-- `.codewhisperer/` - Codewhisperer configs
 - `.windsurf/` - Windsurf configs
-- `.tabnine/` - Tabnine configs
+- `.kiro/` - Kiro configs
 
 ## File Naming Conventions
 
