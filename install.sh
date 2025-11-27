@@ -91,6 +91,7 @@ check_prerequisites() {
 }
 
 # Install toolkit
+# Returns: 0 if newly installed, 1 if updated/skipped
 install_toolkit() {
     print_step "📦 Installing CouchCMS AI Toolkit..."
     
@@ -101,14 +102,14 @@ install_toolkit() {
         echo
         
         if [[ $REPLY =~ ^[Nn]$ ]]; then
-            print_info "Skipping installation"
+            print_info "Skipping update"
             return 1
         fi
         
         print_info "Updating toolkit..."
         (cd "$TOOLKIT_DIR" && git pull)
         print_success "Toolkit updated"
-        return 0
+        return 1  # Return 1 for update (not newly installed)
     fi
     
     # Check if submodule exists but directory is missing
@@ -126,7 +127,7 @@ install_toolkit() {
     git submodule add "$REPO_URL" "$TOOLKIT_DIR"
     
     print_success "Toolkit installed"
-    return 0
+    return 0  # Return 0 for new installation
 }
 
 # Install dependencies
@@ -153,6 +154,9 @@ install_dependencies() {
 run_setup() {
     print_step "🚀 Running setup wizard..."
     print_info "(You can run this again later with: bun $TOOLKIT_DIR/scripts/init.js)\n"
+    
+    # Set auto mode for non-interactive installation
+    export TOOLKIT_AUTO_MODE="true"
     
     if [ "$HAS_BUN" = true ]; then
         (cd "$TOOLKIT_DIR" && bun scripts/init.js)
@@ -207,7 +211,7 @@ main() {
     # Check prerequisites
     check_prerequisites
     
-    # Install toolkit
+    # Install toolkit (returns 0 if newly installed, 1 if updated)
     if install_toolkit; then
         local newly_installed=true
     else
@@ -217,9 +221,12 @@ main() {
     # Install dependencies
     install_dependencies
     
-    # Run setup (only if newly installed)
+    # Run setup wizard (only for new installations)
     if [ "$newly_installed" = true ]; then
         run_setup
+    else
+        print_info "\n💡 Skipping setup wizard (already configured)"
+        print_info "To reconfigure, run: bun $TOOLKIT_DIR/scripts/init.js\n"
     fi
     
     # Success message

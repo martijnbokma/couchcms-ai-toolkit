@@ -61,20 +61,23 @@ bun ai-toolkit-shared/scripts/init.js
 - **Simple** - Quick setup with standard defaults
 - **Custom** - Full control over all options
 
-**Result:** Configuration file and all IDE configs (`.cursorrules`, `.claude/`, etc.) are generated automatically.
+**Result:** Configuration file (`.project/standards.md`) and all IDE configs (`.cursorrules`, `.claude/`, etc.) are generated automatically.
 
 ### One-Command Install (Public Repos Only)
 
 **Note:** This only works if the repository is public. For private repositories, use the 3-step method above.
 
-After making the repo public and releasing v2.1.0:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 ```
 
-**Current Status:**
-- ⏳ Waiting for v2.1.0 release to master
-- 🔒 Repository must be public for curl access
+This automatically:
+- ✅ Adds toolkit as git submodule
+- ✅ Installs dependencies (bun/npm)
+- ✅ Runs interactive setup wizard
+- ✅ Generates all AI configs
+
+**Note:** Repository must be public for curl access
 
 📖 **[See all installation methods](docs/INSTALLATION-METHODS.md)** - Bash, Bun, Manual, Git Clone
 

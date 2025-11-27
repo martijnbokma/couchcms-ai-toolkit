@@ -116,6 +116,14 @@ async function checkExistingConfig(projectDir) {
 
     if (existingConfig) {
         const configName = getConfigFileName(projectDir) || 'standards.md'
+        
+        // If running in auto mode (from installer), skip if config exists
+        if (process.env.TOOLKIT_AUTO_MODE === 'true') {
+            console.log(`✅ ${configName} already exists - skipping setup`)
+            console.log(`   To reconfigure, run: bun ai-toolkit-shared/scripts/init.js\n`)
+            return false
+        }
+        
         console.log(`⚠️  ${configName} already exists in this directory\n`)
         const overwrite = await confirm(`Overwrite existing ${configName}?`, false)
 
