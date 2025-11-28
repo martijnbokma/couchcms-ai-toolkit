@@ -152,8 +152,12 @@ function findStandardsMd(projectDir) {
 function convertLegacyConfig(frontmatter) {
     const config = {}
 
-    // Project settings
-    if (frontmatter.name || frontmatter.description) {
+    // Project settings - support both old and new format
+    if (frontmatter.project) {
+        // New format: project is already an object
+        config.project = frontmatter.project
+    } else if (frontmatter.name || frontmatter.description) {
+        // Old format: name/description at root level
         config.project = {
             name: frontmatter.name || 'my-project',
             description: frontmatter.description || '',
@@ -161,10 +165,14 @@ function convertLegacyConfig(frontmatter) {
         }
     }
 
-    // Toolkit path
+    // Toolkit path - support both string and object format
     if (frontmatter.toolkit) {
-        config.toolkit = {
-            path: frontmatter.toolkit,
+        if (typeof frontmatter.toolkit === 'string') {
+            config.toolkit = {
+                path: frontmatter.toolkit,
+            }
+        } else {
+            config.toolkit = frontmatter.toolkit
         }
     }
 
@@ -293,8 +301,14 @@ export function validateConfig(config) {
     }
 
     // Validate agents (basic check - agent files exist check happens during loading)
-    if (config.agents && !Array.isArray(config.agents)) {
-        errors.push('agents must be an array')
+    // Agents can be array, object (for editor-specific), or undefined
+    if (config.agents && typeof config.agents === 'object' && !Array.isArray(config.agents)) {
+        // Check if it's editor-specific config (has cursor, claude, etc keys)
+        const editorKeys = ['cursor', 'claude', 'windsurf', 'kiro', 'copilot', 'vscode', 'tabnine', 'amazon_codewhisperer']
+        const hasEditorKeys = Object.keys(config.agents).some(k => editorKeys.includes(k))
+        if (!hasEditorKeys) {
+            errors.push('agents must be an array or object with editor keys')
+        }
     }
 
     // Validate framework
