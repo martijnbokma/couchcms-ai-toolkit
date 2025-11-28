@@ -56,7 +56,7 @@ function saveCachedCheck(toolkitPath, data) {
  * @param {string} toolkitPath - Toolkit root directory
  * @returns {string|null} Version string or null
  */
-function getCurrentVersion(toolkitPath) {
+export function getCurrentVersion(toolkitPath) {
     const packagePath = join(toolkitPath, 'package.json')
     
     if (!existsSync(packagePath)) {

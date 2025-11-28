@@ -51,6 +51,13 @@ git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-too
 cd ai-toolkit-shared && bun install && cd ..
 
 # 3. Run setup wizard
+bun ai-toolkit-shared/scripts/create-standards.js
+```
+
+**New: Simple Standards Creator** - Beantwoord een paar eenvoudige vragen en de wizard maakt automatisch je configuratie aan. Perfect voor beginners!
+
+**Alternatief: Advanced Setup**
+```bash
 bun ai-toolkit-shared/scripts/init.js
 ```
 
@@ -107,12 +114,63 @@ Choose from 8 predefined configurations during setup:
 
 Select during `init` or browse interactively with `bun scripts/browse.js`
 
+## 🎨 Setup Methods
+
+Choose the setup method that fits your experience level:
+
+| Method | Best For | Time | Complexity |
+|--------|----------|------|------------|
+| **[Simple Creator](docs/SIMPLE-SETUP.md)** | Beginners, quick setup | 2 min | ⭐ Easy |
+| **[Advanced Init](docs/GETTING-STARTED.md)** | Advanced users, full control | 5 min | ⭐⭐⭐ Advanced |
+
+### Simple Standards Creator
+
+```bash
+bun ai-toolkit-shared/scripts/create-standards.js
+# or
+bun run create
+```
+
+**Perfect voor:**
+- Je eerste keer met de toolkit
+- Je wilt snel starten zonder technische details
+- Je weet niet precies welke modules je nodig hebt
+- Je wilt een begeleide ervaring
+
+**Wat het doet:**
+- Stelt eenvoudige vragen in begrijpelijke taal
+- Geeft automatisch aanbevelingen op basis van project type
+- Maakt direct een werkende configuratie aan
+- Geen technische kennis vereist
+
+### Advanced Init
+
+```bash
+bun ai-toolkit-shared/scripts/init.js
+# or
+bun run init
+```
+
+**Perfect voor:**
+- Gevorderde gebruikers die volledige controle willen
+- Je weet precies welke modules en agents je nodig hebt
+- Je wilt kiezen tussen verschillende configuratie locaties
+- Je wilt het AAPF framework in detail configureren
+
+**Wat het doet:**
+- Auto-detectie van project type en frameworks
+- Volledige controle over alle opties
+- Keuze tussen 4 setup modes (Auto, Preset, Simple, Custom)
+- Gedetailleerde framework configuratie
+
 ## 📚 Documentation
 
 ### 🚀 Start Here
 
 | Guide | Description | Time |
 |-------|-------------|------|
+| **[Simple Setup](docs/SIMPLE-SETUP.md)** | Eenvoudige wizard voor beginners | 2 min |
+| **[Setup Comparison](docs/SETUP-COMPARISON.md)** | Vergelijk Simple vs Advanced setup | 3 min |
 | **[Quick Start](docs/QUICK-START.md)** | Installatie in 5 minuten | 5 min |
 | **[How It Works](docs/HOW-IT-WORKS.md)** | Complete uitleg voor iedereen | 15 min |
 | **[Cheat Sheet](docs/CHEAT-SHEET.md)** | Snelle referentie | 2 min |
@@ -123,6 +181,7 @@ Select during `init` or browse interactively with `bun scripts/browse.js`
 |-------|-------------|
 | **[New Features v2.1.0](docs/NEW-FEATURES.md)** | Learn about latest features |
 | **[Getting Started](docs/GETTING-STARTED.md)** | First-time setup - start here |
+| **[Updates](docs/UPDATES.md)** | Keep toolkit up to date |
 | **[Git Workflow](docs/GIT-WORKFLOW.md)** | Collaborating with team - branching strategy |
 | **[Commands Reference](docs/COMMANDS.md)** | Using `init`, `validate`, `sync` |
 | **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Something not working |
@@ -156,7 +215,10 @@ Select during `init` or browse interactively with `bun scripts/browse.js`
 ### Setup & Configuration
 
 ```bash
-# Interactive setup (first time) - with auto-detection!
+# Simple setup wizard (recommended for beginners)
+bun ai-toolkit-shared/scripts/create-standards.js
+
+# Advanced setup (first time) - with auto-detection!
 bun ai-toolkit-shared/scripts/init.js
 
 # Health check - validate installation and check for updates
@@ -178,13 +240,28 @@ bun ai-toolkit-shared/scripts/validate.js
 # Migrate from old configuration format
 bun ai-toolkit-shared/scripts/migrate.js
 
-# Update submodule (keep toolkit up-to-date)
-cd ai-toolkit-shared && bun run update-submodule
-
 # Extend modules from documentation
 bun ai-toolkit-shared/scripts/extend-modules.js --analyze
 bun ai-toolkit-shared/scripts/extend-modules.js --module comments
 ```
+
+### Updates
+
+```bash
+# Check for updates (interactive - asks to update)
+cd ai-toolkit-shared && bun run update
+
+# Check only (no prompt)
+cd ai-toolkit-shared && bun run update:check
+
+# Apply updates automatically (no prompt)
+cd ai-toolkit-shared && bun run update:apply
+
+# Update submodule (alternative method)
+cd ai-toolkit-shared && bun run update-submodule
+```
+
+📖 **[See Update Guide](docs/UPDATES.md)** for detailed update instructions.
 
 ### Git Workflow (Team Collaboration)
 

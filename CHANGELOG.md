@@ -5,6 +5,19 @@ All notable changes to the CouchCMS AI Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- feat(setup): add Simple Standards Creator wizard for beginners
+- New `create-standards.js` script with guided setup in simple language
+- Documentation for simple setup in `docs/SIMPLE-SETUP.md`
+- Comparison between simple and advanced setup methods in README
+
+### Changed
+- Update README with setup method comparison and recommendations
+- Add `bun run create` command to package.json
+- Update tech.md steering with new setup command
+
 ## [1.0.14] - 2025-11-28
 
 ### Other

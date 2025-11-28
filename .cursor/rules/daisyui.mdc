@@ -1,4 +1,6 @@
 ---
+description: Auto-load daisyUI 5 component library rules and best practices
+globs: ['**/*.html', '**/*.php', '**/*.css', '**/*.js']
 alwaysApply: true
 ---
 

@@ -20,11 +20,17 @@ No build step required. Scripts run directly with Bun/Node.
 ```bash
 # Setup & Initialization
 bun install                              # Install dependencies (REQUIRED after clone)
-bun scripts/init.js                      # Interactive setup wizard
+bun scripts/create-standards.js         # Simple setup wizard (recommended for beginners)
+bun scripts/init.js                      # Advanced setup wizard (full control)
 
 # Configuration Management
 bun scripts/sync.js                      # Generate/update AI configs from standards.md
 bun scripts/validate.js                  # Validate configuration and compliance
+
+# Updates
+bun run update                           # Check for toolkit updates
+bun run update:check                     # Check for updates (alias)
+bun run update:apply                     # Check and apply updates automatically
 
 # Development
 bun scripts/extend-modules.js --analyze  # Analyze documentation for module extensions

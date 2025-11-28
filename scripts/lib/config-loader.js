@@ -209,6 +209,11 @@ function convertLegacyConfig(frontmatter) {
         config.gitflow = frontmatter.gitflow
     }
 
+    // Editors (if defined in frontmatter)
+    if (frontmatter.editors) {
+        config.editors = frontmatter.editors
+    }
+
     return config
 }
 
