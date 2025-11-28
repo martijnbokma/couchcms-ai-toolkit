@@ -195,12 +195,12 @@ display_success() {
     echo -e "${GREEN}============================================================${NC}"
     
     echo -e "\n${BLUE}📚 Next step - Run setup wizard:${NC}"
-    echo -e "\n${BOLD}    $runtime_cmd $TOOLKIT_DIR/scripts/init.js${NC}\n"
+    echo -e "\n${BOLD}    cd $TOOLKIT_DIR && $runtime_cmd run init${NC}\n"
     
     echo -e "${BLUE}💡 Useful commands (after setup):${NC}"
-    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/health.js      # Check installation"
-    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/sync.js        # Re-sync configs"
-    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/browse.js      # Browse modules"
+    print_info "cd $TOOLKIT_DIR && $runtime_cmd run health     # Check installation"
+    print_info "cd $TOOLKIT_DIR && $runtime_cmd run sync       # Re-sync configs"
+    print_info "cd $TOOLKIT_DIR && $runtime_cmd run browse     # Browse modules"
     
     echo -e "\n${BLUE}📖 Documentation:${NC}"
     print_info "https://github.com/martijnbokma/couchcms-ai-toolkit#readme"

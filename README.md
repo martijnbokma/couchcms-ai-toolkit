@@ -72,7 +72,7 @@ bun ai-toolkit-shared/scripts/init.js
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 
 # 2. Run setup wizard
-bun ai-toolkit-shared/scripts/init.js
+cd ai-toolkit-shared && bun run init
 ```
 
 The install script automatically:

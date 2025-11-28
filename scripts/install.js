@@ -169,19 +169,19 @@ async function installDependencies() {
 
 async function displaySuccess() {
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
-    const runtime = hasBun ? 'bun' : 'node'
+    const runtime = hasBun ? 'bun' : 'npm'
     
     print('\n' + '='.repeat(60), 'green')
     print('🎉 CouchCMS AI Toolkit installed successfully!', 'green')
     print('='.repeat(60), 'green')
     
     print('\n📚 Next step - Run setup wizard:', 'blue')
-    print(`\n    ${runtime} ${TOOLKIT_DIR}/scripts/init.js\n`, 'bright')
+    print(`\n    cd ${TOOLKIT_DIR} && ${runtime} run init\n`, 'bright')
     
     print('💡 Useful commands (after setup):', 'blue')
-    print(`   ${runtime} ${TOOLKIT_DIR}/scripts/health.js      # Check installation`)
-    print(`   ${runtime} ${TOOLKIT_DIR}/scripts/sync.js        # Re-sync configs`)
-    print(`   ${runtime} ${TOOLKIT_DIR}/scripts/browse.js      # Browse modules`)
+    print(`   cd ${TOOLKIT_DIR} && ${runtime} run health     # Check installation`)
+    print(`   cd ${TOOLKIT_DIR} && ${runtime} run sync       # Re-sync configs`)
+    print(`   cd ${TOOLKIT_DIR} && ${runtime} run browse     # Browse modules`)
     
     print('\n📖 Documentation:', 'blue')
     print('   https://github.com/martijnbokma/couchcms-ai-toolkit#readme')

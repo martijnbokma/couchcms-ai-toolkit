@@ -48,7 +48,13 @@ function findProjectConfiguration() {
         process.exit(1)
     }
 
-    const projectDir = dirname(configPath)
+    // Determine project root directory
+    // If config is in .project/ or docs/, use parent directory as project root
+    let projectDir = dirname(configPath)
+    if (configPath.includes('/.project/') || configPath.includes('/docs/')) {
+        projectDir = dirname(projectDir)
+    }
+    
     console.log(`📄 Config: ${configPath}`)
     console.log(`📁 Project: ${projectDir}`)
 
