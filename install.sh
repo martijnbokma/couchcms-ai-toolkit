@@ -94,32 +94,37 @@ check_prerequisites() {
 cleanup_submodule() {
     print_info "Cleaning up old submodule artifacts..."
     
-    # Remove from .gitmodules (only the specific submodule section)
-    if [ -f .gitmodules ]; then
-        git config --file .gitmodules --remove-section "submodule.$TOOLKIT_DIR" 2>/dev/null || true
-        # If .gitmodules is now empty, remove it
-        if [ ! -s .gitmodules ]; then
-            rm -f .gitmodules
-        fi
+    # Remove git modules directory first
+    if [ -d ".git/modules/$TOOLKIT_DIR" ]; then
+        rm -rf ".git/modules/$TOOLKIT_DIR"
     fi
     
     # Remove from .git/config
     git config --remove-section "submodule.$TOOLKIT_DIR" 2>/dev/null || true
     
-    # Remove from git index
+    # Remove from git index (unstaged)
     git rm --cached "$TOOLKIT_DIR" 2>/dev/null || true
     
-    # Remove git modules directory
-    rm -rf ".git/modules/$TOOLKIT_DIR" 2>/dev/null || true
-    
-    # Remove actual directory if empty or corrupted
-    if [ -d "$TOOLKIT_DIR" ] && [ ! -d "$TOOLKIT_DIR/.git" ]; then
-        rm -rf "$TOOLKIT_DIR" 2>/dev/null || true
+    # Remove from .gitmodules using git command
+    if [ -f .gitmodules ]; then
+        # Use git to properly remove the submodule entry
+        git config --file .gitmodules --remove-section "submodule.$TOOLKIT_DIR" 2>/dev/null || true
+        
+        # Check if .gitmodules is empty or only has whitespace
+        if [ ! -s .gitmodules ] || ! grep -q '\[submodule' .gitmodules 2>/dev/null; then
+            # Remove empty .gitmodules file
+            git rm -f .gitmodules 2>/dev/null || rm -f .gitmodules
+        else
+            # Stage the modified .gitmodules
+            git add .gitmodules 2>/dev/null || true
+        fi
     fi
     
-    # Stage .gitmodules changes if file exists
-    if [ -f .gitmodules ]; then
-        git add .gitmodules 2>/dev/null || true
+    # Remove actual directory if it exists and is corrupted
+    if [ -d "$TOOLKIT_DIR" ]; then
+        if [ ! -d "$TOOLKIT_DIR/.git" ]; then
+            rm -rf "$TOOLKIT_DIR"
+        fi
     fi
     
     print_success "Cleanup complete"
@@ -155,11 +160,18 @@ install_toolkit() {
     
     # Add as submodule
     print_info "Adding submodule from $REPO_URL..."
-    if ! git submodule add "$REPO_URL" "$TOOLKIT_DIR" 2>&1; then
-        print_error "Failed to add submodule"
-        print_info "Attempting cleanup and retry..."
+    if ! git submodule add "$REPO_URL" "$TOOLKIT_DIR" 2>/dev/null; then
+        print_warning "Standard add failed, trying with --force..."
         cleanup_submodule
-        git submodule add "$REPO_URL" "$TOOLKIT_DIR"
+        if ! git submodule add --force "$REPO_URL" "$TOOLKIT_DIR" 2>/dev/null; then
+            print_error "Failed to add submodule"
+            print_info "Manual cleanup required. Run:"
+            print_info "  rm -rf .git/modules/$TOOLKIT_DIR"
+            print_info "  git rm --cached $TOOLKIT_DIR"
+            print_info "  rm -rf $TOOLKIT_DIR"
+            print_info "Then try again"
+            exit 1
+        fi
     fi
     
     # Verify installation
