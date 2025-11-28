@@ -4,10 +4,9 @@
  *
  * Loads and merges configuration from multiple sources:
  * 1. Toolkit config.yaml (defaults)
- * 2. Project config.yaml or standards.md (overrides)
+ * 2. Project standards.md (overrides)
  *
- * Supports both new config.yaml format and legacy standards.md format
- * for backward compatibility during transition period.
+ * Uses standards.md format with YAML frontmatter for configuration.
  */
 
 import { existsSync, readFileSync } from 'fs'
@@ -85,12 +84,9 @@ function loadProjectConfig(projectDir) {
         }
     }
 
-    // Fall back to legacy standards.md format
+    // Load from standards.md format
     const standardsMdPath = findStandardsMd(projectDir)
     if (standardsMdPath) {
-        console.warn('⚠️  Using legacy standards.md format')
-        console.warn('   Consider migrating to config.yaml: bun scripts/migrate.js')
-
         try {
             const content = readFileSync(standardsMdPath, 'utf8')
             const { data: frontmatter } = matter(content)
@@ -144,7 +140,7 @@ function findStandardsMd(projectDir) {
 }
 
 /**
- * Convert legacy standards.md frontmatter to new config.yaml format
+ * Convert standards.md frontmatter to internal config format
  *
  * @param {object} frontmatter - YAML frontmatter from standards.md
  * @returns {object} - Converted configuration
@@ -439,7 +435,7 @@ export function getConfigFormat(config) {
  * Check if configuration uses legacy format
  *
  * @param {object} config - Configuration object (with _meta)
- * @returns {boolean} - True if using legacy standards.md format
+ * @returns {boolean} - True if using standards.md format
  */
 export function isLegacyFormat(config) {
     return config._meta?.isLegacyFormat === true

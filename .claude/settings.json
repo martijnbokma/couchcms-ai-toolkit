@@ -1,41 +1,73 @@
 {
-  "$schema": "https://claude.ai/schemas/claude-code-settings.json",
-  "version": "1.0.0",
-  "name": "couchcms-ai-toolkit",
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "path": ".claude/hooks/skill-activation.js",
-        "description": "Auto-suggest relevant skills based on prompt"
-      }
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(bun run *)",
+      "Bash(yarn *)",
+      "Bash(git status)",
+      "Bash(git diff)",
+      "Bash(git log *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git pull)",
+      "Bash(git push)",
+      "Read(~/.config/**)",
+      "Read(./node_modules/**)",
+      "Read(./vendor/**)",
+      "Read(./**/*.md)",
+      "Write(./**/*.md)",
+      "Read(./**/*.json)",
+      "Write(./**/*.json)",
+      "Read(./**/*.js)",
+      "Write(./**/*.js)",
+      "Read(./**/*.ts)",
+      "Write(./**/*.ts)",
+      "Read(./**/*.php)",
+      "Write(./**/*.php)",
+      "Read(./**/*.css)",
+      "Write(./**/*.css)",
+      "Read(./**/*.html)",
+      "Write(./**/*.html)"
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "path": ".claude/hooks/post-edit-tracker.sh",
-        "description": "Track edited files for build checks"
-      }
-    ],
-    "Stop": [
-      {
-        "path": ".claude/hooks/preflight-check.sh",
-        "description": "Run CouchCMS-specific preflight checks"
-      }
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./**/*.key)",
+      "Read(./**/*.pem)",
+      "Read(./**/*.p12)",
+      "Read(./**/*.pfx)",
+      "Read(./**/*-key.pem)",
+      "Read(./**/*-cert.pem)",
+      "Read(./config/secrets/**)",
+      "Read(./.aws/**)",
+      "Read(./.ssh/**)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(chown *)",
+      "Bash(dd *)",
+      "Bash(mkfs *)",
+      "Bash(fdisk *)"
     ]
   },
-  "skills": {
-    "autoLoad": [
-      "couchcms-core"
-    ],
-    "suggest": true,
-    "rulesPath": ".claude/skills/skill-rules.json"
+  "env": {
+    "NODE_ENV": "development",
+    "PROJECT_NAME": "couchcms-ai-toolkit",
+    "PROJECT_TYPE": "CouchCMS Web Application"
   },
-  "devDocs": {
-    "enabled": true,
-    "directory": "dev/active"
-  },
-  "defaults": {
-    "mode": "standard",
-    "autoApprove": false
+  "slashCommands": {
+    "sync": {
+      "description": "Sync AI toolkit configurations",
+      "command": "bun run sync"
+    },
+    "validate": {
+      "description": "Validate project configuration",
+      "command": "bun run validate"
+    },
+    "test": {
+      "description": "Run project tests",
+      "command": "bun test"
+    }
   }
 }

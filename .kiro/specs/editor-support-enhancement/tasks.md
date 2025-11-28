@@ -66,7 +66,7 @@
   - Include development workflow information
   - _Requirements: TR2, US2_
 
-- [ ] 7. Implement Claude Skills Generation
+- [x] 7. Implement Claude Skills Generation
   - Generate skill file for each enabled module
   - Generate skill file for each configured agent
   - Include module-specific patterns and knowledge
@@ -81,7 +81,7 @@
 
 ## Phase 4: Agent Documentation
 
-- [ ] 8. Implement AGENTS.md Generation
+- [x] 8. Implement AGENTS.md Generation
   - List all configured agents with descriptions
   - Include agent capabilities and usage examples
   - Document available modules and their agents

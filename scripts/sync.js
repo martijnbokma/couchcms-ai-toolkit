@@ -124,8 +124,8 @@ async function generateConfigurations(config, resources, toolkitPath, projectDir
 
     // Determine which editors to generate for
     // Note: 'claude' generates CLAUDE.md memory file and .claude/ directory
-    // Note: 'agent' generates AGENT.md (generic fallback, optional)
-    const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot']
+    // Note: 'agents' generates AGENTS.md with all configured agents
+    const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot', 'agents']
     
     // Add cursor-rules if cursor is enabled
     if (editors.includes('cursor')) {
@@ -271,7 +271,7 @@ async function sync() {
         const { configs, templateData } = await generateConfigurations(config, resources, toolkitPath, projectDir)
 
         // Determine which editors are enabled
-        const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot']
+        const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot', 'agents']
         if (editors.includes('cursor')) {
             editors.push('cursor-rules')
         }
