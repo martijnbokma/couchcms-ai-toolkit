@@ -20,10 +20,10 @@
 
 import { loadConfig, validateConfig } from './lib/config-loader.js'
 import { loadModules, loadAgents, loadFramework, checkConflicts } from './lib/module-loader.js'
-import { prepareTemplateData, renderTemplates } from './lib/template-engine.js'
-import { writeConfigs, formatWriteStats } from './lib/file-writer.js'
+import { prepareTemplateData, renderTemplates, getEditorConfig } from './lib/template-engine.js'
+import { writeConfigs, formatWriteStats, copyDirectory } from './lib/file-writer.js'
 import { findProjectFile, resolveToolkitPath, handleError, ToolkitError } from './utils/utils.js'
-import { dirname } from 'path'
+import { dirname, join } from 'path'
 import { existsSync, readFileSync, watch } from 'fs'
 import matter from 'gray-matter'
 import { checkAndNotify } from './lib/update-notifier.js'
@@ -104,7 +104,7 @@ function loadAllResources(config, toolkitPath) {
  * @param {object} resources - Loaded resources
  * @param {string} toolkitPath - Toolkit root directory
  * @param {string} projectDir - Project root directory
- * @returns {Map} - Map of output path → content
+ * @returns {object} - { configs: Map, templateData: object }
  */
 async function generateConfigurations(config, resources, toolkitPath, projectDir) {
     const { modules, agents, framework } = resources
@@ -123,30 +123,97 @@ async function generateConfigurations(config, resources, toolkitPath, projectDir
     )
 
     // Determine which editors to generate for
-    // Note: 'claude' generates .claude/ directory (modern), not CLAUDE.md (legacy)
+    // Note: 'claude' generates CLAUDE.md memory file and .claude/ directory
     // Note: 'agent' generates AGENT.md (generic fallback, optional)
-    const editors = config.editors || ['cursor', 'windsurf', 'kiro', 'copilot']
+    const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot']
+    
+    // Add cursor-rules if cursor is enabled
+    if (editors.includes('cursor')) {
+        editors.push('cursor-rules')
+    }
+    
+    // Add claude-settings and claude-skills if claude is enabled
+    if (editors.includes('claude')) {
+        if (!editors.includes('claude-settings')) {
+            editors.push('claude-settings')
+        }
+        if (!editors.includes('claude-skills')) {
+            editors.push('claude-skills')
+        }
+    }
+    
     console.log(`🎨 Rendering templates for: ${editors.join(', ')}`)
 
     // Render templates
     const configs = await renderTemplates(templateData, editors, toolkitPath)
 
-    return configs
+    return { configs, templateData }
 }
 
 /**
  * Write configurations to disk
  * @param {Map} configs - Map of output path → content
  * @param {string} projectDir - Project root directory
+ * @param {string} toolkitPath - Toolkit root directory
+ * @param {Array<string>} editors - List of enabled editors
+ * @param {object} templateData - Template data for generating additional files
  */
-function writeConfigurationFiles(configs, projectDir) {
+async function writeConfigurationFiles(configs, projectDir, toolkitPath, editors, templateData) {
     console.log('💾 Writing configuration files...')
     const stats = writeConfigs(configs, projectDir)
+
+    // Handle MDC rules copying for Cursor
+    if (editors.includes('cursor-rules')) {
+        console.log('📋 Copying MDC rules for Cursor...')
+        try {
+            const cursorRulesConfig = getEditorConfig('cursor-rules')
+            if (cursorRulesConfig && cursorRulesConfig.copyMode) {
+                const sourcePath = join(toolkitPath, cursorRulesConfig.source)
+                const targetPath = join(projectDir, cursorRulesConfig.output)
+                const result = copyDirectory(sourcePath, targetPath, cursorRulesConfig.pattern, true)
+                
+                stats.copied = (stats.copied || 0) + result.copiedFiles.length
+                
+                // Report validation errors if any
+                if (result.validationErrors.length > 0) {
+                    console.log('\n⚠️  MDC Validation warnings:')
+                    result.validationErrors.forEach(err => {
+                        console.log(`   ${err.file}: ${err.errors.join(', ')}`)
+                    })
+                }
+            }
+        } catch (error) {
+            console.log(`⚠️  Failed to copy MDC rules: ${error.message}`)
+        }
+    }
+
+    // Handle Claude Skills generation
+    if (editors.includes('claude-skills')) {
+        console.log('🎯 Generating Claude Skills...')
+        try {
+            const { generateClaudeSkills } = await import('./lib/template-engine.js')
+            const skills = generateClaudeSkills(templateData, toolkitPath)
+            
+            // Write each skill file
+            const skillStats = writeConfigs(skills, projectDir)
+            stats.written += skillStats.written
+            stats.skipped += skillStats.skipped
+            stats.failed += skillStats.failed
+            if (skillStats.errors) {
+                stats.errors = stats.errors || []
+                stats.errors.push(...skillStats.errors)
+            }
+            
+            console.log(`   Generated ${skills.size} skill files`)
+        } catch (error) {
+            console.log(`⚠️  Failed to generate Claude Skills: ${error.message}`)
+        }
+    }
 
     // Display results
     console.log(`\n✅ ${formatWriteStats(stats)}`)
 
-    if (stats.errors.length > 0) {
+    if (stats.errors && stats.errors.length > 0) {
         console.log('\n⚠️  Errors:')
         stats.errors.forEach(err => console.log(`   ${err}`))
     }
@@ -201,17 +268,37 @@ async function sync() {
         const resources = loadAllResources(config, toolkitPath)
 
         // 5. Generate configurations
-        const configs = await generateConfigurations(config, resources, toolkitPath, projectDir)
+        const { configs, templateData } = await generateConfigurations(config, resources, toolkitPath, projectDir)
+
+        // Determine which editors are enabled
+        const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot']
+        if (editors.includes('cursor')) {
+            editors.push('cursor-rules')
+        }
+        
+        // Add claude-settings and claude-skills if claude is enabled
+        if (editors.includes('claude')) {
+            if (!editors.includes('claude-settings')) {
+                editors.push('claude-settings')
+            }
+            if (!editors.includes('claude-skills')) {
+                editors.push('claude-skills')
+            }
+        }
 
         // 6. Write to disk
-        const stats = writeConfigurationFiles(configs, projectDir)
+        const stats = await writeConfigurationFiles(configs, projectDir, toolkitPath, editors, templateData)
 
         // 7. Display summary
         const elapsed = Date.now() - startTime
         console.log(`\n✨ Sync complete in ${elapsed}ms`)
         console.log(`   Modules: ${resources.modules.length}`)
         console.log(`   Agents: ${resources.agents.length}`)
-        console.log(`   Files: ${stats.written} written, ${stats.skipped} skipped\n`)
+        console.log(`   Files: ${stats.written} written, ${stats.skipped} skipped`)
+        if (stats.copied > 0) {
+            console.log(`   MDC Rules: ${stats.copied} copied`)
+        }
+        console.log()
 
     } catch (error) {
         handleError(error, 'Sync failed')

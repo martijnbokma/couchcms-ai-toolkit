@@ -1,6 +1,6 @@
 ---
 description: Design
-globs: **/*.html,**/*.php,**/*.css,**/*.js
+globs: ['**/*.html', '**/*.php', '**/*.css', '**/*.js']
 alwaysApply: true
 ---
 

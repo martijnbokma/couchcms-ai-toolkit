@@ -6,15 +6,23 @@ This directory contains all automation scripts for the CouchCMS AI Toolkit.
 
 These are the main scripts that users interact with:
 
-- **`init.js`** - Interactive setup wizard for new projects
+- **`create-standards.js`** - Simple setup wizard for beginners (recommended)
+- **`init.js`** - Advanced setup wizard with full control
 - **`sync.js`** - Generate AI editor configs from standards.md
 - **`validate.js`** - Validate configuration and compliance
 - **`migrate.js`** - Migrate from old config format to new format
+- **`update.js`** - Check for and apply toolkit updates
+- **`health.js`** - Health check and diagnostics
+- **`browse.js`** - Interactive module/agent browser
+- **`reinstall.js`** - Reinstall toolkit dependencies
 
 ### Usage
 
 ```bash
-# Setup new project
+# Simple setup (recommended for beginners)
+bun scripts/create-standards.js
+
+# Advanced setup (full control)
 bun scripts/init.js
 
 # Generate/update AI configs
@@ -25,15 +33,26 @@ bun scripts/validate.js
 
 # Migrate old config
 bun scripts/migrate.js
+
+# Check for updates
+bun scripts/update.js
+
+# Apply updates
+bun scripts/update.js --apply
 ```
 
 Or via package.json shortcuts:
 
 ```bash
-bun run init
+bun run create      # Simple setup wizard
+bun run init        # Advanced setup wizard
 bun run sync
 bun run validate
 bun run migrate
+bun run update
+bun run update:apply
+bun run health
+bun run browse
 ```
 
 ## Directory Structure
