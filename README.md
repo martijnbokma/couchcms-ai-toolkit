@@ -68,14 +68,19 @@ bun ai-toolkit-shared/scripts/init.js
 **Note:** This only works if the repository is public. For private repositories, use the 3-step method above.
 
 ```bash
+# 1. Install toolkit
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
+
+# 2. Run setup wizard
+bun ai-toolkit-shared/scripts/init.js
 ```
 
-This automatically:
+The install script automatically:
 - ✅ Adds toolkit as git submodule
 - ✅ Installs dependencies (bun/npm)
-- ✅ Runs interactive setup wizard
-- ✅ Generates all AI configs
+- ✅ Cleans up any previous installation artifacts
+
+Then run `init.js` to configure your project and generate AI configs.
 
 **Note:** Repository must be public for curl access
 

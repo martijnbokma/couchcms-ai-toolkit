@@ -183,20 +183,7 @@ install_dependencies() {
     print_success "Dependencies installed"
 }
 
-# Run setup
-run_setup() {
-    print_step "🚀 Running setup wizard..."
-    print_info "(You can run this again later with: bun $TOOLKIT_DIR/scripts/init.js)\n"
-    
-    # Set auto mode for non-interactive installation
-    export TOOLKIT_AUTO_MODE="true"
-    
-    if [ "$HAS_BUN" = true ]; then
-        (cd "$TOOLKIT_DIR" && bun scripts/init.js)
-    else
-        (cd "$TOOLKIT_DIR" && node scripts/init.js)
-    fi
-}
+
 
 # Display success message
 display_success() {
@@ -207,15 +194,12 @@ display_success() {
     echo -e "${GREEN}🎉 CouchCMS AI Toolkit installed successfully!${NC}"
     echo -e "${GREEN}============================================================${NC}"
     
-    echo -e "\n${BLUE}📚 Next steps:${NC}"
-    print_info "1. Your AI configs are ready in .cursorrules, .claude/, etc."
-    print_info "2. Start coding - your AI assistant knows CouchCMS!"
-    print_info "3. Update config: edit .project/standards.md"
-    print_info "4. Re-sync: $runtime_cmd $TOOLKIT_DIR/scripts/sync.js"
+    echo -e "\n${BLUE}📚 Next step - Run setup wizard:${NC}"
+    echo -e "\n${BOLD}    $runtime_cmd $TOOLKIT_DIR/scripts/init.js${NC}\n"
     
-    echo -e "\n${BLUE}💡 Useful commands:${NC}"
+    echo -e "${BLUE}💡 Useful commands (after setup):${NC}"
     print_info "$runtime_cmd $TOOLKIT_DIR/scripts/health.js      # Check installation"
-    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/sync.js --watch # Auto-sync on changes"
+    print_info "$runtime_cmd $TOOLKIT_DIR/scripts/sync.js        # Re-sync configs"
     print_info "$runtime_cmd $TOOLKIT_DIR/scripts/browse.js      # Browse modules"
     
     echo -e "\n${BLUE}📖 Documentation:${NC}"
@@ -244,23 +228,11 @@ main() {
     # Check prerequisites
     check_prerequisites
     
-    # Install toolkit (returns 0 if newly installed, 1 if updated)
-    if install_toolkit; then
-        local newly_installed=true
-    else
-        local newly_installed=false
-    fi
+    # Install toolkit
+    install_toolkit
     
     # Install dependencies
     install_dependencies
-    
-    # Run setup wizard (only for new installations)
-    if [ "$newly_installed" = true ]; then
-        run_setup
-    else
-        print_info "\n💡 Skipping setup wizard (already configured)"
-        print_info "To reconfigure, run: bun $TOOLKIT_DIR/scripts/init.js\n"
-    fi
     
     # Success message
     display_success
