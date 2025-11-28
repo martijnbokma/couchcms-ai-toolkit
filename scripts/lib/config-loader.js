@@ -269,19 +269,11 @@ function deepMerge(target, source) {
 export function validateConfig(config) {
     const errors = []
 
-    // Check project settings
-    if (!config.project) {
-        errors.push('Missing required field: project')
-    } else {
-        if (!config.project.name) {
-            errors.push('Missing required field: project.name')
-        }
-        if (!config.project.type) {
-            errors.push('Missing required field: project.type')
-        }
+    // Check minimal required fields
+    if (!config.project || !config.project.name) {
+        errors.push('Missing required field: project.name')
     }
 
-    // Check toolkit path
     if (!config.toolkit || !config.toolkit.path) {
         errors.push('Missing required field: toolkit.path')
     }
@@ -354,11 +346,11 @@ export function validateConfig(config) {
         }
     }
 
-    // Validate naming conventions
+    // Validate naming conventions (optional)
     if (config.naming) {
         const validStyles = ['snake_case', 'camelCase', 'PascalCase', 'kebab-case']
         for (const [key, value] of Object.entries(config.naming)) {
-            if (!validStyles.includes(value)) {
+            if (value && !validStyles.includes(value)) {
                 errors.push(`naming.${key} must be one of: ${validStyles.join(', ')}`)
             }
         }
