@@ -165,35 +165,23 @@ async function installDependencies() {
     print('  ✅ Dependencies installed', 'green')
 }
 
-async function runSetup() {
-    print('\n🚀 Running setup wizard...', 'blue')
-    print('   (You can run this again later with: bun ai-toolkit-shared/scripts/init.js)\n', 'yellow')
-    
-    const toolkitPath = join(process.cwd(), TOOLKIT_DIR)
-    const hasBun = exec('bun --version', { silent: true, ignoreError: true })
-    
-    if (hasBun) {
-        exec('bun scripts/init.js', { cwd: toolkitPath })
-    } else {
-        exec('node scripts/init.js', { cwd: toolkitPath })
-    }
-}
+
 
 async function displaySuccess() {
+    const hasBun = exec('bun --version', { silent: true, ignoreError: true })
+    const runtime = hasBun ? 'bun' : 'node'
+    
     print('\n' + '='.repeat(60), 'green')
     print('🎉 CouchCMS AI Toolkit installed successfully!', 'green')
     print('='.repeat(60), 'green')
     
-    print('\n📚 Next steps:', 'blue')
-    print('   1. Your AI configs are ready in .cursorrules, .claude/, etc.')
-    print('   2. Start coding - your AI assistant knows CouchCMS!')
-    print('   3. Update config: edit .project/standards.md')
-    print('   4. Re-sync: bun ai-toolkit-shared/scripts/sync.js')
+    print('\n📚 Next step - Run setup wizard:', 'blue')
+    print(`\n    ${runtime} ${TOOLKIT_DIR}/scripts/init.js\n`, 'bright')
     
-    print('\n💡 Useful commands:', 'blue')
-    print('   bun ai-toolkit-shared/scripts/health.js      # Check installation')
-    print('   bun ai-toolkit-shared/scripts/sync.js --watch # Auto-sync on changes')
-    print('   bun ai-toolkit-shared/scripts/browse.js      # Browse modules')
+    print('💡 Useful commands (after setup):', 'blue')
+    print(`   ${runtime} ${TOOLKIT_DIR}/scripts/health.js      # Check installation`)
+    print(`   ${runtime} ${TOOLKIT_DIR}/scripts/sync.js        # Re-sync configs`)
+    print(`   ${runtime} ${TOOLKIT_DIR}/scripts/browse.js      # Browse modules`)
     
     print('\n📖 Documentation:', 'blue')
     print('   https://github.com/martijnbokma/couchcms-ai-toolkit#readme')
@@ -211,17 +199,12 @@ async function main() {
         await checkPrerequisites()
         
         // Step 2: Install toolkit
-        const installed = await installToolkit()
+        await installToolkit()
         
         // Step 3: Install dependencies
         await installDependencies()
         
-        // Step 4: Run setup (only if newly installed)
-        if (installed) {
-            await runSetup()
-        }
-        
-        // Step 5: Success message
+        // Step 4: Success message
         await displaySuccess()
         
     } catch (error) {
