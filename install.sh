@@ -94,9 +94,13 @@ check_prerequisites() {
 cleanup_submodule() {
     print_info "Cleaning up old submodule artifacts..."
     
-    # Remove from .gitmodules
+    # Remove from .gitmodules (only the specific submodule section)
     if [ -f .gitmodules ]; then
         git config --file .gitmodules --remove-section "submodule.$TOOLKIT_DIR" 2>/dev/null || true
+        # If .gitmodules is now empty, remove it
+        if [ ! -s .gitmodules ]; then
+            rm -f .gitmodules
+        fi
     fi
     
     # Remove from .git/config
@@ -111,6 +115,11 @@ cleanup_submodule() {
     # Remove actual directory if empty or corrupted
     if [ -d "$TOOLKIT_DIR" ] && [ ! -d "$TOOLKIT_DIR/.git" ]; then
         rm -rf "$TOOLKIT_DIR" 2>/dev/null || true
+    fi
+    
+    # Stage .gitmodules changes if file exists
+    if [ -f .gitmodules ]; then
+        git add .gitmodules 2>/dev/null || true
     fi
     
     print_success "Cleanup complete"
