@@ -94,38 +94,41 @@ check_prerequisites() {
 cleanup_submodule() {
     print_info "Cleaning up old submodule artifacts..."
     
-    # Remove git modules directory first
+    # 1. Remove git modules directory
     if [ -d ".git/modules/$TOOLKIT_DIR" ]; then
         rm -rf ".git/modules/$TOOLKIT_DIR"
     fi
     
-    # Remove from .git/config
+    # 2. Remove from .git/config
     git config --remove-section "submodule.$TOOLKIT_DIR" 2>/dev/null || true
     
-    # Remove from git index (unstaged)
+    # 3. Remove actual directory
+    if [ -d "$TOOLKIT_DIR" ]; then
+        rm -rf "$TOOLKIT_DIR"
+    fi
+    
+    # 4. Remove from git index
     git rm --cached "$TOOLKIT_DIR" 2>/dev/null || true
     
-    # Remove from .gitmodules using git command
+    # 5. Handle .gitmodules file
     if [ -f .gitmodules ]; then
-        # Use git to properly remove the submodule entry
+        # Remove the submodule section
         git config --file .gitmodules --remove-section "submodule.$TOOLKIT_DIR" 2>/dev/null || true
         
-        # Check if .gitmodules is empty or only has whitespace
+        # Check if .gitmodules is now empty or has no submodules
         if [ ! -s .gitmodules ] || ! grep -q '\[submodule' .gitmodules 2>/dev/null; then
-            # Remove empty .gitmodules file
-            git rm -f .gitmodules 2>/dev/null || rm -f .gitmodules
+            # Remove empty .gitmodules
+            rm -f .gitmodules
+            git rm --cached .gitmodules 2>/dev/null || true
         else
             # Stage the modified .gitmodules
-            git add .gitmodules 2>/dev/null || true
+            git add .gitmodules
         fi
     fi
     
-    # Remove actual directory if it exists and is corrupted
-    if [ -d "$TOOLKIT_DIR" ]; then
-        if [ ! -d "$TOOLKIT_DIR/.git" ]; then
-            rm -rf "$TOOLKIT_DIR"
-        fi
-    fi
+    # 6. Reset any staged changes for this submodule
+    git reset HEAD "$TOOLKIT_DIR" 2>/dev/null || true
+    git reset HEAD .gitmodules 2>/dev/null || true
     
     print_success "Cleanup complete"
 }
