@@ -90,13 +90,39 @@ check_prerequisites() {
     print_success "Git repository detected"
 }
 
+# Clean up any leftover git submodule artifacts
+cleanup_submodule() {
+    print_info "Cleaning up old submodule artifacts..."
+    
+    # Remove from .gitmodules
+    if [ -f .gitmodules ]; then
+        git config --file .gitmodules --remove-section "submodule.$TOOLKIT_DIR" 2>/dev/null || true
+    fi
+    
+    # Remove from .git/config
+    git config --remove-section "submodule.$TOOLKIT_DIR" 2>/dev/null || true
+    
+    # Remove from git index
+    git rm --cached "$TOOLKIT_DIR" 2>/dev/null || true
+    
+    # Remove git modules directory
+    rm -rf ".git/modules/$TOOLKIT_DIR" 2>/dev/null || true
+    
+    # Remove actual directory if empty or corrupted
+    if [ -d "$TOOLKIT_DIR" ] && [ ! -d "$TOOLKIT_DIR/.git" ]; then
+        rm -rf "$TOOLKIT_DIR" 2>/dev/null || true
+    fi
+    
+    print_success "Cleanup complete"
+}
+
 # Install toolkit
 # Returns: 0 if newly installed, 1 if updated/skipped
 install_toolkit() {
     print_step "📦 Installing CouchCMS AI Toolkit..."
     
-    # Check if already installed
-    if [ -d "$TOOLKIT_DIR" ]; then
+    # Check if directory exists and is a valid git repo
+    if [ -d "$TOOLKIT_DIR" ] && [ -d "$TOOLKIT_DIR/.git" ]; then
         print_warning "$TOOLKIT_DIR already exists"
         read -p "   Update existing installation? [Y/n] " -n 1 -r
         echo
@@ -112,19 +138,26 @@ install_toolkit() {
         return 1  # Return 1 for update (not newly installed)
     fi
     
-    # Check if submodule exists but directory is missing
-    if git config --file .gitmodules --get "submodule.$TOOLKIT_DIR.url" &> /dev/null; then
-        print_warning "Submodule exists in .gitmodules but directory is missing"
-        print_info "Cleaning up old submodule configuration..."
-        git submodule deinit -f "$TOOLKIT_DIR" 2>/dev/null || true
-        git rm -f "$TOOLKIT_DIR" 2>/dev/null || true
-        rm -rf ".git/modules/$TOOLKIT_DIR" 2>/dev/null || true
-        print_success "Cleaned up old submodule"
+    # Clean up any leftover artifacts from previous installations
+    if [ -d ".git/modules/$TOOLKIT_DIR" ] || git config --file .gitmodules --get "submodule.$TOOLKIT_DIR.url" &> /dev/null; then
+        print_warning "Found leftover submodule artifacts"
+        cleanup_submodule
     fi
     
     # Add as submodule
     print_info "Adding submodule from $REPO_URL..."
-    git submodule add "$REPO_URL" "$TOOLKIT_DIR"
+    if ! git submodule add "$REPO_URL" "$TOOLKIT_DIR" 2>&1; then
+        print_error "Failed to add submodule"
+        print_info "Attempting cleanup and retry..."
+        cleanup_submodule
+        git submodule add "$REPO_URL" "$TOOLKIT_DIR"
+    fi
+    
+    # Verify installation
+    if [ ! -d "$TOOLKIT_DIR" ]; then
+        print_error "Submodule directory not created"
+        exit 1
+    fi
     
     print_success "Toolkit installed"
     return 0  # Return 0 for new installation
