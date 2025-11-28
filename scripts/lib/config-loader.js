@@ -28,53 +28,32 @@ import matter from 'gray-matter'
  * @throws {Error} - If configuration cannot be loaded
  */
 export function loadConfig(projectDir, toolkitPath) {
-    // 1. Load toolkit defaults from config.yaml
-    const toolkitConfig = loadToolkitConfig(toolkitPath)
-
-    // 2. Load project configuration (config.yaml or standards.md)
+    // Load project configuration from standards.md
     const projectConfig = loadProjectConfig(projectDir)
 
-    // 3. Deep merge with project overrides
-    const mergedConfig = deepMerge(toolkitConfig, projectConfig.config)
-
-    // 4. Add metadata about config source
-    mergedConfig._meta = {
+    // Add metadata about config source
+    projectConfig.config._meta = {
         toolkitPath,
         projectDir,
         configFormat: projectConfig.format,
         configPath: projectConfig.path,
-        isLegacyFormat: projectConfig.format === 'standards.md',
     }
 
-    return mergedConfig
+    return projectConfig.config
 }
 
 /**
- * Load toolkit configuration from config.yaml
+ * Load toolkit configuration from config.yaml (DEPRECATED - no longer used)
+ * All configuration is now in project's standards.md
  *
  * @param {string} toolkitPath - Toolkit root directory
  * @returns {object} - Toolkit configuration
  * @throws {Error} - If config.yaml not found or invalid
  */
 function loadToolkitConfig(toolkitPath) {
-    const configPath = join(toolkitPath, 'config.yaml')
-
-    if (!existsSync(configPath)) {
-        throw new Error(`Toolkit config.yaml not found at: ${configPath}`)
-    }
-
-    try {
-        const content = readFileSync(configPath, 'utf8')
-        const config = parseYaml(content)
-
-        if (!config || typeof config !== 'object') {
-            throw new Error('Invalid config.yaml: must be a valid YAML object')
-        }
-
-        return config
-    } catch (error) {
-        throw new Error(`Failed to load toolkit config.yaml: ${error.message}`)
-    }
+    // DEPRECATED: This function is no longer used
+    // All configuration is now in the project's standards.md file
+    return {}
 }
 
 /**

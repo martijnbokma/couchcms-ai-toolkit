@@ -220,14 +220,16 @@ async function init() {
     const projectDescription = process.env.TOOLKIT_PROJECT_DESC ||
         (autoMode ? detected.description : await prompt('Project description', detected.description))
 
-    // Determine toolkit path (Question 3 in custom mode only)
-    let toolkitPath = './ai-toolkit-shared'
-    if (!simpleMode) {
-        console.log('\n📦 How do you want to use the toolkit?')
-        console.log('  1. As a git submodule (recommended)')
-        console.log('  2. Cloned in home directory')
-        const toolkitChoice = await prompt('Choice [1-2]', '1')
-        toolkitPath = toolkitChoice === '2' ? '~/couchcms-ai-toolkit' : './ai-toolkit-shared'
+    // Determine toolkit path - auto-detect based on current location
+    const toolkitDirName = basename(TOOLKIT_ROOT)
+    let toolkitPath = `./${toolkitDirName}`
+    
+    console.log(`\n📦 Toolkit location: ${toolkitPath}`)
+    if (!simpleMode && !autoMode) {
+        const changeLocation = await confirm('Use different location?', false)
+        if (changeLocation) {
+            toolkitPath = await prompt('Toolkit path', toolkitPath)
+        }
     }
 
     // Select modules and agents
