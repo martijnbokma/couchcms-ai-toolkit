@@ -1,13 +1,43 @@
 # Getting Started with CouchCMS AI Toolkit
 
+
+:::warning[Critical Step]
+You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
+:::
+
+```bash
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+```
+
+This installs the required packages:
+- `gray-matter` - YAML frontmatter parsing
+- `yaml` - YAML processing
+- `handlebars` - Template generation
+
+
 Complete guide for setting up the toolkit in your project.
+
+
+
+### Dependencies
+
+The toolkit requires the following Node.js packages:
+
+- **gray-matter** (^4.0.3) - Parses YAML frontmatter from standards.md configuration files
+- **yaml** (^2.3.4) - Handles YAML serialization and deserialization
+- **handlebars** (^4.7.8) - Template engine for generating AI configuration files
+- **fast-check** (^3.15.0) (development) - Testing framework for generating random test cases
+
+These are automatically installed when you run `bun install` in the toolkit directory.
 
 ## ⚡ Prerequisites
 
 Before you begin, ensure you have:
 
 1. **Git** installed and configured
-2. **Bun** (recommended) or **Node.js** (v18+) installed
+2. 📝 **Bun** (recommended) or **Node.js** (v18+) installed
    - Install Bun: `curl -fsSL https://bun.sh/install | bash`
    - Or use Node.js: Download from [nodejs.org](https://nodejs.org/)
 
@@ -35,6 +65,8 @@ git init
 ### 3. Add Toolkit as Submodule
 
 ```bash
+# Add the CouchCMS AI Toolkit as a git submodule
+# This creates a ai-toolkit-shared/ directory in your project
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 ```
 
@@ -58,10 +90,23 @@ This installs the required packages:
 ### 5. Run Interactive Setup Wizard
 
 ```bash
+# Run the advanced setup wizard
+# This provides full control over modules, agents, and configuration
 bun ai-toolkit-shared/scripts/init.js
+
+# The wizard will guide you through:
+# - Project name and description
+# - Module selection (CouchCMS features)
+# - Agent selection (AI assistants)
+# - Configuration file location
 ```
 
 The wizard has two modes:
+
+| Mode | Best For | Setup Time | Customization | Modules Included |
+|------|----------|------------|---------------|------------------|
+| **Simple** | Beginners, quick start | 30 seconds | Minimal (name & description only) | All CouchCMS modules + recommended frontend |
+| **Custom** | Advanced users, specific needs | 2-3 minutes | Full control over all options | Choose from presets or individual selection |
 
 #### Simple Mode (Recommended for Beginners)
 
@@ -72,13 +117,13 @@ Choose option **1** when asked for setup mode. The wizard will:
    - Configuration file: `.project/standards.md`
    - **All CouchCMS modules** (core, databound-forms, custom-routes, folders, archives, relationships, repeatable-regions, search, pagination, comments, users)
    - **All CouchCMS agents** (couchcms, databound-forms, custom-routes, folders, archives, relationships, repeatable-regions, search, pagination, comments, users, views, nested-pages, photo-gallery, rss-feeds, on-page-editing, admin-panel-theming)
-   - **Frontend frameworks**: TailwindCSS + Alpine.js (you can customize later)
-   - No context directory (you can add one later if needed)
+   - **Frontend frameworks**: TailwindCSS + Alpine.js (you should customize later)
+   - No context directory (you should add one later if needed)
 
 **Result:** You're done in 30 seconds with full CouchCMS support! ✨
 
 :::tip[Why All CouchCMS Modules?]
-Since this is a **CouchCMS AI Toolkit**, all CouchCMS-specific modules and agents are included by default. You can always customize frontend frameworks (Alpine.js, TailwindCSS, daisyUI, TypeScript) based on your project needs.
+Since this is a **CouchCMS AI Toolkit**, all CouchCMS-specific modules and agents are included by default. you should always customize frontend frameworks (Alpine.js, TailwindCSS, daisyUI, TypeScript) based on your project needs.
 :::
 
 #### Custom Mode (Full Control)
@@ -112,8 +157,11 @@ After the wizard completes, your project will have:
 
 - ✅ `standards.md` - Project configuration
 - ✅ `.cursorrules` - Cursor AI configuration
+- ✅ `.cursor/rules/*.mdc` - Context-aware MDC rules (auto-activate)
+- ✅ `CLAUDE.md` - Claude Code memory file
 - ✅ `.claude/skills/` - Claude Code skills
 - ✅ `.claude/settings.json` - Claude Code settings
+- ✅ `AGENTS.md` - Agent documentation
 - ✅ `.windsurf/rules.md` - Windsurf AI configuration
 - ✅ `.kiro/steering/` - Kiro steering files
 - ✅ `.github/copilot-instructions.md` - GitHub Copilot configuration
@@ -131,6 +179,8 @@ cd your-existing-project
 ### 2. Add Toolkit Submodule
 
 ```bash
+# Add the CouchCMS AI Toolkit as a git submodule
+# This creates a ai-toolkit-shared/ directory in your project
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 ```
 
@@ -149,7 +199,15 @@ cd ..
 ### 4. Run Setup Wizard
 
 ```bash
+# Run the advanced setup wizard
+# This provides full control over modules, agents, and configuration
 bun ai-toolkit-shared/scripts/init.js
+
+# The wizard will guide you through:
+# - Project name and description
+# - Module selection (CouchCMS features)
+# - Agent selection (AI assistants)
+# - Configuration file location
 ```
 
 **Note**: The wizard will detect if you already have a `standards.md` and ask if you want to overwrite it.
@@ -311,7 +369,12 @@ name: My Project Context
 Generate AI configurations:
 
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 This creates:
@@ -365,7 +428,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ### Q: Do I need to install Bun or Node.js?
 
-Yes! The toolkit scripts require a JavaScript runtime. You can use either:
+Yes! The toolkit scripts require a JavaScript runtime. you should use either:
 - **Bun** (recommended): Faster, modern runtime
 - **Node.js** (v18+): Traditional option, works with `npm install`
 
@@ -380,7 +443,7 @@ The toolkit has its own dependencies (`gray-matter`, `yaml`, `handlebars`) that 
 - **Includes ALL CouchCMS modules and agents** (full CouchCMS support)
 - Includes TailwindCSS + Alpine.js for frontend
 - Perfect for beginners
-- You can always customize later by editing `.project/standards.md`
+- you should always customize later by editing `.project/standards.md`
 
 **Custom mode:**
 - Full control over all options
@@ -395,7 +458,7 @@ The toolkit has its own dependencies (`gray-matter`, `yaml`, `handlebars`) that 
 
 This is a **CouchCMS AI Toolkit**, so all CouchCMS-specific features (databound-forms, custom-routes, folders, archives, relationships, repeatable-regions, search, pagination, comments, users, views, nested-pages, photo-gallery, rss-feeds, on-page-editing, admin-panel-theming) are included by default to provide complete CouchCMS support.
 
-**Frontend frameworks** (Alpine.js, TailwindCSS, daisyUI, TypeScript) are optional and can be customized based on your project needs. You can always edit `.project/standards.md` to add or remove frontend frameworks later.
+**Frontend frameworks** (Alpine.js, TailwindCSS, daisyUI, TypeScript) are optional and can be customized based on your project needs. you should always edit `.project/standards.md` to add or remove frontend frameworks later.
 
 ### Q: What is a "context directory" and when do I need it?
 

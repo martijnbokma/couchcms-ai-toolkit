@@ -22,7 +22,7 @@ The toolkit generates optimized configurations for multiple AI-powered editors, 
 
 ### Generated Files
 
-```
+```text
 .cursorrules                    # Global rules (always active)
 .cursor/rules/                  # Context-aware rules (auto-activate)
   ├── refactor-alpinejs.mdc
@@ -63,9 +63,9 @@ globs:
 ### How MDC Rules Work
 
 1. **Automatic Activation** - Rules activate when you open matching files
-2. **Pattern Matching** - Uses glob patterns to match file types
-3. **Context-Specific** - Different rules for different file types
-4. **No Manual Loading** - Cursor loads them automatically
+2. 📝 **Pattern Matching** - Uses glob patterns to match file types
+3. 📝 **Context-Specific** - Different rules for different file types
+4. 📝 **No Manual Loading** - Cursor loads them automatically
 
 ### Available MDC Rules
 
@@ -82,8 +82,8 @@ The toolkit includes these context-aware rules:
 MDC rules are copied from `ai-toolkit-shared/rules/*.mdc`. To customize:
 
 1. Edit rules in the toolkit directory
-2. Run `bun ai-toolkit-shared/scripts/sync.js`
-3. Rules are automatically copied to `.cursor/rules/`
+2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+3. 📝 Rules are automatically copied to `.cursor/rules/`
 
 ---
 
@@ -91,7 +91,7 @@ MDC rules are copied from `ai-toolkit-shared/rules/*.mdc`. To customize:
 
 ### Generated Files
 
-```
+```text
 .claude/
   ├── settings.json             # Permissions & environment
   └── skills/                   # Modular knowledge
@@ -127,9 +127,9 @@ allowed-tools: Read, Write, Bash, Grep
 ### How Skills Work
 
 1. **Auto-Activation** - Skills activate based on context and file patterns
-2. **Modular Knowledge** - Each module becomes a separate skill
-3. **Tool Permissions** - Control which tools each skill can use
-4. **Contextual Loading** - Claude loads relevant skills automatically
+2. 📝 **Modular Knowledge** - Each module becomes a separate skill
+3. 📝 **Tool Permissions** - Control which tools each skill can use
+4. 📝 **Contextual Loading** - Claude loads relevant skills automatically
 
 ### Settings Configuration
 
@@ -216,9 +216,9 @@ Usage: `@tailwindcss style this component`
 Skills are generated from your active modules. To customize:
 
 1. Edit module content in `ai-toolkit-shared/modules/`
-2. Or add custom content to `standards.md`
-3. Run `bun ai-toolkit-shared/scripts/sync.js`
-4. Skills are automatically regenerated
+2. 📝 Or add custom content to `standards.md`
+3. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+4. 📝 Skills are automatically regenerated
 
 ---
 
@@ -226,7 +226,7 @@ Skills are generated from your active modules. To customize:
 
 ### Generated Files
 
-```
+```text
 .github/
   └── copilot-instructions.md   # Instructions for Copilot
 ```
@@ -247,8 +247,8 @@ GitHub Copilot reads instructions from `.github/copilot-instructions.md` and app
 Instructions are generated from `standards.md`. To customize:
 
 1. Edit `standards.md` (Markdown section)
-2. Run `bun ai-toolkit-shared/scripts/sync.js`
-3. Instructions are automatically updated
+2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+3. 📝 Instructions are automatically updated
 
 ---
 
@@ -256,7 +256,7 @@ Instructions are generated from `standards.md`. To customize:
 
 ### Generated Files
 
-```
+```text
 .windsurf/
   └── rules.md                  # Windsurf rules
 ```
@@ -277,8 +277,8 @@ Windsurf reads rules from `.windsurf/rules.md` and applies them during code gene
 Rules are generated from `standards.md`. To customize:
 
 1. Edit `standards.md` (Markdown section)
-2. Run `bun ai-toolkit-shared/scripts/sync.js`
-3. Rules are automatically updated
+2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+3. 📝 Rules are automatically updated
 
 ---
 
@@ -286,7 +286,7 @@ Rules are generated from `standards.md`. To customize:
 
 ### Generated Files
 
-```
+```text
 .kiro/
   └── steering/                 # Steering files
       ├── project.md
@@ -310,8 +310,8 @@ Kiro reads steering files from `.kiro/steering/` and uses them to guide code gen
 Steering files are generated from `standards.md`. To customize:
 
 1. Edit `standards.md` (Markdown section)
-2. Run `bun ai-toolkit-shared/scripts/sync.js`
-3. Steering files are automatically updated
+2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+3. 📝 Steering files are automatically updated
 
 ---
 
@@ -343,7 +343,12 @@ agents:
 Run sync to generate all editor configs:
 
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 This generates:
@@ -359,6 +364,7 @@ This generates:
 Auto-sync when `standards.md` changes:
 
 ```bash
+# Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
@@ -367,7 +373,15 @@ bun ai-toolkit-shared/scripts/sync.js --watch
 Validate all configurations:
 
 ```bash
+# Validate your project configuration and check compliance
+# This checks for errors in standards.md and missing files
 bun ai-toolkit-shared/scripts/validate.js
+
+# The validation will show:
+# - Configuration file status
+# - Module and agent validation
+# - Compliance score (0-100%)
+# - Specific issues and recommendations
 ```
 
 ---
@@ -380,9 +394,11 @@ bun ai-toolkit-shared/scripts/validate.js
 ```yaml
 ---
 name: "simple-blog"
+description: 'Brief description of your project'
 toolkit: "./ai-toolkit-shared"
+# Knowledge Modules - Choose based on your project needs
 modules:
-  - couchcms-core
+  - couchcms-core      # Always required for CouchCMS projects
 ---
 ```
 
@@ -448,9 +464,9 @@ agents:
 
 **Solution:**
 1. Check `standards.md` exists and is valid
-2. Run validation: `bun ai-toolkit-shared/scripts/validate.js`
-3. Check toolkit path is correct
-4. Ensure dependencies are installed: `cd ai-toolkit-shared && bun install`
+2. 🚀 Run validation: `bun ai-toolkit-shared/scripts/validate.js`
+3. 🔍 Check toolkit path is correct
+4. ⚙️ Ensure dependencies are installed: `cd ai-toolkit-shared && bun install`
 
 ### MDC Rules Not Activating (Cursor)
 
@@ -458,9 +474,9 @@ agents:
 
 **Solution:**
 1. Check `.cursor/rules/*.mdc` files exist
-2. Verify glob patterns match your files
-3. Restart Cursor IDE
-4. Check Cursor version supports MDC (v0.40+)
+2. ✅ Verify glob patterns match your files
+3. 📝 Restart Cursor IDE
+4. 🔍 Check Cursor version supports MDC (v0.40+)
 
 ### Skills Not Loading (Claude Code)
 
@@ -468,9 +484,9 @@ agents:
 
 **Solution:**
 1. Check `.claude/skills/*.md` files exist
-2. Verify YAML frontmatter is valid
-3. Restart Claude Code
-4. Check Claude Code version supports skills
+2. ✅ Verify YAML frontmatter is valid
+3. 📝 Restart Claude Code
+4. 🔍 Check Claude Code version supports skills
 
 ### Settings Not Applied (Claude Code)
 
@@ -478,9 +494,9 @@ agents:
 
 **Solution:**
 1. Check `.claude/settings.json` is valid JSON
-2. Verify permissions syntax is correct
-3. Restart Claude Code
-4. Check Claude Code version supports settings
+2. ✅ Verify permissions syntax is correct
+3. 📝 Restart Claude Code
+4. 🔍 Check Claude Code version supports settings
 
 ### Memory File Not Loaded
 
@@ -488,9 +504,9 @@ agents:
 
 **Solution:**
 1. Check `CLAUDE.md` exists in project root
-2. Verify file is not empty
-3. Restart Claude Code
-4. Check Claude Code version supports memory files
+2. ✅ Verify file is not empty
+3. 📝 Restart Claude Code
+4. 🔍 Check Claude Code version supports memory files
 
 ---
 
@@ -511,6 +527,7 @@ bun ai-toolkit-shared/scripts/sync.js
 ### 2. Use Watch Mode During Development
 
 ```bash
+# Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
@@ -519,7 +536,15 @@ This auto-syncs configs when you edit `standards.md`.
 ### 3. Validate Regularly
 
 ```bash
+# Validate your project configuration and check compliance
+# This checks for errors in standards.md and missing files
 bun ai-toolkit-shared/scripts/validate.js
+
+# The validation will show:
+# - Configuration file status
+# - Module and agent validation
+# - Compliance score (0-100%)
+# - Specific issues and recommendations
 ```
 
 Catches configuration errors early.
@@ -538,7 +563,7 @@ Catches configuration errors early.
 - ❌ `AGENTS.md` - Generated
 
 Add to `.gitignore`:
-```
+```text
 .cursorrules
 .cursor/rules/
 .claude/
@@ -580,6 +605,7 @@ Add custom permissions to `standards.md`:
 ```yaml
 ---
 name: "my-project"
+description: 'Brief description of your project'
 toolkit: "./ai-toolkit-shared"
 modules: [...]
 claude:
@@ -610,7 +636,12 @@ globs:
 
 Then sync:
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ### Module-Specific Skills (Claude Code)
@@ -618,9 +649,9 @@ bun ai-toolkit-shared/scripts/sync.js
 Skills are automatically generated for each active module. To customize a skill:
 
 1. Edit module in `ai-toolkit-shared/modules/`
-2. Or create custom module
-3. Add to `standards.md`
-4. Sync configs
+2. ⚙️ Or create custom module
+3. 📝 Add to `standards.md`
+4. 📝 Sync configs
 
 ---
 

@@ -2,6 +2,34 @@
 
 AI agents provide specialized guidance for specific development tasks.
 
+## Quick Reference
+
+| Agent | Category | Primary Use |
+|-------|----------|-------------|
+| `@couchcms` | Development | Core CouchCMS templates and patterns |
+| `@databound-forms` | Development | Forms, CRUD operations, validation |
+| `@search` | Development | Fulltext search implementation |
+| `@pagination` | Development | Pagination controls |
+| `@comments` | Development | Comment system with moderation |
+| `@users` | Development | User management and access control |
+| `@views` | Development | List, Page, Folder, and Archive views |
+| `@folders` | Development | Virtual folders and content organization |
+| `@archives` | Development | Time-based content organization |
+| `@relationships` | Development | Page relationships (one-to-many, many-to-many) |
+| `@repeatable-regions` | Development | Dynamic content blocks |
+| `@nested-pages` | Development | Hierarchical page structures |
+| `@photo-gallery` | Development | Image galleries with batch upload |
+| `@rss-feeds` | Development | RSS feed generation |
+| `@on-page-editing` | Development | Inline and popup editing |
+| `@admin-panel-theming` | Development | Admin panel customization |
+| `@custom-routes` | Utility | Clean URLs and routing |
+| `@alpinejs` | Utility | Reactive JavaScript integration |
+| `@tailwindcss` | Utility | Styling with TailwindCSS |
+| `@typescript` | Utility | Type-safe development |
+| `@bun` | Utility | Runtime and package management |
+| `@git` | Utility | Version control workflows |
+| `@mysql` | Utility | Database operations |
+
 ## Development Agents
 
 ### couchcms
@@ -438,9 +466,9 @@ agents:
 Agents provide:
 
 1. **Quick Reference** - Common patterns and checklists
-2. **Deep Dive** - Detailed examples and explanations
-3. **Refactoring Patterns** - How to improve existing code
-4. **Troubleshooting** - Common issues and solutions
+2. 📝 **Deep Dive** - Detailed examples and explanations
+3. 📝 **Refactoring Patterns** - How to improve existing code
+4. 📝 **Troubleshooting** - Common issues and solutions
 
 AI assistants use these to provide context-aware suggestions.
 
@@ -460,7 +488,12 @@ agents:
 Then sync:
 
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ---

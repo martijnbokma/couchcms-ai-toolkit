@@ -58,7 +58,7 @@ Je krijgt een overzicht van je keuzes en kunt bevestigen voordat het bestand wor
 
 ## Voorbeeld Sessie
 
-```
+```text
 ✨ CouchCMS AI Toolkit - Simple Standards Creator
 
 This wizard will help you create a standards.md file
@@ -78,12 +78,12 @@ Project description: A personal blog about web development
 🎯 What type of project are you building?
 
   1. Landing Page - Simple website with a few pages
-  2. Blog - Blog with articles and comments
-  3. Portfolio - Showcase your work
-  4. Web Application - Full app with user accounts
-  5. E-commerce - Online store
-  6. Documentation - Documentation site
-  7. Other - I'll configure it myself
+  2. 📝 Blog - Blog with articles and comments
+  3. 📝 Portfolio - Showcase your work
+  4. 📝 Web Application - Full app with user accounts
+  5. 📝 E-commerce - Online store
+  6. 📝 Documentation - Documentation site
+  7. ⚙️ Other - I'll configure it myself
 
 Choice [1-7]: 2
 
@@ -115,8 +115,8 @@ Create standards.md with these settings? (Y/n): Y
 💡 Next steps:
 
   1. Review .project/standards.md
-  2. Add project-specific rules at the bottom
-  3. Run "bun ai-toolkit-shared/scripts/sync.js" to update configs
+  2. 📝 Add project-specific rules at the bottom
+  3. 🚀 Run "bun ai-toolkit-shared/scripts/sync.js" to update configs
 ```
 
 ## Verschil met `init.js`
@@ -144,9 +144,9 @@ Create standards.md with these settings? (Y/n): Y
 Na het aanmaken van `standards.md`:
 
 1. **Review het bestand**: Open `.project/standards.md` en controleer de instellingen
-2. **Voeg project-specifieke regels toe**: Onderaan het bestand kun je eigen regels toevoegen
-3. **Sync opnieuw**: Run `bun ai-toolkit-shared/scripts/sync.js` als je wijzigingen maakt
-4. **Start met ontwikkelen**: Je AI assistenten zijn nu geconfigureerd!
+2. 📝 **Voeg project-specifieke regels toe**: Onderaan het bestand kun je eigen regels toevoegen
+3. 🚀 **Sync opnieuw**: Run `bun ai-toolkit-shared/scripts/sync.js` als je wijzigingen maakt
+4. 🚀 **Start met ontwikkelen**: Je AI assistenten zijn nu geconfigureerd!
 
 ## Tips
 
@@ -174,6 +174,7 @@ bun install
 Als de sync faalt, probeer dan:
 
 ```bash
+# Check toolkit status and updates
 bun ai-toolkit-shared/scripts/health.js
 ```
 

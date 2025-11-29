@@ -4,6 +4,21 @@ A one-page reference for the most common CouchCMS AI Toolkit operations.
 
 ---
 
+
+
+## Quick Command Reference
+
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| `bun install` | Install dependencies | After cloning repository |
+| `bun scripts/create-standards.js` | Simple setup wizard | First-time setup (beginners) |
+| `bun scripts/init.js` | Advanced setup wizard | Custom configuration needed |
+| `bun scripts/sync.js` | Generate AI configs | After modifying standards.md |
+| `bun scripts/validate.js` | Validate configuration | Check for errors |
+| `bun run update` | Check for updates | Weekly maintenance |
+| `bun run update:apply` | Apply updates automatically | When updates available |
+
+
 ## 🚀 Setup Commands
 
 | I want to... | Command |
@@ -32,7 +47,7 @@ A one-page reference for the most common CouchCMS AI Toolkit operations.
 
 ## 📁 Project Structure
 
-```
+```text
 your-project/
 ├── .project/
 │   └── standards.md      ← Your configuration file
@@ -193,10 +208,10 @@ After editing, run: `bun ai-toolkit-shared/scripts/sync.js`
 ## 💡 Pro Tips
 
 1. **Start simple**: Use Simple mode in the setup wizard, expand later
-2. **Sync often**: Run sync after any standards.md changes
-3. **Validate regularly**: Run validate to catch issues early
-4. **Use slash commands**: Faster than typing full prompts
-5. **Read the checklist**: Follow the checklist in each rule/prompt
+2. 🚀 **Sync often**: Run sync after any standards.md changes
+3. 🚀 **Validate regularly**: Run validate to catch issues early
+4. 📝 **Use slash commands**: Faster than typing full prompts
+5. 📝 **Read the checklist**: Follow the checklist in each rule/prompt
 
 ---
 

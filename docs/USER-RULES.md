@@ -40,9 +40,9 @@ User Rules are included in the model context for **Agent (Chat)** only. They:
 ### Step 1: Open Cursor Settings
 
 1. Open Cursor IDE
-2. Go to **Cursor Settings** (Cmd/Ctrl + ,)
-3. Navigate to **Rules** section
-4. Find **User Rules** section
+2. 📝 Go to **Cursor Settings** (Cmd/Ctrl + ,)
+3. 📝 Navigate to **Rules** section
+4. 🔍 Find **User Rules** section
 
 ### Step 2: Add Your Rules
 
@@ -54,13 +54,18 @@ Click **Save** or close settings. Rules are applied immediately.
 
 ## Toolkit Template
 
-The toolkit provides a template you can use. Generate it with:
+The toolkit provides a template you should use. Generate it with:
 
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
-This creates `USER-RULES.md` in your project with a template you can copy to Cursor Settings.
+This creates `USER-RULES.md` in your project with a template you should copy to Cursor Settings.
 
 ## Example User Rules
 
@@ -167,12 +172,12 @@ User Rules work alongside the toolkit's Project Rules:
 When rules conflict, this order applies:
 
 1. **Team Rules** (highest priority)
-2. **Project Rules** (from `.cursor/rules/`)
-3. **User Rules** (lowest priority)
+2. 📝 **Project Rules** (from `.cursor/rules/`)
+3. 📝 **User Rules** (lowest priority)
 
 ### Example Flow
 
-```
+```text
 Team Rule: "Always use TypeScript"
 Project Rule: "Use JavaScript for this project"
 User Rule: "Prefer Python"
@@ -254,25 +259,25 @@ Together, they ensure:
 ### Rules Not Applying
 
 1. **Check settings** - Verify rules are saved in Cursor Settings → Rules
-2. **Restart Cursor** - Sometimes needed after changes
-3. **Check precedence** - Team/Project Rules may override User Rules
-4. **Verify scope** - User Rules only apply to Agent (Chat), not Inline Edit
+2. 📝 **Restart Cursor** - Sometimes needed after changes
+3. 🔍 **Check precedence** - Team/Project Rules may override User Rules
+4. ✅ **Verify scope** - User Rules only apply to Agent (Chat), not Inline Edit
 
 ### Conflicts with Project Rules
 
 If User Rules conflict with Project Rules:
 
 1. **Project Rules win** - They have higher precedence
-2. **Adjust User Rules** - Make them more general
-3. **Use Project Rules** - For project-specific needs
+2. 📝 **Adjust User Rules** - Make them more general
+3. 📝 **Use Project Rules** - For project-specific needs
 
 ### Too Many Rules
 
 If you have too many User Rules:
 
 1. **Prioritize** - Keep only the most important
-2. **Move to Project** - Project-specific rules belong in Project Rules
-3. **Simplify** - Combine related rules
+2. 📝 **Move to Project** - Project-specific rules belong in Project Rules
+3. 📝 **Simplify** - Combine related rules
 
 ## Template
 

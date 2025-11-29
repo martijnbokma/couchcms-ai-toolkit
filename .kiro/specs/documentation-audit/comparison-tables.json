@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-11-29T16:55:16.810Z",
+  "tablesAdded": 0,
+  "filesChecked": 6,
+  "findings": [
+    {
+      "file": "README.md",
+      "line": 391,
+      "heading": "### Branch Types",
+      "optionCount": 5,
+      "reason": "Multiple options without comparison table"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "type": "needs-table",
+      "section": "Setup methods comparison"
+    },
+    {
+      "file": "docs/GETTING-STARTED.md",
+      "line": 66,
+      "heading": "#### Simple Mode (Recommended for Beginners)",
+      "optionCount": 3,
+      "reason": "Multiple options without comparison table"
+    },
+    {
+      "file": "docs/GETTING-STARTED.md",
+      "line": 84,
+      "heading": "#### Custom Mode (Full Control)",
+      "optionCount": 2,
+      "reason": "Multiple options without comparison table"
+    }
+  ]
+}

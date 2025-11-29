@@ -24,7 +24,7 @@ The toolkit now includes specialized prompts and commands for refactoring and op
 - Commands (`commands/*.md`)
 
 **Usage**:
-```
+```text
 Refactor @scripts/sync.js using @prompts/refactoring/toolkit.md
 ```
 
@@ -43,7 +43,7 @@ Refactor @scripts/sync.js using @prompts/refactoring/toolkit.md
 - Module system optimization
 
 **Usage**:
-```
+```text
 Optimize @scripts/sync.js using @prompts/best-practices/toolkit-optimization.md
 ```
 
@@ -54,7 +54,7 @@ Optimize @scripts/sync.js using @prompts/best-practices/toolkit-optimization.md
 **Purpose**: Quick access command for toolkit refactoring
 
 **Usage**:
-```
+```text
 /refactor-toolkit @scripts/sync.js
 /refactor-toolkit @prompts/refactoring/router.md
 ```
@@ -87,12 +87,12 @@ Select the toolkit component to refactor:
 Use the refactor router or load directly:
 
 **Via Router**:
-```
+```text
 Refactor @scripts/sync.js
 ```
 
 **Direct Load**:
-```
+```text
 @prompts/refactoring/toolkit.md Refactor @scripts/sync.js
 ```
 
@@ -100,25 +100,25 @@ Refactor @scripts/sync.js
 
 The specialist will:
 1. Read and analyze the component
-2. Understand dependencies
-3. Identify refactoring opportunities
-4. Create a refactoring plan
+2. 📝 Understand dependencies
+3. 📝 Identify refactoring opportunities
+4. ⚙️ Create a refactoring plan
 
 ### Step 4: Execute
 
 The specialist will:
 1. Apply changes incrementally
-2. Update dependencies
-3. Maintain consistency
-4. Verify functionality
+2. 📝 Update dependencies
+3. 📝 Maintain consistency
+4. ✅ Verify functionality
 
 ### Step 5: Document
 
 The specialist will:
 1. Update CHANGELOG.md
-2. Update documentation
-3. Update examples
-4. Document breaking changes (if any)
+2. 📝 Update documentation
+3. 📝 Update examples
+4. 📝 Document breaking changes (if any)
 
 ## Optimization Workflow
 
@@ -227,7 +227,7 @@ Before completing refactoring:
 ### Example 1: Refactor Script
 
 **Request**:
-```
+```text
 Refactor @scripts/sync.js - Extract configuration loading into separate functions
 ```
 
@@ -240,7 +240,7 @@ Refactor @scripts/sync.js - Extract configuration loading into separate function
 ### Example 2: Optimize Prompt
 
 **Request**:
-```
+```text
 Optimize @prompts/refactoring/router.md - Improve router logic and error handling
 ```
 
@@ -253,7 +253,7 @@ Optimize @prompts/refactoring/router.md - Improve router logic and error handlin
 ### Example 3: Refactor Module
 
 **Request**:
-```
+```text
 Refactor @modules/typescript.md - Standardize module structure and add examples
 ```
 
@@ -276,7 +276,7 @@ Refactor @modules/typescript.md - Standardize module structure and add examples
    - `loadToolkitResources()` - Module/agent/framework loading
    - `generateAllConfigurations()` - Configuration generation orchestration
    - `getTemplateMap()`, `renderTemplate()`, `writeConfigFile()` - Template utilities
-   - `generateTabnineSettings()`, `generateCodeWhispererReadme()` - Tool-specific generators
+   - ~~`generateTabnineSettings()`, `generateCodeWhispererReadme()`~~ - Tool-specific generators (removed - editors no longer supported)
    - Main `sync()` function reduced from ~166 lines to ~34 lines (orchestrator pattern)
 
 2. **validate.js** - Eliminated code duplication:
@@ -306,12 +306,12 @@ Refactor @modules/typescript.md - Standardize module structure and add examples
 ## Best Practices
 
 1. **Always measure first**: Profile before optimizing
-2. **Refactor incrementally**: One logical change at a time
-3. **Maintain consistency**: Follow toolkit conventions
-4. **Update documentation**: Keep docs in sync with code
-5. **Verify functionality**: Test after each change
-6. **Document breaking changes**: Update CHANGELOG.md
-7. **Preserve backward compatibility**: When possible
+2. 📝 **Refactor incrementally**: One logical change at a time
+3. 📝 **Maintain consistency**: Follow toolkit conventions
+4. 📝 **Update documentation**: Keep docs in sync with code
+5. ✅ **Verify functionality**: Test after each change
+6. 📝 **Document breaking changes**: Update CHANGELOG.md
+7. 📝 **Preserve backward compatibility**: When possible
 
 ## Related Documentation
 

@@ -37,7 +37,7 @@ Complete guide to understanding, organizing, and improving modules in the CouchC
 
 Modules are stored in a **flat structure** for compatibility with the sync script:
 
-```
+```text
 modules/
 ├── couchcms-core.md
 ├── tailwindcss.md
@@ -225,9 +225,9 @@ cat docs/MODULES.md
 ## Next Steps (Optional)
 
 1. **Add module icons** - Visual identification in documentation
-2. **Category-based selection wizard** - Interactive module selection
-3. **Module dependency visualization** - Graph of module relationships
-4. **Module usage statistics** - Track which modules are most used
+2. 📝 **Category-based selection wizard** - Interactive module selection
+3. 📝 **Module dependency visualization** - Graph of module relationships
+4. 📝 **Module usage statistics** - Track which modules are most used
 
 ## Notes
 

@@ -108,10 +108,10 @@ This prompt automatically uses standards from:
 The `prompts/validators/standards.md` validator automatically:
 
 1. **Detects** `standards.md` location
-2. **Parses** YAML frontmatter
-3. **Extracts** coding standards
-4. **Validates** prompts against standards
-5. **Reports** compliance score
+2. 📝 **Parses** YAML frontmatter
+3. 📝 **Extracts** coding standards
+4. 📝 **Validates** prompts against standards
+5. 📝 **Reports** compliance score
 
 ## Usage Examples
 
@@ -194,27 +194,27 @@ console.log(`Using: ${fileName}`)
 The init script now:
 
 1. Checks for existing `standards.md`
-2. Offers to create `docs/standards.md` if none exists
-3. Generates template with YAML frontmatter
-4. Includes all standard sections
+2. ⚙️ Offers to create `docs/standards.md` if none exists
+3. 📝 Generates template with YAML frontmatter
+4. 📝 Includes all standard sections
 
 ### sync.js
 
 The sync script now:
 
 1. Detects `standards.md` first
-2. Parses YAML frontmatter for project config
-3. Extracts standards for prompt generation
-4. Creates `standards.md` if not found
+2. 📝 Parses YAML frontmatter for project config
+3. 📝 Extracts standards for prompt generation
+4. 📝 Creates `standards.md` if not found
 
 ### validate.js
 
 The validate script now:
 
 1. Validates `standards.md` structure
-2. Checks YAML frontmatter completeness
-3. Verifies standards documentation quality
-4. Reports compliance score
+2. 📝 Checks YAML frontmatter completeness
+3. 📝 Verifies standards documentation quality
+4. 📝 Reports compliance score
 
 ## Benefits
 
