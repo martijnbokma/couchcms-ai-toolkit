@@ -1,5 +1,22 @@
 # Setup Methode Vergelijking
 
+
+:::warning[Critical Step]
+You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
+:::
+
+```bash
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+```
+
+This installs the required packages:
+- `gray-matter` - YAML frontmatter parsing
+- `yaml` - YAML processing
+- `handlebars` - Template generation
+
+
 Kies de setup methode die het beste bij jou past.
 
 ## 🎯 Welke Methode Kies Ik?
@@ -39,7 +56,7 @@ Kies de setup methode die het beste bij jou past.
 
 ### Simple Creator Vragen
 
-```
+```text
 📝 Tell me about your project
 
 What is your project called?
@@ -50,27 +67,27 @@ Project description:
 
 🎯 What type of project are you building?
   1. Landing Page
-  2. Blog
-  3. Portfolio
-  4. Web Application
-  5. E-commerce
-  6. Documentation
-  7. Other
+  2. 📝 Blog
+  3. 📝 Portfolio
+  4. 📝 Web Application
+  5. 📝 E-commerce
+  6. 📝 Documentation
+  7. 📝 Other
 
 Choice [1-7]: 2
 
 💅 Styling Framework:
   1. TailwindCSS only
-  2. TailwindCSS + daisyUI (recommended)
-  3. None - I'll use custom CSS
+  2. 📝 TailwindCSS + daisyUI (recommended)
+  3. 📝 None - I'll use custom CSS
 
 Choice [1-3]: 2
 
 ⚡ Interactivity:
   1. Alpine.js (recommended)
-  2. Alpine.js + TypeScript
-  3. HTMX
-  4. None - Static site
+  2. 📝 Alpine.js + TypeScript
+  3. 📝 HTMX
+  4. 📝 None - Static site
 
 Choice [1-4]: 1
 
@@ -89,7 +106,7 @@ Do you need comments? (Y/n): y
 
 ### Advanced Init Vragen
 
-```
+```text
 🔍 Detecting project...
    Type: couchcms-webapp
    Frameworks: tailwindcss, alpinejs
@@ -97,9 +114,9 @@ Do you need comments? (Y/n): y
 
 🎯 Setup mode:
   1. Auto (recommended) - Use detected settings
-  2. Preset - Choose from common project types
-  3. Simple - Quick setup with defaults
-  4. Custom - Full control over all options
+  2. 📝 Preset - Choose from common project types
+  3. ⚙️ Simple - Quick setup with defaults
+  4. 📝 Custom - Full control over all options
 
 Choice [1-4]: 4
 

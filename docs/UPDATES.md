@@ -22,13 +22,13 @@ bun run update
 
 This will:
 1. Check for available updates
-2. Show version info and recent changes
-3. **Ask if you want to update now** (y/N)
-4. Apply update if you confirm
+2. 📝 Show version info and recent changes
+3. 📝 **Ask if you want to update now** (y/N)
+4. ✅ Apply update if you confirm
 
 Example output when updates are available:
 
-```
+```text
 🔍 Checking for updates...
 
 ┌─────────────────────────────────────────────────────────┐
@@ -80,9 +80,9 @@ bun run update:apply
 
 Automatically updates without prompting:
 1. Checks for updates
-2. Pulls latest changes from git
-3. Installs new dependencies
-4. Shows success confirmation
+2. 📝 Pulls latest changes from git
+3. 📝 Installs new dependencies
+4. ✅ Shows success confirmation
 
 Use this in CI/CD or when you're confident about updating.
 
@@ -119,11 +119,11 @@ The toolkit automatically checks for updates every 24 hours when you run command
 
 ## After Updating
 
-After updating, you may want to:
+After updating, you can want to:
 
 1. **Regenerate configs**: `bun run sync`
-2. **Check health**: `bun run health`
-3. **Review changelog**: Check `CHANGELOG.md` for breaking changes
+2. 🔍 **Check health**: `bun run health`
+3. 🔍 **Review changelog**: Check `CHANGELOG.md` for breaking changes
 
 ## Troubleshooting
 

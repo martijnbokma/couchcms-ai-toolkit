@@ -21,8 +21,8 @@ You can contribute to this toolkit **directly from your project** without clonin
 
 **Note:** If you don't have write access, you'll need to:
 1. Fork the repository on GitHub
-2. Update your submodule to point to your fork (or add your fork as a remote)
-3. Push to your fork and create a PR from there
+2. 📝 Update your submodule to point to your fork (or add your fork as a remote)
+3. ⚙️ Push to your fork and create a PR from there
 
 ## 🌿 Git Workflow
 
@@ -258,23 +258,23 @@ git push origin feature/your-feature-name
 
 **If you have direct access:**
 1. Go to https://github.com/martijnbokma/couchcms-ai-toolkit
-2. You'll see a banner: "Compare & pull request"
-3. Click it and fill in:
+2. 📝 You'll see a banner: "Compare & pull request"
+3. 📝 Click it and fill in:
     - **Base**: `develop` (not main!)
     - **Compare**: `feature/your-feature-name`
     - **Title**: Clear, descriptive title (e.g., "feat: add Vue.js module")
     - **Description**: Use the template below
-4. Click "Create pull request"
+4. ⚙️ Click "Create pull request"
 
 **If you're using a fork:**
 1. Go to https://github.com/YOUR-USERNAME/couchcms-ai-toolkit
-2. Click "Compare & pull request" or go to the main repo and click "New Pull Request"
-3. Select:
+2. 📝 Click "Compare & pull request" or go to the main repo and click "New Pull Request"
+3. 📝 Select:
     - **Base repository**: martijnbokma/couchcms-ai-toolkit
     - **Base**: `develop`
     - **Head repository**: YOUR-USERNAME/couchcms-ai-toolkit
     - **Compare**: `feature/your-feature-name`
-4. Fill in the PR details
+4. 📝 Fill in the PR details
 
 **PR Description Template:**
 ```markdown
@@ -286,8 +286,8 @@ Explain the problem it solves or the improvement it makes.
 
 ## How to test it?
 1. Step 1
-2. Step 2
-3. Expected result
+2. 📝 Step 2
+3. 📝 Expected result
 
 ## Checklist
 - [ ] Code follows project style
@@ -590,8 +590,8 @@ Many projects now use Vue.js instead of Alpine.js
 ## How to Test?
 
 1. Add `vue` to modules in `.project/standards.md`
-2. Run `bun ai-toolkit-shared/scripts/sync.js`
-3. Check `.cursorrules` includes Vue.js rules
+2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+3. 🔍 Check `.cursorrules` includes Vue.js rules
 ```
 
 ### 4. Stay Updated

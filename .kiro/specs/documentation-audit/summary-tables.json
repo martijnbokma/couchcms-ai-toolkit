@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-11-29T16:56:44.488Z",
+  "tablesAdded": 1,
+  "filesChecked": 5,
+  "findings": [
+    {
+      "file": "docs/QUICK-REFERENCE.md",
+      "type": "added-table",
+      "section": "Quick command reference"
+    },
+    {
+      "file": "docs/AGENTS.md",
+      "type": "needs-review",
+      "reason": "Should have comprehensive agent summary table at the top"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "type": "needs-review",
+      "reason": "Should have command summary table"
+    }
+  ]
+}

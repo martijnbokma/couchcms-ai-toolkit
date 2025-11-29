@@ -148,8 +148,8 @@ conflicts: []
 ### Content Sections
 
 1. **Critical Rules** - Extracted from danger/caution admonitions
-2. **Code Examples** - Extracted code blocks with titles
-3. **Patterns** - General patterns and best practices
+2. 📝 **Code Examples** - Extracted code blocks with titles
+3. 📝 **Patterns** - General patterns and best practices
 
 ## Adding New Module Mappings
 
@@ -230,7 +230,7 @@ bun scripts/sync.js
 
 ### Module Not Found
 
-```
+```text
 ⚠️  No mapping found for module: module-name
 ```
 
@@ -238,7 +238,7 @@ bun scripts/sync.js
 
 ### Documentation Path Not Found
 
-```
+```text
 ❌ Documentation path not found: /path/to/docs
 ```
 
@@ -249,7 +249,7 @@ bun scripts/sync.js
 
 ### No Content Extracted
 
-```
+```text
 ⚠️  No new content found for module-name
 ```
 
@@ -312,8 +312,8 @@ bun scripts/sync.js
 After extending modules:
 
 1. **Sync to projects**: `bun scripts/sync.js`
-2. **Validate**: `bun scripts/validate.js`
-3. **Test**: Use in a project to verify patterns work
+2. 📝 **Validate**: `bun scripts/validate.js`
+3. ✅ **Test**: Use in a project to verify patterns work
 
 ## See Also
 

@@ -18,11 +18,11 @@ bun run release:auto
 
 **What it does:**
 1. Analyzes your commits since last tag
-2. Determines version bump type:
+2. 📝 Determines version bump type:
    - `BREAKING CHANGE` → Major (2.0.0 → 3.0.0)
    - `feat:` commits → Minor (2.0.0 → 2.1.0)
    - `fix:` commits → Patch (2.0.0 → 2.0.1)
-3. Updates version, changelog, commits, tags, pushes
+3. 📝 Updates version, changelog, commits, tags, pushes
 
 ### Force Specific Bump
 

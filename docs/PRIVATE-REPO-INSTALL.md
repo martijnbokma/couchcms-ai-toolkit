@@ -1,5 +1,22 @@
 # Installation for Private Repositories
 
+
+:::warning[Critical Step]
+You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
+:::
+
+```bash
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+```
+
+This installs the required packages:
+- `gray-matter` - YAML frontmatter parsing
+- `yaml` - YAML processing
+- `handlebars` - Template generation
+
+
 How to install the toolkit when the repository is private.
 
 ## 🔒 Why This Guide?
@@ -81,10 +98,10 @@ If you want to use the one-command installer, make the repository public:
 ### On GitHub
 
 1. Go to repository Settings
-2. Scroll to "Danger Zone"
-3. Click "Change visibility"
-4. Select "Make public"
-5. Confirm
+2. 📝 Scroll to "Danger Zone"
+3. 📝 Click "Change visibility"
+4. 📝 Select "Make public"
+5. ✅ Confirm
 
 ### Benefits of Public Repository
 

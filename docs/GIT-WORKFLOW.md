@@ -12,7 +12,7 @@ This is a **simple system** for collaborating on code without chaos. Think of it
 
 ## 🎯 The Basics in 30 Seconds
 
-```
+```text
 main (production)    ──●────────●────────●──────→  Stable code, live
                         ↑        ↑        ↑
 develop (integration)──●──●──●──●──●──●──●──●──→  New features come together here
@@ -22,10 +22,10 @@ feature branches     ──●  ●  ●     ●  ●  ●        Your work (iso
 
 **Simply put:**
 1. You create a **feature branch** for your work
-2. You work peacefully in your own branch
-3. When done, you request a **review** (Pull Request)
-4. After approval, your code goes into **develop**
-5. Periodically, develop goes to **main** (production)
+2. 📝 You work peacefully in your own branch
+3. ✅ When done, you request a **review** (Pull Request)
+4. 📝 After approval, your code goes into **develop**
+5. 📝 Periodically, develop goes to **main** (production)
 
 ## 🚀 Quick Start - Get Started in 2 Minutes
 
@@ -73,7 +73,7 @@ bun scripts/git-flow.js feature finish my-feature-name
 
 Think of branches as **parallel workspaces**:
 
-```
+```text
 Your project
 ├── main          → The live version (production)
 ├── develop       → Where everything comes together
@@ -160,7 +160,7 @@ bun scripts/git-flow.js feature finish add-search-module
 ```
 
 **Timeline:**
-```
+```text
 develop ──●────────────────────●──→
            ↓                    ↑
 feature   ●──●──●──●──●──●──●──●
@@ -262,8 +262,8 @@ git log develop..origin/develop
 
 **No!** You only need to know 3 commands:
 1. `bun scripts/git-flow.js feature start name` - Start
-2. `git add . && git commit -m "description"` - Save
-3. `bun scripts/git-flow.js feature finish name` - Done
+2. 📝 `git add . && git commit -m "description"` - Save
+3. ✅ `bun scripts/git-flow.js feature finish name` - Done
 
 The scripts do the rest for you!
 

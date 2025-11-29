@@ -17,7 +17,7 @@ Quick reference for editor-specific configurations in the CouchCMS AI Toolkit.
 ## Cursor IDE
 
 ### Files
-```
+```text
 .cursorrules                    # Global rules
 .cursor/rules/*.mdc             # Context-aware rules
 ```
@@ -50,7 +50,7 @@ globs:
 ## Claude Code
 
 ### Files
-```
+```text
 .claude/settings.json           # Permissions & env
 .claude/skills/*.md             # Modular knowledge
 CLAUDE.md                       # Memory (startup)
@@ -104,17 +104,31 @@ allowed-tools: Read, Write, Bash, Grep
 
 ### Generate All Configs
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ### Watch Mode (Auto-Sync)
 ```bash
+# Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ### Validate Configuration
 ```bash
+# Validate your project configuration and check compliance
+# This checks for errors in standards.md and missing files
 bun ai-toolkit-shared/scripts/validate.js
+
+# The validation will show:
+# - Configuration file status
+# - Module and agent validation
+# - Compliance score (0-100%)
+# - Specific issues and recommendations
 ```
 
 ### Regenerate Specific Editor
@@ -150,8 +164,8 @@ agents:
 
 **Workflow:**
 1. Edit `standards.md`
-2. Run `bun ai-toolkit-shared/scripts/sync.js`
-3. All editor configs updated automatically
+2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+3. 📝 All editor configs updated automatically
 
 ---
 

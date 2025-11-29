@@ -1,6 +1,36 @@
 # Installation Methods - CouchCMS AI Toolkit
 
+
+:::warning[Critical Step]
+You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
+:::
+
+```bash
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+```
+
+This installs the required packages:
+- `gray-matter` - YAML frontmatter parsing
+- `yaml` - YAML processing
+- `handlebars` - Template generation
+
+
 Multiple ways to install the toolkit, choose what works best for you.
+
+
+
+### Dependencies
+
+The toolkit requires the following Node.js packages:
+
+- **gray-matter** (^4.0.3) - Parses YAML frontmatter from standards.md configuration files
+- **yaml** (^2.3.4) - Handles YAML serialization and deserialization
+- **handlebars** (^4.7.8) - Template engine for generating AI configuration files
+- **fast-check** (^3.15.0) (development) - Testing framework for generating random test cases
+
+These are automatically installed when you run `bun install` in the toolkit directory.
 
 ## 🚀 Method 1: Bash Installer (Public Repos Only)
 
@@ -9,7 +39,18 @@ Multiple ways to install the toolkit, choose what works best for you.
 **⚠️ Important:** This only works if the repository is **public**. For private repos, see Method 3 or [Private Repo Guide](PRIVATE-REPO-INSTALL.md).
 
 ```bash
+# One-command installation (public repositories only)
+# This automatically adds the submodule and installs dependencies
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
+
+# What this script does:
+# 1. Adds toolkit as git submodule
+# 2. Installs toolkit dependencies (bun install)
+# 3. Starts the setup wizard
+# 4. Generates initial AI configurations
+
+# Note: Only works for public repositories
+# For private repos, use the manual 3-step installation
 ```
 
 **Pros:**
@@ -136,7 +177,15 @@ Use Git Bash (comes with Git for Windows) or WSL.
 
 Install Bun:
 ```bash
+# Install Bun (recommended JavaScript runtime)
+# This is faster than Node.js and works great with the toolkit
 curl -fsSL https://bun.sh/install | bash
+
+# After installation, restart your terminal or run:
+# source ~/.bashrc  # or ~/.zshrc depending on your shell
+
+# Verify installation:
+# bun --version
 ```
 
 Or use Node.js instead:
@@ -185,11 +234,11 @@ Try manual installation (Method 3) to see where it fails.
 
 All methods result in the same setup:
 
-```
+```text
 your-project/
 ├── ai-toolkit-shared/     ← Toolkit installed here
 ├── .cursorrules           ← Generated configs
-├── .claude/
+├── .claude/                     # Claude Code configuration
 ├── .github/
 └── .project/
     └── standards.md       ← Your configuration
@@ -197,9 +246,9 @@ your-project/
 
 Next steps:
 1. Check health: `bun ai-toolkit-shared/scripts/health.js`
-2. Start coding with your AI assistant
-3. Modify config: `vim .project/standards.md`
-4. Re-sync: `bun ai-toolkit-shared/scripts/sync.js`
+2. 🚀 Start coding with your AI assistant
+3. 📝 Modify config: `vim .project/standards.md`
+4. 📝 Re-sync: `bun ai-toolkit-shared/scripts/sync.js`
 
 ---
 

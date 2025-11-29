@@ -1,6 +1,8 @@
-# New Features Guide (v2.1.0)
+# New Features Guide
 
-This guide covers the new features added in version 2.1.0 that make the toolkit easier to use.
+This guide covers the latest features that make the toolkit easier to use.
+
+**Note**: This document describes features available in the current toolkit version (1.0.14). Historical version references like "v2.1.0" refer to feature release milestones, not package versions.
 
 ## 🎯 Enhanced Editor Support
 
@@ -14,7 +16,7 @@ The toolkit now provides comprehensive support for multiple AI-powered editors w
 - No manual rule loading required
 
 **Generated Files:**
-```
+```text
 .cursor/rules/
   ├── refactor-alpinejs.mdc
   ├── refactor-forms.mdc
@@ -51,7 +53,7 @@ globs:
 - Memory file loaded at startup
 
 **Generated Files:**
-```
+```text
 .claude/
   ├── settings.json           # Permissions & environment
   └── skills/                 # Modular knowledge
@@ -142,7 +144,12 @@ agents:
 
 **One command generates all configs:**
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 This generates:
@@ -203,13 +210,13 @@ Choose from 8 predefined configurations during setup.
 ### Available Presets
 
 1. **Landing Page** - Simple landing page with CouchCMS
-2. **Blog** - Blog with comments, search, and pagination
-3. **E-commerce** - Online store with products, cart, and checkout
-4. **Web Application** - Full-featured web application with authentication
-5. **Portfolio** - Portfolio website with projects showcase
-6. **Documentation** - Documentation with search and navigation
-7. **Minimal** - Bare minimum - CouchCMS core only
-8. **Full Stack** - Everything included - all modules and agents
+2. 🔍 **Blog** - Blog with comments, search, and pagination
+3. 📝 **E-commerce** - Online store with products, cart, and checkout
+4. 📝 **Web Application** - Full-featured web application with authentication
+5. 📝 **Portfolio** - Portfolio website with projects showcase
+6. 🔍 **Documentation** - Documentation with search and navigation
+7. 📝 **Minimal** - Bare minimum - CouchCMS core only
+8. 📝 **Full Stack** - Everything included - all modules and agents
 
 ### Using Presets
 
@@ -219,17 +226,17 @@ bun scripts/init.js
 # Choose mode:
 🎯 Setup mode:
   1. Auto (recommended) - Use detected settings
-  2. Preset - Choose from common project types  ← Choose this
-  3. Simple - Quick setup with defaults
-  4. Custom - Full control over all options
+  2. 📝 Preset - Choose from common project types  ← Choose this
+  3. ⚙️ Simple - Quick setup with defaults
+  4. 📝 Custom - Full control over all options
 Choice [1-4]: 2
 
 # Select preset:
 📋 Available presets:
   0. None - Configure manually
-  1. Landing Page - Simple landing page with CouchCMS
-  2. Blog - Blog with comments, search, and pagination
-  3. E-commerce - Online store with products, cart, and checkout
+  1. 📝 Landing Page - Simple landing page with CouchCMS
+  2. 🔍 Blog - Blog with comments, search, and pagination
+  3. 📝 E-commerce - Online store with products, cart, and checkout
   ...
 Choice [0-8]: 2
 ```
@@ -269,14 +276,14 @@ cd ai-toolkit-shared && bun run sync:watch
 ### How It Works
 
 1. Runs initial sync
-2. Watches `standards.md` for changes
-3. Auto-syncs 500ms after last change (debounced)
-4. Shows sync results
-5. Continues watching
+2. 📝 Watches `standards.md` for changes
+3. 📝 Auto-syncs 500ms after last change (debounced)
+4. 📝 Shows sync results
+5. 📝 Continues watching
 
 ### Example Output
 
-```
+```text
 🔄 CouchCMS AI Toolkit - Sync
 ...
 ✨ Sync complete in 234ms
@@ -332,7 +339,7 @@ cd ai-toolkit-shared && bun run health
 
 ### Example Output
 
-```
+```text
 🏥 CouchCMS AI Toolkit - Health Check
 
 📦 Toolkit Installation
@@ -372,7 +379,7 @@ Get notified when toolkit updates are available.
 
 ### Example Notification
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │ 💡 Update Available                                     │
 ├─────────────────────────────────────────────────────────┤
@@ -394,7 +401,7 @@ bun scripts/health.js
 
 ### Disable Notifications
 
-The notifier is non-intrusive and only checks once per day. If you want to disable it, you can modify the check interval in `scripts/lib/update-notifier.js`.
+The notifier is non-intrusive and only checks once per day. If you want to disable it, you should modify the check interval in `scripts/lib/update-notifier.js`.
 
 ## 🎨 Interactive Module Browser
 
@@ -433,7 +440,7 @@ cd ai-toolkit-shared && bun run browse:agents
 
 ### Example
 
-```
+```text
 📦 CouchCMS AI Toolkit - Modules Browser
 
 Use ↑↓ to navigate, Space to toggle, Enter to save, Q to quit
@@ -454,7 +461,7 @@ Selected: 3/15
 
 ## 🚀 Quick Comparison
 
-### Before v2.1.0
+### Before (Legacy Setup)
 
 ```bash
 # Manual setup
@@ -478,7 +485,7 @@ bun scripts/sync.js
 bun scripts/sync.js
 ```
 
-### After v2.1.0
+### Now (Current Version)
 
 ```bash
 # Auto setup
@@ -563,22 +570,22 @@ bun ai-toolkit-shared/scripts/sync.js --watch
 If auto-detection doesn't find your frameworks:
 
 1. Check that config files exist (`tailwind.config.js`, `tsconfig.json`)
-2. Check that dependencies are in `package.json`
-3. Use "Custom" mode to manually select
+2. 🔍 Check that dependencies are in `package.json`
+3. 📝 Use "Custom" mode to manually select
 
 ### Watch Mode Not Triggering
 
 If watch mode doesn't detect changes:
 
 1. Make sure you're editing the correct config file
-2. Save the file (some editors don't trigger file system events)
-3. Check file permissions
+2. ❌ Save the file (some editors don't trigger file system events)
+3. 🔍 Check file permissions
 
 ### Health Check Shows Errors
 
 Follow the suggested fixes in the output:
 
-```
+```text
 ❌ Missing files: Cursor rules
     → Run: bun ai-toolkit-shared/scripts/sync.js
 ```

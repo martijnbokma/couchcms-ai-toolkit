@@ -74,7 +74,7 @@ Project description [My CouchCMS project]: Student portfolio platform
 
 📦 How do you want to use the toolkit?
   1. As a git submodule (recommended)
-  2. Cloned in home directory
+  2. 📝 Cloned in home directory
 Choice [1-2] [1]: 1
 
 📚 Select modules to include:
@@ -106,9 +106,9 @@ Choice [1-2] [1]: 1
 Next steps:
 
   1. Review and customize .project/standards.md
-  2. Add project-specific details to .project/ai/context.md
-  3. Run "bun run sync" to generate AI configurations
-  4. Run "bun run validate" to check setup
+  2. 📝 Add project-specific details to .project/ai/context.md
+  3. 🚀 Run "bun run sync" to generate AI configurations
+  4. 🔍 Run "bun run validate" to check setup
 
 Happy coding! 🎉
 ```
@@ -323,21 +323,21 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ### Process Flow
 
-```
+```text
 standards.md
     ↓
 1. Read configuration (YAML frontmatter)
-2. Read project rules (Markdown body)
+2. 📝 Read project rules (Markdown body)
     ↓
-3. Load selected modules
+3. 📝 Load selected modules
     ↓
-4. Load selected agents
+4. 📝 Load selected agents
     ↓
-5. Load project context (if context.md exists)
+5. 📝 Load project context (if context.md exists)
     ↓
-6. Combine all content
+6. 📝 Combine all content
     ↓
-7. Generate output files
+7. 📝 Generate output files
     ↓
 ✅ Done!
 ```
@@ -400,8 +400,8 @@ Run sync after:
 
 Troubleshooting:
   1. Check toolkit path in standards.md (or .project/standards.md)
-  2. For submodule: cd ai-toolkit-shared && git pull
-  3. For home dir: verify ~/couchcms-ai-toolkit exists
+  2. 📝 For submodule: cd ai-toolkit-shared && git pull
+  3. ✅ For home dir: verify ~/couchcms-ai-toolkit exists
 ```
 
 #### Invalid Module
@@ -418,6 +418,7 @@ Troubleshooting:
 ❌ Error: No configuration file found
 
 Run setup wizard:
+# Interactive setup wizard
   bun ai-toolkit-shared/scripts/init.js
 
 💡 Tip: Use .project/standards.md for the recommended location.
@@ -521,6 +522,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ```yaml
 name: Validate AI Config
+description: 'Brief description of your project'
 
 on: [push, pull_request]
 

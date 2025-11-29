@@ -32,9 +32,9 @@ Stored in `~/.cursor/commands/` or `~/.claude/commands/`:
 ## How Commands Work
 
 1. **Type `/`** in Cursor chat
-2. **Select command** from dropdown
-3. **AI executes** the command instructions
-4. **Follow workflow** defined in the command
+2. 📝 **Select command** from dropdown
+3. 📝 **AI executes** the command instructions
+4. 📝 **Follow workflow** defined in the command
 
 ## Toolkit Integration
 
@@ -58,13 +58,18 @@ The toolkit automatically syncs commands from `commands/` to your project's `.cu
 Commands are automatically synced when you run:
 
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 This:
 1. Copies commands from toolkit `commands/` to project `.cursor/commands/`
-2. Replaces `{{paths.xxx}}` variables with your project paths
-3. Ensures all commands are up to date
+2. 📝 Replaces `{{paths.xxx}}` variables with your project paths
+3. 📝 Ensures all commands are up to date
 
 ## Creating Custom Commands
 
@@ -87,8 +92,8 @@ Description of what this command does.
 ## Steps
 
 1. First step
-2. Second step
-3. Third step
+2. 📝 Second step
+3. 📝 Third step
 ```
 
 ### Shared Commands (Toolkit Contribution)
@@ -96,9 +101,9 @@ Description of what this command does.
 To add commands to the toolkit for all projects:
 
 1. **Create `.md` file** in `ai-toolkit-shared/commands/`
-2. **Use path variables** - Replace hardcoded paths with `{{paths.xxx}}`
-3. **Keep framework-agnostic** where possible
-4. **Add to README** - Document in `commands/README.md`
+2. 📝 **Use path variables** - Replace hardcoded paths with `{{paths.xxx}}`
+3. 📝 **Keep framework-agnostic** where possible
+4. 📝 **Add to README** - Document in `commands/README.md`
 
 **Example:**
 
@@ -110,8 +115,8 @@ Create a component in {{paths.components}}/{name}.html
 ## Steps
 
 1. Create component file
-2. Add structure
-3. Style with daisyUI
+2. 📝 Add structure
+3. 📝 Style with daisyUI
 ```
 
 ## Command Format
@@ -128,8 +133,8 @@ Brief description of what this command does.
 ## Steps
 
 1. First step
-2. Second step
-3. Third step
+2. 📝 Second step
+3. 📝 Third step
 
 ## Examples
 
@@ -139,10 +144,10 @@ Example usage or output.
 ### Best Practices
 
 1. **Clear title** - Descriptive command name
-2. **Brief description** - What the command does
-3. **Numbered steps** - Clear workflow
-4. **Examples** - Show expected usage
-5. **Path variables** - Use `{{paths.xxx}}` for portability
+2. 📝 **Brief description** - What the command does
+3. 📝 **Numbered steps** - Clear workflow
+4. 📝 **Examples** - Show expected usage
+5. 📝 **Path variables** - Use `{{paths.xxx}}` for portability
 
 ## Path Variables
 
@@ -179,8 +184,8 @@ Perform a comprehensive code review.
 
 Provide:
 1. List of issues
-2. Priority levels
-3. Suggested fixes
+2. 📝 Priority levels
+3. 📝 Suggested fixes
 ```
 
 ### Example 2: Create Component Command
@@ -199,8 +204,8 @@ Create a new component in {{paths.components}}/{name}.html
 ## Steps
 
 1. Create component file
-2. Add structure
-3. Style with daisyUI
+2. 📝 Add structure
+3. 📝 Style with daisyUI
 ```
 
 ### Example 3: Fix Issues Command
@@ -220,9 +225,9 @@ Automatically fix common issues.
 ## Process
 
 1. Scan for issues
-2. Categorize by priority
-3. Fix automatically
-4. Report changes
+2. 📝 Categorize by priority
+3. 📝 Fix automatically
+4. 📝 Report changes
 ```
 
 ## Using Commands
@@ -230,17 +235,17 @@ Automatically fix common issues.
 ### In Cursor Chat
 
 1. Type `/` in chat input
-2. Select command from dropdown
-3. AI executes the command
-4. Follow the workflow
+2. 📝 Select command from dropdown
+3. 📝 AI executes the command
+4. 📝 Follow the workflow
 
 ### Command Execution
 
 The AI will:
 1. Read the command file
-2. Understand the workflow
-3. Execute steps
-4. Provide results
+2. 📝 Understand the workflow
+3. 🚀 Execute steps
+4. 📝 Provide results
 
 ## Best Practices
 
@@ -310,31 +315,31 @@ Mention required modules/agents:
 ### Commands Not Appearing
 
 1. **Check directory** - Ensure `.cursor/commands/` exists
-2. **Verify file extension** - Must be `.md`
-3. **Restart Cursor** - Sometimes needed after adding commands
-4. **Check sync** - Run `bun ai-toolkit-shared/scripts/sync.js`
+2. ✅ **Verify file extension** - Must be `.md`
+3. 📝 **Restart Cursor** - Sometimes needed after adding commands
+4. 🔍 **Check sync** - Run `bun ai-toolkit-shared/scripts/sync.js`
 
 ### Path Variables Not Replaced
 
 1. **Run sync script**: `bun ai-toolkit-shared/scripts/sync.js`
-2. **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration
-3. **Verify `defaults.yaml`** - Check toolkit has path definitions
+2. ✅ **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration
+3. ✅ **Verify `defaults.yaml`** - Check toolkit has path definitions
 
 ### Command Not Working
 
 1. **Check syntax** - Ensure valid Markdown
-2. **Review steps** - Verify workflow is clear
-3. **Test manually** - Try executing steps yourself
-4. **Check dependencies** - Ensure required modules/agents are active
+2. ✅ **Review steps** - Verify workflow is clear
+3. 📝 **Test manually** - Try executing steps yourself
+4. 🔍 **Check dependencies** - Ensure required modules/agents are active
 
 ## Integration with Toolkit
 
 Custom Commands work seamlessly with the toolkit:
 
 1. **Auto-synced** - Commands from toolkit `commands/` are copied to your project
-2. **Path-aware** - Variables are replaced with your project paths
-3. **Version-controlled** - Commands are committed to your repository
-4. **Team-shared** - All team members get the same commands
+2. 📝 **Path-aware** - Variables are replaced with your project paths
+3. 📝 **Version-controlled** - Commands are committed to your repository
+4. 📝 **Team-shared** - All team members get the same commands
 
 ## See Also
 

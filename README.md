@@ -7,6 +7,24 @@ Provides consistent AI assistance across all your projects with modules, agents,
 ## ✨ Features
 
 ### Smart Setup
+
+
+> [!WARNING]
+> **Critical Step**
+> 
+> You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
+
+```bash
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+```
+
+This installs the required packages:
+- `gray-matter` - YAML frontmatter parsing
+- `yaml` - YAML processing
+- `handlebars` - Template generation
+
 - 🔍 **Auto-Detection** - Automatically detects project type, frameworks, and languages
 - �  **Project Presets** - Choose from 8 common project types (blog, ecommerce, webapp, etc.)
 - 🎯 **Interactive Setup Wizard** - Get started in 2 minutes with 4 setup modes
@@ -25,6 +43,17 @@ Provides consistent AI assistance across all your projects with modules, agents,
 - 📝 **Memory Files** - Project context loaded at startup (CLAUDE.md, AGENTS.md)
 - 🔄 **Auto-Sync** - All editor configs generated from single source of truth
 
+**Generated Files:**
+- `.cursorrules` - Cursor AI configuration
+- `.cursor/rules/*.mdc` - Context-aware MDC rules (auto-activate)
+- `CLAUDE.md` - Claude Code memory file
+- `.claude/skills/*.md` - Claude Code skills (modular knowledge)
+- `.claude/settings.json` - Claude Code settings
+- `AGENTS.md` - Agent documentation
+- `.github/copilot-instructions.md` - GitHub Copilot configuration
+- `.windsurf/rules.md` - Windsurf AI configuration
+- `.kiro/steering/*.md` - Kiro steering files
+
 ### Configuration
 - 🔄 **Auto-Generated Configs** - Cursor, Claude, Copilot, Windsurf, Kiro ready
 - 📦 **15 Knowledge Modules** - CouchCMS, TailwindCSS, Alpine.js, TypeScript, daisyUI, DataBound Forms, Search, Pagination, Users, Comments, and more
@@ -39,15 +68,14 @@ Provides consistent AI assistance across all your projects with modules, agents,
 - **Bun** (recommended) or **Node.js** (v18+) - JavaScript runtime
   - Install Bun: `curl -fsSL https://bun.sh/install | bash`
 
-:::caution[Important]
-After adding the submodule, **always** run `bun install` in `ai-toolkit-shared/` before using any scripts.
-:::
+> [!CAUTION]
+> **Important**
+> 
+> After adding the submodule, **always** run `bun install` in `ai-toolkit-shared/` before using any scripts.
 
 ## 🚀 Quick Start
 
 ### Quick Install (3 steps)
-
-**Note:** For private repositories, use this method. For public repos, see one-command install below.
 
 Get started in under a minute:
 
@@ -62,11 +90,19 @@ cd ai-toolkit-shared && bun install && cd ..
 bun ai-toolkit-shared/scripts/create-standards.js
 ```
 
-**New: Simple Standards Creator** - Beantwoord een paar eenvoudige vragen en de wizard maakt automatisch je configuratie aan. Perfect voor beginners!
+**New: Simple Standards Creator** - Answer a few simple questions and the wizard automatically creates your configuration. Perfect for beginners!
 
-**Alternatief: Advanced Setup**
+**Alternative: Advanced Setup**
 ```bash
+# Run the advanced setup wizard
+# This provides full control over modules, agents, and configuration
 bun ai-toolkit-shared/scripts/init.js
+
+# The wizard will guide you through:
+# - Project name and description
+# - Module selection (CouchCMS features)
+# - Agent selection (AI assistants)
+# - Configuration file location
 ```
 
 **Choose "Auto" mode** (recommended) - automatically detects your project type, frameworks, and recommends modules.
@@ -78,9 +114,7 @@ bun ai-toolkit-shared/scripts/init.js
 
 **Result:** Configuration file (`.project/standards.md`) and all IDE configs (`.cursorrules`, `.claude/`, etc.) are generated automatically.
 
-### One-Command Install (Public Repos Only)
-
-**Note:** This only works if the repository is public. For private repositories, use the 3-step method above.
+### One-Command Install
 
 ```bash
 # 1. Install toolkit
@@ -96,8 +130,6 @@ The install script automatically:
 - ✅ Cleans up any previous installation artifacts
 
 Then run `init.js` to configure your project and generate AI configs.
-
-**Note:** Repository must be public for curl access
 
 📖 **[See all installation methods](docs/INSTALLATION-METHODS.md)** - Bash, Bun, Manual, Git Clone
 
@@ -139,17 +171,17 @@ bun ai-toolkit-shared/scripts/create-standards.js
 bun run create
 ```
 
-**Perfect voor:**
-- Je eerste keer met de toolkit
-- Je wilt snel starten zonder technische details
-- Je weet niet precies welke modules je nodig hebt
-- Je wilt een begeleide ervaring
+**Perfect for:**
+- Your first time with the toolkit
+- You want to start quickly without technical details
+- You don't know exactly which modules you need
+- You want a guided experience
 
-**Wat het doet:**
-- Stelt eenvoudige vragen in begrijpelijke taal
-- Geeft automatisch aanbevelingen op basis van project type
-- Maakt direct een werkende configuratie aan
-- Geen technische kennis vereist
+**What it does:**
+- Asks simple questions in understandable language
+- Automatically recommends based on project type
+- Creates a working configuration immediately
+- No technical knowledge required
 
 ### Advanced Init
 
@@ -159,17 +191,31 @@ bun ai-toolkit-shared/scripts/init.js
 bun run init
 ```
 
-**Perfect voor:**
-- Gevorderde gebruikers die volledige controle willen
-- Je weet precies welke modules en agents je nodig hebt
-- Je wilt kiezen tussen verschillende configuratie locaties
-- Je wilt het AAPF framework in detail configureren
+**Perfect for:**
+- Advanced users who want full control
+- You know exactly which modules and agents you need
+- You want to choose between different configuration locations
+- You want to configure the AAPF framework in detail
 
-**Wat het doet:**
-- Auto-detectie van project type en frameworks
-- Volledige controle over alle opties
-- Keuze tussen 4 setup modes (Auto, Preset, Simple, Custom)
-- Gedetailleerde framework configuratie
+**What it does:**
+- Auto-detection of project type and frameworks
+- Full control over all options
+- Choice between 4 setup modes (Auto, Preset, Simple, Custom)
+- Detailed framework configuration
+
+## 📖 Glossary
+
+Key terms used throughout this documentation:
+
+- **Toolkit**: The CouchCMS AI Toolkit software package
+- **Configuration File**: The `standards.md` file containing project configuration
+- **Generated Files**: Files automatically created by the sync script (`.cursorrules`, `.claude/`, etc.)
+- **Module**: A knowledge module providing AI assistants with framework-specific patterns
+- **Agent**: A specialized AI agent for specific development tasks
+- **Sync**: The process of generating AI configuration files from `standards.md`
+- **Setup Wizard**: The interactive `init.js` script that guides initial configuration
+- **Legacy Format**: Old configuration format using multiple YAML files (pre-v2.0)
+- **Current Format**: Single `standards.md` file with YAML frontmatter (v2.0+)
 
 ## 📚 Documentation
 
@@ -177,17 +223,17 @@ bun run init
 
 | Guide | Description | Time |
 |-------|-------------|------|
-| **[Simple Setup](docs/SIMPLE-SETUP.md)** | Eenvoudige wizard voor beginners | 2 min |
-| **[Setup Comparison](docs/SETUP-COMPARISON.md)** | Vergelijk Simple vs Advanced setup | 3 min |
-| **[Quick Start](docs/QUICK-START.md)** | Installatie in 5 minuten | 5 min |
-| **[How It Works](docs/HOW-IT-WORKS.md)** | Complete uitleg voor iedereen | 15 min |
-| **[Cheat Sheet](docs/CHEAT-SHEET.md)** | Snelle referentie | 2 min |
+| **[Simple Setup](docs/SIMPLE-SETUP.md)** | Simple wizard for beginners | 2 min |
+| **[Setup Comparison](docs/SETUP-COMPARISON.md)** | Compare Simple vs Advanced setup | 3 min |
+| **[Quick Start](docs/QUICK-START.md)** | Installation in 5 minutes | 5 min |
+| **[Getting Started](docs/GETTING-STARTED.md)** | Complete guide for everyone | 15 min |
+| **[Quick Reference](docs/QUICK-REFERENCE.md)** | Quick reference | 2 min |
 
 ### Essential Guides
 
 | Guide | When to Use |
 |-------|-------------|
-| **[New Features v2.1.0](docs/NEW-FEATURES.md)** | Learn about latest features |
+| **[New Features](docs/NEW-FEATURES.md)** | Learn about latest features |
 | **[Getting Started](docs/GETTING-STARTED.md)** | First-time setup - start here |
 | **[Updates](docs/UPDATES.md)** | Keep toolkit up to date |
 | **[Git Workflow](docs/GIT-WORKFLOW.md)** | Collaborating with team - branching strategy |
@@ -225,6 +271,19 @@ bun run init
 ### Setup & Configuration
 
 ```bash
+
+
+### Dependencies
+
+The toolkit requires the following Node.js packages:
+
+- **gray-matter** (^4.0.3) - Parses YAML frontmatter from standards.md configuration files
+- **yaml** (^2.3.4) - Handles YAML serialization and deserialization
+- **handlebars** (^4.7.8) - Template engine for generating AI configuration files
+- **fast-check** (^3.15.0) (development) - Testing framework for generating random test cases
+
+These are automatically installed when you run `bun install` in the toolkit directory.
+
 # Simple setup wizard (recommended for beginners)
 bun ai-toolkit-shared/scripts/create-standards.js
 
@@ -321,7 +380,7 @@ This creates the `develop` branch and sets up the workflow structure.
 
 ### Quick Overview
 
-```
+```text
 main (production)    ──●────────●────────●──→  Stable, live code
                         ↑        ↑        ↑
 develop (integration)──●──●──●──●──●──●──●──→  Features come together
@@ -365,11 +424,13 @@ This automatically:
 
 ### Branch Types
 
-- **main** - Production code (always stable)
-- **develop** - Integration branch (features merge here)
-- **feature/** - Your daily work (isolated from others)
-- **release/** - Preparing new versions
-- **hotfix/** - Emergency production fixes
+| Branch | Purpose | Merges From | Merges To | Who Uses |
+|--------|---------|-------------|-----------|----------|
+| **main** | Production code (always stable) | release/, hotfix/ | - | Release managers |
+| **develop** | Integration branch | feature/, release/, hotfix/ | release/ | All developers |
+| **feature/** | Daily development work (isolated) | develop | develop | Individual developers |
+| **release/** | Preparing new versions | develop | main, develop | Release managers |
+| **hotfix/** | Emergency production fixes | main | main, develop | Release managers |
 
 ### For Team Members
 
@@ -442,12 +503,17 @@ Your custom rules here...
 
 **After editing, run:**
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 📖 See [Config Files Guide](docs/CONFIG-FILES.md) for details.
 
-## 🆕 What's New in v2.1.0
+## 🆕 What's New (Current Version: 1.0.14)
 
 ### Smart Setup & Detection
 - ✅ **Auto-Detection** - Automatically detects project type, frameworks, and languages from your codebase
@@ -460,13 +526,13 @@ bun ai-toolkit-shared/scripts/sync.js
 - ✅ **Update Notifier** - Get notified when toolkit updates are available
 - ✅ **Interactive Browser** - Browse and select modules/agents with keyboard navigation
 
-### Previous (v2.0.0)
+### Configuration & Performance
 - ✅ **Simplified Configuration** - Single `standards.md` file with YAML frontmatter
 - ✅ **Modular Architecture** - Refactored scripts into reusable library modules
 - ✅ **50% Faster Sync** - Performance optimizations with caching and selective file writing
 - ✅ **Streamlined Editor Support** - Focus on actively used editors (Cursor, Claude, Windsurf, Kiro, Copilot)
 
-See [CHANGELOG.md](CHANGELOG.md) for complete details and [Migration Guide](docs/MIGRATION.md) for upgrade instructions.
+See [CHANGELOG.md](CHANGELOG.md) for complete version history and [Migration Guide](docs/MIGRATION.md) for upgrade instructions from legacy formats.
 
 ## 🤝 Contributing
 
@@ -482,7 +548,7 @@ bun run prepare-contribution --branch feature/your-feature
 
 ## 📊 Project Structure
 
-```
+```text
 ai-toolkit-shared/
 ├── modules/              # Knowledge modules
 ├── agents/               # AI agents
@@ -496,8 +562,8 @@ ai-toolkit-shared/
 ## 🆘 Need Help?
 
 1. Check [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
-2. Validate setup: `bun ai-toolkit-shared/scripts/validate.js`
-3. Open an [issue](https://github.com/martijnbokma/couchcms-ai-toolkit/issues)
+2. ⚙️ Validate setup: `bun ai-toolkit-shared/scripts/validate.js`
+3. 📝 Open an [issue](https://github.com/martijnbokma/couchcms-ai-toolkit/issues)
 
 ## 📄 License
 

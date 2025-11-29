@@ -1,0 +1,391 @@
+{
+  "timestamp": "2025-11-29T16:53:39.312Z",
+  "fixedCount": 48,
+  "filesChecked": 30,
+  "findings": [
+    {
+      "file": "README.md",
+      "line": 349,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "README.md",
+      "line": 510,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 326,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EDITOR-QUICK-REFERENCE.md",
+      "line": 20,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EDITOR-QUICK-REFERENCE.md",
+      "line": 53,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 25,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 94,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 229,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 259,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 289,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 541,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EXTENDING-MODULES.md",
+      "line": 233,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EXTENDING-MODULES.md",
+      "line": 241,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/EXTENDING-MODULES.md",
+      "line": 252,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 15,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 76,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 163,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/INSTALLATION-METHODS.md",
+      "line": 188,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/MIGRATION.md",
+      "line": 115,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/MIGRATION.md",
+      "line": 124,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/MODULE-GUIDE.md",
+      "line": 40,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/MODULES.md",
+      "line": 369,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/MODULES.md",
+      "line": 458,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 19,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 56,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 281,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 337,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 377,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 438,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 583,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/QUICK-REFERENCE.md",
+      "line": 35,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 84,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 107,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 140,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 172,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 42,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 92,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 61,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 27,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 46,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 57,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 90,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 95,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 230,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 243,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 256,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 31,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 175,
+      "type": "missing-language",
+      "current": "```",
+      "fixed": true,
+      "detected": "text"
+    }
+  ]
+}

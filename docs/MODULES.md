@@ -319,6 +319,7 @@ modules:
 ### For Modern Frontend Project
 
 ```yaml
+# Knowledge Modules - Choose based on your project needs
 modules:
     - couchcms-core
     - tailwindcss
@@ -329,6 +330,7 @@ modules:
 ### For Content-Rich Site
 
 ```yaml
+# Knowledge Modules - Choose based on your project needs
 modules:
     - couchcms-core
     - folders
@@ -341,6 +343,7 @@ modules:
 ### For User-Interactive Site
 
 ```yaml
+# Knowledge Modules - Choose based on your project needs
 modules:
     - couchcms-core
     - users
@@ -351,6 +354,7 @@ modules:
 ### For Full-Stack TypeScript Project
 
 ```yaml
+# Knowledge Modules - Choose based on your project needs
 modules:
     - couchcms-core
     - tailwindcss
@@ -366,7 +370,7 @@ modules:
 
 ## Module Dependencies
 
-```
+```text
 couchcms-core (required by all)
     ├── databound-forms
     ├── folders
@@ -406,6 +410,7 @@ couchcms-core (required by all)
 Edit `standards.md` (or `.project/standards.md`):
 
 ```yaml
+# Knowledge Modules - Choose based on your project needs
 modules:
     - couchcms-core
     - tailwindcss
@@ -417,7 +422,12 @@ modules:
 Then sync:
 
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ---
@@ -455,7 +465,7 @@ The **Autonomous Agent Prompting Framework (AAPF)** provides disciplined, eviden
 
 **Structure:**
 
-```
+```text
 framework/
 ├── doctrine/          # Core principles (always loaded)
 ├── directives/        # Communication guidelines (always loaded)

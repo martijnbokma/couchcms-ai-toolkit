@@ -10,12 +10,40 @@
 
 ## 🚀 Installation (1 Command!)
 
+
+:::warning[Critical Step]
+You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
+:::
+
+```bash
+cd ai-toolkit-shared
+bun install  # or: npm install
+cd ..
+```
+
+This installs the required packages:
+- `gray-matter` - YAML frontmatter parsing
+- `yaml` - YAML processing
+- `handlebars` - Template generation
+
+
 ### Option 1: Automatic Installation (Recommended)
 
 Open your terminal in your project directory and run:
 
 ```bash
+# One-command installation (public repositories only)
+# This automatically adds the submodule and installs dependencies
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
+
+# What this script does:
+# 1. Adds toolkit as git submodule
+# 2. Installs toolkit dependencies (bun install)
+# 3. Starts the setup wizard
+# 4. Generates initial AI configurations
+
+# Note: Only works for public repositories
+# For private repos, use the manual 3-step installation
 ```
 
 **That's it!** The installer automatically:
@@ -81,12 +109,12 @@ After installation, the advanced setup wizard starts automatically. You get 4 op
 
 ### 1. Auto Mode (Recommended) ⚡
 
-```
+```text
 🎯 Setup mode:
   1. Auto (recommended) - Use detected settings  ← Choose this!
-  2. Preset - Choose from common project types
-  3. Simple - Quick setup with defaults
-  4. Custom - Full control over all options
+  2. 📝 Preset - Choose from common project types
+  3. ⚙️ Simple - Quick setup with defaults
+  4. 📝 Custom - Full control over all options
 Choice [1-4]: 1
 ```
 
@@ -104,16 +132,16 @@ Choice [1-4]: 1
 
 Choose from 8 predefined project types:
 
-```
+```text
 📋 Available presets:
   1. Landing Page - Simple landing page
-  2. Blog - Blog with comments & search
-  3. E-commerce - Online store
-  4. Web Application - Full-featured webapp
-  5. Portfolio - Portfolio showcase
-  6. Documentation - Documentation site
-  7. Minimal - Bare minimum
-  8. Full Stack - Everything included
+  2. 🔍 Blog - Blog with comments & search
+  3. 📝 E-commerce - Online store
+  4. 📝 Web Application - Full-featured webapp
+  5. 📝 Portfolio - Portfolio showcase
+  6. 📝 Documentation - Documentation site
+  7. 📝 Minimal - Bare minimum
+  8. 📝 Full Stack - Everything included
 ```
 
 **Questions:** 1-2
@@ -137,7 +165,7 @@ Full control over all options.
 
 The toolkit automatically generates:
 
-```
+```text
 your-project/
 ├── .cursorrules              ← Cursor IDE config
 ├── .cursor/
@@ -169,7 +197,7 @@ your-project/
 
 Open your AI assistant (Cursor, Claude, etc.) and ask:
 
-```
+```text
 "Create a CouchCMS template for a blog post"
 ```
 
@@ -226,7 +254,12 @@ agents:
 
 After changes:
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ### Add Modules
@@ -250,17 +283,23 @@ modules:
 
 Then sync:
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ### Use Watch Mode
 
 During development:
 ```bash
+# Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
-Now you can modify `.project/standards.md` and configs are automatically updated!
+Now you should modify `.project/standards.md` and configs are automatically updated!
 
 ## 🆘 Problems?
 
@@ -282,7 +321,15 @@ git init
 
 Install Bun (recommended):
 ```bash
+# Install Bun (recommended JavaScript runtime)
+# This is faster than Node.js and works great with the toolkit
 curl -fsSL https://bun.sh/install | bash
+
+# After installation, restart your terminal or run:
+# source ~/.bashrc  # or ~/.zshrc depending on your shell
+
+# Verify installation:
+# bun --version
 ```
 
 Or Node.js: https://nodejs.org/
@@ -291,6 +338,7 @@ Or Node.js: https://nodejs.org/
 
 Run health check:
 ```bash
+# Check toolkit status and updates
 bun ai-toolkit-shared/scripts/health.js
 ```
 
@@ -302,6 +350,7 @@ This shows what's wrong and how to fix it.
 cd ai-toolkit-shared
 git pull
 cd ..
+# Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js
 ```
 
@@ -315,12 +364,14 @@ For 95% of projects, Auto mode is perfect. It detects everything automatically.
 
 During setup/development:
 ```bash
+# Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ### Tip 3: Run Health Check Regularly
 
 ```bash
+# Check toolkit status and updates
 bun ai-toolkit-shared/scripts/health.js
 ```
 

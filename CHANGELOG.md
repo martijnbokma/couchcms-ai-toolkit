@@ -17,8 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced documentation for Cursor MDC rules and Claude Code Skills
 - Troubleshooting section for editor-specific issues
 - Examples of generated configurations for each editor
+- feat(presets): new "CouchCMS Complete" preset with all CouchCMS features
+- All CouchCMS modules and agents now included by default in Simple mode
 
 ### Changed
+- **BREAKING**: Simple mode now includes ALL CouchCMS modules and agents by default
+- **BREAKING**: Auto-detect mode now includes ALL CouchCMS modules and agents by default
 - Update README with setup method comparison and recommendations
 - Add `bun run create` command to package.json
 - Update tech.md steering with new setup command
@@ -26,6 +30,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated QUICK-START.md with detailed file structure including editor configs
 - Updated CONFIG-FILES.md with comprehensive editor configuration information
 - Updated TROUBLESHOOTING.md with editor-specific troubleshooting sections
+- Updated `docs/GETTING-STARTED.md` to reflect CouchCMS Complete approach
+- Updated `scripts/lib/prompts.js` to use CouchCMS Complete as default
+- Updated `scripts/create-standards.js` to include all CouchCMS features by default
+- Updated `scripts/init.js` to show CouchCMS Complete in Simple mode
+- Updated `scripts/lib/project-detector.js` to recommend all CouchCMS features
+- Renamed Custom mode option 2 from "Standard" to "CouchCMS Complete" (recommended)
+- Frontend frameworks (Alpine.js, TailwindCSS, daisyUI, TypeScript) remain optional
+
+### Rationale
+Since this is a **CouchCMS AI Toolkit**, all CouchCMS-specific features (databound-forms, custom-routes, folders, archives, relationships, repeatable-regions, search, pagination, comments, users, views, nested-pages, photo-gallery, rss-feeds, on-page-editing, admin-panel-theming) should be available by default. Users get full CouchCMS support out of the box, while frontend frameworks remain optional based on project needs.
 
 ## [1.0.14] - 2025-11-28
 

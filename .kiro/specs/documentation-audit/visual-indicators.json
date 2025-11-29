@@ -1,0 +1,1627 @@
+{
+  "timestamp": "2025-11-29T16:54:22.583Z",
+  "addedCount": 270,
+  "filesChecked": 29,
+  "findings": [
+    {
+      "file": "README.md",
+      "line": 524,
+      "indicator": "⚙️",
+      "original": "2. Validate setup: `bun ai-toolkit-shared/scripts/validate.js`"
+    },
+    {
+      "file": "README.md",
+      "line": 525,
+      "indicator": "📝",
+      "original": "3. Open an [issue](https://github.com/martijnbokma/couchcms-ai-toolkit/issues)"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 24,
+      "indicator": "📝",
+      "original": "2. Update your submodule to point to your fork (or add your fork as a remote)"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 25,
+      "indicator": "⚙️",
+      "original": "3. Push to your fork and create a PR from there"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 261,
+      "indicator": "📝",
+      "original": "2. You'll see a banner: \"Compare & pull request\""
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 262,
+      "indicator": "📝",
+      "original": "3. Click it and fill in:"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 267,
+      "indicator": "⚙️",
+      "original": "4. Click \"Create pull request\""
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 271,
+      "indicator": "📝",
+      "original": "2. Click \"Compare & pull request\" or go to the main repo and click \"New Pull Request\""
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 272,
+      "indicator": "📝",
+      "original": "3. Select:"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 277,
+      "indicator": "📝",
+      "original": "4. Fill in the PR details"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 289,
+      "indicator": "📝",
+      "original": "2. Step 2"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 290,
+      "indicator": "📝",
+      "original": "3. Expected result"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 593,
+      "indicator": "🚀",
+      "original": "2. Run `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "line": 594,
+      "indicator": "🔍",
+      "original": "3. Check `.cursorrules` includes Vue.js rules"
+    },
+    {
+      "file": "docs/AGENTS.md",
+      "line": 441,
+      "indicator": "📝",
+      "original": "2. **Deep Dive** - Detailed examples and explanations"
+    },
+    {
+      "file": "docs/AGENTS.md",
+      "line": 442,
+      "indicator": "📝",
+      "original": "3. **Refactoring Patterns** - How to improve existing code"
+    },
+    {
+      "file": "docs/AGENTS.md",
+      "line": 443,
+      "indicator": "📝",
+      "original": "4. **Troubleshooting** - Common issues and solutions"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 77,
+      "indicator": "📝",
+      "original": "2. Cloned in home directory"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 109,
+      "indicator": "📝",
+      "original": "2. Add project-specific details to .project/ai/context.md"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 110,
+      "indicator": "🚀",
+      "original": "3. Run \"bun run sync\" to generate AI configurations"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 111,
+      "indicator": "🔍",
+      "original": "4. Run \"bun run validate\" to check setup"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 330,
+      "indicator": "📝",
+      "original": "2. Read project rules (Markdown body)"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 332,
+      "indicator": "📝",
+      "original": "3. Load selected modules"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 334,
+      "indicator": "📝",
+      "original": "4. Load selected agents"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 336,
+      "indicator": "📝",
+      "original": "5. Load project context (if context.md exists)"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 338,
+      "indicator": "📝",
+      "original": "6. Combine all content"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 340,
+      "indicator": "📝",
+      "original": "7. Generate output files"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 403,
+      "indicator": "📝",
+      "original": "2. For submodule: cd ai-toolkit-shared && git pull"
+    },
+    {
+      "file": "docs/COMMANDS.md",
+      "line": 404,
+      "indicator": "✅",
+      "original": "3. For home dir: verify ~/couchcms-ai-toolkit exists"
+    },
+    {
+      "file": "docs/CONFIG-FILES.md",
+      "line": 108,
+      "indicator": "📝",
+      "original": "2. `.project/standards.md` (legacy location)"
+    },
+    {
+      "file": "docs/CONFIG-FILES.md",
+      "line": 109,
+      "indicator": "📝",
+      "original": "3. `docs/standards.md` (alternative location)"
+    },
+    {
+      "file": "docs/CONFIG-FILES.md",
+      "line": 435,
+      "indicator": "🔍",
+      "original": "2. Check toolkit path is correct"
+    },
+    {
+      "file": "docs/CONFIG-FILES.md",
+      "line": 436,
+      "indicator": "⚙️",
+      "original": "3. Ensure toolkit dependencies are installed: `cd ai-toolkit-shared && bun install`"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 35,
+      "indicator": "📝",
+      "original": "2. **Select command** from dropdown"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 36,
+      "indicator": "📝",
+      "original": "3. **AI executes** the command instructions"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 37,
+      "indicator": "📝",
+      "original": "4. **Follow workflow** defined in the command"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 66,
+      "indicator": "📝",
+      "original": "2. Replaces `{{paths.xxx}}` variables with your project paths"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 67,
+      "indicator": "📝",
+      "original": "3. Ensures all commands are up to date"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 90,
+      "indicator": "📝",
+      "original": "2. Second step"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 91,
+      "indicator": "📝",
+      "original": "3. Third step"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 99,
+      "indicator": "📝",
+      "original": "2. **Use path variables** - Replace hardcoded paths with `{{paths.xxx}}`"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 100,
+      "indicator": "📝",
+      "original": "3. **Keep framework-agnostic** where possible"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 101,
+      "indicator": "📝",
+      "original": "4. **Add to README** - Document in `commands/README.md`"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 113,
+      "indicator": "📝",
+      "original": "2. Add structure"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 114,
+      "indicator": "📝",
+      "original": "3. Style with daisyUI"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 131,
+      "indicator": "📝",
+      "original": "2. Second step"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 132,
+      "indicator": "📝",
+      "original": "3. Third step"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 142,
+      "indicator": "📝",
+      "original": "2. **Brief description** - What the command does"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 143,
+      "indicator": "📝",
+      "original": "3. **Numbered steps** - Clear workflow"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 144,
+      "indicator": "📝",
+      "original": "4. **Examples** - Show expected usage"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 145,
+      "indicator": "📝",
+      "original": "5. **Path variables** - Use `{{paths.xxx}}` for portability"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 182,
+      "indicator": "📝",
+      "original": "2. Priority levels"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 183,
+      "indicator": "📝",
+      "original": "3. Suggested fixes"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 202,
+      "indicator": "📝",
+      "original": "2. Add structure"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 203,
+      "indicator": "📝",
+      "original": "3. Style with daisyUI"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 223,
+      "indicator": "📝",
+      "original": "2. Categorize by priority"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 224,
+      "indicator": "📝",
+      "original": "3. Fix automatically"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 225,
+      "indicator": "📝",
+      "original": "4. Report changes"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 233,
+      "indicator": "📝",
+      "original": "2. Select command from dropdown"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 234,
+      "indicator": "📝",
+      "original": "3. AI executes the command"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 235,
+      "indicator": "📝",
+      "original": "4. Follow the workflow"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 241,
+      "indicator": "📝",
+      "original": "2. Understand the workflow"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 242,
+      "indicator": "🚀",
+      "original": "3. Execute steps"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 243,
+      "indicator": "📝",
+      "original": "4. Provide results"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 313,
+      "indicator": "✅",
+      "original": "2. **Verify file extension** - Must be `.md`"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 314,
+      "indicator": "📝",
+      "original": "3. **Restart Cursor** - Sometimes needed after adding commands"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 315,
+      "indicator": "🔍",
+      "original": "4. **Check sync** - Run `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 320,
+      "indicator": "✅",
+      "original": "2. **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 321,
+      "indicator": "✅",
+      "original": "3. **Verify `defaults.yaml`** - Check toolkit has path definitions"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 326,
+      "indicator": "✅",
+      "original": "2. **Review steps** - Verify workflow is clear"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 327,
+      "indicator": "📝",
+      "original": "3. **Test manually** - Try executing steps yourself"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 328,
+      "indicator": "🔍",
+      "original": "4. **Check dependencies** - Ensure required modules/agents are active"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 335,
+      "indicator": "📝",
+      "original": "2. **Path-aware** - Variables are replaced with your project paths"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 336,
+      "indicator": "📝",
+      "original": "3. **Version-controlled** - Commands are committed to your repository"
+    },
+    {
+      "file": "docs/CUSTOM-COMMANDS.md",
+      "line": 337,
+      "indicator": "📝",
+      "original": "4. **Team-shared** - All team members get the same commands"
+    },
+    {
+      "file": "docs/EDITOR-QUICK-REFERENCE.md",
+      "line": 153,
+      "indicator": "🚀",
+      "original": "2. Run `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "docs/EDITOR-QUICK-REFERENCE.md",
+      "line": 154,
+      "indicator": "📝",
+      "original": "3. All editor configs updated automatically"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 66,
+      "indicator": "📝",
+      "original": "2. **Pattern Matching** - Uses glob patterns to match file types"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 67,
+      "indicator": "📝",
+      "original": "3. **Context-Specific** - Different rules for different file types"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 68,
+      "indicator": "📝",
+      "original": "4. **No Manual Loading** - Cursor loads them automatically"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 85,
+      "indicator": "🚀",
+      "original": "2. Run `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 86,
+      "indicator": "📝",
+      "original": "3. Rules are automatically copied to `.cursor/rules/`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 130,
+      "indicator": "📝",
+      "original": "2. **Modular Knowledge** - Each module becomes a separate skill"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 131,
+      "indicator": "📝",
+      "original": "3. **Tool Permissions** - Control which tools each skill can use"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 132,
+      "indicator": "📝",
+      "original": "4. **Contextual Loading** - Claude loads relevant skills automatically"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 219,
+      "indicator": "📝",
+      "original": "2. Or add custom content to `standards.md`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 220,
+      "indicator": "🚀",
+      "original": "3. Run `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 221,
+      "indicator": "📝",
+      "original": "4. Skills are automatically regenerated"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 250,
+      "indicator": "🚀",
+      "original": "2. Run `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 251,
+      "indicator": "📝",
+      "original": "3. Instructions are automatically updated"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 280,
+      "indicator": "🚀",
+      "original": "2. Run `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 281,
+      "indicator": "📝",
+      "original": "3. Rules are automatically updated"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 313,
+      "indicator": "🚀",
+      "original": "2. Run `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 314,
+      "indicator": "📝",
+      "original": "3. Steering files are automatically updated"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 451,
+      "indicator": "🚀",
+      "original": "2. Run validation: `bun ai-toolkit-shared/scripts/validate.js`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 452,
+      "indicator": "🔍",
+      "original": "3. Check toolkit path is correct"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 453,
+      "indicator": "⚙️",
+      "original": "4. Ensure dependencies are installed: `cd ai-toolkit-shared && bun install`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 461,
+      "indicator": "✅",
+      "original": "2. Verify glob patterns match your files"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 462,
+      "indicator": "📝",
+      "original": "3. Restart Cursor IDE"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 463,
+      "indicator": "🔍",
+      "original": "4. Check Cursor version supports MDC (v0.40+)"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 471,
+      "indicator": "✅",
+      "original": "2. Verify YAML frontmatter is valid"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 472,
+      "indicator": "📝",
+      "original": "3. Restart Claude Code"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 473,
+      "indicator": "🔍",
+      "original": "4. Check Claude Code version supports skills"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 481,
+      "indicator": "✅",
+      "original": "2. Verify permissions syntax is correct"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 482,
+      "indicator": "📝",
+      "original": "3. Restart Claude Code"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 483,
+      "indicator": "🔍",
+      "original": "4. Check Claude Code version supports settings"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 491,
+      "indicator": "✅",
+      "original": "2. Verify file is not empty"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 492,
+      "indicator": "📝",
+      "original": "3. Restart Claude Code"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 493,
+      "indicator": "🔍",
+      "original": "4. Check Claude Code version supports memory files"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 621,
+      "indicator": "⚙️",
+      "original": "2. Or create custom module"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 622,
+      "indicator": "📝",
+      "original": "3. Add to `standards.md`"
+    },
+    {
+      "file": "docs/EDITOR-SUPPORT.md",
+      "line": 623,
+      "indicator": "📝",
+      "original": "4. Sync configs"
+    },
+    {
+      "file": "docs/EXTENDING-MODULES.md",
+      "line": 151,
+      "indicator": "📝",
+      "original": "2. **Code Examples** - Extracted code blocks with titles"
+    },
+    {
+      "file": "docs/EXTENDING-MODULES.md",
+      "line": 152,
+      "indicator": "📝",
+      "original": "3. **Patterns** - General patterns and best practices"
+    },
+    {
+      "file": "docs/EXTENDING-MODULES.md",
+      "line": 315,
+      "indicator": "📝",
+      "original": "2. **Validate**: `bun scripts/validate.js`"
+    },
+    {
+      "file": "docs/EXTENDING-MODULES.md",
+      "line": 316,
+      "indicator": "✅",
+      "original": "3. **Test**: Use in a project to verify patterns work"
+    },
+    {
+      "file": "docs/GETTING-STARTED.md",
+      "line": 10,
+      "indicator": "📝",
+      "original": "2. **Bun** (recommended) or **Node.js** (v18+) installed"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 25,
+      "indicator": "📝",
+      "original": "2. You work peacefully in your own branch"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 26,
+      "indicator": "✅",
+      "original": "3. When done, you request a **review** (Pull Request)"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 27,
+      "indicator": "📝",
+      "original": "4. After approval, your code goes into **develop**"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 28,
+      "indicator": "📝",
+      "original": "5. Periodically, develop goes to **main** (production)"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 265,
+      "indicator": "📝",
+      "original": "2. `git add . && git commit -m \"description\"` - Save"
+    },
+    {
+      "file": "docs/GIT-WORKFLOW.md",
+      "line": 266,
+      "indicator": "✅",
+      "original": "3. `bun scripts/git-flow.js feature finish name` - Done"
+    },
+    {
+      "file": "docs/INSTALLATION-METHODS.md",
+      "line": 200,
+      "indicator": "🚀",
+      "original": "2. Start coding with your AI assistant"
+    },
+    {
+      "file": "docs/INSTALLATION-METHODS.md",
+      "line": 201,
+      "indicator": "📝",
+      "original": "3. Modify config: `vim .project/standards.md`"
+    },
+    {
+      "file": "docs/INSTALLATION-METHODS.md",
+      "line": 202,
+      "indicator": "📝",
+      "original": "4. Re-sync: `bun ai-toolkit-shared/scripts/sync.js`"
+    },
+    {
+      "file": "docs/MIGRATION.md",
+      "line": 160,
+      "indicator": "🔍",
+      "original": "2. Check [Troubleshooting Guide](TROUBLESHOOTING.md)"
+    },
+    {
+      "file": "docs/MIGRATION.md",
+      "line": 161,
+      "indicator": "📝",
+      "original": "3. Open an issue on GitHub"
+    },
+    {
+      "file": "docs/MODULE-GUIDE.md",
+      "line": 228,
+      "indicator": "📝",
+      "original": "2. **Category-based selection wizard** - Interactive module selection"
+    },
+    {
+      "file": "docs/MODULE-GUIDE.md",
+      "line": 229,
+      "indicator": "📝",
+      "original": "3. **Module dependency visualization** - Graph of module relationships"
+    },
+    {
+      "file": "docs/MODULE-GUIDE.md",
+      "line": 230,
+      "indicator": "📝",
+      "original": "4. **Module usage statistics** - Track which modules are most used"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 208,
+      "indicator": "🔍",
+      "original": "2. **Blog** - Blog with comments, search, and pagination"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 209,
+      "indicator": "📝",
+      "original": "3. **E-commerce** - Online store with products, cart, and checkout"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 210,
+      "indicator": "📝",
+      "original": "4. **Web Application** - Full-featured web application with authentication"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 211,
+      "indicator": "📝",
+      "original": "5. **Portfolio** - Portfolio website with projects showcase"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 212,
+      "indicator": "🔍",
+      "original": "6. **Documentation** - Documentation with search and navigation"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 213,
+      "indicator": "📝",
+      "original": "7. **Minimal** - Bare minimum - CouchCMS core only"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 214,
+      "indicator": "📝",
+      "original": "8. **Full Stack** - Everything included - all modules and agents"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 224,
+      "indicator": "📝",
+      "original": "2. Preset - Choose from common project types  ← Choose this"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 225,
+      "indicator": "⚙️",
+      "original": "3. Simple - Quick setup with defaults"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 226,
+      "indicator": "📝",
+      "original": "4. Custom - Full control over all options"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 232,
+      "indicator": "📝",
+      "original": "1. Landing Page - Simple landing page with CouchCMS"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 233,
+      "indicator": "🔍",
+      "original": "2. Blog - Blog with comments, search, and pagination"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 234,
+      "indicator": "📝",
+      "original": "3. E-commerce - Online store with products, cart, and checkout"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 274,
+      "indicator": "📝",
+      "original": "2. Watches `standards.md` for changes"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 275,
+      "indicator": "📝",
+      "original": "3. Auto-syncs 500ms after last change (debounced)"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 276,
+      "indicator": "📝",
+      "original": "4. Shows sync results"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 277,
+      "indicator": "📝",
+      "original": "5. Continues watching"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 568,
+      "indicator": "🔍",
+      "original": "2. Check that dependencies are in `package.json`"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 569,
+      "indicator": "📝",
+      "original": "3. Use \"Custom\" mode to manually select"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 576,
+      "indicator": "❌",
+      "original": "2. Save the file (some editors don't trigger file system events)"
+    },
+    {
+      "file": "docs/NEW-FEATURES.md",
+      "line": 577,
+      "indicator": "🔍",
+      "original": "3. Check file permissions"
+    },
+    {
+      "file": "docs/PRIVATE-REPO-INSTALL.md",
+      "line": 84,
+      "indicator": "📝",
+      "original": "2. Scroll to \"Danger Zone\""
+    },
+    {
+      "file": "docs/PRIVATE-REPO-INSTALL.md",
+      "line": 85,
+      "indicator": "📝",
+      "original": "3. Click \"Change visibility\""
+    },
+    {
+      "file": "docs/PRIVATE-REPO-INSTALL.md",
+      "line": 86,
+      "indicator": "📝",
+      "original": "4. Select \"Make public\""
+    },
+    {
+      "file": "docs/PRIVATE-REPO-INSTALL.md",
+      "line": 87,
+      "indicator": "✅",
+      "original": "5. Confirm"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 19,
+      "indicator": "📝",
+      "original": "2. **Always Apply** - Some rules are always active"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 20,
+      "indicator": "📝",
+      "original": "3. **Manual triggers** - Some rules are invoked with `@rule-name`"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 93,
+      "indicator": "📝",
+      "original": "2. Replaces `{{paths.xxx}}` variables with your project paths"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 94,
+      "indicator": "📝",
+      "original": "3. Ensures all rules are up to date"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 137,
+      "indicator": "📝",
+      "original": "2. **Use path variables** - Replace hardcoded paths with `{{paths.xxx}}`"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 138,
+      "indicator": "📝",
+      "original": "3. **Keep framework-agnostic** where possible"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 139,
+      "indicator": "📝",
+      "original": "4. **Add to README** - Document in `rules/README.md`"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 288,
+      "indicator": "✅",
+      "original": "2. **Verify frontmatter** - Must be valid YAML"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 289,
+      "indicator": "🔍",
+      "original": "3. **Check glob patterns** - Ensure they match your files"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 290,
+      "indicator": "📝",
+      "original": "4. **Restart Cursor** - Sometimes needed after adding new rules"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 295,
+      "indicator": "✅",
+      "original": "2. **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 296,
+      "indicator": "✅",
+      "original": "3. **Verify `defaults.yaml`** - Check toolkit has path definitions"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 301,
+      "indicator": "✅",
+      "original": "2. **Verify file selection** - Are you working with files that match the globs?"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 302,
+      "indicator": "🔍",
+      "original": "3. **Check description** - For \"Apply Intelligently\", ensure description is clear"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 303,
+      "indicator": "📝",
+      "original": "4. **Review Cursor Settings** - Go to `Cursor Settings → Rules` to see rule status"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 350,
+      "indicator": "📝",
+      "original": "2. Identify issues"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 351,
+      "indicator": "📝",
+      "original": "3. Suggest improvements"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 352,
+      "indicator": "📝",
+      "original": "4. Ask for confirmation before changes"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 360,
+      "indicator": "📝",
+      "original": "2. **Path-aware** - Variables are replaced with your project paths"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 361,
+      "indicator": "📝",
+      "original": "3. **Version-controlled** - Rules are committed to your repository"
+    },
+    {
+      "file": "docs/PROJECT-RULES.md",
+      "line": 362,
+      "indicator": "📝",
+      "original": "4. **Team-shared** - All team members get the same rules"
+    },
+    {
+      "file": "docs/QUICK-REFERENCE.md",
+      "line": 196,
+      "indicator": "🚀",
+      "original": "2. **Sync often**: Run sync after any standards.md changes"
+    },
+    {
+      "file": "docs/QUICK-REFERENCE.md",
+      "line": 197,
+      "indicator": "🚀",
+      "original": "3. **Validate regularly**: Run validate to catch issues early"
+    },
+    {
+      "file": "docs/QUICK-REFERENCE.md",
+      "line": 198,
+      "indicator": "📝",
+      "original": "4. **Use slash commands**: Faster than typing full prompts"
+    },
+    {
+      "file": "docs/QUICK-REFERENCE.md",
+      "line": 199,
+      "indicator": "📝",
+      "original": "5. **Read the checklist**: Follow the checklist in each rule/prompt"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 87,
+      "indicator": "📝",
+      "original": "2. Preset - Choose from common project types"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 88,
+      "indicator": "⚙️",
+      "original": "3. Simple - Quick setup with defaults"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 89,
+      "indicator": "📝",
+      "original": "4. Custom - Full control over all options"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 110,
+      "indicator": "🔍",
+      "original": "2. Blog - Blog with comments & search"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 111,
+      "indicator": "📝",
+      "original": "3. E-commerce - Online store"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 112,
+      "indicator": "📝",
+      "original": "4. Web Application - Full-featured webapp"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 113,
+      "indicator": "📝",
+      "original": "5. Portfolio - Portfolio showcase"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 114,
+      "indicator": "📝",
+      "original": "6. Documentation - Documentation site"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 115,
+      "indicator": "📝",
+      "original": "7. Minimal - Bare minimum"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 116,
+      "indicator": "📝",
+      "original": "8. Full Stack - Everything included"
+    },
+    {
+      "file": "docs/RELEASE-GUIDE.md",
+      "line": 21,
+      "indicator": "📝",
+      "original": "2. Determines version bump type:"
+    },
+    {
+      "file": "docs/RELEASE-GUIDE.md",
+      "line": 25,
+      "indicator": "📝",
+      "original": "3. Updates version, changelog, commits, tags, pushes"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 53,
+      "indicator": "📝",
+      "original": "2. Blog"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 54,
+      "indicator": "📝",
+      "original": "3. Portfolio"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 55,
+      "indicator": "📝",
+      "original": "4. Web Application"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 56,
+      "indicator": "📝",
+      "original": "5. E-commerce"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 57,
+      "indicator": "📝",
+      "original": "6. Documentation"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 58,
+      "indicator": "📝",
+      "original": "7. Other"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 64,
+      "indicator": "📝",
+      "original": "2. TailwindCSS + daisyUI (recommended)"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 65,
+      "indicator": "📝",
+      "original": "3. None - I'll use custom CSS"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 71,
+      "indicator": "📝",
+      "original": "2. Alpine.js + TypeScript"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 72,
+      "indicator": "📝",
+      "original": "3. HTMX"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 73,
+      "indicator": "📝",
+      "original": "4. None - Static site"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 100,
+      "indicator": "📝",
+      "original": "2. Preset - Choose from common project types"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 101,
+      "indicator": "⚙️",
+      "original": "3. Simple - Quick setup with defaults"
+    },
+    {
+      "file": "docs/SETUP-COMPARISON.md",
+      "line": 102,
+      "indicator": "📝",
+      "original": "4. Custom - Full control over all options"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 81,
+      "indicator": "📝",
+      "original": "2. Blog - Blog with articles and comments"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 82,
+      "indicator": "📝",
+      "original": "3. Portfolio - Showcase your work"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 83,
+      "indicator": "📝",
+      "original": "4. Web Application - Full app with user accounts"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 84,
+      "indicator": "📝",
+      "original": "5. E-commerce - Online store"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 85,
+      "indicator": "📝",
+      "original": "6. Documentation - Documentation site"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 86,
+      "indicator": "⚙️",
+      "original": "7. Other - I'll configure it myself"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 118,
+      "indicator": "📝",
+      "original": "2. Add project-specific rules at the bottom"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 119,
+      "indicator": "🚀",
+      "original": "3. Run \"bun ai-toolkit-shared/scripts/sync.js\" to update configs"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 147,
+      "indicator": "📝",
+      "original": "2. **Voeg project-specifieke regels toe**: Onderaan het bestand kun je eigen regels toevoegen"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 148,
+      "indicator": "🚀",
+      "original": "3. **Sync opnieuw**: Run `bun ai-toolkit-shared/scripts/sync.js` als je wijzigingen maakt"
+    },
+    {
+      "file": "docs/SIMPLE-SETUP.md",
+      "line": 149,
+      "indicator": "🚀",
+      "original": "4. **Start met ontwikkelen**: Je AI assistenten zijn nu geconfigureerd!"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 111,
+      "indicator": "📝",
+      "original": "2. **Parses** YAML frontmatter"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 112,
+      "indicator": "📝",
+      "original": "3. **Extracts** coding standards"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 113,
+      "indicator": "📝",
+      "original": "4. **Validates** prompts against standards"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 114,
+      "indicator": "📝",
+      "original": "5. **Reports** compliance score"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 197,
+      "indicator": "⚙️",
+      "original": "2. Offers to create `docs/standards.md` if none exists"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 198,
+      "indicator": "📝",
+      "original": "3. Generates template with YAML frontmatter"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 199,
+      "indicator": "📝",
+      "original": "4. Includes all standard sections"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 206,
+      "indicator": "📝",
+      "original": "2. Parses YAML frontmatter for project config"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 207,
+      "indicator": "📝",
+      "original": "3. Extracts standards for prompt generation"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 208,
+      "indicator": "📝",
+      "original": "4. Creates `standards.md` if not found"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 215,
+      "indicator": "📝",
+      "original": "2. Checks YAML frontmatter completeness"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 216,
+      "indicator": "📝",
+      "original": "3. Verifies standards documentation quality"
+    },
+    {
+      "file": "docs/STANDARDS-GUIDE.md",
+      "line": 217,
+      "indicator": "📝",
+      "original": "4. Reports compliance score"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 103,
+      "indicator": "📝",
+      "original": "2. Understand dependencies"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 104,
+      "indicator": "📝",
+      "original": "3. Identify refactoring opportunities"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 105,
+      "indicator": "⚙️",
+      "original": "4. Create a refactoring plan"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 111,
+      "indicator": "📝",
+      "original": "2. Update dependencies"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 112,
+      "indicator": "📝",
+      "original": "3. Maintain consistency"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 113,
+      "indicator": "✅",
+      "original": "4. Verify functionality"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 119,
+      "indicator": "📝",
+      "original": "2. Update documentation"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 120,
+      "indicator": "📝",
+      "original": "3. Update examples"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 121,
+      "indicator": "📝",
+      "original": "4. Document breaking changes (if any)"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 309,
+      "indicator": "📝",
+      "original": "2. **Refactor incrementally**: One logical change at a time"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 310,
+      "indicator": "📝",
+      "original": "3. **Maintain consistency**: Follow toolkit conventions"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 311,
+      "indicator": "📝",
+      "original": "4. **Update documentation**: Keep docs in sync with code"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 312,
+      "indicator": "✅",
+      "original": "5. **Verify functionality**: Test after each change"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 313,
+      "indicator": "📝",
+      "original": "6. **Document breaking changes**: Update CHANGELOG.md"
+    },
+    {
+      "file": "docs/TOOLKIT-REFACTORING.md",
+      "line": 314,
+      "indicator": "📝",
+      "original": "7. **Preserve backward compatibility**: When possible"
+    },
+    {
+      "file": "docs/TROUBLESHOOTING.md",
+      "line": 572,
+      "indicator": "🚀",
+      "original": "2. Start a new conversation"
+    },
+    {
+      "file": "docs/TROUBLESHOOTING.md",
+      "line": 573,
+      "indicator": "📝",
+      "original": "3. Click the paperclip icon (attach file)"
+    },
+    {
+      "file": "docs/TROUBLESHOOTING.md",
+      "line": 574,
+      "indicator": "📝",
+      "original": "4. Select CLAUDE.md from your project"
+    },
+    {
+      "file": "docs/TROUBLESHOOTING.md",
+      "line": 776,
+      "indicator": "📝",
+      "original": "2. **Include**:"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 25,
+      "indicator": "📝",
+      "original": "2. Show version info and recent changes"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 26,
+      "indicator": "📝",
+      "original": "3. **Ask if you want to update now** (y/N)"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 27,
+      "indicator": "✅",
+      "original": "4. Apply update if you confirm"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 83,
+      "indicator": "📝",
+      "original": "2. Pulls latest changes from git"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 84,
+      "indicator": "📝",
+      "original": "3. Installs new dependencies"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 85,
+      "indicator": "✅",
+      "original": "4. Shows success confirmation"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 125,
+      "indicator": "🔍",
+      "original": "2. **Check health**: `bun run health`"
+    },
+    {
+      "file": "docs/UPDATES.md",
+      "line": 126,
+      "indicator": "🔍",
+      "original": "3. **Review changelog**: Check `CHANGELOG.md` for breaking changes"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 43,
+      "indicator": "📝",
+      "original": "2. Go to **Cursor Settings** (Cmd/Ctrl + ,)"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 44,
+      "indicator": "📝",
+      "original": "3. Navigate to **Rules** section"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 45,
+      "indicator": "🔍",
+      "original": "4. Find **User Rules** section"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 170,
+      "indicator": "📝",
+      "original": "2. **Project Rules** (from `.cursor/rules/`)"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 171,
+      "indicator": "📝",
+      "original": "3. **User Rules** (lowest priority)"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 257,
+      "indicator": "📝",
+      "original": "2. **Restart Cursor** - Sometimes needed after changes"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 258,
+      "indicator": "🔍",
+      "original": "3. **Check precedence** - Team/Project Rules may override User Rules"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 259,
+      "indicator": "✅",
+      "original": "4. **Verify scope** - User Rules only apply to Agent (Chat), not Inline Edit"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 266,
+      "indicator": "📝",
+      "original": "2. **Adjust User Rules** - Make them more general"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 267,
+      "indicator": "📝",
+      "original": "3. **Use Project Rules** - For project-specific needs"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 274,
+      "indicator": "📝",
+      "original": "2. **Move to Project** - Project-specific rules belong in Project Rules"
+    },
+    {
+      "file": "docs/USER-RULES.md",
+      "line": 275,
+      "indicator": "📝",
+      "original": "3. **Simplify** - Combine related rules"
+    }
+  ]
+}

@@ -16,8 +16,8 @@ Project Rules are version-controlled instructions stored in `.cursor/rules/` tha
 Cursor automatically loads Project Rules based on:
 
 1. **File patterns** (globs) - Rules activate when you select matching files
-2. **Always Apply** - Some rules are always active
-3. **Manual triggers** - Some rules are invoked with `@rule-name`
+2. 📝 **Always Apply** - Some rules are always active
+3. 📝 **Manual triggers** - Some rules are invoked with `@rule-name`
 
 ### Rule Types
 
@@ -85,13 +85,18 @@ The toolkit provides these pre-configured rules:
 Rules are automatically synced when you run:
 
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 This:
 1. Copies rules from toolkit `rules/` to project `.cursor/rules/`
-2. Replaces `{{paths.xxx}}` variables with your project paths
-3. Ensures all rules are up to date
+2. 📝 Replaces `{{paths.xxx}}` variables with your project paths
+3. 📝 Ensures all rules are up to date
 
 ## Creating Custom Project Rules
 
@@ -134,9 +139,9 @@ When working with PHP files:
 To add rules to the toolkit for all projects:
 
 1. **Create `.mdc` file** in `ai-toolkit-shared/rules/`
-2. **Use path variables** - Replace hardcoded paths with `{{paths.xxx}}`
-3. **Keep framework-agnostic** where possible
-4. **Add to README** - Document in `rules/README.md`
+2. 📝 **Use path variables** - Replace hardcoded paths with `{{paths.xxx}}`
+3. 📝 **Keep framework-agnostic** where possible
+4. 📝 **Add to README** - Document in `rules/README.md`
 
 Example:
 
@@ -285,22 +290,22 @@ These are invoked with `@rule-name` in chat.
 ### Rules Not Loading
 
 1. **Check file extension** - Use `.mdc` for auto-load, `.md` for manual
-2. **Verify frontmatter** - Must be valid YAML
-3. **Check glob patterns** - Ensure they match your files
-4. **Restart Cursor** - Sometimes needed after adding new rules
+2. ✅ **Verify frontmatter** - Must be valid YAML
+3. 🔍 **Check glob patterns** - Ensure they match your files
+4. 📝 **Restart Cursor** - Sometimes needed after adding new rules
 
 ### Path Variables Not Replaced
 
 1. **Run sync script**: `bun ai-toolkit-shared/scripts/sync.js`
-2. **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration
-3. **Verify `defaults.yaml`** - Check toolkit has path definitions
+2. ✅ **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration
+3. ✅ **Verify `defaults.yaml`** - Check toolkit has path definitions
 
 ### Rules Not Applying
 
 1. **Check rule type** - Is it `alwaysApply: true` or has matching globs?
-2. **Verify file selection** - Are you working with files that match the globs?
-3. **Check description** - For "Apply Intelligently", ensure description is clear
-4. **Review Cursor Settings** - Go to `Cursor Settings → Rules` to see rule status
+2. ✅ **Verify file selection** - Are you working with files that match the globs?
+3. 🔍 **Check description** - For "Apply Intelligently", ensure description is clear
+4. 📝 **Review Cursor Settings** - Go to `Cursor Settings → Rules` to see rule status
 
 ## Examples
 
@@ -347,9 +352,9 @@ See: https://daisyui.com/components/
 
 When @refresh is mentioned:
 1. Analyze current code state
-2. Identify issues
-3. Suggest improvements
-4. Ask for confirmation before changes
+2. 📝 Identify issues
+3. 📝 Suggest improvements
+4. 📝 Ask for confirmation before changes
 ```
 
 ## Integration with Toolkit
@@ -357,9 +362,9 @@ When @refresh is mentioned:
 Project Rules work seamlessly with the toolkit:
 
 1. **Auto-synced** - Rules from toolkit `rules/` are copied to your project
-2. **Path-aware** - Variables are replaced with your project paths
-3. **Version-controlled** - Rules are committed to your repository
-4. **Team-shared** - All team members get the same rules
+2. 📝 **Path-aware** - Variables are replaced with your project paths
+3. 📝 **Version-controlled** - Rules are committed to your repository
+4. 📝 **Team-shared** - All team members get the same rules
 
 ## See Also
 

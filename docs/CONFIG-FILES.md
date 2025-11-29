@@ -105,8 +105,8 @@ This content is included in generated AI configurations, giving AI assistants co
 The toolkit looks for `standards.md` in this order:
 
 1. `standards.md` (root directory) ⭐ **Recommended**
-2. `.project/standards.md` (legacy location)
-3. `docs/standards.md` (alternative location)
+2. 📝 `.project/standards.md` (legacy location)
+3. 📝 `docs/standards.md` (alternative location)
 
 **Best Practice:** Keep it in the root directory for easy access.
 
@@ -146,6 +146,13 @@ framework: false                # AAPF framework (default: false)
 #   enhancements: false
 
 context: ".project/ai"          # Context directory (optional)
+
+editors:                        # Target editors (optional)
+  - cursor                      # Default: all editors
+  - claude
+  - windsurf
+  - kiro
+  - copilot
 ---
 ```
 
@@ -224,7 +231,15 @@ These files are **automatically generated** from your `standards.md`:
 Run the interactive setup wizard:
 
 ```bash
+# Run the advanced setup wizard
+# This provides full control over modules, agents, and configuration
 bun ai-toolkit-shared/scripts/init.js
+
+# The wizard will guide you through:
+# - Project name and description
+# - Module selection (CouchCMS features)
+# - Agent selection (AI assistants)
+# - Configuration file location
 ```
 
 This creates `standards.md` with your selected modules and agents.
@@ -242,7 +257,12 @@ code standards.md
 Generate/update AI configs:
 
 ```bash
+# Generate/update AI configuration files from standards.md
+# This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
 bun ai-toolkit-shared/scripts/sync.js
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
 ### 4. Validate
@@ -250,7 +270,15 @@ bun ai-toolkit-shared/scripts/sync.js
 Check configuration is valid:
 
 ```bash
+# Validate your project configuration and check compliance
+# This checks for errors in standards.md and missing files
 bun ai-toolkit-shared/scripts/validate.js
+
+# The validation will show:
+# - Configuration file status
+# - Module and agent validation
+# - Compliance score (0-100%)
+# - Specific issues and recommendations
 ```
 
 ### 5. Watch Mode (Optional)
@@ -258,6 +286,7 @@ bun ai-toolkit-shared/scripts/validate.js
 Auto-sync when `standards.md` changes:
 
 ```bash
+# Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
@@ -342,7 +371,15 @@ framework:
 The toolkit validates your configuration automatically:
 
 ```bash
+# Validate your project configuration and check compliance
+# This checks for errors in standards.md and missing files
 bun ai-toolkit-shared/scripts/validate.js
+
+# The validation will show:
+# - Configuration file status
+# - Module and agent validation
+# - Compliance score (0-100%)
+# - Specific issues and recommendations
 ```
 
 This checks:
@@ -401,7 +438,15 @@ This checks:
 
 **Solution:** Create `standards.md` in project root:
 ```bash
+# Run the advanced setup wizard
+# This provides full control over modules, agents, and configuration
 bun ai-toolkit-shared/scripts/init.js
+
+# The wizard will guide you through:
+# - Project name and description
+# - Module selection (CouchCMS features)
+# - Agent selection (AI assistants)
+# - Configuration file location
 ```
 
 ### Invalid YAML syntax
@@ -425,8 +470,8 @@ bun ai-toolkit-shared/scripts/init.js
 
 **Solution:**
 1. Validate config: `bun scripts/validate.js`
-2. Check toolkit path is correct
-3. Ensure toolkit dependencies are installed: `cd ai-toolkit-shared && bun install`
+2. 🔍 Check toolkit path is correct
+3. ⚙️ Ensure toolkit dependencies are installed: `cd ai-toolkit-shared && bun install`
 
 ---
 
