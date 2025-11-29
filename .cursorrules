@@ -342,7 +342,8 @@ Your judgment is trusted. Your execution is precise. You operate with **complete
 **Reference Documents:**
 - Smart Operations: &#x60;framework/enhancements/smart-operations.md&#x60;
 - Project Standards: &#x60;docs/standards.md&#x60; (or project-specific standards file)
-- Playbooks: &#x60;framework/playbooks/&#x60; (request.md, refresh.md, retro.md)
+- Playbooks: &#x60;framework/playbooks/&#x60; (request.md with modular phases, refresh.md, retro.md)
+- Playbook Phases: &#x60;framework/playbooks/phases/&#x60; (orchestration, reconnaissance, planning, execution, verification, audit, report)
 - Testing Guide: &#x60;framework/docs/testing.md&#x60;
 
 ---
@@ -1082,1385 +1083,961 @@ Your primary communication goal is **maximum signal, minimum noise.** Every word
 ## Playbooks
 
 
-# Bug Fix / Root Cause Analysis Playbook
+# Playbooks
 
-{Replace this line with a concise but complete description of the persistent bug or issue. Include:
-- Observed behavior: What is actually happening?
-- Expected behavior: What should happen instead?
-- Error messages: Any error logs, stack traces, or console output
-- Context: When does this occur? (specific conditions, user actions, data states)
-- Impact: How severe is this issue? (data loss, security, usability, performance)}
+Structured workflows for different development scenarios.
 
 ---
 
-## **Mission Briefing: Root Cause Analysis &amp; Remediation Protocol**
+## Available Playbooks
 
-Previous, simpler attempts to resolve this issue have failed. Standard procedures are now suspended. You will initiate a **deep diagnostic protocol.**
+### 🎯 request.md - Feature Request / Refactoring
+**Use for:** New features, refactoring, significant changes
 
-Your approach must be systematic, evidence-based, and relentlessly focused on identifying and fixing the **absolute root cause.** Patching symptoms is a critical failure.
+**Workflow:** Orchestrate → Reconnaissance → Plan → Execute → Verify → Audit → Report
 
-**Objective:** Identify the definitive root cause through rigorous analysis and implement a durable fix that prevents recurrence.
+**Modular Phases:** See &#x60;phases/&#x60; directory for detailed phase documentation
+
+**Duration:** 45-85 minutes typical
+
+---
+
+### 🔧 refresh.md - Bug Fix / Root Cause Analysis
+**Use for:** Debugging persistent issues, root cause analysis
+
+**Workflow:** Baseline → Isolate → Analyze → Remediate → Verify → Audit → Report
+
+**Modular Phases:** See &#x60;refresh-phases/&#x60; directory for detailed phase documentation
+
+**Duration:** 50-90 minutes typical
+
+---
+
+### 📊 retro.md - Retrospective / Doctrine Evolution
+**Use for:** Session reflection, continuous improvement
+
+**Workflow:** Context → Success → Failure → Impact → Integration → Propagation → Verdict
+
+**Modular Phases:** See &#x60;retro-phases/&#x60; directory for detailed phase documentation
+
+**Duration:** 25-50 minutes for typical retrospective
+
+---
+
+## Quick Selection Guide
+
+**Choose request.md when:**
+- Building new features
+- Refactoring existing code
+- Making significant changes
+- Need multi-agent collaboration
+
+**Choose refresh.md when:**
+- Fixing bugs
+- Debugging issues
+- Root cause analysis needed
+- Quick fixes required
+
+**Choose retro.md when:**
+- Session complete
+- Want to capture learnings
+- Update standards/doctrine
+- Improve processes
+
+---
+
+## Modular Phase System
+
+All three playbooks use modular phase systems for better maintainability:
+
+### Request Phases (Feature Development)
+&#x60;&#x60;&#x60;
+phases/
+├── orchestration.md       # Phase -1: Select agents
+├── reconnaissance.md      # Phase 0: Domain analysis
+├── planning.md            # Phase 1: Strategy integration
+├── execution.md           # Phase 2: Implementation
+├── verification.md        # Phase 3: Testing
+├── audit.md               # Phase 4: Fresh audit
+└── report.md              # Phase 5: Final report
+&#x60;&#x60;&#x60;
+
+### Refresh Phases (Bug Fixing)
+&#x60;&#x60;&#x60;
+refresh-phases/
+├── baseline.md            # Phase 0: System baseline
+├── isolate.md             # Phase 1: Reproducible test
+├── analyze.md             # Phase 2: Root cause analysis
+├── remediate.md           # Phase 3: Implement fix
+├── verify.md              # Phase 4: Verification
+├── audit.md               # Phase 5: Fresh audit
+└── report.md              # Phase 6: After-action report
+&#x60;&#x60;&#x60;
+
+### Retro Phases (Retrospectives)
+&#x60;&#x60;&#x60;
+retro-phases/
+├── context.md             # Phase 0: Session metadata
+├── success.md             # Phase 1: Success analysis
+├── failure.md             # Phase 2: Failure analysis
+├── impact.md              # Phase 3: Impact assessment
+├── integration.md         # Phase 4: Doctrine updates
+├── propagation.md         # Phase 5: Sync configs
+└── verdict.md             # Phase 6: Final assessment
+&#x60;&#x60;&#x60;
+
+**Benefits:**
+- ✅ Simple and focused
+- ✅ Easy to update
+- ✅ AI-optimized structure
+- ✅ Reusable components
+- ✅ Clear progression
+
+---
+
+## Integration
+
+**Playbooks integrate with:**
+- Operational Doctrine: &#x60;framework/doctrine/operational-doctrine.md&#x60;
+- Smart Operations: &#x60;framework/enhancements/smart-operations.md&#x60;
+- Available Agents: &#x60;AGENTS.md&#x60; (23 specialized agents)
+- Project Standards: &#x60;docs/standards.md&#x60;
+
+---
+
+## Usage Tips
+
+**For Simple Tasks:**
+- Use simplified workflow
+- Skip unnecessary phases
+- Focus on essentials
+
+**For Complex Tasks:**
+- Follow all phases
+- Add extra checkpoints
+- Document thoroughly
+
+**For Critical Tasks:**
+- Never skip verification
+- Add extra testing
+- Document all decisions
+
+---
+
+**Ready to start? Choose your playbook above.**
+
+
+---
+
+# Playbook Structure Overview
+
+Complete overview of the modular playbook system.
+
+---
+
+## Directory Structure
+
+&#x60;&#x60;&#x60;
+framework/playbooks/
+├── README.md                    # Main playbook overview
+├── STRUCTURE.md                 # This file
+│
+├── request.md                   # Feature/refactoring playbook (main)
+├── refresh.md                   # Bug fix playbook (main)
+├── retro.md                     # Retrospective playbook (main)
+│
+├── phases/                      # Request playbook phases
+│   ├── README.md
+│   ├── orchestration.md         # Phase -1
+│   ├── reconnaissance.md        # Phase 0
+│   ├── planning.md              # Phase 1
+│   ├── execution.md             # Phase 2
+│   ├── verification.md          # Phase 3
+│   ├── audit.md                 # Phase 4
+│   └── report.md                # Phase 5
+│
+├── refresh-phases/              # Refresh playbook phases
+│   ├── README.md
+│   ├── baseline.md              # Phase 0
+│   ├── isolate.md               # Phase 1
+│   ├── analyze.md               # Phase 2
+│   ├── remediate.md             # Phase 3
+│   ├── verify.md                # Phase 4
+│   ├── audit.md                 # Phase 5
+│   └── report.md                # Phase 6
+│
+└── retro-phases/                # Retro playbook phases
+    ├── README.md
+    ├── context.md               # Phase 0
+    ├── success.md               # Phase 1
+    ├── failure.md               # Phase 2
+    ├── impact.md                # Phase 3
+    ├── integration.md           # Phase 4
+    ├── propagation.md           # Phase 5
+    └── verdict.md               # Phase 6
+&#x60;&#x60;&#x60;
+
+---
+
+## Playbook Comparison
+
+| Aspect | request.md | refresh.md | retro.md |
+|--------|-----------|-----------|----------|
+| **Purpose** | Feature development | Bug fixing | Learning capture |
+| **Phases** | 7 (-1 to 5) | 7 (0 to 6) | 7 (0 to 6) |
+| **Duration** | 45-85 min | 20-40 min | 25-50 min |
+| **Complexity** | High | Medium | Low |
+| **Agent Use** | Multi-agent | Single/few | Reflective |
+| **Output** | Working feature | Fixed bug | Updated doctrine |
+
+---
+
+## Phase Patterns
+
+### Common Phase Types
+
+**Context/Baseline (Phase 0):**
+- Establish current state
+- Gather evidence
+- Document starting point
+
+**Analysis (Phase 0-2):**
+- Investigate domain
+- Identify patterns
+- Assess impact
+
+**Planning (Phase 1):**
+- Propose strategies
+- Resolve dependencies
+- Create unified plan
+
+**Execution (Phase 2-3):**
+- Implement changes
+- Follow protocols
+- Verify work
+
+**Verification (Phase 3-5):**
+- Test functionality
+- Check integration
+- Hunt regressions
+
+**Audit (Phase 4-5):**
+- Fresh evidence check
+- System consistency
+- Standards compliance
+
+**Report (Phase 5-6):**
+- Document outcomes
+- Provide evidence
+- Final verdict
+
+---
+
+## Design Principles
+
+### Modularity
+- Each phase is self-contained
+- Phases can be updated independently
+- Clear dependencies between phases
+
+### Simplicity
+- Each file focuses on one phase
+- Clear, scannable structure
+- Minimal cognitive load
+
+### AI Optimization
+- Structured for AI parsing
+- Clear instructions per phase
+- Consistent formatting
+
+### Maintainability
+- Easy to update individual phases
+- Add new phases without breaking existing
+- Clear documentation
+
+### Efficiency
+- Load only relevant phases
+- Quick navigation
+- Focused context
+
+---
+
+## Usage Patterns
+
+### Sequential Execution
+Most common pattern - follow phases in order:
+&#x60;&#x60;&#x60;
+Phase 0 → Phase 1 → Phase 2 → ... → Final Phase
+&#x60;&#x60;&#x60;
+
+### Selective Execution
+For simple tasks, skip unnecessary phases:
+&#x60;&#x60;&#x60;
+Phase 0 → Phase 2 → Phase 5 (skip planning/verification)
+&#x60;&#x60;&#x60;
+
+### Iterative Execution
+For complex tasks, iterate on phases:
+&#x60;&#x60;&#x60;
+Phase 2 → Phase 3 → (issues found) → Phase 2 → Phase 3
+&#x60;&#x60;&#x60;
+
+### Parallel Execution
+For multi-agent work, some phases can run in parallel:
+&#x60;&#x60;&#x60;
+Phase 2: Agent A + Agent B (parallel)
+Phase 3: Integration checkpoint
+&#x60;&#x60;&#x60;
+
+---
+
+## File Naming Conventions
+
+**Main Playbooks:**
+- &#x60;{purpose}.md&#x60; (e.g., &#x60;request.md&#x60;, &#x60;refresh.md&#x60;, &#x60;retro.md&#x60;)
+- Lowercase, descriptive names
+- Located in &#x60;framework/playbooks/&#x60;
+
+**Phase Directories:**
+- &#x60;{playbook}-phases/&#x60; (e.g., &#x60;phases/&#x60;, &#x60;refresh-phases/&#x60;, &#x60;retro-phases/&#x60;)
+- Plural form for directory name
+- Contains README.md + phase files
+
+**Phase Files:**
+- &#x60;{phase-name}.md&#x60; (e.g., &#x60;orchestration.md&#x60;, &#x60;baseline.md&#x60;, &#x60;context.md&#x60;)
+- Lowercase, single-word or hyphenated
+- Descriptive of phase purpose
+
+**README Files:**
+- &#x60;README.md&#x60; in each directory
+- Provides overview and navigation
+- Lists all phases with descriptions
+
+---
+
+## Integration Points
+
+**With Operational Doctrine:**
+- Playbooks implement doctrine principles
+- Doctrine references playbooks
+- Mutual reinforcement
+
+**With Smart Operations:**
+- Slash commands can trigger playbooks
+- Intent detection can select playbook
+- Pre-flight checks integrated in execution
+
+**With Agents:**
+- Playbooks coordinate agent collaboration
+- Agents referenced in phases
+- Agent-specific guidance in phases
+
+**With Standards:**
+- Playbooks enforce standards
+- Standards updated via retro playbook
+- Mutual evolution
+
+---
+
+## Maintenance Guidelines
+
+### Adding New Phases
+
+1. Create phase file in appropriate directory
+2. Follow naming conventions
+3. Update phase directory README
+4. Update main playbook file
+5. Test with sample scenario
+
+### Updating Existing Phases
+
+1. Edit phase file directly
+2. Maintain consistent structure
+3. Update examples if needed
+4. Test changes
+5. Document in CHANGELOG
+
+### Adding New Playbooks
+
+1. Create main playbook file
+2. Create phase directory
+3. Create phase files
+4. Create phase README
+5. Update main README
+6. Update this STRUCTURE.md
+
+### Deprecating Phases
+
+1. Mark as deprecated in README
+2. Provide migration path
+3. Keep file for backward compatibility
+4. Remove after grace period
+
+---
+
+## Best Practices
+
+**For Playbook Authors:**
+- Keep phases focused and concise
+- Use consistent formatting
+- Provide clear examples
+- Document edge cases
+
+**For Playbook Users:**
+- Read main playbook first
+- Follow phases sequentially
+- Adapt to context as needed
+- Document deviations
+
+**For Maintainers:**
+- Keep structure consistent
+- Update all related files
+- Test changes thoroughly
+- Document breaking changes
+
+---
+
+## Future Enhancements
+
+**Potential Additions:**
+- Template playbook for custom workflows
+- Phase composition system
+- Playbook metrics and analytics
+- Interactive playbook selector
+
+**Under Consideration:**
+- Conditional phase execution
+- Phase dependencies graph
+- Automated phase validation
+- Playbook versioning system
+
+---
+
+**Last Updated:** 2025-01-28
+**Version:** 1.0.0
+**Status:** ✅ Production Ready
+
+
+---
+
+# Bug Fix / Root Cause Analysis Playbook
+
+{Replace this line with a concise description of the bug:
+- Observed behavior: What is happening?
+- Expected behavior: What should happen?
+- Error messages: Logs, stack traces, console output
+- Context: When does this occur?
+- Impact: How severe?}
+
+---
+
+## Mission Briefing
+
+Previous attempts to fix this issue have failed. You will now initiate a **deep diagnostic protocol** focused on identifying and fixing the **absolute root cause**.
+
+**Workflow:** Baseline → Isolate → Analyze → Remediate → Verify → Audit → Report
 
 **Reference Documents:**
 - Operational Doctrine: &#x60;framework/doctrine/operational-doctrine.md&#x60;
 - Smart Operations: &#x60;framework/enhancements/smart-operations.md&#x60;
-- Project Standards: &#x60;docs/standards.md&#x60; (or project-specific standards file)
-- Testing Guide: &#x60;framework/docs/testing.md&#x60;
+- Project Standards: Auto-detected from project
 
 ---
 
-## **Phase 0: Reconnaissance &amp; State Baseline (Read-Only)**
+## Workflow Phases
 
-### Directive
+### Phase 0: State Baseline
+**File:** &#x60;framework/playbooks/refresh-phases/baseline.md&#x60;
 
-Adhering to the **Operational Doctrine**, perform a non-destructive scan of the repository, runtime environment, configurations, and recent logs. Your objective is to establish a high-fidelity, evidence-based baseline of the system&#x27;s current state as it relates to the anomaly.
+Establish evidence-based baseline of current system state (read-only).
 
-### Reconnaissance Checklist
+**Quick Actions:**
+- Issue context analysis
+- Repository state check
+- Log analysis
+- Code inspection
 
-1. **Issue Context Analysis:**
-   - Review issue description and reported symptoms
-   - Identify affected components, modules, or features
-   - Map the issue to system architecture layers
-   - Document any related issues or similar bugs
+### Phase 1: Isolate Anomaly
+**File:** &#x60;framework/playbooks/refresh-phases/isolate.md&#x60;
 
-2. **Repository State:**
-   - Check Git history for recent changes that might relate to the issue
-   - Identify files that were modified around the time the issue appeared
-   - Review commit messages for context
-   - Check for uncommitted changes that might affect the issue
+Create minimal, reproducible test case that triggers the bug.
 
-3. **Runtime Environment:**
-   - Document current environment configuration
-   - Check for environment-specific issues (dev vs. production)
-   - Identify external dependencies and their versions
-   - Review service health and resource utilization
+**Quick Actions:**
+- Define correct behavior
+- Create failing test
+- Pinpoint trigger
+- Verify reproducibility
 
-4. **Configuration Analysis:**
-   - Review configuration files for anomalies
-   - Check for misconfigurations or missing settings
-   - Verify environment variables and secrets
-   - Document configuration changes in recent history
+### Phase 2: Root Cause Analysis
+**File:** &#x60;framework/playbooks/refresh-phases/analyze.md&#x60;
 
-5. **Log Analysis:**
-   - Review application logs for error patterns
-   - Check system logs for related issues
-   - Identify timing patterns (when does it occur?)
-   - Look for correlation with other events
+Methodically investigate to find definitive root cause.
 
-6. **Code Inspection:**
-   - Read relevant source files without modification
-   - Identify potential problem areas
-   - Review error handling and validation logic
-   - Check for known anti-patterns or code smells
+**Quick Actions:**
+- Hypothesis testing loop
+- Evidence gathering
+- RCA techniques
+- Document findings
 
-7. **Smart Operations Context:**
-   - Check for applicable slash commands (&#x60;/fix&#x60;, &#x60;/review&#x60;)
-   - Identify relevant AI agents for debugging
-   - Determine pre-flight check requirements
-   - Check for similar issues in project history
+### Phase 3: Remediation
+**File:** &#x60;framework/playbooks/refresh-phases/remediate.md&#x60;
 
-### Output Requirements
+Design and implement minimal, precise fix.
 
-- **State Baseline Digest:** Produce a concise synthesis (≤ 200 lines) that documents:
-  - Current system state as it relates to the anomaly
-  - Key observations and patterns identified
-  - Hypotheses that warrant investigation
-  - Areas requiring deeper analysis
+**Quick Actions:**
+- Root cause alignment
+- Minimal change principle
+- Pre-flight checks
+- System-wide updates
 
-### Constraints
+### Phase 4: Verification
+**File:** &#x60;framework/playbooks/refresh-phases/verify.md&#x60;
 
-- **No mutations are permitted during this phase.**
-- All analysis must be evidence-based (logs, code, configuration)
-- Document all assumptions that require verification
-- Preserve all evidence (logs, error messages, screenshots)
+Prove fix resolves issue without creating new ones.
 
----
+**Quick Actions:**
+- Confirm fix works
+- Run quality gates
+- Regression testing
+- Edge case verification
 
-## **Phase 1: Isolate the Anomaly**
+### Phase 5: Zero-Trust Audit
+**File:** &#x60;framework/playbooks/refresh-phases/audit.md&#x60;
 
-### Directive
+Fresh evidence-based audit of the fix.
 
-Your first and most critical goal is to create a **minimal, reproducible test case** that reliably and predictably triggers the bug. You will not attempt any fixes until you can reliably reproduce the failure on command.
+**Quick Actions:**
+- Re-verify final state
+- Hunt for regressions
+- System consistency
+- Root cause verification
 
-### Isolation Protocol
+### Phase 6: Final Report
+**File:** &#x60;framework/playbooks/refresh-phases/report.md&#x60;
 
-#### 1. Define Correctness
+After-action report with root cause and evidence.
 
-Clearly state the expected, non-buggy behavior:
-
-- **Expected Behavior:** {What should happen}
-- **Success Criteria:** {How to recognize correct behavior}
-- **Acceptable Variations:** {Any acceptable variations in behavior}
-
-#### 2. Create a Failing Test
-
-If possible, write a new, specific automated test that fails precisely because of this bug:
-
-**Test Requirements:**
-- **Minimal:** Test only the specific failing behavior
-- **Reproducible:** Must fail consistently on command
-- **Isolated:** Should not depend on external state
-- **Descriptive:** Test name clearly describes what&#x27;s being tested
-
-**Test Structure:**
-&#x60;&#x60;&#x60;typescript
-// Example test structure
-describe(&#x27;{Component/Feature Name}&#x27;, () &#x3D;&gt; {
-    it(&#x27;should {expected behavior}&#x27;, () &#x3D;&gt; {
-        // Arrange: Set up minimal conditions
-        {setup code}
-
-        // Act: Trigger the bug
-        {action that triggers bug}
-
-        // Assert: Verify expected behavior
-        {assertion that currently fails}
-    });
-});
-&#x60;&#x60;&#x60;
-
-#### 3. Pinpoint the Trigger
-
-Identify the exact conditions, inputs, or sequence of events that causes the failure:
-
-- **Trigger Conditions:** {Specific conditions required}
-- **Input Data:** {Specific inputs that cause failure}
-- **Sequence:** {Order of operations if relevant}
-- **State Requirements:** {System state needed to reproduce}
-
-#### 4. Reproducibility Verification
-
-Verify you can reliably reproduce the failure:
-
-- **Reproduction Steps:** {Step-by-step instructions}
-- **Success Rate:** {How often it reproduces - must be 100%}
-- **Variations Tested:** {Different scenarios tested}
-- **Edge Cases:** {Boundary conditions tested}
-
-### Constraints
-
-- **FORBIDDEN:** Attempting fixes before reliable reproduction
-- **FORBIDDEN:** Assuming the cause without evidence
-- **REQUIRED:** Document exact reproduction steps
-- **REQUIRED:** Create automated test if possible
+**Quick Actions:**
+- Root cause statement
+- Remediation summary
+- Verification evidence
+- Lessons learned
 
 ---
 
-## **Phase 2: Root Cause Analysis (RCA)**
+## Quick Reference
 
-### Directive
-
-With a reproducible failure, you will now methodically investigate the failing pathway to find the definitive root cause. This phase requires rigorous hypothesis testing and evidence gathering.
-
-### Evidence-Gathering Protocol
-
-#### Hypothesis Testing Loop
-
-For each hypothesis, follow this structured approach:
-
-**1. Formulate a Testable Hypothesis**
-
-State a clear, simple theory about the cause:
-
-- **Hypothesis:** {Clear statement of the theory}
-- **Rationale:** {Why this hypothesis is plausible}
-- **Testability:** {How it can be tested}
-
-**Example:**
-&#x60;&#x60;&#x60;
-Hypothesis: The user authentication token is expiring prematurely due to
-incorrect timezone handling in the expiration calculation.
-
-Rationale: The issue occurs at specific times of day, suggesting a time-based
-calculation problem.
-
-Testability: Compare token expiration timestamps with system time and timezone
-settings.
-&#x60;&#x60;&#x60;
-
-**2. Devise an Experiment**
-
-Design a safe, non-destructive test or observation to gather evidence:
-
-- **Experiment Design:** {What will be tested}
-- **Expected Evidence:** {What would prove/disprove the hypothesis}
-- **Safety Measures:** {How to ensure no data loss or system damage}
-- **Success Criteria:** {How to interpret results}
-
-**3. Execute and Conclude**
-
-Run the experiment, present the evidence, and state your conclusion:
-
-- **Execution:** {What was done}
-- **Evidence Collected:** {Data, logs, observations}
-- **Analysis:** {What the evidence means}
-- **Conclusion:** {Hypothesis proven, disproven, or needs refinement}
-
-**4. Iterate if Needed**
-
-If the hypothesis is wrong:
-- Formulate a new hypothesis based on new evidence
-- Repeat the testing loop
-- Document why previous hypotheses were incorrect
-
-### RCA Techniques
-
-Apply appropriate debugging techniques:
-
-- **Code Tracing:** Follow execution path through code
-- **Log Analysis:** Add strategic logging to trace execution
-- **State Inspection:** Examine system state at failure point
-- **Dependency Analysis:** Check external dependencies and services
-- **Timing Analysis:** Identify race conditions or timing issues
-- **Data Flow Analysis:** Trace data transformations
-
-### Anti-Patterns (Forbidden Actions)
-
-**FORBIDDEN:**
-- **Applying a fix without a confirmed root cause supported by evidence**
-- **Re-trying a previously failed fix without new data**
-- **Patching a symptom** (e.g., adding a &#x60;null&#x60; check) without understanding *why* the value is becoming &#x60;null&#x60;
-- **Assuming correlation implies causation**
-- **Fixing multiple things at once** without isolating the cause
-
-**REQUIRED:**
-- **Evidence-based conclusions** - every conclusion must be supported by data
-- **Single root cause focus** - identify THE cause, not multiple possible causes
-- **Documentation** - document all hypotheses, experiments, and conclusions
-
----
-
-## **Phase 3: Remediation**
-
-### Directive
-
-Design and implement a minimal, precise fix that durably hardens the system against the confirmed root cause. The fix must address the root cause, not just symptoms.
-
-### Fix Design Principles
-
-#### 1. Root Cause Alignment
-
-Ensure the fix directly addresses the identified root cause:
-
-- **Root Cause:** {Confirmed root cause from Phase 2}
-- **Fix Strategy:** {How the fix addresses the root cause}
-- **Prevention:** {How the fix prevents recurrence}
-
-#### 2. Minimal Change Principle
-
-Implement the smallest change that fixes the issue:
-
-- **Scope:** {What exactly will be changed}
-- **Justification:** {Why this is the minimal necessary change}
-- **Alternatives Considered:** {Why other approaches were rejected}
-
-#### 3. Durability
-
-Ensure the fix prevents recurrence:
-
-- **Hardening Measures:** {Additional safeguards added}
-- **Validation:** {How recurrence will be prevented}
-- **Monitoring:** {How to detect if issue returns}
-
-### Core Protocols in Effect
-
-#### Read-Write-Reread Pattern
-
-For every file you modify:
-1. **Read** the file immediately before making changes
-2. **Write** the modifications
-3. **Reread** the file immediately after to verify correctness
-
-#### Command Execution Canon
-
-All shell commands **actually executed** **MUST** be wrapped to ensure:
-- Termination and full output capture (stdout &amp; stderr)
-- Timeout enforcement for long-running commands
-- Non-interactive execution where safe
-- Fail-fast semantics
-
-#### System-Wide Ownership
-
-If the root cause is in a shared component, you are **MANDATED** to:
-- Identify **ALL** consumers of the component
-- Analyze **ALL** consumers for the same flaw
-- Fix **ALL** affected consumers in this same session
-- Verify consistency across all usage points
-
-#### Pre-Flight Checks
-
-Before applying any code changes:
-1. Scan generated code against &#x60;preflight-checks.yaml&#x60; patterns
-2. **STOP** on CRITICAL issues - do not apply, show error
-3. **WARN** on WARNING issues - show warning, ask to proceed
-4. **INFO** on INFO issues - show info, proceed automatically
-5. Apply auto-fix where available and approved
-
-### Implementation Checklist
-
-- [ ] Fix directly addresses confirmed root cause
-- [ ] Minimal change principle applied
-- [ ] Execute pre-flight checks before each modification
-- [ ] Follow project coding standards (4-space indentation, naming conventions)
-- [ ] Maintain English-only code, comments, and documentation
-- [ ] Add appropriate error handling and validation
-- [ ] Update or add tests to prevent regression
-- [ ] Document the fix and rationale
-- [ ] Verify all consumers of shared components are updated
-
-### Progress Tracking
-
-Maintain an inline TODO ledger using:
+**Communication Legend:**
 - ✅ Success / Completed
 - ⚠️ Warning / Self-corrected
-- 🚧 Blocked / Needs attention
+- 🚧 In progress / Active
+- ❌ Blocked / Needs attention
+
+**Core Principles:**
+- Evidence-based decisions
+- Root cause focus (not symptoms)
+- Minimal, precise fixes
+- Comprehensive verification
+- System-wide ownership
+
+**Anti-Patterns (FORBIDDEN):**
+- ❌ Fixing without confirmed root cause
+- ❌ Patching symptoms (e.g., adding null checks)
+- ❌ Re-trying failed fixes without new data
+- ❌ Fixing multiple things at once
 
 ---
 
-## **Phase 4: Verification &amp; Regression Guard**
-
-### Directive
-
-Prove that your fix has resolved the issue without creating new ones. This phase requires comprehensive testing and validation.
-
-### Verification Steps
-
-#### 1. Confirm the Fix
-
-Re-run the specific failing test case from Phase 1. It **MUST** now pass:
-
-- **Original Test:** {Reference to test from Phase 1}
-- **Test Result:** {Pass/Fail with output}
-- **Verification:** {Confirmation that issue is resolved}
-
-**Command:**
-&#x60;&#x60;&#x60;bash
-# Run the specific failing test
-{test command for the isolated test case}
-&#x60;&#x60;&#x60;
-
-#### 2. Run Full Quality Gates
-
-Execute the entire suite of relevant tests and linters to ensure no regressions:
-
-**Test Suites:**
-- **Unit Tests:** {Command and results}
-- **Integration Tests:** {Command and results}
-- **End-to-End Tests:** {Command and results}
-
-**Quality Checks:**
-- **Linters:** {Command and results}
-- **Type Checkers:** {Command and results}
-- **Security Scanners:** {Command and results}
-- **Code Coverage:** {If applicable}
-
-**Commands:**
-&#x60;&#x60;&#x60;bash
-# Run all tests
-{test suite command}
-
-# Run linters
-{lint command}
-
-# Run type checking
-{type check command}
-&#x60;&#x60;&#x60;
-
-#### 3. Regression Testing
-
-Explicitly test related functionality to ensure no regressions:
-
-- **Related Features:** {List of features tested}
-- **Test Results:** {Pass/Fail for each}
-- **Observations:** {Any unexpected behavior}
-
-#### 4. Autonomous Correction Protocol
-
-If your fix introduces any new failures:
-- **Autonomously diagnose** the failure
-- **Identify root cause** of the new failure
-- **Apply fix** and verify resolution
-- **Report** the cause and the fix
-- **Re-run** all quality gates
-
-#### 5. Edge Case Verification
-
-Test edge cases and boundary conditions:
-
-- **Edge Cases Tested:** {List}
-- **Results:** {Pass/Fail for each}
-- **Additional Safeguards:** {If any were added}
-
----
-
-## **Phase 5: Mandatory Zero-Trust Self-Audit**
-
-### Directive
-
-Your remediation is complete, but your work is **NOT DONE.** You will now reset your thinking and conduct a skeptical, zero-trust audit of your own fix. Your memory is untrustworthy; only fresh evidence is valid.
-
-### Audit Protocol
-
-#### 1. Re-verify Final State
-
-With fresh commands, confirm that all modified files are correct and that all relevant services are in a healthy state:
-
-**Git Status:**
-&#x60;&#x60;&#x60;bash
-# Check git status
-git status
-
-# Review changes
-git diff
-&#x60;&#x60;&#x60;
-
-**File Integrity:**
-&#x60;&#x60;&#x60;bash
-# Verify file contents
-{verification commands for modified files}
-&#x60;&#x60;&#x60;
-
-**Service Health:**
-&#x60;&#x60;&#x60;bash
-# Check service status
-{service status commands}
-
-# Verify functionality
-{functional verification commands}
-&#x60;&#x60;&#x60;
-
-#### 2. Hunt for Regressions
-
-Explicitly test the primary workflow of the component you fixed to ensure its overall functionality remains intact:
-
-- **Primary Workflow:** {Description}
-- **Test Procedure:** {How it was tested}
-- **Result:** {Pass/Fail and observations}
-- **Related Workflows:** {Other workflows tested}
-
-#### 3. Confirm System-Wide Consistency
-
-Double-check that all consumers of any changed component are working as expected:
-
-- **Component:** {Component name}
-- **Consumers:** {List all consumers}
-- **Verification:** {How each was verified}
-- **Status:** {All working / Issues found}
-
-#### 4. Root Cause Verification
-
-Verify that the fix actually addresses the root cause:
-
-- **Root Cause:** {Confirmed root cause}
-- **Fix Verification:** {How fix addresses root cause}
-- **Prevention Verification:** {How recurrence is prevented}
-
-#### 5. Standards Compliance Check
-
-Verify adherence to project standards:
-
-- **Coding Standards:** {Verification method}
-- **Documentation:** {Completeness check}
-- **Test Coverage:** {Coverage verification}
-- **Security:** {Security review}
-
----
-
-## **Phase 6: Final Report &amp; Verdict**
-
-### Directive
-
-Conclude your mission with a structured &quot;After-Action Report&quot; that provides complete transparency and evidence of the fix.
-
-### Report Structure
-
-#### Root Cause
-
-A definitive statement of the underlying issue, supported by the key piece of evidence from your RCA:
-
-- **Root Cause:** {Clear statement of the root cause}
-- **Key Evidence:** {The critical evidence that identified the root cause}
-- **Why Previous Fixes Failed:** {Why symptom patches didn&#x27;t work}
-- **Why This Fix Works:** {How this fix addresses the root cause}
-
-#### Remediation
-
-A comprehensive list of all changes applied to fix the issue:
-
-**Files Modified:**
-- &#x60;{path/to/file1}&#x60; - {What changed and why}
-- &#x60;{path/to/file2}&#x60; - {What changed and why}
-
-**Files Created:**
-- &#x60;{path/to/file1}&#x60; - {Purpose and key content}
-- &#x60;{path/to/file2}&#x60; - {Purpose and key content}
-
-**Tests Added/Updated:**
-- &#x60;{test/file1}&#x60; - {What test was added/updated}
-- &#x60;{test/file2}&#x60; - {What test was added/updated}
-
-**Configuration Changes:**
-- {Configuration item} - {Change description}
-
-**Documentation Updates:**
-- {Document} - {What was updated}
-
-#### Verification Evidence
-
-Proof that the original bug is fixed and no new regressions were introduced:
-
-**Original Bug Fix:**
-&#x60;&#x60;&#x60;bash
-# Original failing test now passes
-{test output showing pass}
-&#x60;&#x60;&#x60;
-
-**Quality Gates:**
-&#x60;&#x60;&#x60;bash
-# Full test suite
-{test suite output}
-
-# Linter output
-{lint output}
-
-# Type checker output
-{type check output}
-&#x60;&#x60;&#x60;
-
-**Regression Tests:**
-&#x60;&#x60;&#x60;bash
-# Related functionality tests
-{test results}
-&#x60;&#x60;&#x60;
-
-**Manual Verification:**
-- {Verification step} - {Result}
-- {Verification step} - {Result}
-
-#### System-Wide Impact Statement
-
-A confirmation that all identified dependencies have been checked and are consistent:
-
-- **Dependencies Verified:** {List}
-- **Consumers Updated:** {List}
-- **Integration Points Tested:** {List}
-- **Breaking Changes:** {None / List with migration notes}
-
-#### Lessons Learned
-
-Document insights that could prevent similar issues:
-
-- **Technical Insights:** {Key learnings about the codebase}
-- **Process Insights:** {What debugging techniques worked}
-- **Prevention Measures:** {How to prevent similar issues}
-- **Future Considerations:** {Things to watch}
-
-### Final Verdict
-
-Conclude with one of the two following statements, exactly as written:
-
-**Success:**
-&#x60;&#x60;&#x60;
-Self-Audit Complete. Root cause has been addressed, and system state is verified. No regressions identified. Mission accomplished.
-&#x60;&#x60;&#x60;
-
-**Critical Issue:**
-&#x60;&#x60;&#x60;
-Self-Audit Complete. CRITICAL ISSUE FOUND during audit. Halting work. [Describe issue and recommend immediate diagnostic steps].
-&#x60;&#x60;&#x60;
-
----
-
-## **Appendix: Diagnostic Artifacts**
-
-### Key Commands Executed
-
-&#x60;&#x60;&#x60;bash
-# {Description of command and purpose}
-{command}
-
-# {Description of command and purpose}
-{command}
-&#x60;&#x60;&#x60;
-
-### Evidence Collected
-
-- **Logs:** {Location and key findings}
-- **Error Messages:** {Full error messages}
-- **Stack Traces:** {If applicable}
-- **Test Outputs:** {Key test results}
-
-### Reference Documentation
-
-- {Documentation reference 1}
-- {Documentation reference 2}
-
-### Related Playbooks
-
-- **Feature Request:** Use &#x60;request.md&#x60; for new features or refactoring
-- **Retrospective:** Use &#x60;retro.md&#x60; for session reflection and doctrine evolution
-
----
-
-**Mission Complete. Root Cause Eliminated. System Restored.** 🎖️
+**Ready to begin? Start with Phase 0: State Baseline**
 
 
 ---
 
 # Feature Request / Refactoring Playbook
 
-{Replace this line with a clear, specific description of your feature, refactoring, or change request. Be explicit about WHAT you want and WHY it is valuable. Include context about the problem it solves or the improvement it provides.}
+{Replace this line with a clear, specific description of your feature, refactoring, or change request. Be explicit about WHAT you want and WHY it is valuable.}
 
 ---
 
-## **Mission Briefing: Standard Operating Protocol**
+## Mission Bririeng
 
-You will now execute this request in full compliance with your **AUTONOMOUS PRINCIPAL ENGINEER - OPERATIONAL DOCTRINE.** Each phase is mandatory. Deviations are not permitted.
+You are an **INTELte this reqESTR as an *oordinating specializATOR** gentdinatieliver optized AI alts. Each alivt brings l resulexpertise action as a wtes seamd compa
 
-**Objective:** Deliver a production-ready implementation that aligns with project standards, maintains system consistency, and improves overall code quality.
+**Objective** Orchestraa proReconnaissady impleme → Execute → VerintellRepor agent collaboration, ensuring each specialist contributes their expertise at the right moment in the workflow.
 
 **Reference Documents:**
 - Operational Doctrine: &#x60;framework/doctrine/operational-doctrine.md&#x60;
 - Smart Operations: &#x60;framework/enhancements/smart-operations.md&#x60;
-- Project Standards: &#x60;docs/standards.md&#x60; (or project-specific standards file)
+- Available Agents: &#x60;AGENTS.md&#x60; (23 specialized agents)
+- Project Standards: &#x60;docs/standards.md&#x60; (or projecttected: &#x60;.prandards file)
+---
+
+# Phases
+## **Workflow Overview**
+e -1: Agechestration
+ThFi play &#x60;frames a structooks/phaseorkfloation.md&#x60;
+
+S&#x60;&#x60;ect and coohe right agts for this reque
+Phase -1ent Orchestration ing
+**Quick Actioncti*
+- Analyze requestissance
+  Select (2-6 agents)
+- Dee 1: Collaborati&amp; Storkflow
+-   yze the-offr
+
+### Phase 0: Mulments:**Reconn
+-*File:** &#x60;framework are invotiphases/recossance.md&#x60;
+
+Each agent investigates thedr domain (read-onl
+
+**Quick Actions:ge
+- Agemain analysis
+RePattern&quot;Create tion
+- Cross-agenis dochesis
+- Impact asseent
+
+### ase 1: Collaanning
+- P**P:** &#x60;framutionimagybooks/png/planning.md&#x60;
+- Users module for authentication
+-gentsase -SS Agenategies andPlntegratento unified n.
+
+**QuActions:**
+- Agepose:rategy  request 
+- Dependution
+**Keyvitieson planning
+- Riquest igation
+- A team selecty, Supportinry)
+-## Phlable: Coordinalow deson
+**F@mmun* &#x60;framework/pluchCMSnitiones/tion.md&#x60;
+
+Agentpuimpleoutes&#x60; -ir domain n Plawith ingworkfl-ooffs.
+
+**Quick Actis:**
+- Agent work 
+# Pre-ase 0: checks
+- Domalder&#x60;fificatrk/plarganizatioses/reconnaiss.md&#x60;
+- Hand-off preparation
+**Purpose:** Eaps&#x60; - Pt performs dshiin-specifissance to build ce undersng.
+ 3:i-Agent Ven
+**File:*ch&#x60;framework/playbos/pverific&#x60;
+
+Each agrn recogniti thper domain, then test iion.
+- &#x60;@nes-agent synthesierarchical structures
+- &#x60;uick Actions:**
+- Domain quality gates
+- Integration testinssance Digest wigied underst and impact ass
+Regres
+- Cross-agent consis
+
+### Phaql&#x60; - Zero-Trust Au Pl
+**File:** &#x60;fral-work/playbooks/p cust/audit.mg.md&#x60;
+
+*resh evidencAgn Criteudit of main ses syd im.
+
+**Quick ActionsAgen
+- Obesctive defation
+- Reent-specifint
+- Stratm consisgrati
+- Standardlutionce
+
+### Phat: 5: Final Report
+**Fraaybooks/pheport.md&#x60;
+
+Cosive rep with agent contributions and verdict.
+
+**Quick** &#x60;frns:**
+- Ageions
+- Changes s* Exey
+- Verifence
+- Lessons leties:**
 
 ---
 
-## **Phase 0: Reconnaissance &amp; Mental Modeling (Read-Only)**
+- Progre Referencng
 
-### Directive
+**Oute nication Legend:**
+- / Compl
+---️ Warning / Sd
+- 🚧ss / Active
+- ⏳ Phasatg / QueueAgent Verifint identify?
+-*Fileocked / Needs atsayboon
 
-Perform a non-destructive scan of the entire repository to build a complete, evidence-based mental model of the current system architecture, dependencies, and established patterns.
-
-### Reconnaissance Checklist
-
-1. **Repository Inventory:**
-   - Identify predominant languages, frameworks, and build tools
-   - Catalog architectural seams and module boundaries
-   - Locate configuration files and environment setup
-
-2. **Dependency Topology:**
-   - Analyze manifest files (&#x60;package.json&#x60;, &#x60;composer.json&#x60;, etc.)
-   - Map dependency relationships
-   - Identify version constraints and compatibility requirements
-
-3. **Configuration Corpus:**
-   - Aggregate environment files, CI/CD pipelines, and infrastructure configs
-   - Document build processes and deployment procedures
-   - Identify runtime configuration requirements
-
-4. **Idiomatic Patterns:**
-   - Infer coding standards from existing code
-   - Identify architectural layers and separation of concerns
-   - Document test strategies and quality gates
-
-5. **Operational Substrate:**
-   - Detect containerization schemes and process managers
-   - Identify cloud services and external dependencies
-   - Map runtime environment requirements
-
-6. **Quality Gates:**
-   - Locate linters, type checkers, and security scanners
-   - Identify test suites and coverage requirements
-   - Document validation and compliance checks
-
-7. **Smart Operations Context:**
-   - Check for applicable slash commands (&#x60;/fix&#x60;, &#x60;/refactor&#x60;, &#x60;/review&#x60;)
-   - Identify relevant AI agents and knowledge modules
-   - Determine pre-flight check requirements
-
-### Output Requirements
-
-- **Reconnaissance Digest:** Produce a concise synthesis (≤ 200 lines) that codifies your understanding
-- **Impact Surface:** Identify all files, components, and workflows that may be affected
-- **Pattern Alignment:** Document how the request aligns with existing patterns
-
-### Constraints
-
-- **No mutations are permitted during this phase.**
-- All analysis must be evidence-based (file contents, command outputs)
-- Document assumptions that require verification
+**Corpose (ciples:**
+- Seleviable ag
+- Cow Activitoffs betwe
+- Agent ce-based deci resols
+-tontonus correrection
+- System-wide ownership
 
 ---
+**Out do:** Verificationsistert with all qity gated
+**Ready to begin? Start with Phase -1: Agentstration
+t Collaborlates
 
-## **Phase 1: Planning &amp; Strategy**
+*te reusable templates for commoent co*
 
-### Directive
+**mplate: CRUD Feature**
 
-Based on your reconnaissance, formulate a clear, incremental execution plan that accounts for full system impact.
-
-### Plan Requirements
-
-#### 1. Restate Objectives
-
-Clearly define the success criteria for this request:
-
-- **Primary Goal:** {What must be accomplished}
-- **Success Metrics:** {How success will be measured}
-- **Acceptance Criteria:** {Specific conditions that must be met}
-
-#### 2. Identify Full Impact Surface
-
-Enumerate **all** files, components, services, and user workflows that will be directly or indirectly affected:
-
-**Direct Impact:**
-- Files to be created: &#x60;{list}&#x60;
-- Files to be modified: &#x60;{list}&#x60;
-- Components to be refactored: &#x60;{list}&#x60;
-
-**Indirect Impact:**
-- Dependent components: &#x60;{list}&#x60;
-- Related workflows: &#x60;{list}&#x60;
-- Integration points: &#x60;{list}&#x60;
-
-**System-Wide Considerations:**
-- Configuration changes required
-- Database migrations (if applicable)
-- API contract changes (if applicable)
-- Documentation updates needed
-
-#### 3. Justify Strategy
-
-Propose a technical approach and explain *why* it is the best choice:
-
-**Technical Approach:**
-- {Description of the chosen approach}
-
-**Rationale:**
-- Alignment with existing patterns: {How it fits}
-- Maintainability: {Why it&#x27;s maintainable}
-- Simplicity: {Why it&#x27;s the simplest solution}
-- Performance implications: {If applicable}
-- Security considerations: {If applicable}
-
-**Alternative Approaches Considered:**
-- {Alternative 1}: {Why it was rejected}
-- {Alternative 2}: {Why it was rejected}
-
-#### 4. Smart Operations Integration
-
-Identify applicable toolkit features:
-
-- **Slash Commands:** {e.g., &#x60;/refactor @file&#x60;, &#x60;/review @file&#x60;}
-- **Pre-Flight Checks:** {Which checks apply}
-- **AI Agents:** {Which agents should be consulted}
-- **Knowledge Modules:** {Which modules are relevant}
-
-### Constraints
-
-- Invoke the **Clarification Threshold** from your Doctrine only if you encounter a critical ambiguity that cannot be resolved through further research
-- Ensure the plan accounts for all identified dependencies
-- Verify alignment with project standards before proceeding
-
----
-
-## **Phase 2: Execution &amp; Implementation**
-
-### Directive
-
-Execute your plan incrementally. Adhere strictly to all protocols defined in your **Operational Doctrine.**
-
-### Core Protocols in Effect
-
-#### Read-Write-Reread Pattern
-
-For every file you modify:
-1. **Read** the file immediately before making changes
-2. **Write** the modifications
-3. **Reread** the file immediately after to verify correctness
-
-#### Command Execution Canon
-
-All shell commands **actually executed** **MUST** be wrapped to ensure:
-- Termination and full output capture (stdout &amp; stderr)
-- Timeout enforcement for long-running commands
-- Non-interactive execution where safe
-- Fail-fast semantics
-
-#### Workspace Purity
-
-- All transient analysis and logs remain in-chat
-- **FORBIDDEN:** Creating unsolicited files (&#x60;.md&#x60;, notes, etc.)
-- The chat log is the single source of truth for the session
-
-#### System-Wide Ownership
-
-If you modify a shared component, you are **MANDATED** to:
-- Identify **ALL** consumers of the component
-- Update **ALL** consumers in this same session
-- Verify consistency across all usage points
-
-#### Pre-Flight Checks
-
-Before applying any code changes:
-1. Scan generated code against &#x60;preflight-checks.yaml&#x60; patterns
-2. **STOP** on CRITICAL issues - do not apply, show error
-3. **WARN** on WARNING issues - show warning, ask to proceed
-4. **INFO** on INFO issues - show info, proceed automatically
-5. Apply auto-fix where available and approved
-
-### Implementation Checklist
-
-- [ ] Execute pre-flight checks before each modification
-- [ ] Follow project coding standards (4-space indentation, naming conventions)
-- [ ] Use appropriate AI agents and knowledge modules
-- [ ] Maintain English-only code, comments, and documentation
-- [ ] Apply proper error handling and validation
-- [ ] Ensure accessibility compliance (WCAG 2.1 AA)
-- [ ] Document complex logic and architectural decisions
-
-### Progress Tracking
-
-Maintain an inline TODO ledger using:
-- ✅ Success / Completed
-- ⚠️ Warning / Self-corrected
-- 🚧 Blocked / Needs attention
-
----
-
-## **Phase 3: Verification &amp; Autonomous Correction**
-
-### Directive
-
-Rigorously validate your changes with fresh, empirical evidence.
-
-### Verification Steps
-
-#### 1. Quality Gates Execution
-
-Execute all relevant quality gates:
-
-- **Linters:** {List applicable linters}
-- **Type Checkers:** {List type checkers}
-- **Security Scanners:** {List security tools}
-- **Test Suites:** {List test suites}
-
-**Command Examples:**
-&#x60;&#x60;&#x60;bash
-# Run linters
-{lint command}
-
-# Run type checking
-{type check command}
-
-# Run tests
-{test command}
+Primary Agenuchcms, @databoundms
+Suppoing: @tailwindcss, @us
+Typquence: Temrm → Ownersh →g
+Common Conflict submission nergies: Ownership filtrns
 &#x60;&#x60;&#x60;
 
-#### 2. Autonomous Correction Protocol
+**Templatonent**
+mark
+Primary nts: @couchcms, @, @alpinejSupporting: @typescriptquen Markup  Intey → Validation
+Cicne vs TypeScript ty
+Synergies: Theme-aware reactives
+&#x60;&#x60;&#x60;nefir agent selectioand r common scenaos
 
-If any gate fails:
-- **Autonomously diagnose** the failure
-- **Identify root cause** (not just symptoms)
-- **Apply fix** and verify resolution
-- **Report** the cause and the fix
+#### 2. Pre-Flt Agent Check**Add agenspecific pre-flightcks:**
 
-#### 3. End-to-End Testing
+fore Ages Wor*
+- [ ] Previous eted theirork
+- [ ]ll deliveraes receivefied
+- [ ]iodocumented
+-pendenciesied
+- [ ] Stiewed for do
+**BenefitPreventsom starting ete inform
+#### 3. Inration Checkpemplates
 
-Perform end-to-end testing of the primary user workflow(s) affected:
-
-- **Primary Workflow:** {Description}
-- **Test Steps:** {List steps}
-- **Expected Results:** {Expected outcomes}
-- **Actual Results:** {Document actual outcomes}
-
-#### 4. Integration Verification
-
-Verify integration with existing systems:
-
-- **API Compatibility:** {If applicable}
-- **Database Schema:** {If applicable}
-- **Configuration Changes:** {If applicable}
-- **Dependency Updates:** {If applicable}
-
----
-
-## **Phase 4: Mandatory Zero-Trust Self-Audit**
-
-### Directive
-
-Your primary implementation is complete, but your work is **NOT DONE.** You will now reset your thinking and conduct a skeptical, zero-trust audit of your own work. Your memory is untrustworthy; only fresh evidence is valid.
-
-### Audit Protocol
-
-#### 1. Re-verify Final State
-
-With fresh commands, confirm:
-
-- **Git Status:** Verify clean working directory
-- **File Integrity:** Confirm all modified files are in intended final state
-- **Service Health:** Verify all relevant services are running correctly
-- **Configuration:** Confirm all configuration changes are correct
-
-**Commands:**
-&#x60;&#x60;&#x60;bash
-# Check git status
-git status
-
-# Verify file contents
-{verification commands}
-
-# Check service status
-{service status commands}
+**Standanteon verificati**
+**Checkpoint Temte:**
+&#x60;markdown
+## Inttionnt: {Agent  → {Agent B*Integrat:** {Description}
+**Test:** {How toy}
+**ed:** {Expected behaviol:** {Act
+**Status:**/⚠️/❌ssues:** {Any problems fouResolw resolved}
 &#x60;&#x60;&#x60;
 
-#### 2. Hunt for Regressions
+**Bensis integration verificatacross all offs
 
-Explicitly test at least one critical, related feature that you did *not* directly modify:
+#### 4. Agent Performance Metrics
+agent collabeffectiveness:Metrics to Trand-off suclean vs. rework nee)
+- Conquency and resoluttimVerification pte per age- Synergy ities iified and utilize Rrate per agent domaefit:** Ctinuous improvement of agent iontterns
+. Common Pattern L
 
-- **Feature Tested:** {Feature name}
-- **Test Procedure:** {How it was tested}
-- **Result:** {Pass/Fail and observations}
+rary of proven agencollion patterns:*ern: Ownerlter**
+&#x60;&#x60;&#x60;markdown
+nts: @userdatabound-formsusable oershverification fillate: snipplters/owns_{resource}ml
+Uge: Include in forms requiring ownecheck
+Vied: ✅ Works acrossl CRUD ope&#x60;&#x60;&#x60;
 
-#### 3. Confirm System-Wide Consistency
+**Patt Image&#x60;&#x60;&#x60;markdo: @photoallery + @typetern: SeparatAX endor image uad
+Benefitsess indication,rror handlate: Available in phgally module
+Verd: ✅ Works with alrm type
 
-Double-check that all consumers of any changed component are working as expected:
+**Benefit:** Faster implementatiousing provenrns
 
-- **Component:** {Component name}
-- **Consumers:** {List all consumers}
-- **Verification:** {How each was verified}
-- **Status:** {All working / Issues found}
+##6. Ag Skill Matrix
 
-#### 4. Standards Compliance Check
+**Docgent expertise and :**
 
-Verify adherence to project standards:
+**nt Skill Matrix:**
+&#x60;&#x60;&#x60;markdn
+  Expert: Template structure, routi Cogs
+  Procierity patterns, ahenticationd: Complex , aeScripttabound-forExpeCRUD op foralidion, ownershipoficieSecurity, data handli
+  Limited: Complex UI,  JavaScript
 
-- **Coding Standards:** {Verification method}
-- **Documentation:** {Completeness check}
-- **Accessibility:** {WCAG compliance}
-- **Security:** {Security review}
+@photo-galler
+  Expert: Imagadumbnail generat Fix / DeF
+ t:bugging*  File &#x60;frame/playbhandling,s/r vaookworlikefdation&#x60;
+- *mited: C
+  Liresh.md:*ompleospe*x foctivermRetr&#x60;&#x60;&#x60;
 
----
+ /* &#x60;**Benefit: Better a/plframewgenaybot selecion antorkd&#x60;reexpectations
 
-## **Phase 5: Final Report &amp; Verdict**
+-alistic d 
 
-### Directive
+##--sion: 
 
-Conclude your mission with a single, structured report that provides complete transparency and evidence of system health.
+**MisDeliver pr##pecti 7. Rodetrveuctionegrati-reon In
 
-### Report Structure
+**tosthr stough inurtelliructAgent ddrospective agent colation.**afte:**
+ 🎖️
 
-#### Changes Applied
+**Phase Retrospective Template:**
+&#x60;&#x60;&#x60;markdown
+## Phase {N} Retrospective
 
-A comprehensive list of all created or modified artifacts:
+**What Went Well:**
+- {Success 1}
+- {Success 2}
 
-**Files Created:**
-- &#x60;{path/to/file1}&#x60; - {Purpose and key changes}
-- &#x60;{path/to/file2}&#x60; - {Purpose and key changes}
+**What Could Improve:**
+- {Improvement 1}
+- {Improvement 2}
 
-**Files Modified:**
-- &#x60;{path/to/file1}&#x60; - {What changed and why}
-- &#x60;{path/to/file2}&#x60; - {What changed and why}
+**Action Items:**
+- {Action 1}
+- {Action 2}
 
-**Configuration Changes:**
-- {Configuration item} - {Change description}
-
-**Documentation Updates:**
-- {Document} - {What was updated}
-
-#### Verification Evidence
-
-The commands and outputs from your autonomous testing and self-audit, proving the system is healthy:
-
-**Quality Gates:**
-&#x60;&#x60;&#x60;bash
-# Linter output
-{output}
-
-# Type checker output
-{output}
-
-# Test suite output
-{output}
+**Patterns Discovered:**
+- {Pattern 1}
+- {Pattern 2}
 &#x60;&#x60;&#x60;
 
-**Integration Tests:**
-&#x60;&#x60;&#x60;bash
-# Test results
-{output}
-&#x60;&#x60;&#x60;
+**Benefit:** Continuous learning and pattern discovery
 
-**Manual Verification:**
-- {Verification step} - {Result}
-- {Verification step} - {Result}
+### Implementation Priority
 
-#### System-Wide Impact Statement
+**High Priority (Implement First):**
+1. Agent Collaboration Templates (immediate productivity boost)
+2. Pre-Flight Agent Checks (prevents rework)
+3. Integration Checkpoint Templates (ensures quality)
 
-A confirmation that all identified dependencies have been checked and are consistent:
+**Medium Priority (Implement Soon):**
+4. Common Pattern Library (builds over time)
+5. Agent Skill Matrix (improves agent selection)
 
-- **Dependencies Verified:** {List}
-- **Consumers Updated:** {List}
-- **Integration Points Tested:** {List}
-- **Breaking Changes:** {None / List with migration notes}
+**Low Priority (Nice to Have):**
+6. Agent Performance Metrics (long-term improvement)
+7. Retrospective Integration (continuous learning)
 
-#### Lessons Learned
+### Success Metrics
 
-Document any insights or patterns discovered during implementation:
+**Measure playbook effectiveness:**
 
-- **Technical Insights:** {Key learnings}
-- **Process Improvements:** {What worked well}
-- **Future Considerations:** {Things to watch}
+**Efficiency Metrics:**
+- Time from request to completion
+- Number of rework cycles needed
+- Hand-off success rate
 
-### Final Verdict
+**Quality Metrics:**
+- Verification pass rate
+- Regression rate
+- Standards compliance rate
 
-Conclude with one of the two following statements, exactly as written:
-
-**Success:**
-&#x60;&#x60;&#x60;
-Self-Audit Complete. System state is verified and consistent. No regressions identified. Mission accomplished.
-&#x60;&#x60;&#x60;
-
-**Critical Issue:**
-&#x60;&#x60;&#x60;
-Self-Audit Complete. CRITICAL ISSUE FOUND. Halting work. [Describe issue and recommend immediate diagnostic steps].
-&#x60;&#x60;&#x60;
-
----
-
-## **Appendix: Implementation Artifacts**
-
-### Key Commands Executed
-
-&#x60;&#x60;&#x60;bash
-# {Description of command and purpose}
-{command}
-
-# {Description of command and purpose}
-{command}
-&#x60;&#x60;&#x60;
-
-### Reference Documentation
-
-- {Documentation reference 1}
-- {Documentation reference 2}
-
-### Related Playbooks
-
-- **Bug Fix:** Use &#x60;refresh.md&#x60; for debugging persistent issues
-- **Retrospective:** Use &#x60;retro.md&#x60; for session reflection and doctrine evolution
+**Collaboration Metrics:**
+- Conflict resolution time
+- Synergy opportunities utilized
+- Agent satisfaction (if applicable)
 
 ---
 
 **Mission Complete. System Enhanced. Ready for Next Engagement.** 🎖️
 
+**Agent Orchestration: Transforming AI collaboration from sequential tasks to synchronized teamwork.**
 
 ---
 
-# Session Retrospective: Metacognitive Self-Improvement Loop
+# Session Retrospective Playbook
 
-{Replace this line with a brief description of the session: what was accomplished, what challenges were encountered, and what key learnings emerged. Be specific about the mission type (Feature Implementation, Bug Fix, Refactoring, etc.)}
+{Replace this line with a brief description of the session: what was accomplished, what challenges were encountered, and key learnings.}
 
 ---
 
-## **Mission Briefing: Doctrine Evolution Protocol**
+## Mission Briefing
 
-You will now conduct a structured retrospective of the completed session in full compliance with your **AUTONOMOUS PRINCIPAL ENGINEER - OPERATIONAL DOCTRINE.** This retrospective serves as the **metacognitive self-improvement loop** that ensures continuous evolution of the framework and project standards.
+Conduct a structured retrospective to identify durable lessons and evolve the framework.
 
-**Objective:** Identify durable, transferable lessons that should be integrated into the operational doctrine, project standards, or toolkit configuration.
+**Workflow:** Context → Success → Failure → Impact → Integration → Propagation → Verdict
 
 **Reference Documents:**
 - Operational Doctrine: &#x60;framework/doctrine/operational-doctrine.md&#x60;
 - Smart Operations: &#x60;framework/enhancements/smart-operations.md&#x60;
-- Project Standards: &#x60;docs/standards.md&#x60; (or project-specific standards file)
-- Pre-Flight Checks: &#x60;preflight-checks.yaml&#x60;
-- Smart Defaults: &#x60;smart-defaults.yaml&#x60;
+- Project Standards: Auto-detected from project
 
 ---
 
-## **Phase 0: Session Context &amp; Objectives**
+## Workflow Phases
 
-### Session Metadata
+### Phase 0: Session Context
+**File:** &#x60;framework/playbooks/retro-phases/context.md&#x60;
 
-- **Date:** {YYYY-MM-DD}
-- **Session Type:** {Feature Implementation | Bug Fix | Refactoring | Code Review | Other}
-- **Primary Mission:** {Brief description of what was accomplished}
-- **Status:** {✅ Complete | ⚠️ Partial | 🚧 Blocked}
+Document session metadata and objectives.
 
-### Initial Objectives
+**Quick Actions:**
+- Session metadata
+- Initial objectives
+- Status assessment
 
-1. {Primary objective}
-2. {Secondary objective}
-3. {Additional objectives if any}
+### Phase 1: Success Analysis
+**File:** &#x60;framework/playbooks/retro-phases/success.md&#x60;
 
----
+Identify what worked exceptionally well.
 
-## **Phase 1: Success Pattern Analysis**
+**Quick Actions:**
+- Success patterns
+- Durable lessons
+- Transferable principles
 
-### ✅ What Worked Exceptionally Well
+### Phase 2: Failure Analysis
+**File:** &#x60;framework/playbooks/retro-phases/failure.md&#x60;
 
-Identify patterns, techniques, or approaches that led to successful outcomes:
+Analyze failures and root causes.
 
-1. **{Pattern Name}**
-    - **Description:** {What was done}
-    - **Evidence:** {Specific examples from the session}
-    - **Impact:** {Why this mattered}
-    - **Transferability:** {Can this be applied to future sessions?}
+**Quick Actions:**
+- Failure patterns
+- Root causes
+- Prevention strategies
 
-2. **{Pattern Name}**
-    - {Repeat structure}
+### Phase 3: Impact Assessment
+**File:** &#x60;framework/playbooks/retro-phases/impact.md&#x60;
 
-### 🎯 Durable Lessons (Universal Principles)
+Quantify session impact and quality.
 
-Extract universal principles that apply beyond this specific session:
+**Quick Actions:**
+- Metrics collection
+- Quality indicators
+- System-wide impact
 
-**Project-Specific Learnings:**
-- {Learning 1}: {Description and why it matters}
-- {Learning 2}: {Description and why it matters}
+### Phase 4: Doctrine Integration
+**File:** &#x60;framework/playbooks/retro-phases/integration.md&#x60;
 
-**Universal Learnings (Any Project):**
-- {Learning 1}: {Description and why it matters}
-- {Learning 2}: {Description and why it matters}
+Plan updates to standards and doctrine.
 
----
+**Quick Actions:**
+- Standards updates
+- Pre-flight checks
+- Smart operations
 
-## **Phase 2: Failure Pattern Analysis**
+### Phase 5: Propagation
+**File:** &#x60;framework/playbooks/retro-phases/propagation.md&#x60;
 
-### ❌ What Failed and Why
+Execute updates and sync configurations.
 
-Identify failures, corrections, and root causes:
+**Quick Actions:**
+- Update files
+- Run sync
+- Verify propagation
 
-1. **{Failure Pattern Name}**
-    - **Failure:** {What went wrong}
-    - **User Correction/Feedback:** {How the issue was identified}
-    - **Root Cause:** {Why it happened - be specific}
-    - **Lesson:** {What should be done differently next time}
-    - **Prevention:** {How to prevent this in future sessions}
+### Phase 6: Final Verdict
+**File:** &#x60;framework/playbooks/retro-phases/verdict.md&#x60;
 
-2. **{Failure Pattern Name}**
-    - {Repeat structure}
+Assess evolution status and future readiness.
 
-### 🔄 Correction Patterns
-
-Document how failures were corrected and what that teaches us:
-
-- **{Correction Pattern}:** {Description of the correction approach}
-
----
-
-## **Phase 3: Quantitative Impact Assessment**
-
-### Metrics
-
-- **Files Modified:** {Number}
-- **Files Created:** {Number}
-- **Documentation Created/Updated:** {Number and types}
-- **Tests Added/Updated:** {Number}
-- **Architectural Constraints Discovered:** {Number and types}
-- **System-Wide Impact:** {Scope of changes}
-
-### Quality Indicators
-
-- **What Worked:** {List key success factors}
-- **What Failed:** {List key failure factors}
-- **Final State:** {Overall assessment of code quality and system health}
+**Quick Actions:**
+- Evolution status
+- Future readiness
+- Final statement
 
 ---
 
-## **Phase 4: Doctrine Integration Plan**
+## Quick Reference
 
-### Standards Updates Required
+**Communication Legend:**
+- ✅ Success / Completed
+- ⚠️ Warning / Needs attention
+- 🚧 In progress / Blocked
 
-Identify specific updates needed in project standards or operational doctrine:
+**Core Principles:**
+- Extract universal lessons
+- Focus on root causes
+- Update standards proactively
+- Propagate learnings
 
-#### 1. {Section/Area Name}
-
-**Current State:** {What the standards currently say (if anything)}
-
-**Proposed Update:**
-&#x60;&#x60;&#x60;diff
-+ {New content to add}
-- {Content to remove (if any)}
-&#x60;&#x60;&#x60;
-
-**Rationale:** {Why this update is necessary}
-
-**Severity:** {CRITICAL | IMPORTANT | RECOMMENDED}
-
-#### 2. {Section/Area Name}
-    - {Repeat structure}
-
-### Pre-Flight Checks Updates
-
-If new patterns were identified that should be caught automatically:
-
-**Target File:** &#x60;preflight-checks.yaml&#x60;
-
-**Check Definition:**
-&#x60;&#x60;&#x60;yaml
-{category_name}:
-  {check_name}:
-    pattern: &quot;{regex_pattern}&quot;
-    severity: {CRITICAL | ERROR | WARNING | INFO}
-    message: &quot;{Human-readable description}&quot;
-    fix: &quot;{How to fix}&quot;
-    auto_fix: {true | false}
-    example:
-      bad: &quot;{example of bad code}&quot;
-      good: &quot;{example of good code}&quot;
-    reference: &quot;{documentation reference}&quot;
-&#x60;&#x60;&#x60;
-
-**Integration Steps:**
-1. Add check to &#x60;preflight-checks.yaml&#x60;
-2. Test the check with sample code
-3. Run &#x60;/sync&#x60; to update all agent configs
-4. Document in &#x60;framework/enhancements/smart-operations.md&#x60;
-
-### Smart Operations Integration
-
-If new slash commands or intent patterns would be valuable:
-
-**Target Files:**
-- &#x60;smart-defaults.yaml&#x60; → &#x60;intent_patterns&#x60; (for intent detection)
-- &#x60;framework/enhancements/smart-operations.md&#x60; (for documentation)
-
-**Command Addition:**
-- **Command:** &#x60;/{command}&#x60; - {Description}
-- **Action:** {What it does}
-- **Example:** &#x60;/{command} @file&#x60;
-- **Pre-Flight Checks:** {Which checks apply}
-
-**Intent Pattern Addition:**
-&#x60;&#x60;&#x60;yaml
-intent_patterns:
-  {intent_name}:
-    triggers: [&quot;{keyword1}&quot;, &quot;{keyword2}&quot;]
-    action: {action_name}
-    confirm: &quot;{Confirmation message}&quot; | false
-&#x60;&#x60;&#x60;
-
-**Integration Steps:**
-1. Add to &#x60;smart-defaults.yaml&#x60;
-2. Document in &#x60;smart-operations.md&#x60;
-3. Run &#x60;/sync&#x60; to update configurations
+**Retrospective Types:**
+- Feature Implementation
+- Bug Fix
+- Refactoring
+- Code Review
+- Architecture Decision
 
 ---
 
-## **Phase 5: Meta-Learning &amp; Process Evolution**
-
-### Decision Frameworks Established
-
-Document any decision frameworks or heuristics that emerged:
-
-**{Framework Name}:**
-1. {Step 1}
-2. {Step 2}
-3. {Step 3}
-
-### Process Maturation
-
-**Before This Session:**
-- {What might have been done differently}
-- {What assumptions might have been made}
-- {What might have been missed}
-
-**After This Session:**
-- {What will be done differently}
-- {What new awareness exists}
-- {What protocols are now in place}
-
-### Balance Points Discovered
-
-Document any tensions between principles that were resolved:
-
-- **{Principle A}** vs **{Principle B}**: {How the balance was struck}
-- **{Ideal}** vs **{Reality}**: {How pragmatic decisions were made}
-
----
-
-## **Phase 6: Integration &amp; Propagation**
-
-### Standards Update Execution
-
-**Target Files:**
-- &#x60;docs/standards.md&#x60; (or project-specific standards file) - {What will be updated}
-- &#x60;framework/doctrine/operational-doctrine.md&#x60; - {What will be updated}
-- &#x60;preflight-checks.yaml&#x60; - {What will be added}
-- &#x60;smart-defaults.yaml&#x60; - {What will be added/updated}
-
-**Update Plan:**
-1. {Step 1 - Edit standards file}
-2. {Step 2 - Update doctrine if needed}
-3. {Step 3 - Add pre-flight checks if applicable}
-4. {Step 4 - Update smart defaults if applicable}
-5. {Step 5 - Run sync to propagate changes}
-
-### Agent Configuration Sync
-
-**Status:** {✅ Complete | ⚠️ Partial | 🚧 Pending}
-
-**Configurations to Update:**
-- &#x60;.cursorrules&#x60; - Cursor AI configuration
-- &#x60;CLAUDE.md&#x60; - Claude AI configuration
-- &#x60;.github/copilot-instructions.md&#x60; - GitHub Copilot configuration
-- &#x60;.codewhisperer/rules.md&#x60; - CodeWhisperer configuration
-- &#x60;.tabnine/guidelines/&#x60; - Tabnine configuration
-- &#x60;.windsurf/rules.md&#x60; - Windsurf configuration
-
-**Sync Command:**
-&#x60;&#x60;&#x60;bash
-bun scripts/sync.js
-&#x60;&#x60;&#x60;
-
-**Verification:**
-- Check that all configs include updated content
-- Verify pre-flight checks are active
-- Test Smart Operations features if updated
-
----
-
-## **Phase 7: Final Verdict &amp; Future Readiness**
-
-### Doctrine Evolution Status
-
-**Status:** {🟢 Complete | 🟡 Partial | 🔴 Blocked}
-
-**Summary:**
-- ✅ {What was successfully integrated}
-- ⚠️ {What needs follow-up}
-- 🚧 {What is blocked}
-
-### Future Mission Readiness
-
-**Future missions will benefit from:**
-- ✅ {Benefit 1}
-- ✅ {Benefit 2}
-- ✅ {Benefit 3}
-
-### Final Statement
-
-Conclude with one of the following statements:
-
-- &#x60;&quot;Self-Audit Complete. Doctrine has been updated with durable lessons. System state is verified. Ready for next engagement.&quot;&#x60;
-- &#x60;&quot;Self-Audit Complete. CRITICAL LESSONS IDENTIFIED but integration blocked. [Describe blocker and recommend immediate action].&quot;&#x60;
-
----
-
-## **Appendix: Session Artifacts**
-
-### Key Files Modified
-
-- &#x60;{file1}&#x60; - {What changed and why}
-- &#x60;{file2}&#x60; - {What changed and why}
-
-### Documentation Created
-
-- &#x60;{doc1}&#x60; - {Purpose and key content}
-- &#x60;{doc2}&#x60; - {Purpose and key content}
-
-### Commands Executed
-
-&#x60;&#x60;&#x60;bash
-# {Description of command and purpose}
-{command}
-
-# {Description of command and purpose}
-{command}
-&#x60;&#x60;&#x60;
-
----
-
-**Mission Complete. Doctrine Hardened. Ready for Next Engagement.** 🎖️
+**Ready to begin? Start with Phase 0: Session Context**
 
 
 ---

@@ -17,7 +17,8 @@ Your judgment is trusted. Your execution is precise. You operate with **complete
 **Reference Documents:**
 - Smart Operations: `framework/enhancements/smart-operations.md`
 - Project Standards: `docs/standards.md` (or project-specific standards file)
-- Playbooks: `framework/playbooks/` (request.md, refresh.md, retro.md)
+- Playbooks: `framework/playbooks/` (request.md with modular phases, refresh.md, retro.md)
+- Playbook Phases: `framework/playbooks/phases/` (orchestration, reconnaissance, planning, execution, verification, audit, report)
 - Testing Guide: `framework/docs/testing.md`
 
 ---

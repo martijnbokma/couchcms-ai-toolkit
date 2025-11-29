@@ -2,6 +2,159 @@
 
 This guide covers the new features added in version 2.1.0 that make the toolkit easier to use.
 
+## 🎯 Enhanced Editor Support
+
+The toolkit now provides comprehensive support for multiple AI-powered editors with advanced features.
+
+### Cursor IDE - Context-Aware MDC Rules
+
+**What's New:**
+- Auto-activating rules based on file patterns
+- Context-specific guidance for different file types
+- No manual rule loading required
+
+**Generated Files:**
+```
+.cursor/rules/
+  ├── refactor-alpinejs.mdc
+  ├── refactor-forms.mdc
+  ├── refactor-tailwind.mdc
+  └── ...
+```
+
+**How It Works:**
+- Rules automatically activate when you open matching files
+- Different rules for HTML, PHP, TypeScript, etc.
+- Glob patterns determine when rules apply
+
+**Example:**
+```markdown
+---
+description: Alpine.js refactoring patterns
+globs:
+  - "**/*.html"
+  - "**/*.php"
+---
+
+# Alpine.js Rules
+[Context-specific guidance...]
+```
+
+📖 See [Editor Support Guide](EDITOR-SUPPORT.md) for details.
+
+### Claude Code - Skills System
+
+**What's New:**
+- Modular knowledge units (Skills)
+- Auto-activation based on context
+- Permissions and environment configuration
+- Memory file loaded at startup
+
+**Generated Files:**
+```
+.claude/
+  ├── settings.json           # Permissions & environment
+  └── skills/                 # Modular knowledge
+      ├── couchcms-core.md
+      ├── tailwindcss.md
+      └── ...
+CLAUDE.md                     # Memory file
+AGENTS.md                     # Agent documentation
+```
+
+**Skills Features:**
+- One skill per module/agent
+- YAML frontmatter with metadata
+- Tool permissions per skill
+- Automatic contextual loading
+
+**Settings Features:**
+- Whitelist safe commands
+- Blacklist dangerous operations
+- Protect sensitive files
+- Set environment variables
+
+**Example Skill:**
+```markdown
+---
+name: couchcms-core
+description: Core CouchCMS patterns
+allowed-tools: Read, Write, Bash, Grep
+---
+
+# CouchCMS Core
+[Module content...]
+```
+
+**Example Settings:**
+```json
+{
+  "permissions": {
+    "allow": ["Bash(npm run *)"],
+    "deny": ["Read(./.env)"]
+  },
+  "env": {
+    "NODE_ENV": "development"
+  }
+}
+```
+
+📖 See [Editor Support Guide](EDITOR-SUPPORT.md) for details.
+
+### Memory Files
+
+**What's New:**
+- `CLAUDE.md` - Project context loaded at startup
+- `AGENTS.md` - Documentation of all available agents
+
+**CLAUDE.md Contains:**
+- Project overview and description
+- Active modules and agents
+- Coding standards and patterns
+- Architecture decisions
+- Development workflow
+
+**AGENTS.md Contains:**
+- List of all configured agents
+- Agent descriptions and capabilities
+- Usage examples for each agent
+- Quick reference table
+
+### Single Source of Truth
+
+All editor configurations are generated from `standards.md`:
+
+```yaml
+---
+name: "my-project"
+toolkit: "./ai-toolkit-shared"
+modules:
+  - couchcms-core
+  - tailwindcss
+agents:
+  - couchcms
+  - tailwindcss
+---
+
+# Project Rules
+[Your custom rules...]
+```
+
+**One command generates all configs:**
+```bash
+bun ai-toolkit-shared/scripts/sync.js
+```
+
+This generates:
+- ✅ Cursor rules (global + MDC)
+- ✅ Claude Code skills + settings
+- ✅ Memory files (CLAUDE.md, AGENTS.md)
+- ✅ GitHub Copilot instructions
+- ✅ Windsurf rules
+- ✅ Kiro steering files
+
+📖 See [Editor Quick Reference](EDITOR-QUICK-REFERENCE.md) for quick reference.
+
 ## 🔍 Auto-Detection
 
 The toolkit now automatically detects your project type, frameworks, and languages.

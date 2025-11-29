@@ -247,7 +247,7 @@ This command automatically:
 
 ## 📝 Doctrine Update Summary
 
-**Project Doctrine Updated:** `/docs/standards.md`
+**Project Doctrine Updated:** `{{config_file_path}}` (auto-detected standards file)
 
 **Changes Applied:**
 
@@ -313,7 +313,7 @@ This command automatically:
 
 **Status:** 🟢 **Operational Doctrine Updated**
 
-All learnings have been integrated into `/docs/standards.md` and propagated to all AI agent configurations.
+All learnings have been integrated into `{{config_file_path}}` and propagated to all AI agent configurations.
 
 **Future missions will benefit from:**
 - ✅ [Benefit 1]

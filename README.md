@@ -18,11 +18,19 @@ Provides consistent AI assistance across all your projects with modules, agents,
 - 🎨 **Interactive Browser** - Browse and select modules/agents with keyboard navigation
 - 📊 **Project Validation** - Compliance checking (0-100% score)
 
+### Editor Support
+- 🎯 **Cursor MDC Rules** - Context-aware rules that auto-activate based on file patterns
+- 🧠 **Claude Code Skills** - Modular knowledge units with auto-activation
+- ⚙️ **Claude Settings** - Permissions, environment variables, and tool configuration
+- 📝 **Memory Files** - Project context loaded at startup (CLAUDE.md, AGENTS.md)
+- 🔄 **Auto-Sync** - All editor configs generated from single source of truth
+
 ### Configuration
 - 🔄 **Auto-Generated Configs** - Cursor, Claude, Copilot, Windsurf, Kiro ready
 - 📦 **15 Knowledge Modules** - CouchCMS, TailwindCSS, Alpine.js, TypeScript, daisyUI, DataBound Forms, Search, Pagination, Users, Comments, and more
 - 🤖 **23 AI Agents** - Specialized guidance for daily development
-- 📋 **Auto-Loading Rules** - Context-aware refactoring patterns
+- 📋 **Auto-Loading Rules** - Context-aware refactoring patterns (Cursor MDC)
+- 🎯 **Claude Code Skills** - Modular knowledge with auto-activation
 - 🔧 **Zero Config** - Works out of the box
 
 ## ⚡ Prerequisites
@@ -191,6 +199,8 @@ bun run init
 | Guide | Purpose |
 |-------|---------|
 | **[Config Files Guide](docs/CONFIG-FILES.md)** | Understanding `standards.md` configuration |
+| **[Editor Support](docs/EDITOR-SUPPORT.md)** | Cursor, Claude Code, and other editor configs |
+| **[Editor Quick Reference](docs/EDITOR-QUICK-REFERENCE.md)** | Quick reference for editor features |
 | **[Project Rules](docs/PROJECT-RULES.md)** | Cursor Project Rules |
 | **[User Rules](docs/USER-RULES.md)** | Cursor User Rules |
 | **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Cursor Custom Commands |

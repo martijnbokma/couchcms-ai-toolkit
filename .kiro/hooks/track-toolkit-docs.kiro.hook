@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "name": "Track Toolkit Documentation",
+  "description": "Monitors changes to core toolkit files (modules, agents, framework, scripts) and prompts the agent to update documentation in README.md, /docs folder, and CHANGELOG.md to keep documentation synchronized with code changes",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "couchcms-ai-toolkit/modules/*.md",
+      "couchcms-ai-toolkit/agents/*.md",
+      "couchcms-ai-toolkit/framework/**/*.md",
+      "couchcms-ai-toolkit/scripts/*.js",
+      "couchcms-ai-toolkit/templates/**/*",
+      "couchcms-ai-toolkit/rules/*.mdc",
+      "couchcms-ai-toolkit/commands/*.md",
+      "couchcms-ai-toolkit/package.json",
+      "couchcms-ai-toolkit/standards.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A significant change has been made to the AI toolkit. Please review the changes and:\n\n1. **Update README.md** if the change affects:\n   - Core features or capabilities\n   - Installation or setup instructions\n   - Usage examples or quick start guide\n   - Available modules or agents list\n\n2. **Update /docs folder** if the change requires:\n   - New documentation pages for new features\n   - Updates to existing guides or tutorials\n   - Changes to configuration examples\n   - Architecture or design documentation updates\n\n3. **Update CHANGELOG.md** with:\n   - Clear description of what changed\n   - Version number (if applicable)\n   - Category: Added, Changed, Fixed, Removed, or Deprecated\n   - Impact on users and any migration steps needed\n\nEnsure all documentation:\n- Is written in clear, concise English\n- Includes practical examples where appropriate\n- Maintains consistency with existing documentation style\n- Is placed in the correct section/file\n- Helps users understand the change and its benefits\n\nReview the file changes and determine which documentation needs updating, then make the necessary updates."
+  }
+}
