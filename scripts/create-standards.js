@@ -141,42 +141,56 @@ async function gatherTechnologyInfo(projectType) {
     const useTypeScript = interactivityChoice === '2'
     const useHTMX = interactivityChoice === '3'
 
-    // Forms
-    console.log('\n📋 Forms:\n')
-    const useForms = await confirm('Do you need advanced forms (DataBound Forms)?', projectType === 'webapp' || projectType === 'ecommerce')
+    // Note: All CouchCMS features are included by default
+    // No need to ask about forms, users, search, comments - they're all included!
 
-    // Users
-    console.log('\n👥 User Management:\n')
-    const useUsers = await confirm('Do you need user accounts and authentication?', projectType === 'webapp' || projectType === 'ecommerce')
-
-    // Search
-    console.log('\n🔍 Search:\n')
-    const useSearch = await confirm('Do you need search functionality?', projectType === 'blog' || projectType === 'documentation' || projectType === 'ecommerce')
-
-    // Comments
-    console.log('\n💬 Comments:\n')
-    const useComments = await confirm('Do you need comments?', projectType === 'blog')
-
-    // Build modules list
-    const modules = ['couchcms-core']
+    // Build modules list - Start with ALL CouchCMS modules
+    const modules = [
+        'couchcms-core',
+        'databound-forms',
+        'custom-routes',
+        'folders',
+        'archives',
+        'relationships',
+        'repeatable-regions',
+        'search',
+        'pagination',
+        'comments',
+        'users'
+    ]
+    
+    // Add frontend frameworks based on user choice
     if (useTailwind) modules.push('tailwindcss')
     if (useDaisyUI) modules.push('daisyui')
     if (useAlpine) modules.push('alpinejs')
     if (useTypeScript) modules.push('typescript')
     if (useHTMX) modules.push('htmx')
-    if (useForms) modules.push('databound-forms')
-    if (useUsers) modules.push('users')
-    if (useSearch) modules.push('search')
-    if (useComments) modules.push('comments')
 
-    // Build agents list (simplified - match modules)
-    const agents = ['couchcms']
+    // Build agents list - Start with ALL CouchCMS agents
+    const agents = [
+        'couchcms',
+        'databound-forms',
+        'custom-routes',
+        'folders',
+        'archives',
+        'relationships',
+        'repeatable-regions',
+        'search',
+        'pagination',
+        'comments',
+        'users',
+        'views',
+        'nested-pages',
+        'photo-gallery',
+        'rss-feeds',
+        'on-page-editing',
+        'admin-panel-theming'
+    ]
+    
+    // Add frontend framework agents based on user choice
     if (useTailwind) agents.push('tailwindcss')
     if (useAlpine) agents.push('alpinejs')
-    if (useForms) agents.push('databound-forms')
-    if (useUsers) agents.push('users')
-    if (useSearch) agents.push('search')
-    if (useComments) agents.push('comments')
+    if (useTypeScript) agents.push('typescript')
 
     // Framework
     console.log('\n🤖 AI Framework:\n')

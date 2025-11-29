@@ -357,7 +357,6 @@ bun run release
 
 - **[Conventional Commits](https://www.conventionalcommits.org/)** - Commit format
 - **[Semantic Versioning](https://semver.org/)** - Version numbering
-- **[RELEASE-CHECKLIST.md](../RELEASE-CHECKLIST.md)** - Detailed release steps
 
 ---
 

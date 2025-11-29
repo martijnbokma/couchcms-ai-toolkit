@@ -162,7 +162,7 @@ git submodule update --init --recursive
 
 ### ⚠️ "Generated files not found"
 
-**Problem**: `.cursorrules`, `CLAUDE.md`, or `AGENT.md` missing.
+**Problem**: `.cursorrules`, `CLAUDE.md`, or `AGENTS.md` missing.
 
 **Solution**:
 
@@ -767,7 +767,7 @@ echo "=== Toolkit Version ==="
 cd ai-toolkit-shared && git log -1 --oneline && cd ..
 echo ""
 echo "=== File Status ==="
-ls -la .cursorrules CLAUDE.md AGENT.md
+ls -la .cursorrules CLAUDE.md AGENTS.md
 ```
 
 ### Where to Ask

@@ -49,7 +49,7 @@ your-project/
 │   └── js/               ← Compiled JavaScript
 ├── .cursorrules          ← Auto-generated (don't edit)
 ├── CLAUDE.md             ← Auto-generated (don't edit)
-└── AGENT.md              ← Auto-generated (don't edit)
+└── AGENTS.md             ← Auto-generated (don't edit)
 ```
 
 ---

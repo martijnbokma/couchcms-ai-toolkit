@@ -344,8 +344,8 @@ Choose a preset similar to your project, then customize.
 
 ## 📖 More Documentation
 
-- **[How It Works](HOW-IT-WORKS.md)** - Complete explanation
-- **[Cheat Sheet](CHEAT-SHEET.md)** - Quick reference
+- **[How It Works](GETTING-STARTED.md)** - Complete explanation
+- **[Cheat Sheet](QUICK-REFERENCE.md)** - Quick reference
 - **[New Features](NEW-FEATURES.md)** - v2.1.0 features
 - **[Commands Reference](../README.md#-commands)** - All commands
 - **[Troubleshooting](TROUBLESHOOTING.md)** - Common problems

@@ -58,7 +58,7 @@ The wizard will:
 
 8. **Run initial sync**
     - Automatically generates AI configurations
-    - Creates `.cursorrules`, `CLAUDE.md`, `AGENT.md`, etc.
+    - Creates `.cursorrules`, `CLAUDE.md`, `AGENTS.md`, etc.
 
 ### Example Session
 
@@ -168,7 +168,7 @@ bun ai-toolkit-shared/scripts/validate.js
 6. **Generated Files**
     - Checks if `.cursorrules` exists
     - Checks if `CLAUDE.md` exists
-    - Checks if `AGENT.md` exists
+    - Checks if `AGENTS.md` exists
     - Warns if files are missing
 
 7. **Custom Paths** (if configured)
@@ -307,7 +307,7 @@ bun ai-toolkit-shared/scripts/sync.js
     - Same content as `.cursorrules` in markdown format
     - For Claude Desktop or API usage
 
-3. **`AGENT.md`**
+3. **`AGENTS.md`**
     - Universal AI agent documentation
     - Platform-agnostic reference
     - Can be used with any AI assistant
@@ -370,7 +370,7 @@ $ bun ai-toolkit-shared/scripts/sync.js
 ✍️  Generating configurations:
   ✓ .cursorrules (1,245 lines)
   ✓ CLAUDE.md (1,245 lines)
-  ✓ AGENT.md (1,320 lines)
+  ✓ AGENTS.md (1,320 lines)
   ✓ .github/copilot-instructions.md (856 lines)
   ✓ .cursor/rules/refactor-html.mdc
   ✓ .cursor/rules/refactor-typescript.mdc
@@ -543,7 +543,7 @@ jobs:
             - name: Check sync is up to date
               run: |
                   bun ai-toolkit-shared/scripts/sync.js
-                  git diff --exit-code .cursorrules CLAUDE.md AGENT.md
+                  git diff --exit-code .cursorrules CLAUDE.md AGENTS.md
 ```
 
 ---
@@ -551,5 +551,5 @@ jobs:
 ## See Also
 
 - [Getting Started Guide](GETTING-STARTED.md)
-- [Configuration Options](CONFIGURATION.md)
+- [Configuration Options](CONFIG-FILES.md)
 - [Troubleshooting](TROUBLESHOOTING.md)

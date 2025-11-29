@@ -775,4 +775,4 @@ The following knowledge modules are available to all agents:
 
 ---
 
-*Generated from `standards.md` on 2025-11-28T14:29:36.421Z*
+*Generated from `standards.md` on 2025-11-29T08:16:22.151Z*

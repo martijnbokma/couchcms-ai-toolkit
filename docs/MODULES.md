@@ -491,8 +491,8 @@ framework: true
 
 **See Also:**
 
-- [Framework README](../../framework/README.md) - Complete framework documentation
-- [Framework Testing](../../framework/docs/testing.md) - Test scenarios and evaluation
+- [Framework README](../framework/README.md) - Complete framework documentation
+- [Framework Testing](../framework/docs/testing.md) - Test scenarios and evaluation
 
 ---
 

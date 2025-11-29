@@ -103,7 +103,6 @@ When creating new modules:
 - Follow the structure in existing modules
 - Include skill-rules.json for Claude Code integration
 - Update MODULES.md documentation
-- Add to defaults.yaml if needed
 
 ## Agent Development
 

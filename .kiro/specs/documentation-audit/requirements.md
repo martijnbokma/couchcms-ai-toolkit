@@ -137,3 +137,15 @@ The CouchCMS AI Toolkit documentation needs a comprehensive audit to ensure accu
 3. WHEN documentation includes code examples THEN the system SHALL use syntax highlighting and clear labels
 4. WHEN documentation describes processes THEN the system SHALL use visual indicators (✅, ❌, ⚠️) to highlight important points
 5. WHEN documentation provides reference material THEN the system SHALL include summary tables for quick lookup
+
+### Requirement 11
+
+**User Story:** As a user in the international developer community, I want all documentation in English, so that I can understand and use the toolkit regardless of my native language.
+
+#### Acceptance Criteria
+
+1. WHEN documentation contains prose text THEN the system SHALL verify all content is written in English
+2. WHEN documentation contains code comments THEN the system SHALL verify comments are written in English
+3. WHEN non-English text is detected in documentation THEN the system SHALL flag it for translation
+4. WHEN variable names or identifiers are used in examples THEN the system SHALL use English words
+5. WHEN error messages are quoted in documentation THEN the system SHALL verify they are in English
