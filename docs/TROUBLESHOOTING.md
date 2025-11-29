@@ -444,6 +444,122 @@ bun ai-toolkit-shared/scripts/validate.js --quick
 
 ---
 
+### ❌ "Cursor MDC rules not activating"
+
+**Problem**: Context-aware rules in `.cursor/rules/*.mdc` not working.
+
+**Solution**:
+
+1. **Check files exist**
+    ```bash
+    ls -la .cursor/rules/
+    ```
+
+2. **Verify Cursor version**
+    - MDC rules require Cursor v0.40 or later
+    - Update Cursor if needed
+
+3. **Check glob patterns**
+    ```bash
+    # View a rule's patterns
+    head -10 .cursor/rules/refactor-alpinejs.mdc
+    ```
+    
+    Make sure glob patterns match your file types:
+    ```yaml
+    globs:
+      - "**/*.html"  # Matches all HTML files
+      - "**/*.php"   # Matches all PHP files
+    ```
+
+4. **Regenerate rules**
+    ```bash
+    rm -rf .cursor/rules/
+    bun ai-toolkit-shared/scripts/sync.js
+    ```
+
+5. **Restart Cursor**
+    - Close and reopen Cursor completely
+
+---
+
+### ❌ "Claude Code not loading skills"
+
+**Problem**: Skills in `.claude/skills/*.md` not being used.
+
+**Solution**:
+
+1. **Check files exist**
+    ```bash
+    ls -la .claude/skills/
+    ```
+
+2. **Verify YAML frontmatter**
+    ```bash
+    # Check a skill file
+    head -10 .claude/skills/couchcms-core.md
+    ```
+    
+    Should have valid frontmatter:
+    ```yaml
+    ---
+    name: couchcms-core
+    description: Core CouchCMS patterns
+    allowed-tools: Read, Write, Bash, Grep
+    ---
+    ```
+
+3. **Check Claude Code version**
+    - Skills require Claude Code v0.5 or later
+    - Update Claude Code if needed
+
+4. **Regenerate skills**
+    ```bash
+    rm -rf .claude/skills/
+    bun ai-toolkit-shared/scripts/sync.js
+    ```
+
+5. **Restart Claude Code**
+
+---
+
+### ❌ "Claude Code settings not applied"
+
+**Problem**: Permissions or environment variables in `.claude/settings.json` not working.
+
+**Solution**:
+
+1. **Check file exists and is valid JSON**
+    ```bash
+    cat .claude/settings.json | jq .
+    ```
+
+2. **Verify permissions syntax**
+    ```json
+    {
+      "permissions": {
+        "allow": [
+          "Bash(npm run *)",
+          "Read(~/.config/**)"
+        ],
+        "deny": [
+          "Read(./.env)",
+          "Bash(rm -rf *)"
+        ]
+      }
+    }
+    ```
+
+3. **Regenerate settings**
+    ```bash
+    rm .claude/settings.json
+    bun ai-toolkit-shared/scripts/sync.js
+    ```
+
+4. **Restart Claude Code**
+
+---
+
 ### ❌ "Claude not seeing CLAUDE.md"
 
 **Problem**: Claude Desktop doesn't auto-load project files.
@@ -458,6 +574,38 @@ You need to explicitly add CLAUDE.md to your Claude conversation:
 4. Select CLAUDE.md from your project
 
 Or copy key sections into your prompts.
+
+**For Claude Code CLI:**
+- CLAUDE.md is automatically loaded at startup
+- Check file exists: `ls -la CLAUDE.md`
+- Regenerate if needed: `bun ai-toolkit-shared/scripts/sync.js`
+
+---
+
+### ❌ "AGENTS.md not showing agents"
+
+**Problem**: AGENTS.md is empty or missing agents.
+
+**Solution**:
+
+1. **Check agents are configured**
+    ```yaml
+    # In standards.md
+    agents:
+      - couchcms
+      - tailwindcss
+    ```
+
+2. **Regenerate**
+    ```bash
+    rm AGENTS.md
+    bun ai-toolkit-shared/scripts/sync.js
+    ```
+
+3. **Verify content**
+    ```bash
+    cat AGENTS.md | head -50
+    ```
 
 ---
 

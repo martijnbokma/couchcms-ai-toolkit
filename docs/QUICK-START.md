@@ -140,17 +140,26 @@ The toolkit automatically generates:
 ```
 your-project/
 ├── .cursorrules              ← Cursor IDE config
+├── .cursor/
+│   └── rules/                ← Context-aware MDC rules (auto-activate)
+│       ├── refactor-alpinejs.mdc
+│       ├── refactor-forms.mdc
+│       └── ...
 ├── .claude/                  ← Claude Code config
-│   ├── settings.json
-│   └── skills/
+│   ├── settings.json         ← Permissions & environment
+│   └── skills/               ← Modular knowledge (auto-activate)
+│       ├── couchcms-core.md
+│       ├── tailwindcss.md
+│       └── ...
 ├── .github/
 │   └── copilot-instructions.md  ← GitHub Copilot config
 ├── .windsurf/
 │   └── rules.md              ← Windsurf config
 ├── .kiro/
 │   └── steering/             ← Kiro config
-├── .project/
-│   └── standards.md          ← Your configuration
+├── CLAUDE.md                 ← Memory file (loaded at startup)
+├── AGENTS.md                 ← Agent documentation
+├── standards.md              ← Your configuration (single source of truth)
 └── ai-toolkit-shared/        ← The toolkit (submodule)
 ```
 

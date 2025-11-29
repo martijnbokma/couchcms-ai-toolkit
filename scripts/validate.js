@@ -12,6 +12,7 @@ import { readFileSync, existsSync } from 'fs'
 import { dirname, resolve, join } from 'path'
 import { fileURLToPath } from 'url'
 import { findConfigFile, loadConfig, getConfigFileName, findProjectFile, resolveToolkitPath } from './utils/utils.js'
+import { validateConfiguration } from './lib/config-validator.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -89,6 +90,28 @@ async function validate() {
                 errors.push(`Missing toolkit file: ${file}`)
                 score -= 10
             }
+        }
+        
+        // Run enhanced configuration validation
+        console.log('🔍 Running enhanced validation...')
+        const validation = validateConfiguration(config, toolkitPath, projectDir)
+        
+        if (validation.errors.length > 0) {
+            console.log('\n❌ Editor Configuration Errors:\n')
+            validation.errors.forEach(err => {
+                console.log(`   ${err}`)
+                errors.push(err)
+                score -= 10
+            })
+        }
+        
+        if (validation.warnings.length > 0) {
+            console.log('\n⚠️  Editor Configuration Warnings:\n')
+            validation.warnings.forEach(warn => {
+                console.log(`   ${warn}`)
+                warnings.push(warn)
+                score -= 3
+            })
         }
     }
 

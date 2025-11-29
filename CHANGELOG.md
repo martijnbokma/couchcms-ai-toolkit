@@ -12,11 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New `create-standards.js` script with guided setup in simple language
 - Documentation for simple setup in `docs/SIMPLE-SETUP.md`
 - Comparison between simple and advanced setup methods in README
+- feat(docs): comprehensive editor support documentation
+- New `docs/EDITOR-SUPPORT.md` with detailed guide for all supported editors
+- Enhanced documentation for Cursor MDC rules and Claude Code Skills
+- Troubleshooting section for editor-specific issues
+- Examples of generated configurations for each editor
 
 ### Changed
 - Update README with setup method comparison and recommendations
 - Add `bun run create` command to package.json
 - Update tech.md steering with new setup command
+- Enhanced README with editor support features section
+- Updated QUICK-START.md with detailed file structure including editor configs
+- Updated CONFIG-FILES.md with comprehensive editor configuration information
+- Updated TROUBLESHOOTING.md with editor-specific troubleshooting sections
 
 ## [1.0.14] - 2025-11-28
 
