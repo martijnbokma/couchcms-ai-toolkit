@@ -206,11 +206,12 @@ async function init() {
         console.log(`   - Modules: ${selectedPreset.modules.join(', ')}`)
         console.log(`   - Agents: ${selectedPreset.agents.join(', ')}`)
     } else if (simpleMode) {
-        console.log('\n✨ Simple mode: Using recommended defaults')
+        console.log('\n✨ Simple mode: Using CouchCMS Complete preset')
         console.log('   - Configuration: .project/standards.md')
-        console.log('   - Modules: Standard preset (core + tailwindcss + alpinejs)')
-        console.log('   - Agents: Standard preset (couchcms + tailwindcss + alpinejs)')
+        console.log('   - Modules: ALL CouchCMS modules + TailwindCSS + Alpine.js')
+        console.log('   - Agents: ALL CouchCMS agents + TailwindCSS + Alpine.js')
         console.log('   - Framework: Disabled (can be enabled later in standards.md)')
+        console.log('\n   💡 This gives you full CouchCMS support out of the box!')
     }
 
     // Gather project information (Questions 1-2 in simple/auto mode)

@@ -154,8 +154,29 @@ curacy
     - Verify presence of summary tables
     - _Requirements: 10.5_
 
+- [ ] 8a. Audit language consistency
+  - [ ] 8a.1 Check prose text language
+    - Scan all documentation files for non-English text
+    - Flag paragraphs, headings, and descriptions not in English
+    - _Requirements: 11.1_
+  
+  - [ ] 8a.2 Check code comment language
+    - Extract comments from code blocks
+    - Verify all comments are in English
+    - _Requirements: 11.2_
+  
+  - [ ] 8a.3 Check identifier language
+    - Extract variable names, function names from examples
+    - Verify they use English words
+    - _Requirements: 11.4_
+  
+  - [ ] 8a.4 Check error message language
+    - Extract quoted error messages
+    - Verify they are in English
+    - _Requirements: 11.5_
+
 - [x] 9. Generate comprehensive audit report
-  - Compile all findings from tasks 1-8
+  - Compile all findings from tasks 1-8a
   - Categorize by severity (critical, high, medium, low)
   - Organize by document and issue type
   - Include specific line numbers and recommendations
@@ -166,23 +187,23 @@ curacy
 
 ## Phase 2: Documentation Updates
 
-- [ ] 10. Fix critical issues
-  - [ ] 10.1 Update outdated command references
+- [x] 10. Fix critical issues
+  - [x] 10.1 Update outdated command references
     - Replace incorrect commands with correct ones
     - Update script paths
     - _Requirements: 1.1, 1.5_
   
-  - [ ] 10.2 Fix broken file path references
+  - [x] 10.2 Fix broken file path references
     - Update non-existent paths to correct paths
     - Remove references to deleted files
     - _Requirements: 1.2, 8.5_
   
-  - [ ] 10.3 Remove references to deprecated files
+  - [x] 10.3 Remove references to deprecated files
     - Remove or update all references to CLAUDE.md, AGENT.md
     - Remove references to config.yaml, defaults.yaml, etc.
     - _Requirements: 8.1_
   
-  - [ ] 10.4 Fix broken internal links
+  - [x] 10.4 Fix broken internal links
     - Update incorrect link targets
     - Fix anchor references
     - _Requirements: 4.4, 8.4_

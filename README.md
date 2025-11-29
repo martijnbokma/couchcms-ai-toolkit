@@ -251,8 +251,8 @@ bun ai-toolkit-shared/scripts/validate.js
 bun ai-toolkit-shared/scripts/migrate.js
 
 # Extend modules from documentation
-bun ai-toolkit-shared/scripts/extend-modules.js --analyze
-bun ai-toolkit-shared/scripts/extend-modules.js --module comments
+cd ai-toolkit-shared && bun run extend-modules --analyze
+cd ai-toolkit-shared && bun run extend-modules --module comments
 ```
 
 ### Updates

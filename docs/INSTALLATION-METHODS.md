@@ -206,6 +206,6 @@ Next steps:
 ## 📚 More Documentation
 
 - **[Quick Start](QUICK-START.md)** - Get started in 5 minutes
-- **[How It Works](HOW-IT-WORKS.md)** - Understanding the toolkit
+- **[How It Works](GETTING-STARTED.md)** - Understanding the toolkit
 - **[Troubleshooting](TROUBLESHOOTING.md)** - Common problems
 - **[Commands](../README.md#-commands)** - All available commands

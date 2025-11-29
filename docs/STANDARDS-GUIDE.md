@@ -267,7 +267,7 @@ bun ai-toolkit-shared/scripts/sync.js
 # Creates:
 # - .cursorrules (references standards.md)
 # - CLAUDE.md (references standards.md)
-# - AGENT.md (references standards.md)
+# - AGENTS.md (references standards.md)
 ```
 
 ### 4. Validate

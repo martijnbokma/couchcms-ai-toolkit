@@ -627,7 +627,7 @@ See [MIGRATION.md](docs/MIGRATION.md) for complete instructions.
 - Initial release of CouchCMS AI Toolkit
 - Core module system (couchcms-core, tailwindcss, daisyui, alpinejs, typescript, databound-forms)
 - Agent system for specialized AI assistance
-- Automatic generation of .cursorrules, CLAUDE.md, AGENT.md
+- Automatic generation of .cursorrules, CLAUDE.md, AGENTS.md
 - Variable replacement system ({{paths.xxx}})
 - Cursor rules auto-loading based on file type
 - Project-specific context support

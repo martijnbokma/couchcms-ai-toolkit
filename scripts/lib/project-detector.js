@@ -261,9 +261,22 @@ export function detectLanguages(projectDir) {
  * @returns {string[]} Recommended module names
  */
 export function getRecommendedModules(projectInfo) {
-    const modules = ['couchcms-core'] // Always include core
+    // Start with ALL CouchCMS modules (this is a CouchCMS toolkit!)
+    const modules = [
+        'couchcms-core',
+        'databound-forms',
+        'custom-routes',
+        'folders',
+        'archives',
+        'relationships',
+        'repeatable-regions',
+        'search',
+        'pagination',
+        'comments',
+        'users'
+    ]
 
-    // Add framework modules
+    // Add detected frontend framework modules
     if (projectInfo.frameworks.includes('tailwindcss')) {
         modules.push('tailwindcss')
     }
@@ -280,17 +293,10 @@ export function getRecommendedModules(projectInfo) {
         modules.push('htmx')
     }
 
-    // Add type-specific modules
-    switch (projectInfo.type) {
-        case 'blog':
-            modules.push('comments', 'search', 'pagination')
-            break
-        case 'ecommerce':
-            modules.push('databound-forms', 'users', 'search')
-            break
-        case 'webapp':
-            modules.push('databound-forms', 'users')
-            break
+    // If no frontend frameworks detected, add TailwindCSS + Alpine.js as defaults
+    if (!projectInfo.frameworks.includes('tailwindcss') && 
+        !projectInfo.frameworks.includes('alpinejs')) {
+        modules.push('tailwindcss', 'alpinejs')
     }
 
     return [...new Set(modules)] // Remove duplicates
@@ -302,27 +308,42 @@ export function getRecommendedModules(projectInfo) {
  * @returns {string[]} Recommended agent names
  */
 export function getRecommendedAgents(projectInfo) {
-    const agents = ['couchcms'] // Always include main agent
+    // Start with ALL CouchCMS agents (this is a CouchCMS toolkit!)
+    const agents = [
+        'couchcms',
+        'databound-forms',
+        'custom-routes',
+        'folders',
+        'archives',
+        'relationships',
+        'repeatable-regions',
+        'search',
+        'pagination',
+        'comments',
+        'users',
+        'views',
+        'nested-pages',
+        'photo-gallery',
+        'rss-feeds',
+        'on-page-editing',
+        'admin-panel-theming'
+    ]
 
-    // Add framework agents
+    // Add detected frontend framework agents
     if (projectInfo.frameworks.includes('tailwindcss')) {
         agents.push('tailwindcss')
     }
     if (projectInfo.frameworks.includes('alpinejs')) {
         agents.push('alpinejs')
     }
+    if (projectInfo.frameworks.includes('typescript')) {
+        agents.push('typescript')
+    }
 
-    // Add type-specific agents
-    switch (projectInfo.type) {
-        case 'blog':
-            agents.push('comments', 'search')
-            break
-        case 'ecommerce':
-            agents.push('databound-forms', 'users')
-            break
-        case 'webapp':
-            agents.push('databound-forms', 'users')
-            break
+    // If no frontend frameworks detected, add TailwindCSS + Alpine.js as defaults
+    if (!projectInfo.frameworks.includes('tailwindcss') && 
+        !projectInfo.frameworks.includes('alpinejs')) {
+        agents.push('tailwindcss', 'alpinejs')
     }
 
     return [...new Set(agents)] // Remove duplicates

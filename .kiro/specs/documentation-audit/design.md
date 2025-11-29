@@ -290,6 +290,21 @@ interface Document {
 *For any* documentation file labeled as "reference" or "guide", it should include at least one summary table
 **Validates: Requirements 10.5**
 
+### Property 19: English language consistency
+
+*For any* text content in documentation (excluding code syntax), the content must be written in English
+**Validates: Requirements 11.1, 11.2, 11.3**
+
+### Property 20: English code comments
+
+*For any* code comment in documentation examples, the comment must be written in English
+**Validates: Requirements 11.2**
+
+### Property 21: English identifiers
+
+*For any* variable name, function name, or identifier in code examples, it must use English words
+**Validates: Requirements 11.4**
+
 ## Error Handling
 
 ### Parsing Errors

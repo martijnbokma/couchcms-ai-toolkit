@@ -3,6 +3,46 @@
 # Predefined configurations for common project types
 
 presets:
+  couchcms-complete:
+    name: "CouchCMS Complete"
+    description: "All CouchCMS features + TailwindCSS + Alpine.js (RECOMMENDED)"
+    modules:
+      - couchcms-core
+      - databound-forms
+      - custom-routes
+      - folders
+      - archives
+      - relationships
+      - repeatable-regions
+      - search
+      - pagination
+      - comments
+      - users
+      - tailwindcss
+      - alpinejs
+    agents:
+      - couchcms
+      - databound-forms
+      - custom-routes
+      - folders
+      - archives
+      - relationships
+      - repeatable-regions
+      - search
+      - pagination
+      - comments
+      - users
+      - views
+      - nested-pages
+      - photo-gallery
+      - rss-feeds
+      - on-page-editing
+      - admin-panel-theming
+      - tailwindcss
+      - alpinejs
+    framework:
+      enabled: false
+
   landing-page:
     name: "Landing Page"
     description: "Simple landing page with CouchCMS"

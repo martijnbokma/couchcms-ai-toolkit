@@ -99,19 +99,34 @@ export function getAvailableAgents() {
  */
 export async function selectModules(simpleMode) {
     if (simpleMode) {
-        // Simple mode: use standard preset
-        console.log('\n📚 Using standard module preset:')
-        console.log('   ✓ couchcms-core - Core CouchCMS patterns')
+        // Simple mode: ALL CouchCMS modules + TailwindCSS + Alpine.js
+        console.log('\n📚 Using CouchCMS Complete module preset:')
+        console.log('   ✓ All CouchCMS modules (core, databound-forms, custom-routes, folders, archives,')
+        console.log('     relationships, repeatable-regions, search, pagination, comments, users)')
         console.log('   ✓ tailwindcss - TailwindCSS 4 patterns')
         console.log('   ✓ alpinejs - Alpine.js integration')
-        return ['couchcms-core', 'tailwindcss', 'alpinejs']
+        return [
+            'couchcms-core',
+            'databound-forms',
+            'custom-routes',
+            'folders',
+            'archives',
+            'relationships',
+            'repeatable-regions',
+            'search',
+            'pagination',
+            'comments',
+            'users',
+            'tailwindcss',
+            'alpinejs'
+        ]
     }
 
     // Custom mode: ask for preset or individual selection
     console.log('\n📚 Module selection:')
     console.log('  1. Minimal (only couchcms-core)')
-    console.log('  2. Standard (core + tailwindcss + alpinejs)')
-    console.log('  3. Full (all modules)')
+    console.log('  2. CouchCMS Complete (all CouchCMS + tailwindcss + alpinejs) - RECOMMENDED')
+    console.log('  3. Full (everything including TypeScript, daisyUI)')
     console.log('  4. Custom (choose individually)')
     const modulePreset = await prompt('Choice [1-4]', '2')
 
@@ -121,7 +136,21 @@ export async function selectModules(simpleMode) {
     if (modulePreset === '1') {
         // Minimal - already set
     } else if (modulePreset === '2') {
-        selectedModules.push('tailwindcss', 'alpinejs')
+        // CouchCMS Complete: All CouchCMS modules + TailwindCSS + Alpine.js
+        selectedModules.push(
+            'databound-forms',
+            'custom-routes',
+            'folders',
+            'archives',
+            'relationships',
+            'repeatable-regions',
+            'search',
+            'pagination',
+            'comments',
+            'users',
+            'tailwindcss',
+            'alpinejs'
+        )
     } else if (modulePreset === '3') {
         // Full: all modules
         selectedModules.push(
@@ -164,19 +193,42 @@ export async function selectModules(simpleMode) {
  */
 export async function selectAgents(simpleMode) {
     if (simpleMode) {
-        // Simple mode: use standard preset
-        console.log('\n🤖 Using standard agent preset:')
-        console.log('   ✓ couchcms - Core CouchCMS development')
+        // Simple mode: ALL CouchCMS agents + TailwindCSS + Alpine.js
+        console.log('\n🤖 Using CouchCMS Complete agent preset:')
+        console.log('   ✓ All CouchCMS agents (couchcms, databound-forms, custom-routes, folders,')
+        console.log('     archives, relationships, repeatable-regions, search, pagination, comments,')
+        console.log('     users, views, nested-pages, photo-gallery, rss-feeds, on-page-editing,')
+        console.log('     admin-panel-theming)')
         console.log('   ✓ tailwindcss - TailwindCSS styling')
         console.log('   ✓ alpinejs - Alpine.js development')
-        return ['couchcms', 'tailwindcss', 'alpinejs']
+        return [
+            'couchcms',
+            'databound-forms',
+            'custom-routes',
+            'folders',
+            'archives',
+            'relationships',
+            'repeatable-regions',
+            'search',
+            'pagination',
+            'comments',
+            'users',
+            'views',
+            'nested-pages',
+            'photo-gallery',
+            'rss-feeds',
+            'on-page-editing',
+            'admin-panel-theming',
+            'tailwindcss',
+            'alpinejs'
+        ]
     }
 
     // Custom mode: ask for preset or individual selection
     console.log('\n🤖 Agent selection:')
     console.log('  1. Minimal (only couchcms)')
-    console.log('  2. Standard (couchcms + tailwindcss + alpinejs)')
-    console.log('  3. Full (all agents)')
+    console.log('  2. CouchCMS Complete (all CouchCMS + tailwindcss + alpinejs) - RECOMMENDED')
+    console.log('  3. Full (all agents including utility agents)')
     console.log('  4. Custom (choose individually)')
     const agentPreset = await prompt('Choice [1-4]', '2')
 
@@ -186,30 +238,51 @@ export async function selectAgents(simpleMode) {
     if (agentPreset === '1') {
         selectedAgents = ['couchcms']
     } else if (agentPreset === '2') {
-        selectedAgents = ['couchcms', 'tailwindcss', 'alpinejs']
-    } else if (agentPreset === '3') {
-        // Full: all agents
+        // CouchCMS Complete: All CouchCMS agents + TailwindCSS + Alpine.js
         selectedAgents = [
             'couchcms',
             'databound-forms',
+            'custom-routes',
+            'folders',
+            'archives',
+            'relationships',
+            'repeatable-regions',
+            'search',
+            'pagination',
+            'comments',
+            'users',
+            'views',
+            'nested-pages',
+            'photo-gallery',
+            'rss-feeds',
+            'on-page-editing',
+            'admin-panel-theming',
+            'tailwindcss',
+            'alpinejs'
+        ]
+    } else if (agentPreset === '3') {
+        // Full: all agents including utility agents
+        selectedAgents = [
+            'couchcms',
+            'databound-forms',
+            'custom-routes',
+            'folders',
+            'archives',
+            'relationships',
+            'repeatable-regions',
+            'search',
+            'pagination',
+            'comments',
+            'users',
+            'views',
+            'nested-pages',
+            'photo-gallery',
+            'rss-feeds',
+            'on-page-editing',
+            'admin-panel-theming',
             'alpinejs',
             'tailwindcss',
             'typescript',
-            'search',
-            'pagination',
-            'relationships',
-            'views',
-            'comments',
-            'users',
-            'folders',
-            'repeatable-regions',
-            'photo-gallery',
-            'rss-feeds',
-            'archives',
-            'nested-pages',
-            'on-page-editing',
-            'admin-panel-theming',
-            'custom-routes',
             'mysql',
             'bun',
             'git',

@@ -70,11 +70,16 @@ Choose option **1** when asked for setup mode. The wizard will:
 1. ✅ Ask for **project name** and **description**
 2. ✅ Use **recommended defaults** for everything else:
    - Configuration file: `.project/standards.md`
-   - Modules: Standard preset (core + tailwindcss + alpinejs)
-   - Agents: Standard preset (couchcms + tailwindcss + alpinejs)
+   - **All CouchCMS modules** (core, databound-forms, custom-routes, folders, archives, relationships, repeatable-regions, search, pagination, comments, users)
+   - **All CouchCMS agents** (couchcms, databound-forms, custom-routes, folders, archives, relationships, repeatable-regions, search, pagination, comments, users, views, nested-pages, photo-gallery, rss-feeds, on-page-editing, admin-panel-theming)
+   - **Frontend frameworks**: TailwindCSS + Alpine.js (you can customize later)
    - No context directory (you can add one later if needed)
 
-**Result:** You're done in 30 seconds! ✨
+**Result:** You're done in 30 seconds with full CouchCMS support! ✨
+
+:::tip[Why All CouchCMS Modules?]
+Since this is a **CouchCMS AI Toolkit**, all CouchCMS-specific modules and agents are included by default. You can always customize frontend frameworks (Alpine.js, TailwindCSS, daisyUI, TypeScript) based on your project needs.
+:::
 
 #### Custom Mode (Full Control)
 
@@ -85,17 +90,21 @@ Choose option **2** for full customization. The wizard will guide you through:
 3. ✅ **Configuration file location** (.project/, docs/, or root)
 4. ✅ **Toolkit location** (submodule or home directory)
 5. ✅ **Module selection** with presets:
+   - **CouchCMS Complete** (all CouchCMS modules + TailwindCSS + Alpine.js) - **Recommended**
    - Minimal (only couchcms-core)
-   - Standard (core + tailwindcss + alpinejs)
-   - Full (all modules)
+   - Full (everything including TypeScript, daisyUI)
    - Custom (choose individually)
 6. ✅ **AI agent selection** with presets:
+   - **CouchCMS Complete** (all CouchCMS agents + TailwindCSS + Alpine.js) - **Recommended**
    - Minimal (only couchcms)
-   - Standard (couchcms + tailwindcss + alpinejs)
-   - Full (all agents)
+   - Full (all agents including utility agents)
    - Custom (choose individually)
 7. ✅ **Context directory** (optional - see explanation below)
 8. ✅ **Automatic sync** (generates AI configurations)
+
+:::tip[Recommended Preset]
+The **CouchCMS Complete** preset includes all CouchCMS-specific modules and agents (databound-forms, custom-routes, folders, archives, relationships, repeatable-regions, search, pagination, comments, users, views, nested-pages, photo-gallery, rss-feeds, on-page-editing, admin-panel-theming) plus the most common frontend frameworks (TailwindCSS + Alpine.js). This gives you full CouchCMS support out of the box.
+:::
 
 ### 6. What You Get
 
@@ -179,14 +188,58 @@ description: 'Brief project description'
 toolkit: './ai-toolkit-shared'
 
 modules:
+    # CouchCMS Core (always required)
     - couchcms-core
+    
+    # CouchCMS Features (recommended - include all for full support)
+    - databound-forms
+    - custom-routes
+    - folders
+    - archives
+    - relationships
+    - repeatable-regions
+    - search
+    - pagination
+    - comments
+    - users
+    
+    # Frontend Frameworks (optional - choose based on your project)
     - tailwindcss
     - alpinejs
+    # - daisyui
+    # - typescript
 
 agents:
+    # CouchCMS Core Agent (always required)
     - couchcms
+    
+    # CouchCMS Feature Agents (recommended - include all for full support)
+    - databound-forms
+    - custom-routes
+    - folders
+    - archives
+    - relationships
+    - repeatable-regions
+    - search
+    - pagination
+    - comments
+    - users
+    - views
+    - nested-pages
+    - photo-gallery
+    - rss-feeds
+    - on-page-editing
+    - admin-panel-theming
+    
+    # Frontend Framework Agents (optional - choose based on your project)
     - tailwindcss
     - alpinejs
+    # - typescript
+    
+    # Utility Agents (optional)
+    # - bun
+    # - git
+    # - mysql
 
 framework: false
 ---
@@ -265,7 +318,7 @@ This creates:
 
 - `.cursorrules`
 - `CLAUDE.md`
-- `AGENT.md`
+- `AGENTS.md`
 - `.github/copilot-instructions.md`
 - `.cursor/rules/*.mdc`
 
@@ -324,7 +377,8 @@ The toolkit has its own dependencies (`gray-matter`, `yaml`, `handlebars`) that 
 
 **Simple mode:**
 - Fast setup (30 seconds)
-- Uses recommended defaults
+- **Includes ALL CouchCMS modules and agents** (full CouchCMS support)
+- Includes TailwindCSS + Alpine.js for frontend
 - Perfect for beginners
 - You can always customize later by editing `.project/standards.md`
 
@@ -333,8 +387,15 @@ The toolkit has its own dependencies (`gray-matter`, `yaml`, `handlebars`) that 
 - Choose exact modules and agents
 - Select configuration file location
 - Optional context directory
+- Choose between presets: CouchCMS Complete, Minimal, Full, or Custom
 
-**Recommendation:** Start with Simple mode, then customize as needed.
+**Recommendation:** Start with Simple mode for full CouchCMS support, then customize frontend frameworks as needed.
+
+### Q: Why are all CouchCMS modules included by default?
+
+This is a **CouchCMS AI Toolkit**, so all CouchCMS-specific features (databound-forms, custom-routes, folders, archives, relationships, repeatable-regions, search, pagination, comments, users, views, nested-pages, photo-gallery, rss-feeds, on-page-editing, admin-panel-theming) are included by default to provide complete CouchCMS support.
+
+**Frontend frameworks** (Alpine.js, TailwindCSS, daisyUI, TypeScript) are optional and can be customized based on your project needs. You can always edit `.project/standards.md` to add or remove frontend frameworks later.
 
 ### Q: What is a "context directory" and when do I need it?
 
@@ -398,7 +459,7 @@ Yes! Each project can have its own configuration file while sharing the same too
 
 ### Q: Do I need to commit the generated files?
 
-Yes, commit `.cursorrules`, `CLAUDE.md`, and `AGENT.md` to your repository so all team members use the same AI configurations.
+Yes, commit `.cursorrules`, `CLAUDE.md`, and `AGENTS.md` to your repository so all team members use the same AI configurations.
 
 ## Troubleshooting
 
