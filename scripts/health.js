@@ -126,10 +126,38 @@ function checkGeneratedFiles(projectDir) {
     let outdatedFiles = []
 
     const configFile = findConfigFile(projectDir)
-    const configMtime = configFile ? statSync(configFile).mtimeMs : 0
+    if (!configFile) {
+        checks.push({
+            status: 'error',
+            message: 'No configuration file found',
+            fix: 'Run: bun ai-toolkit-shared/scripts/init.js'
+        })
+        return checks
+    }
+
+    // Determine actual project root (may be parent if config is in toolkit directory)
+    let actualProjectDir = projectDir
+    const normalizedConfigPath = configFile.replace(/\\/g, '/')
+
+    // If config is in .project/ or docs/, use parent as project root
+    if (normalizedConfigPath.includes('/.project/') || normalizedConfigPath.includes('/docs/')) {
+        actualProjectDir = dirname(dirname(configFile))
+    }
+
+    // Check if config is inside toolkit directory itself
+    const hasToolkitStructure = existsSync(join(actualProjectDir, 'modules')) &&
+                                 existsSync(join(actualProjectDir, 'templates')) &&
+                                 existsSync(join(actualProjectDir, 'scripts'))
+
+    if (hasToolkitStructure) {
+        // Config is in toolkit directory, use parent as project root
+        actualProjectDir = dirname(actualProjectDir)
+    }
+
+    const configMtime = statSync(configFile).mtimeMs
 
     for (const { path, name } of expectedFiles) {
-        const filePath = join(projectDir, path)
+        const filePath = join(actualProjectDir, path)
 
         if (!existsSync(filePath)) {
             missingFiles.push(name)
