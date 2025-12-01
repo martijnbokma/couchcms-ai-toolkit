@@ -167,7 +167,4 @@ export function formatNameError(name, type, suggestions) {
 
     return message
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 5881bba (updates 2025-12-01)

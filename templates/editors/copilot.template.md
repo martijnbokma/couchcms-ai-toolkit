@@ -1,6 +1,6 @@
 # GitHub Copilot Instructions - {{project.name}}
 
-**Critical: Always validate against `{{config_file_path}}` before suggesting code.**
+**Critical: Always validate against `/docs/standards.md` before suggesting code.**
 
 ## Project Configuration
 
@@ -15,7 +15,7 @@
 ### Suggestion Philosophy
 
 You are an intelligent code completion agent optimized for this project. Your suggestions must:
-- **Follow Project Standards** - All code must align with `{{config_file_path}}`
+- **Follow Project Standards** - All code must align with `/docs/standards.md`
 - **Be Contextually Aware** - Understand the file type and framework being used
 - **Prioritize Safety** - Never suggest patterns that could cause security issues
 - **Maintain Consistency** - Match existing code style and patterns
@@ -266,7 +266,7 @@ Consider the appropriate role perspective when suggesting code:
 
 ## 🔗 INTEGRATION
 
-This configuration is synchronized with `{{config_file_path}}`. Suggestions automatically align with project standards.
+This configuration is synchronized with `/docs/standards.md`. Suggestions automatically align with project standards.
 
 ### Quality Filters
 

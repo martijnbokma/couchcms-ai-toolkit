@@ -1,6 +1,6 @@
 # Claude Coding Instructions - {{project.name}}
 
-**Highly Critical: Always refer to `{{config_file_path}}` before generating, editing, or reviewing any code.**
+**Highly Critical: Always refer to `/docs/standards.md` before generating, editing, or reviewing any code.**
 
 ## Project Overview
 
@@ -325,7 +325,7 @@ function processData(data: any): any { ... }
 
 ## 🔗 INTEGRATION NOTES
 
-This instruction set is auto-generated from `{{config_file_path}}`. The system ensures:
+This instruction set is auto-generated from `/docs/standards.md`. The system ensures:
 
 - Consistency across all AI agents
 - Automatic updates when standards change
