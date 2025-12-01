@@ -140,19 +140,18 @@ export async function generateStandardsFile(options) {
         frameworkConfig
     } = options
 
-    // Create config directory if needed
-    if (configDir !== projectDir && !existsSync(configDir)) {
-        mkdirSync(configDir, { recursive: true })
-        console.log(`✅ Created: ${configDir}/`)
+    // Ensure we always use .project/standards.md in project root
+    // Override configPath if it's not in the correct location
+    const finalConfigPath = join(projectDir, '.project', 'standards.md')
+    const finalConfigDir = join(projectDir, '.project')
+
+    // Create .project directory if needed
+    if (!existsSync(finalConfigDir)) {
+        mkdirSync(finalConfigDir, { recursive: true })
+        console.log(`✅ Created: .project/`)
     }
 
-    const configFileName = configPath.includes('.project/')
-        ? '.project/standards.md'
-        : configPath.includes('docs/')
-          ? 'docs/standards.md'
-          : 'standards.md'
-
-    console.log(`\n📝 Generating ${configFileName}...`)
+    console.log(`\n📝 Generating .project/standards.md...`)
 
     // Load standards.md template
     const templatePath = join(toolkitRoot, 'templates', 'standards.md')
@@ -177,18 +176,11 @@ export async function generateStandardsFile(options) {
         frameworkConfig,
     })
 
-    // Ensure the directory exists before writing the file
-    if (configDir !== projectDir) {
-        if (!existsSync(configDir)) {
-            mkdirSync(configDir, { recursive: true })
-            console.log(`📁 Created directory: ${configDir.replace(projectDir + '/', '')}/`)
-        }
-    }
+    // Write to the standardized location (.project/standards.md in project root)
+    writeFileSync(finalConfigPath, standardsMd)
+    console.log(`✅ Created: .project/standards.md`)
 
-    writeFileSync(configPath, standardsMd)
-    console.log(`✅ Created: ${configFileName}`)
-
-    return configPath
+    return finalConfigPath
 }
 
 /**
