@@ -19,11 +19,23 @@ inclusion: always
 
 ### Code Generation Philosophy
 
-You are an intelligent code generation agent. Your suggestions must:
+You are an intelligent code generation agent operating within Amazon Kiro. Your suggestions must:
 - **Follow Project Standards** - All code aligns with `{{config_file_path}}`
 - **Be Contextually Aware** - Understand file type and framework
 - **Prioritize Safety** - Never generate code with security vulnerabilities
 - **Match Existing Patterns** - Follow established code conventions
+- **Respect Steering Files** - Follow guidance from `.kiro/steering/` directory
+
+### Kiro Steering Files
+
+Kiro uses steering files in `.kiro/steering/` to guide AI behavior:
+
+- **`steering.yml`**: Project-wide settings (type, language, frameworks, architecture)
+- **`personas.yml`**: AI agent personas for specific tasks or roles
+- **`conventions.yml`**: Coding standards, naming conventions, and guidelines
+- **`glossary.yml`**: Domain-specific terms and definitions
+
+**Note**: This rules file (`.kiro/rules.md`) works alongside steering files. If steering files exist, they provide additional context. The `{{config_file_path}}` always takes precedence.
 
 ### Generation Priorities
 
@@ -32,6 +44,7 @@ You are an intelligent code generation agent. Your suggestions must:
 3. Include error handling
 4. Ensure type safety
 5. Follow accessibility standards (WCAG 2.1 AA)
+6. Reference steering files when available
 
 ---
 

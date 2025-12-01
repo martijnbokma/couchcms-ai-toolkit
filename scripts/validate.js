@@ -10,14 +10,12 @@
 
 import { readFileSync, existsSync } from 'fs'
 import { dirname, resolve, join } from 'path'
-import { fileURLToPath } from 'url'
 import { findConfigFile, loadConfig, getConfigFileName, findProjectFile, resolveToolkitPath } from './utils/utils.js'
 import { validateConfiguration } from './lib/config-validator.js'
 import { checkAndInstallDependencies } from './lib/dependency-checker.js'
+import { getToolkitRootCached } from './lib/index.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = resolve(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 
 
 /**

@@ -11,7 +11,6 @@
 
 import { existsSync, readFileSync } from 'fs'
 import { resolve, dirname, basename, join } from 'path'
-import { fileURLToPath } from 'url'
 import { findConfigFile, getConfigFileName, handleError, resolveToolkitPath } from './utils/utils.js'
 import { prompt, confirm } from './lib/prompts.js'
 import {
@@ -31,11 +30,10 @@ import {
     getConceptExplanation,
     showSummary
 } from './lib/onboarding.js'
+import { getToolkitRootCached } from './lib/index.js'
 import yaml from 'yaml'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = resolve(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 
 /**
  * Load available presets

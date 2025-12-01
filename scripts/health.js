@@ -1,22 +1,20 @@
 #!/usr/bin/env bun
 /**
  * CouchCMS AI Toolkit - Health Check
- * 
+ *
  * Validates toolkit installation and configuration
- * 
+ *
  * Usage:
  *   bun scripts/health.js
  */
 
 import { existsSync, statSync, readFileSync } from 'fs'
 import { resolve, join, dirname } from 'path'
-import { fileURLToPath } from 'url'
 import { execSync } from 'child_process'
 import { findConfigFile } from './utils/utils.js'
+import { getToolkitRootCached } from './lib/index.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = resolve(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 
 // ANSI colors
 const colors = {
@@ -48,16 +46,16 @@ function print(icon, message, color = 'reset', indent = 0) {
  */
 function checkToolkitInstallation() {
     const checks = []
-    
+
     // Check toolkit structure
     const requiredDirs = ['modules', 'agents', 'scripts', 'templates']
     const missingDirs = requiredDirs.filter(dir => !existsSync(join(TOOLKIT_ROOT, dir)))
-    
+
     if (missingDirs.length === 0) {
         checks.push({ status: 'success', message: 'Toolkit structure is valid' })
     } else {
-        checks.push({ 
-            status: 'error', 
+        checks.push({
+            status: 'error',
             message: `Missing directories: ${missingDirs.join(', ')}`,
             fix: 'Reinstall toolkit or check git submodule'
         })
@@ -67,8 +65,8 @@ function checkToolkitInstallation() {
     if (existsSync(join(TOOLKIT_ROOT, 'node_modules'))) {
         checks.push({ status: 'success', message: 'Dependencies installed' })
     } else {
-        checks.push({ 
-            status: 'error', 
+        checks.push({
+            status: 'error',
             message: 'Dependencies not installed',
             fix: 'Run: cd ai-toolkit-shared && bun install'
         })
@@ -79,14 +77,14 @@ function checkToolkitInstallation() {
     if (existsSync(packagePath)) {
         try {
             const pkg = JSON.parse(readFileSync(packagePath, 'utf8'))
-            checks.push({ 
-                status: 'success', 
-                message: `Toolkit version: ${pkg.version}` 
+            checks.push({
+                status: 'success',
+                message: `Toolkit version: ${pkg.version}`
             })
         } catch {
-            checks.push({ 
-                status: 'warning', 
-                message: 'Could not read package.json version' 
+            checks.push({
+                status: 'warning',
+                message: 'Could not read package.json version'
             })
         }
     }
@@ -99,30 +97,30 @@ function checkToolkitInstallation() {
  */
 function checkProjectConfiguration(projectDir) {
     const checks = []
-    
+
     // Check for config file
     const configFile = findConfigFile(projectDir)
     if (configFile) {
-        checks.push({ 
-            status: 'success', 
-            message: `Configuration found: ${configFile.split('/').pop()}` 
+        checks.push({
+            status: 'success',
+            message: `Configuration found: ${configFile.split('/').pop()}`
         })
 
         // Check if config is recent
         const stats = statSync(configFile)
         const age = Date.now() - stats.mtimeMs
         const days = Math.floor(age / (1000 * 60 * 60 * 24))
-        
+
         if (days > 30) {
-            checks.push({ 
-                status: 'info', 
+            checks.push({
+                status: 'info',
                 message: `Configuration is ${days} days old`,
                 fix: 'Consider reviewing and updating your configuration'
             })
         }
     } else {
-        checks.push({ 
-            status: 'error', 
+        checks.push({
+            status: 'error',
             message: 'No configuration file found',
             fix: 'Run: bun ai-toolkit-shared/scripts/init.js'
         })
@@ -150,7 +148,7 @@ function checkGeneratedFiles(projectDir) {
 
     for (const { path, name } of expectedFiles) {
         const filePath = join(projectDir, path)
-        
+
         if (!existsSync(filePath)) {
             missingFiles.push(name)
         } else {
@@ -163,21 +161,21 @@ function checkGeneratedFiles(projectDir) {
     }
 
     if (missingFiles.length === 0 && outdatedFiles.length === 0) {
-        checks.push({ 
-            status: 'success', 
-            message: 'All generated files are up to date' 
+        checks.push({
+            status: 'success',
+            message: 'All generated files are up to date'
         })
     } else {
         if (missingFiles.length > 0) {
-            checks.push({ 
-                status: 'error', 
+            checks.push({
+                status: 'error',
                 message: `Missing files: ${missingFiles.join(', ')}`,
                 fix: 'Run: bun ai-toolkit-shared/scripts/sync.js'
             })
         }
         if (outdatedFiles.length > 0) {
-            checks.push({ 
-                status: 'warning', 
+            checks.push({
+                status: 'warning',
                 message: `Outdated files: ${outdatedFiles.join(', ')}`,
                 fix: 'Run: bun ai-toolkit-shared/scripts/sync.js'
             })
@@ -192,16 +190,16 @@ function checkGeneratedFiles(projectDir) {
  */
 function checkForUpdates() {
     const checks = []
-    
+
     try {
         // Check if we're in a git repository
-        execSync('git rev-parse --git-dir', { 
+        execSync('git rev-parse --git-dir', {
             cwd: TOOLKIT_ROOT,
             stdio: 'ignore'
         })
 
         // Fetch latest
-        execSync('git fetch origin --quiet', { 
+        execSync('git fetch origin --quiet', {
             cwd: TOOLKIT_ROOT,
             stdio: 'ignore',
             timeout: 5000
@@ -214,21 +212,21 @@ function checkForUpdates() {
         }).trim()
 
         if (behind === '0') {
-            checks.push({ 
-                status: 'success', 
-                message: 'Toolkit is up to date' 
+            checks.push({
+                status: 'success',
+                message: 'Toolkit is up to date'
             })
         } else {
-            checks.push({ 
-                status: 'warning', 
+            checks.push({
+                status: 'warning',
                 message: `Toolkit is ${behind} commit(s) behind`,
                 fix: 'Run: cd ai-toolkit-shared && git pull'
             })
         }
     } catch (error) {
-        checks.push({ 
-            status: 'info', 
-            message: 'Could not check for updates (not a git repository or no network)' 
+        checks.push({
+            status: 'info',
+            message: 'Could not check for updates (not a git repository or no network)'
         })
     }
 
@@ -246,15 +244,15 @@ function displayResults(sections) {
 
     for (const { title, checks } of sections) {
         console.log(`${colors.blue}${title}${colors.reset}`)
-        
+
         for (const check of checks) {
             const icon = icons[check.status] || icons.info
-            const color = check.status === 'error' ? 'red' : 
-                         check.status === 'warning' ? 'yellow' : 
+            const color = check.status === 'error' ? 'red' :
+                         check.status === 'warning' ? 'yellow' :
                          check.status === 'info' ? 'gray' : 'green'
-            
+
             print(icon, check.message, color, 2)
-            
+
             if (check.fix) {
                 print('', `→ ${check.fix}`, 'gray', 4)
             }
@@ -262,7 +260,7 @@ function displayResults(sections) {
             if (check.status === 'error') hasErrors = true
             if (check.status === 'warning') hasWarnings = true
         }
-        
+
         console.log()
     }
 

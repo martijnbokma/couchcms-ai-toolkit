@@ -2,9 +2,9 @@
 
 /**
  * Update Script
- * 
+ *
  * Check for and apply toolkit updates
- * 
+ *
  * Usage:
  *   bun scripts/update.js           # Interactive: check and prompt to update
  *   bun scripts/update.js --check   # Check only, no prompt
@@ -14,13 +14,11 @@
 
 import { existsSync } from 'fs'
 import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
 import { execSync } from 'child_process'
 import { checkForUpdates, getCurrentVersion } from './lib/update-notifier.js'
+import { getToolkitRootCached } from './lib/index.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = join(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 
 // Parse arguments
 const args = process.argv.slice(2)
@@ -60,7 +58,7 @@ Examples:
 function getCurrentVersionLocal() {
     try {
         const pkg = JSON.parse(
-            execSync('cat package.json', { 
+            execSync('cat package.json', {
                 cwd: TOOLKIT_ROOT,
                 encoding: 'utf8'
             })
@@ -77,7 +75,7 @@ function getCurrentVersionLocal() {
 function getRemoteVersion() {
     try {
         // Fetch latest
-        execSync('git fetch origin --quiet', { 
+        execSync('git fetch origin --quiet', {
             cwd: TOOLKIT_ROOT,
             stdio: 'ignore',
             timeout: 10000
@@ -88,7 +86,7 @@ function getRemoteVersion() {
             cwd: TOOLKIT_ROOT,
             encoding: 'utf8'
         })
-        
+
         const pkg = JSON.parse(remotePackage)
         return pkg.version
     } catch {
@@ -101,7 +99,7 @@ function getRemoteVersion() {
  */
 function getLatestRelease() {
     try {
-        execSync('git fetch --tags --quiet', { 
+        execSync('git fetch --tags --quiet', {
             cwd: TOOLKIT_ROOT,
             stdio: 'ignore',
             timeout: 10000
@@ -111,7 +109,7 @@ function getLatestRelease() {
             cwd: TOOLKIT_ROOT,
             encoding: 'utf8'
         }).trim()
-        
+
         return tag
     } catch {
         return null
@@ -172,14 +170,14 @@ function getRecentCommits(count = 5) {
 function applyUpdate() {
     try {
         console.log('\n🔄 Pulling latest changes...\n')
-        
+
         execSync('git pull origin master', {
             cwd: TOOLKIT_ROOT,
             stdio: 'inherit'
         })
 
         console.log('\n📦 Installing dependencies...\n')
-        
+
         execSync('bun install', {
             cwd: TOOLKIT_ROOT,
             stdio: 'inherit'
@@ -201,21 +199,21 @@ function displayUpdateInfo(currentVersion, remoteVersion, commitsBehind, recentC
     console.log('│ 🔍 CouchCMS AI Toolkit - Update Check                   │')
     console.log('├─────────────────────────────────────────────────────────┤')
     console.log(`│ Current Version: ${currentVersion.padEnd(38)} │`)
-    
+
     if (remoteVersion) {
         console.log(`│ Latest Version:  ${remoteVersion.padEnd(38)} │`)
     }
-    
+
     if (latestRelease) {
         console.log(`│ Latest Release:  ${latestRelease.padEnd(38)} │`)
     }
-    
+
     console.log('├─────────────────────────────────────────────────────────┤')
-    
+
     if (commitsBehind > 0) {
         console.log(`│ ⚠️  You are ${commitsBehind} commit(s) behind                          │`)
         console.log('│                                                         │')
-        
+
         if (recentCommits.length > 0) {
             console.log('│ Recent Changes:                                         │')
             recentCommits.slice(0, 3).forEach(commit => {
@@ -224,7 +222,7 @@ function displayUpdateInfo(currentVersion, remoteVersion, commitsBehind, recentC
             })
             console.log('│                                                         │')
         }
-        
+
         console.log('│ Update with:                                            │')
         console.log('│   bun run update --apply                                │')
         console.log('│                                                         │')
@@ -233,7 +231,7 @@ function displayUpdateInfo(currentVersion, remoteVersion, commitsBehind, recentC
     } else {
         console.log('│ ✅ You are up to date!                                  │')
     }
-    
+
     console.log('└─────────────────────────────────────────────────────────┘\n')
 }
 
@@ -243,7 +241,7 @@ function displayUpdateInfo(currentVersion, remoteVersion, commitsBehind, recentC
 async function promptForUpdate() {
     return new Promise((resolve) => {
         process.stdout.write('Would you like to update now? (y/N): ')
-        
+
         process.stdin.once('data', (data) => {
             const answer = data.toString().trim().toLowerCase()
             resolve(answer === 'y' || answer === 'yes')
@@ -259,7 +257,7 @@ async function main() {
 
     // Check if we're in a git repository
     try {
-        execSync('git rev-parse --git-dir', { 
+        execSync('git rev-parse --git-dir', {
             cwd: TOOLKIT_ROOT,
             stdio: 'ignore'
         })
@@ -289,11 +287,11 @@ async function main() {
             // Interactive mode - ask user
             process.stdin.setRawMode(false)
             process.stdin.resume()
-            
+
             const shouldUpdate = await promptForUpdate()
-            
+
             process.stdin.pause()
-            
+
             if (shouldUpdate) {
                 const success = applyUpdate()
                 process.exit(success ? 0 : 1)

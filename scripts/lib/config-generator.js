@@ -43,6 +43,39 @@ function replaceTemplateVariables(template, variables) {
         )
     }
 
+    // Replace editors list - set selected editors to true, others to false
+    if (variables.selectedEditors && Array.isArray(variables.selectedEditors)) {
+        const editorDefaults = {
+            cursor: false,
+            windsurf: false,
+            zed: false,
+            copilot: false,
+            claude: false,
+            codewhisperer: false,
+            kiro: false,
+            antigravity: false,
+            jules: false,
+            roocode: false,
+            'vscode-ai': false,
+            tabnine: false,
+            agent: false,
+        }
+
+        // Set selected editors to true
+        variables.selectedEditors.forEach(editor => {
+            editorDefaults[editor] = true
+        })
+
+        const editorsYaml = Object.entries(editorDefaults)
+            .map(([key, value]) => `    ${key}: ${value}`)
+            .join('\n')
+
+        result = result.replace(
+            /editors:\n(?:    [^\n]+\n?)+/g,
+            `editors:\n${editorsYaml}`
+        )
+    }
+
     // Add agents to YAML if selected
     if (variables.selectedAgents && variables.selectedAgents.length > 0) {
         const agentsYaml = variables.selectedAgents.map(a => `    - ${a}`).join('\n')
@@ -88,6 +121,7 @@ function replaceTemplateVariables(template, variables) {
  * @param {string} options.toolkitRoot - Toolkit root directory
  * @param {Array<string>} options.selectedModules - Selected modules
  * @param {Array<string>} options.selectedAgents - Selected agents
+ * @param {Array<string>} options.selectedEditors - Selected editors/tools
  * @param {object|boolean|null} options.frameworkConfig - Framework configuration
  * @returns {Promise<string>} - Path to created config file
  */
@@ -102,6 +136,7 @@ export async function generateStandardsFile(options) {
         toolkitRoot,
         selectedModules,
         selectedAgents,
+        selectedEditors,
         frameworkConfig
     } = options
 
@@ -138,6 +173,7 @@ export async function generateStandardsFile(options) {
         toolkitPath,
         selectedModules,
         selectedAgents,
+        selectedEditors,
         frameworkConfig,
     })
 

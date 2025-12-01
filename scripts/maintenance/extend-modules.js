@@ -17,13 +17,11 @@
 import matter from 'gray-matter'
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs'
 import { join, dirname, resolve } from 'path'
-import { fileURLToPath } from 'url'
 import { createInterface } from 'readline'
 import { spawn } from 'child_process'
+import { getToolkitRootCached } from '../lib/index.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = resolve(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 
 /**
  * Module mapping: Maps documentation topics to modules
