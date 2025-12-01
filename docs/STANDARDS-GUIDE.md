@@ -60,7 +60,7 @@ naming:
 # Universal AI Coding Standards
 
 [Your project-specific standards here...]
-```
+```text
 
 ## Automatic Integration
 
@@ -101,7 +101,7 @@ This prompt automatically uses standards from:
 - `.project/standards.md` (if exists - recommended)
 - `docs/standards.md` (if exists)
 - `standards.md` (if exists)
-```
+```javascript
 
 ### 3. Validator Integration
 
@@ -140,7 +140,7 @@ if (config) {
     console.log(`Is standards: ${config.isStandards}`)
     console.log('Frontmatter:', config.frontmatter)
 }
-```
+```javascript
 
 ### Get Config File Name
 
@@ -246,7 +246,7 @@ git submodule add ... ai-toolkit-shared
 
 # Run init (creates docs/standards.md)
 bun ai-toolkit-shared/scripts/init.js
-```
+```text
 
 ### 2. Customize Standards
 
@@ -268,7 +268,7 @@ bun ai-toolkit-shared/scripts/sync.js
 # - .cursorrules (references standards.md)
 # - CLAUDE.md (references standards.md)
 # - AGENTS.md (references standards.md)
-```
+```bash
 
 ### 4. Validate
 
@@ -331,7 +331,7 @@ ls -la standards.md
 
 # Verify file exists
 test -f .project/standards.md && echo "Found" || echo "Not found"
-```
+```bash
 
 ### YAML Parse Errors
 

@@ -8,7 +8,7 @@ Feature branches are where you do your daily work. They're isolated from other d
 
 **Lifecycle:** develop → feature → develop
 
-```
+```text
 develop ──●────────────────────●──→
            ↓                    ↑
 feature   ●──●──●──●──●──●──●──●
@@ -54,7 +54,7 @@ git pull origin develop
 # Verify you're up to date
 git status
 # Should say: "Your branch is up to date with 'origin/develop'"
-```
+```bash
 
 **Step 2: Create feature branch**
 
@@ -89,7 +89,7 @@ git branch
 
 # Check it's based on develop
 git log --oneline -1
-```
+```text
 
 ### Phase 3: Development
 
@@ -131,7 +131,7 @@ git commit -m "Add search tests"
 
 # Bad: One huge commit
 git commit -m "Add entire search feature"
-```
+```text
 
 **Commit message format:**
 
@@ -184,7 +184,7 @@ git merge develop
 
 # Resolve conflicts if any
 # Continue working
-```
+```bash
 
 **Method 2: Rebase (cleaner history)**
 
@@ -227,7 +227,7 @@ bun run lint
 # - Remove commented code
 # - Add comments where needed
 # - Follow project standards
-```
+```text
 
 ### Phase 6: Finishing the Feature
 
@@ -250,7 +250,7 @@ bun test
 ```bash
 # Push all commits
 git push origin feature/my-feature-name
-```
+```bash
 
 **Step 3: Create Pull Request**
 
@@ -295,7 +295,7 @@ git commit -m "Address review feedback"
 git push origin feature/my-feature-name
 
 # PR updates automatically!
-```
+```yaml
 
 3. **Get approval**
    - At least 1 approval needed
@@ -352,7 +352,7 @@ git rebase -i HEAD~3
 # Edit combined commit message
 # Force push
 git push --force origin feature/my-feature-name
-```
+```text
 
 ### Splitting a Large Feature
 
@@ -381,7 +381,7 @@ Developer A:
 ```bash
 bun scripts/git-flow.js feature start shared-feature
 git push origin feature/shared-feature
-```
+```bash
 
 Developer B:
 ```bash
@@ -405,7 +405,7 @@ git branch -D feature/abandoned-feature
 git push origin --delete feature/abandoned-feature
 
 # Or close PR without merging
-```
+```text
 
 ## Best Practices
 
@@ -455,7 +455,7 @@ bun run lint
 git add .
 git commit -m "Fix test failures"
 git push origin feature/my-feature
-```
+```bash
 
 ### "I need to change my PR"
 

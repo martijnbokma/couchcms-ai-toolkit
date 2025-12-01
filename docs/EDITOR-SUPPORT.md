@@ -29,7 +29,7 @@ The toolkit generates optimized configurations for multiple AI-powered editors, 
   ├── refactor-forms.mdc
   ├── refactor-tailwind.mdc
   └── ...
-```
+```text
 
 ### Context-Aware MDC Rules
 
@@ -102,7 +102,7 @@ MDC rules are copied from `ai-toolkit-shared/rules/*.mdc`. To customize:
       └── ...
 CLAUDE.md                       # Memory file (loaded at startup)
 AGENTS.md                       # Agent documentation
-```
+```text
 
 ### Skills System
 
@@ -154,7 +154,7 @@ The `settings.json` file configures permissions and environment:
     "NODE_ENV": "development"
   }
 }
-```
+```text
 
 **Security Features:**
 
@@ -209,7 +209,7 @@ TailwindCSS 4 styling with daisyUI 5 components
 Usage: `@tailwindcss style this component`
 
 [More agents...]
-```
+```text
 
 ### Customization
 
@@ -259,7 +259,7 @@ Instructions are generated from `standards.md`. To customize:
 ```text
 .windsurf/
   └── rules.md                  # Windsurf rules
-```
+```text
 
 ### How It Works
 
@@ -336,7 +336,7 @@ agents:
 
 # Project Rules
 [Your custom rules...]
-```
+```text
 
 ### 2. Automatic Generation
 
@@ -366,7 +366,7 @@ Auto-sync when `standards.md` changes:
 ```bash
 # Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
-```
+```text
 
 ### 4. Validation
 
@@ -400,7 +400,7 @@ toolkit: "./ai-toolkit-shared"
 modules:
   - couchcms-core      # Always required for CouchCMS projects
 ---
-```
+```text
 
 **Generated:**
 - `.cursorrules` - Basic CouchCMS rules
@@ -522,7 +522,7 @@ code standards.md
 
 # Sync configs
 bun ai-toolkit-shared/scripts/sync.js
-```
+```bash
 
 ### 2. Use Watch Mode During Development
 
@@ -545,7 +545,7 @@ bun ai-toolkit-shared/scripts/validate.js
 # - Module and agent validation
 # - Compliance score (0-100%)
 # - Specific issues and recommendations
-```
+```text
 
 Catches configuration errors early.
 
@@ -590,7 +590,7 @@ Add project-specific rules to `standards.md`:
 
 ## Frontend Standards
 [Your standards...]
-```
+```yaml
 
 These are included in all generated configs.
 
@@ -632,7 +632,7 @@ globs:
 
 # Custom Rules
 [Your rules...]
-```
+```bash
 
 Then sync:
 ```bash

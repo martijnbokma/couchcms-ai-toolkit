@@ -14,7 +14,7 @@ Run the initialization script:
 
 ```bash
 bun scripts/git-flow-init.js
-```
+```text
 
 This will:
 - ✅ Check if you're in a git repository
@@ -41,7 +41,7 @@ This will:
 Branch structure:
   main → Production (stable, deployed code)
   develop → Integration (features merge here)
-```
+```text
 
 ## Step 2: Verify Setup
 
@@ -52,7 +52,7 @@ git branch -a
 ```
 
 You should see:
-```
+```text
 * develop
   main
   remotes/origin/develop
@@ -83,7 +83,7 @@ git commit -m "Add new feature"
 
 # Finish feature (creates PR)
 bun scripts/git-flow.js feature finish my-first-feature
-```
+```text
 
 ## Troubleshooting
 
@@ -109,7 +109,7 @@ You need at least one commit before initializing Gitflow:
 git add .
 git commit -m "Initial commit"
 bun scripts/git-flow-init.js
-```
+```text
 
 ### "develop branch already exists"
 
@@ -117,7 +117,7 @@ That's fine! The script will detect it and skip creation:
 
 ```
 ✅ Develop branch already exists
-```
+```text
 
 ### "No remote configured"
 
@@ -126,7 +126,7 @@ If you don't have a remote yet, that's okay. The script will skip pushing:
 ```
 💡 No remote configured yet. Push manually when ready:
    git push -u origin develop
-```
+```bash
 
 Add remote later:
 

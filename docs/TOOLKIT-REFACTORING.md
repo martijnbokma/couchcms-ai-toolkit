@@ -26,7 +26,7 @@ The toolkit now includes specialized prompts and commands for refactoring and op
 **Usage**:
 ```text
 Refactor @scripts/sync.js using @prompts/refactoring/toolkit.md
-```
+```text
 
 ### 2. Toolkit Optimization Guide
 
@@ -57,7 +57,7 @@ Optimize @scripts/sync.js using @prompts/best-practices/toolkit-optimization.md
 ```text
 /refactor-toolkit @scripts/sync.js
 /refactor-toolkit @prompts/refactoring/router.md
-```
+```text
 
 ## Integration with Refactor Router
 
@@ -94,7 +94,7 @@ Refactor @scripts/sync.js
 **Direct Load**:
 ```text
 @prompts/refactoring/toolkit.md Refactor @scripts/sync.js
-```
+```javascript
 
 ### Step 3: Analysis
 
@@ -173,7 +173,7 @@ export function findConfigFile(projectRoot) {
 
 // Use in multiple scripts
 import { findConfigFile } from './utils.js'
-```
+```text
 
 ### Pattern 2: Standardize Configuration Loading
 
@@ -203,7 +203,7 @@ export class ToolkitError extends Error {
         this.name = 'ToolkitError'
     }
 }
-```
+```text
 
 ## Checklist
 
@@ -242,7 +242,7 @@ Refactor @scripts/sync.js - Extract configuration loading into separate function
 **Request**:
 ```text
 Optimize @prompts/refactoring/router.md - Improve router logic and error handling
-```
+```yaml
 
 **Result**:
 - Improved router logic

@@ -8,7 +8,7 @@ Hotfix branches are for urgent fixes to production code. They bypass the normal 
 
 **Lifecycle:** main → hotfix → main + develop (+ release if exists)
 
-```
+```text
 main ────●─────────────●──→
           ↓             ↑
 hotfix   ●──●──●──●──●──●
@@ -65,7 +65,7 @@ Don't use hotfix for:
 # - Reproduce the issue
 # - Verify it's not user error
 # - Check when it started
-```
+```yaml
 
 **Step 2: Assess severity**
 
@@ -99,7 +99,7 @@ bun scripts/git-flow.js hotfix start fix-critical-bug
 
 # Or manually
 git checkout -b hotfix/fix-critical-bug main
-```
+```text
 
 **Naming conventions:**
 
@@ -135,7 +135,7 @@ git checkout hotfix/fix-critical-bug
 # - Follow steps from production
 # - Verify you can see the issue
 # - Understand the root cause
-```
+```text
 
 **Step 2: Implement fix**
 
@@ -178,7 +178,7 @@ bun test
 # - Follow reproduction steps
 # - Verify fix works
 # - Test related functionality
-```
+```json
 
 **Step 4: Update version**
 
@@ -214,7 +214,7 @@ bun scripts/validate.js
 # - Test the fix
 # - Test related features
 # - Look for side effects
-```
+```bash
 
 **Step 2: Deploy to staging**
 
@@ -240,7 +240,7 @@ git push origin hotfix/fix-critical-bug
 # - What was tested
 # - Results
 # - Any concerns
-```
+```text
 
 ### Phase 5: Deployment
 
@@ -275,7 +275,7 @@ bun scripts/git-flow.js hotfix finish fix-critical-bug
 # Title: Merge hotfix v1.3.1 to release
 # Base: release/1.4.0
 # Compare: hotfix/fix-critical-bug
-```
+```text
 
 **Step 2: Fast-track approval**
 
@@ -301,7 +301,7 @@ bun scripts/git-flow.js hotfix finish fix-critical-bug
 # - Watch logs
 # - Check metrics
 # - Verify fix is live
-```
+```bash
 
 **Step 4: Verify fix**
 
@@ -325,7 +325,7 @@ bun scripts/git-flow.js hotfix finish fix-critical-bug
 # - Merge
 
 # This ensures fix is everywhere
-```
+```text
 
 **Step 6: Cleanup**
 
@@ -350,7 +350,7 @@ git pull origin develop
 # - Email stakeholders
 # - Update status page
 # - Close incident ticket
-```
+```sql
 
 **Step 2: Document incident**
 
@@ -378,7 +378,7 @@ Create post-mortem:
 # - Monitoring improvements
 # - Documentation updates
 # - Process improvements
-```
+```text
 
 ## Multiple Hotfixes
 
@@ -409,7 +409,7 @@ bun scripts/git-flow.js hotfix start fix-another-bug
 # Option 2: Sequential
 # Finish first hotfix
 # Then start second hotfix
-```
+```text
 
 ## Emergency Procedures
 
@@ -442,7 +442,7 @@ bun scripts/git-flow.js hotfix start fix-the-fix
 # - May not be a bug
 # - May be environment-specific
 # - May be user error
-```
+```text
 
 ### "Fix requires major changes"
 
@@ -549,7 +549,7 @@ bun scripts/git-flow.js hotfix finish fix-description
 # After merge
 # Monitor production
 # Notify team
-```
+```text
 
 ## Version Numbering
 
@@ -567,7 +567,7 @@ bun scripts/git-flow.js hotfix finish fix-description
 ## Communication Template
 
 **Starting hotfix:**
-```
+```yaml
 🚨 HOTFIX ALERT
 
 Issue: Critical login crash
@@ -580,7 +580,7 @@ Status: Working on fix
 ```
 
 **Hotfix deployed:**
-```
+```yaml
 ✅ HOTFIX DEPLOYED
 
 Issue: Critical login crash

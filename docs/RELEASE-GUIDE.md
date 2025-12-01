@@ -14,7 +14,7 @@ bun run release
 
 # Or explicitly
 bun run release:auto
-```
+```text
 
 **What it does:**
 1. Analyzes your commits since last tag
@@ -45,7 +45,7 @@ Specify exact version:
 
 ```bash
 bun run release 2.1.0
-```
+```text
 
 ## 📊 How Auto-Detection Works
 
@@ -86,7 +86,7 @@ bun run release
 bun run release
 # → Detects: Patch bump (only fixes)
 # → New version: 2.1.1
-```
+```text
 
 **Scenario 3: Breaking Change**
 ```bash
@@ -112,7 +112,7 @@ git commit -m "feat: add new feature"
 # Fix bugs
 git add .
 git commit -m "fix: resolve issue"
-```
+```bash
 
 ### 2. Release
 
@@ -168,7 +168,7 @@ BREAKING CHANGE: Old API removed"
 git commit -m "chore: update dependencies"
 git commit -m "docs: update README"
 git commit -m "refactor: improve code"
-```
+```text
 
 ### Commit Often
 
@@ -192,7 +192,7 @@ bun run release --dry-run
 
 # Check commits since last tag
 git log $(git describe --tags --abbrev=0)..HEAD --oneline
-```
+```text
 
 ## 🔧 Advanced Options
 
@@ -210,7 +210,7 @@ If you've manually updated the changelog:
 
 ```bash
 bun run release --skip-changelog
-```
+```bash
 
 ### Combine Options
 
@@ -239,7 +239,7 @@ bun run release 2.1.0
 # With options
 bun run release --dry-run
 bun run release --skip-changelog
-```
+```text
 
 ## 🆘 Troubleshooting
 
@@ -264,7 +264,7 @@ git add .
 git commit -m "feat: your changes"
 # or
 git stash
-```
+```text
 
 ### Wrong version detected
 
@@ -291,7 +291,7 @@ git push origin :refs/tags/v2.1.0
 
 # Revert commits
 git reset --hard HEAD~1
-```
+```text
 
 ## 🎓 Examples
 
@@ -332,7 +332,7 @@ bun run release
 #    Commits: 2
 #    Bump type: patch (only fixes)
 #    New version: 2.1.1
-```
+```bash
 
 ### Example 3: Major Release
 

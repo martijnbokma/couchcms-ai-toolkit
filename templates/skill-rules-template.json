@@ -1,0 +1,124 @@
+{
+  "your-module-id": {
+    "type": "framework",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Brief description for Claude Code auto-activation",
+    "promptTriggers": {
+      "keywords": [
+        "your-framework-name",
+        "key-concept-1",
+        "key-concept-2",
+        "main-feature",
+        "integration",
+        "setup",
+        "configure",
+        "component",
+        "widget",
+        "plugin"
+      ],
+      "intentPatterns": [
+        "(create|build|make|add).*?(component|widget|element)",
+        "(setup|configure|install|initialize).*?(your-framework)",
+        "(integrate|connect|use).*?(with|in).*?(couchcms|template)",
+        "(style|design|theme).*?(component|page|layout)",
+        "(customize|modify|extend).*?(functionality|behavior)",
+        "(implement|develop).*?(feature|solution)",
+        "(fix|debug|troubleshoot).*?(issue|problem|error)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/*.html",
+        "**/*.php",
+        "templates/**/*",
+        "snippets/**/*",
+        "components/**/*",
+        "layouts/**/*",
+        "assets/**/*.css",
+        "assets/**/*.js",
+        "src/**/*.ts",
+        "src/**/*.js"
+      ],
+      "contentPatterns": [
+        "your-framework-class",
+        "your-framework-attribute",
+        "import.*your-framework",
+        "require.*your-framework",
+        "new YourFramework",
+        "YourFramework\\.",
+        "data-your-framework",
+        "your-framework-component",
+        "your-framework-config"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "your-framework-deprecated-syntax",
+        "severity": "warning",
+        "message": "⚠️ This syntax is deprecated. Use the new syntax: [example]"
+      },
+      {
+        "pattern": "conflicting-framework-class",
+        "severity": "error",
+        "message": "❌ This conflicts with another framework. Choose one approach."
+      },
+      {
+        "pattern": "missing-required-attribute",
+        "severity": "warning",
+        "message": "⚠️ Missing required attribute for proper functionality."
+      },
+      {
+        "pattern": "inline-styles-with-framework",
+        "severity": "info",
+        "message": "ℹ️ Consider using framework classes instead of inline styles."
+      },
+      {
+        "pattern": "accessibility-issue-pattern",
+        "severity": "warning",
+        "message": "⚠️ Missing accessibility attributes. Add aria-label or role."
+      }
+    ],
+    "suggestions": [
+      {
+        "trigger": "basic-component",
+        "suggestion": "Consider using the framework's built-in component system for better maintainability."
+      },
+      {
+        "trigger": "performance-concern",
+        "suggestion": "For better performance, consider lazy loading or code splitting."
+      },
+      {
+        "trigger": "responsive-design",
+        "suggestion": "Don't forget to test responsive behavior across different screen sizes."
+      }
+    ],
+    "codeTemplates": {
+      "basic-component": {
+        "description": "Basic component structure",
+        "template": "<div class=\"your-framework-component\">\n  <h2>{{title}}</h2>\n  <p>{{content}}</p>\n</div>"
+      },
+      "with-javascript": {
+        "description": "Component with JavaScript initialization",
+        "template": "<div class=\"your-framework-component\" data-config='{{config}}'>\n  {{content}}\n</div>\n<script>\nnew YourFramework('.your-framework-component');\n</script>"
+      },
+      "couchcms-integration": {
+        "description": "CouchCMS template integration",
+        "template": "<div class=\"your-framework-component\">\n  <h2><cms:show title /></h2>\n  <div class=\"content\">\n    <cms:show content />\n  </div>\n</div>"
+      }
+    },
+    "relatedModules": [
+      "couchcms-core",
+      "related-framework-1",
+      "related-framework-2"
+    ],
+    "conflictsWith": [
+      "conflicting-framework-1",
+      "conflicting-framework-2"
+    ],
+    "requires": [
+      "dependency-module-1",
+      "dependency-module-2"
+    ]
+  }
+}

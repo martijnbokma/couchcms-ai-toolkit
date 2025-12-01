@@ -24,7 +24,7 @@ cd couchcms-ai-toolkit
 
 # Install dependencies
 bun install
-```
+```bash
 
 ### 2. Verify Your Setup
 
@@ -50,7 +50,7 @@ git config --global user.email "your.email@example.com"
 
 # Verify configuration
 git config --list
-```
+```text
 
 ## Your First Feature
 
@@ -88,7 +88,7 @@ git add test-feature.md
 
 # Commit your changes
 git commit -m "Add test feature file"
-```
+```yaml
 
 **Commit Message Tips:**
 - Start with a verb: "Add", "Fix", "Update", "Remove"
@@ -107,7 +107,7 @@ git push origin feature/my-first-feature
 ```bash
 # Finish the feature (creates PR automatically)
 bun scripts/git-flow.js feature finish my-first-feature
-```
+```text
 
 **What happened?**
 - ✅ Pushed your branch to GitHub
@@ -149,7 +149,7 @@ bun scripts/git-flow.js feature start my-feature
 
 # Apply your changes
 git stash pop
-```
+```bash
 
 ### "I forgot to pull latest changes!"
 
@@ -174,7 +174,7 @@ git commit --amend -m "Correct message"
 
 # Force push (only if not reviewed yet!)
 git push --force origin feature/my-feature
-```
+```text
 
 ## Understanding the Workflow
 
@@ -190,7 +190,7 @@ main (production)
               ├── feature/search (your work)
               ├── feature/dashboard (teammate's work)
               └── feature/api (another teammate's work)
-```
+```bash
 
 ### Typical Day
 
@@ -209,7 +209,7 @@ git commit -m "Progress on feature"
 # More work...
 git add .
 git commit -m "Complete feature"
-```
+```bash
 
 **End of day:**
 ```bash
@@ -245,7 +245,7 @@ git commit -m "Update documentation for API"
 git commit -m "changes"
 git commit -m "fix"
 git commit -m "wip"
-```
+```yaml
 
 ### 5. Ask for Help
 - Don't struggle alone

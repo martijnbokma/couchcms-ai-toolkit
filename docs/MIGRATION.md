@@ -20,7 +20,7 @@ Check if you need to migrate:
 ```bash
 # Check for old configuration files
 ls -la .project/ defaults.yaml smart-defaults.yaml preflight-checks.yaml config.yaml 2>/dev/null
-```
+```text
 
 If these files exist, you need to migrate.
 
@@ -74,7 +74,7 @@ bun ai-toolkit-shared/scripts/init.js
 # - Module selection (CouchCMS features)
 # - Agent selection (AI assistants)
 # - Configuration file location
-```
+```text
 
 This will create a new `standards.md` in your project root with the current format.
 
@@ -105,7 +105,7 @@ modules:
   - couchcms-core      # Always required for CouchCMS projects
   - tailwindcss        # TailwindCSS 4 patterns and utilities
 ---
-```
+```bash
 
 ### 4. Remove Old Files
 
@@ -123,7 +123,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
 # bun ai-toolkit-shared/scripts/sync.js --watch
-```
+```text
 
 ### 6. Verify Migration Success
 
@@ -147,7 +147,7 @@ bun ai-toolkit-shared/scripts/sync.js && echo "✅ Sync successful" || echo "❌
 ```
 
 **Expected output after successful migration:**
-```
+```text
 ✅ standards.md found
 ✅ Old files removed
 ✅ Configuration valid
@@ -168,7 +168,7 @@ If any verification step fails, review the migration steps above or check the [T
 defaults.yaml
 smart-defaults.yaml
 preflight-checks.yaml
-```
+```text
 
 **Now (single file):**
 ```text
@@ -202,7 +202,7 @@ modules:
   - couchcms-core
   - tailwindcss
 ---
-```
+```yaml
 
 `defaults.yaml`:
 ```yaml
@@ -221,7 +221,7 @@ file_contexts:
   css: "TailwindCSS stylesheet"
 template_aliases:
   component: "snippets/components"
-```
+```yaml
 
 **After (Single file):**
 
@@ -259,7 +259,7 @@ cp standards.md standards.md.backup
 cp -r .cursorrules .cursorrules.backup 2>/dev/null || true
 cp CLAUDE.md CLAUDE.md.backup 2>/dev/null || true
 cp AGENTS.md AGENTS.md.backup 2>/dev/null || true
-```
+```text
 
 ### 2. Restore Old Configuration Files
 
@@ -283,7 +283,7 @@ cd ai-toolkit-shared
 git checkout v0.9.x  # Replace with your previous version
 bun install
 cd ..
-```
+```bash
 
 ### 4. Remove New Configuration
 
@@ -303,7 +303,7 @@ ls -la defaults.yaml smart-defaults.yaml preflight-checks.yaml .project/standard
 
 # Test old toolkit functionality
 bun ai-toolkit-shared/scripts/sync.js  # Use old sync command
-```
+```text
 
 ### Important Notes
 

@@ -42,7 +42,7 @@ alwaysApply: false
 # Rule Content
 
 Your rule instructions here...
-```
+```text
 
 ### Frontmatter Properties
 
@@ -109,7 +109,7 @@ Create rules that apply only to your project:
 ```bash
 .cursor/rules/
   └── my-custom-rule.mdc
-```
+```yaml
 
 2. **Add frontmatter**:
 
@@ -130,7 +130,7 @@ When working with PHP files:
 - Always use strict types
 - Follow PSR-12 coding standards
 - Include error handling
-```
+```text
 
 4. **Rules are automatically loaded** by Cursor
 
@@ -193,7 +193,7 @@ globs: ['**/*.ts']
 ---
 
 Always use explicit types, avoid 'any'
-```
+```yaml
 
 ```yaml
 # ❌ Bad: Too broad
@@ -215,7 +215,7 @@ description: Refactoring rules for CouchCMS templates with Alpine.js
 
 # ❌ Bad: Vague description
 description: HTML stuff
-```
+```text
 
 ### 3. Test Glob Patterns
 
@@ -239,7 +239,7 @@ globs: ['{{paths.components}}/**/*.html']
 
 # ❌ Bad: Hardcoded path
 globs: ['snippets/components/**/*.html']
-```
+```text
 
 ### 5. Keep Rules Under 500 Lines
 
@@ -270,7 +270,7 @@ project/
   frontend/
     .cursor/rules/          # Frontend-specific rules
       component-structure.mdc
-```
+```sql
 
 Nested rules automatically attach when files in their directory are referenced.
 
@@ -325,7 +325,7 @@ When refactoring TypeScript files:
 - Avoid `any` type
 - Use interfaces for object shapes
 - Prefer type unions over enums
-```
+```yaml
 
 ### Example 2: Always-Apply Rule
 

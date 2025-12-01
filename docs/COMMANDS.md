@@ -21,7 +21,7 @@ Interactive setup wizard that guides you through initial project configuration.
 ```bash
 # From your project root
 bun ai-toolkit-shared/scripts/init.js
-```
+```text
 
 ### What It Does
 
@@ -140,7 +140,7 @@ Validates your project configuration and checks compliance with toolkit standard
 ```bash
 # From your project root
 bun ai-toolkit-shared/scripts/validate.js
-```
+```yaml
 
 ### What It Checks
 
@@ -215,7 +215,7 @@ $ bun ai-toolkit-shared/scripts/validate.js
 📊 Compliance Score: 70/100 (70%)
 
 ⚠️  Validation passed with warnings
-```
+```bash
 
 #### Validation Failure
 
@@ -293,7 +293,7 @@ Generates AI configuration files from your `standards.md` (or `.project/standard
 ```bash
 # From your project root
 bun ai-toolkit-shared/scripts/sync.js
-```
+```yaml
 
 ### What It Generates
 
@@ -378,7 +378,7 @@ $ bun ai-toolkit-shared/scripts/sync.js
   ✓ .cursor/rules/refactor-forms.mdc
 
 ✅ Sync complete!
-```
+```yaml
 
 ### When to Run
 
@@ -410,7 +410,7 @@ Troubleshooting:
 ⚠️  Warning: Module 'nonexistent' not found
   - Check module name spelling
   - Available: couchcms-core, tailwindcss, daisyui, alpinejs, typescript, databound-forms
-```
+```text
 
 #### Missing Configuration File
 
@@ -431,7 +431,7 @@ Run setup wizard:
 ```bash
 # Preview what would be generated
 bun ai-toolkit-shared/scripts/sync.js --dry-run
-```
+```bash
 
 #### Force Regeneration
 
@@ -445,7 +445,7 @@ bun ai-toolkit-shared/scripts/sync.js --force
 ```bash
 # Generate only .cursorrules
 bun ai-toolkit-shared/scripts/sync.js --only=cursorrules
-```
+```yaml
 
 _(Note: Advanced flags may not be implemented yet - check script for current options)_
 
@@ -480,7 +480,7 @@ bun ai-toolkit-shared/scripts/validate.js
 
 # 3. Regenerate configurations
 bun ai-toolkit-shared/scripts/sync.js
-```
+```bash
 
 ### Updating Toolkit
 
@@ -512,7 +512,7 @@ bun ai-toolkit-shared/scripts/validate.js
 
 # 4. Sync when valid
 bun ai-toolkit-shared/scripts/sync.js
-```
+```yaml
 
 ---
 

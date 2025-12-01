@@ -9,7 +9,7 @@ You **must** install the toolkit's dependencies before running any scripts. The 
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```
+```text
 
 This installs the required packages:
 - `gray-matter` - YAML frontmatter parsing
@@ -78,7 +78,7 @@ bun install.js
 
 # Cleanup
 rm install.js
-```
+```text
 
 **Pros:**
 - ✅ Uses Bun (faster)
@@ -133,7 +133,7 @@ cd ..
 
 # Run setup
 bun ai-toolkit-shared/scripts/init.js
-```
+```text
 
 **Pros:**
 - ✅ Can modify toolkit
@@ -186,7 +186,7 @@ curl -fsSL https://bun.sh/install | bash
 
 # Verify installation:
 # bun --version
-```
+```bash
 
 Or use Node.js instead:
 ```bash
@@ -206,7 +206,7 @@ Install Git:
 Initialize git first:
 ```bash
 git init
-```
+```yaml
 
 ### Installation Fails
 
