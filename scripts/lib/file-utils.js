@@ -99,7 +99,7 @@ function rollbackFromBackup(filePath, backupPath) {
  * @param {string} content - Content to normalize
  * @returns {string} - Content with normalized line endings
  */
-function normalizeLineEndings(content) {
+function normalizeLineEndingsContent(content) {
     // Replace all line ending variations with LF
     return content.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
 }
@@ -109,10 +109,10 @@ function normalizeLineEndings(content) {
  * @param {string} filePath - File path
  * @param {string} content - Content to write
  * @param {string} [encoding='utf8'] - File encoding
- * @param {boolean} [createBackup=true] - Whether to create backup before writing
+ * @param {boolean} [shouldCreateBackup=true] - Whether to create backup before writing
  * @param {boolean} [normalizeLineEndings=true] - Whether to normalize line endings to LF
  */
-export function writeFileSafe(filePath, content, encoding = 'utf8', createBackup = true, normalizeLineEndings = true) {
+export function writeFileSafe(filePath, content, encoding = 'utf8', shouldCreateBackup = true, normalizeLineEndings = true) {
     let backupPath = null
 
     try {
@@ -120,11 +120,11 @@ export function writeFileSafe(filePath, content, encoding = 'utf8', createBackup
 
         // Normalize line endings to LF for cross-platform compatibility
         if (normalizeLineEndings) {
-            content = normalizeLineEndings(content)
+            content = normalizeLineEndingsContent(content)
         }
 
         // Create backup if file exists
-        if (createBackup && existsSync(filePath)) {
+        if (shouldCreateBackup && existsSync(filePath)) {
             backupPath = createBackup(filePath)
         }
 
@@ -162,7 +162,9 @@ export function writeFileSafe(filePath, content, encoding = 'utf8', createBackup
         if (error instanceof FileSystemError) {
             throw error
         }
-        throw new FileSystemError(`Failed to write file: ${filePath}`, error)
+        // Include underlying error message for better debugging
+        const errorMessage = error?.message ? `${error.message}` : 'Unknown error'
+        throw new FileSystemError(`Failed to write file: ${filePath} - ${errorMessage}`, error)
     }
 }
 

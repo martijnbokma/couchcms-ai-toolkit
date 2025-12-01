@@ -1,6 +1,6 @@
 ---
 description: Auto-load refactoring rules for Alpine.js components
-globs: ['{{paths.snippets}}/**/*.html', '*.php', '{{paths.javascript}}/**/*.js']
+globs: ['{{paths.snippets}}/**/*.html', '*.php', 'assets/js/**/*.js']
 alwaysApply: false
 ---
 
@@ -74,7 +74,7 @@ When refactoring this file, apply these rules:
 - ✅ Use `Alpine.data()` for component definitions
 - ✅ Pass configuration as parameters
 - ✅ Use Alpine stores for shared state
-- ✅ Create component snippets in `{{paths.components}}/`
+- ✅ Create component snippets in `snippets/components/`
 
 ## Event Handling
 
