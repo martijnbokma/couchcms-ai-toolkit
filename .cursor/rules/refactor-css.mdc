@@ -1,6 +1,6 @@
 ---
 description: Auto-load refactoring rules for CSS files
-globs: ['{{paths.css}}/**/*.css']
+globs: ['assets/css/**/*.css']
 alwaysApply: false
 ---
 
@@ -40,7 +40,7 @@ When refactoring this file, apply these rules:
 
 ## File Organization
 
-- Follow `{{paths.css}}/input.css` import structure
+- Follow `assets/css/input.css` import structure
 - Use kebab-case for file names
 - Group related styles together
 

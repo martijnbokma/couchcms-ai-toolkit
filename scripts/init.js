@@ -10,9 +10,8 @@
 
 import { existsSync, readFileSync } from 'fs'
 import { resolve, dirname, basename, join } from 'path'
-import { fileURLToPath } from 'url'
 import { findConfigFile, getConfigFileName, handleError } from './utils/utils.js'
-import { prompt, confirm, selectModules, selectAgents, selectFramework } from './lib/prompts.js'
+import { prompt, confirm, selectModules, selectAgents, selectFramework, selectEditors } from './lib/prompts.js'
 import {
     determineConfigPath,
     generateStandardsFile,
@@ -29,11 +28,10 @@ import {
 import { checkAndInstallDependencies } from './lib/dependency-checker.js'
 import { detectToolkitPath } from './lib/toolkit-detector.js'
 import { resolveToolkitPath } from './utils/utils.js'
+import { getToolkitRootCached } from './lib/index.js'
 import yaml from 'yaml'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = resolve(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 
 /**
  * Determine project directory, detecting if running from toolkit directory
@@ -262,11 +260,16 @@ async function init() {
 
     // Resolve absolute toolkit path and check dependencies
     const resolvedToolkitPath = resolveToolkitPath(toolkitPath, projectDir, TOOLKIT_ROOT)
-    try {
-        await checkAndInstallDependencies(resolvedToolkitPath)
-    } catch (error) {
-        console.error(`\n❌ ${error.message}\n`)
-        process.exit(1)
+    if (typeof checkAndInstallDependencies === 'function') {
+        try {
+            await checkAndInstallDependencies(resolvedToolkitPath)
+        } catch (error) {
+            console.warn(`\n⚠️  Dependency check failed: ${error.message}`)
+            console.warn('⚠️  Continuing with setup, but some features may not work correctly')
+            console.warn('⚠️  Run "bun install" in the toolkit directory to fix this\n')
+        }
+    } else {
+        console.warn('⚠️  Dependency checker not available, skipping dependency check\n')
     }
 
     // Group 3: Modules and Agents (combined in custom mode)
@@ -288,14 +291,27 @@ async function init() {
         selectedAgents = await selectAgents(simpleMode)
     }
 
-    // Group 4: Advanced Options (only shown in custom mode, with progressive disclosure)
+    // Group 4: Editor/Tool Selection
+    let selectedEditors
+    if (autoMode) {
+        // Auto mode: Default to Cursor, Windsurf, and Claude
+        selectedEditors = ['cursor', 'windsurf', 'claude']
+        console.log('\n🛠️  Editor selection (auto):')
+        console.log('   ✓ Cursor - Cursor IDE')
+        console.log('   ✓ Windsurf - Windsurf IDE')
+        console.log('   ✓ Claude Code - Claude Code')
+    } else {
+        selectedEditors = await selectEditors(simpleMode)
+    }
+
+    // Group 5: Advanced Options (only shown in custom mode, with progressive disclosure)
     let frameworkConfig
     let contextPath = null
 
     if (presetMode && selectedPreset) {
         frameworkConfig = selectedPreset.framework
     } else if (isCustomMode) {
-        console.log('\n📋 Group 4: Advanced Options (Optional)\n')
+        console.log('\n📋 Group 5: Advanced Options (Optional)\n')
         const showAdvanced = await confirm('Configure advanced options (framework, context directory)?', false)
 
         if (showAdvanced) {
@@ -320,6 +336,7 @@ async function init() {
         toolkitRoot: TOOLKIT_ROOT,
         selectedModules,
         selectedAgents,
+        selectedEditors,
         frameworkConfig,
     })
 

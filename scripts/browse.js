@@ -1,23 +1,21 @@
 #!/usr/bin/env bun
 /**
  * CouchCMS AI Toolkit - Interactive Module Browser
- * 
+ *
  * Browse and select modules/agents interactively
- * 
+ *
  * Usage:
  *   bun scripts/browse.js [--modules|--agents]
  */
 
 import { readdirSync, readFileSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
 import matter from 'gray-matter'
 import { findConfigFile, resolveToolkitPath } from './utils/utils.js'
 import { loadConfig } from './lib/config-loader.js'
+import { getToolkitRootCached } from './lib/index.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = join(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 
 // ANSI codes for terminal control
 const CLEAR_SCREEN = '\x1b[2J\x1b[H'
@@ -42,12 +40,12 @@ const colors = {
 function loadAvailableModules(toolkitPath) {
     const modulesDir = join(toolkitPath, 'modules')
     const files = readdirSync(modulesDir).filter(f => f.endsWith('.md'))
-    
+
     return files.map(file => {
         const content = readFileSync(join(modulesDir, file), 'utf8')
         const { data } = matter(content)
         const name = file.replace('.md', '')
-        
+
         return {
             name,
             title: data.title || name,
@@ -64,12 +62,12 @@ function loadAvailableModules(toolkitPath) {
 function loadAvailableAgents(toolkitPath) {
     const agentsDir = join(toolkitPath, 'agents')
     const files = readdirSync(agentsDir).filter(f => f.endsWith('.md'))
-    
+
     return files.map(file => {
         const content = readFileSync(join(agentsDir, file), 'utf8')
         const { data } = matter(content)
         const name = file.replace('.md', '')
-        
+
         return {
             name,
             title: data.title || name,
@@ -84,7 +82,7 @@ function loadAvailableAgents(toolkitPath) {
  */
 function groupByCategory(items) {
     const groups = {}
-    
+
     for (const item of items) {
         const category = item.category || 'other'
         if (!groups[category]) {
@@ -92,7 +90,7 @@ function groupByCategory(items) {
         }
         groups[category].push(item)
     }
-    
+
     return groups
 }
 
@@ -103,38 +101,38 @@ function render(items, selected, cursor, scroll, type) {
     const height = process.stdout.rows - 10
     const groups = groupByCategory(items)
     const categories = Object.keys(groups).sort()
-    
+
     let output = CLEAR_SCREEN
     output += `${colors.bright}${colors.blue}📦 CouchCMS AI Toolkit - ${type === 'modules' ? 'Modules' : 'Agents'} Browser${colors.reset}\n\n`
     output += `${colors.dim}Use ↑↓ to navigate, Space to toggle, Enter to save, Q to quit${colors.reset}\n\n`
-    
+
     let lineIndex = 0
-    
+
     for (const category of categories) {
         const categoryItems = groups[category]
-        
+
         // Category header
         if (lineIndex >= scroll && lineIndex < scroll + height) {
             output += `${colors.cyan}${category.toUpperCase()}${colors.reset}\n`
         }
         lineIndex++
-        
+
         // Items in category
         for (const item of categoryItems) {
             if (lineIndex >= scroll && lineIndex < scroll + height) {
                 const isSelected = selected.includes(item.name)
                 const isCursor = lineIndex === cursor
-                
+
                 const checkbox = isSelected ? '[✓]' : '[ ]'
                 const prefix = isCursor ? '→ ' : '  '
                 const color = isCursor ? colors.bright : colors.reset
                 const checkColor = isSelected ? colors.green : colors.gray
-                
+
                 output += `${prefix}${checkColor}${checkbox}${colors.reset} ${color}${item.title}${colors.reset}\n`
-                
+
                 if (isCursor) {
                     output += `    ${colors.dim}${item.description}${colors.reset}\n`
-                    
+
                     if (item.dependencies && item.dependencies.length > 0) {
                         output += `    ${colors.yellow}Requires: ${item.dependencies.join(', ')}${colors.reset}\n`
                     }
@@ -142,13 +140,13 @@ function render(items, selected, cursor, scroll, type) {
             }
             lineIndex++
         }
-        
+
         lineIndex++ // Empty line after category
     }
-    
+
     // Footer
     output += `\n${colors.dim}Selected: ${selected.length}/${items.length}${colors.reset}\n`
-    
+
     process.stdout.write(output)
 }
 
@@ -156,24 +154,24 @@ function render(items, selected, cursor, scroll, type) {
  * Interactive browser
  */
 async function browse(type, toolkitPath, currentSelection) {
-    const items = type === 'modules' 
+    const items = type === 'modules'
         ? loadAvailableModules(toolkitPath)
         : loadAvailableAgents(toolkitPath)
-    
+
     let selected = [...currentSelection]
     let cursor = 0
     let scroll = 0
     const height = process.stdout.rows - 10
-    
+
     // Setup terminal
     process.stdout.write(HIDE_CURSOR)
     process.stdin.setRawMode(true)
     process.stdin.resume()
     process.stdin.setEncoding('utf8')
-    
+
     // Initial render
     render(items, selected, cursor, scroll, type)
-    
+
     return new Promise((resolve) => {
         process.stdin.on('data', (key) => {
             // Handle input
@@ -185,7 +183,7 @@ async function browse(type, toolkitPath, currentSelection) {
                 resolve(null)
                 return
             }
-            
+
             if (key === '\r') {
                 // Enter - save and exit
                 process.stdout.write(SHOW_CURSOR)
@@ -194,7 +192,7 @@ async function browse(type, toolkitPath, currentSelection) {
                 resolve(selected)
                 return
             }
-            
+
             if (key === '\u001b[A') {
                 // Up arrow
                 cursor = Math.max(0, cursor - 1)
@@ -207,12 +205,12 @@ async function browse(type, toolkitPath, currentSelection) {
                 // Space - toggle selection
                 const item = items[cursor]
                 const index = selected.indexOf(item.name)
-                
+
                 if (index >= 0) {
                     selected.splice(index, 1)
                 } else {
                     selected.push(item.name)
-                    
+
                     // Auto-select dependencies
                     if (item.dependencies) {
                         for (const dep of item.dependencies) {
@@ -223,7 +221,7 @@ async function browse(type, toolkitPath, currentSelection) {
                     }
                 }
             }
-            
+
             // Re-render
             render(items, selected, cursor, scroll, type)
         })
@@ -236,39 +234,39 @@ async function browse(type, toolkitPath, currentSelection) {
 async function main() {
     const args = process.argv.slice(2)
     const type = args.includes('--agents') ? 'agents' : 'modules'
-    
+
     // Find project config
     const configPath = findConfigFile(process.cwd())
-    
+
     if (!configPath) {
         console.error('❌ No configuration file found')
         console.log('Run: bun scripts/init.js')
         process.exit(1)
     }
-    
+
     const projectDir = dirname(configPath)
-    
+
     // Load current config
     const config = loadConfig(projectDir, TOOLKIT_ROOT)
-    const currentSelection = type === 'modules' 
+    const currentSelection = type === 'modules'
         ? (config.modules || [])
         : (config.agents || [])
-    
+
     console.log(`\n🔍 Loading ${type}...\n`)
-    
+
     // Run browser
     const selected = await browse(type, TOOLKIT_ROOT, currentSelection)
-    
+
     if (selected === null) {
         console.log('\n❌ Cancelled\n')
         process.exit(0)
     }
-    
+
     // Update config file
     console.log(`\n✅ Selected ${selected.length} ${type}`)
     console.log(`\n💡 To apply changes, update your config file and run:`)
     console.log(`   bun scripts/sync.js\n`)
-    
+
     // Display selected items
     console.log(`${type}:`)
     for (const name of selected.sort()) {

@@ -1,6 +1,6 @@
 ---
 description: Auto-load refactoring rules for CouchCMS user management
-globs: ['{{paths.snippets}}/**/*user*.html', '{{paths.filters}}/**/*.html', '*.php']
+globs: ['{{paths.snippets}}/**/*user*.html', 'snippets/filters/**/*.html', '*.php']
 alwaysApply: false
 ---
 

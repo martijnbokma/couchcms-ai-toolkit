@@ -21,6 +21,23 @@ frameworks:
     - tailwindcss_v4
     - alpinejs
 
+# === EDITORS / TOOLS ===
+# Configure which editors/tools to generate config files for
+editors:
+    cursor: true
+    windsurf: true
+    zed: false
+    copilot: true
+    claude: true
+    codewhisperer: true
+    kiro: false
+    antigravity: false
+    jules: false
+    roocode: false
+    vscode-ai: false
+    tabnine: true
+    agent: false
+
 # === AI AGENTS ===
 # Configure which AI agents are available
 agents:

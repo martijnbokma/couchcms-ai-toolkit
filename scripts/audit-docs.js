@@ -12,18 +12,16 @@
 
 import { readFileSync, existsSync, statSync, readdirSync } from 'fs'
 import { dirname, resolve, join, relative, extname } from 'path'
-import { fileURLToPath } from 'url'
 import matter from 'gray-matter'
+import { getToolkitRootCached } from './lib/index.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = resolve(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 
 // Configuration
 const DOCS_DIRS = ['docs', '.']
 const MARKDOWN_EXTENSIONS = ['.md', '.markdown']
 const DEPRECATED_FILES = [
-    'CLAUDE.md', 'AGENT.md', 'config.yaml', 'defaults.yaml', 
+    'CLAUDE.md', 'AGENT.md', 'config.yaml', 'defaults.yaml',
     'smart-defaults.yaml', 'preflight-checks.yaml'
 ]
 
@@ -59,7 +57,7 @@ class DocumentationAuditor {
         this.documents = new Map()
         this.terminologyMap = new Map()
         this.pathNotationMap = new Map()
-        
+
         this.loadPackageJson()
     }
 
@@ -95,14 +93,14 @@ class DocumentationAuditor {
      */
     findMarkdownFiles() {
         const files = []
-        
+
         for (const dir of DOCS_DIRS) {
             const fullDir = join(TOOLKIT_ROOT, dir)
             if (existsSync(fullDir)) {
                 this.scanDirectory(fullDir, files)
             }
         }
-        
+
         return files
     }
 
@@ -111,10 +109,10 @@ class DocumentationAuditor {
      */
     scanDirectory(dir, files) {
         const entries = readdirSync(dir, { withFileTypes: true })
-        
+
         for (const entry of entries) {
             const fullPath = join(dir, entry.name)
-            
+
             if (entry.isDirectory()) {
                 // Skip hidden directories and node_modules
                 if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
@@ -136,7 +134,7 @@ class DocumentationAuditor {
         try {
             const content = readFileSync(filePath, 'utf8')
             const parsed = matter(content)
-            
+
             return {
                 path: filePath,
                 content,
@@ -165,18 +163,18 @@ class DocumentationAuditor {
     extractCommands(text, filePath, lineOffset = 0) {
         const commands = []
         const lines = text.split('\n')
-        
+
         // Pattern for code blocks with commands
         const codeBlockRegex = /```[\w]*\n([\s\S]*?)\n```/g
         const inlineCodeRegex = /`([^`]+)`/g
-        
+
         let match
-        
+
         // Extract from code blocks
         while ((match = codeBlockRegex.exec(text)) !== null) {
             const codeContent = match[1]
             const codeLines = codeContent.split('\n')
-            
+
             codeLines.forEach((line, index) => {
                 const trimmed = line.trim()
                 if (this.isCommand(trimmed)) {
@@ -190,7 +188,7 @@ class DocumentationAuditor {
                 }
             })
         }
-        
+
         // Extract from inline code
         while ((match = inlineCodeRegex.exec(text)) !== null) {
             const code = match[1].trim()
@@ -204,7 +202,7 @@ class DocumentationAuditor {
                 })
             }
         }
-        
+
         return commands
     }
 
@@ -229,14 +227,14 @@ class DocumentationAuditor {
     extractFilePaths(text, filePath, lineOffset = 0) {
         const paths = []
         const lines = text.split('\n')
-        
+
         // Patterns for different types of file references
         const patterns = [
             /`([^`]*\.[a-zA-Z0-9]+)`/g,  // Inline code with file extensions
             /\[([^\]]*)\]\(([^)]+)\)/g,   // Markdown links
             /(?:^|\s)([./][^\s]+\.[a-zA-Z0-9]+)/g  // Relative paths
         ]
-        
+
         lines.forEach((line, index) => {
             patterns.forEach(pattern => {
                 let match
@@ -253,7 +251,7 @@ class DocumentationAuditor {
                 }
             })
         })
-        
+
         return paths
     }
 
@@ -265,9 +263,9 @@ class DocumentationAuditor {
         if (text.startsWith('http') || text.startsWith('mailto:') || text.includes('://')) {
             return false
         }
-        
+
         // Must have an extension or be a known directory
-        return /\.[a-zA-Z0-9]+$/.test(text) || 
+        return /\.[a-zA-Z0-9]+$/.test(text) ||
                text.endsWith('/') ||
                ['scripts', 'docs', 'modules', 'agents'].some(dir => text.includes(dir))
     }
@@ -278,13 +276,13 @@ class DocumentationAuditor {
     extractVersions(text, filePath, lineOffset = 0) {
         const versions = []
         const lines = text.split('\n')
-        
+
         const versionPatterns = [
             /v?(\d+\.\d+\.\d+)/g,
             /version\s+(\d+\.\d+\.\d+)/gi,
             /(\d+\.\d+)\+/g
         ]
-        
+
         lines.forEach((line, index) => {
             versionPatterns.forEach(pattern => {
                 let match
@@ -298,7 +296,7 @@ class DocumentationAuditor {
                 }
             })
         })
-        
+
         return versions
     }
 
@@ -308,15 +306,15 @@ class DocumentationAuditor {
     extractInternalLinks(text, filePath, lineOffset = 0) {
         const links = []
         const lines = text.split('\n')
-        
+
         const linkPattern = /\[([^\]]*)\]\(([^)]+)\)/g
-        
+
         lines.forEach((line, index) => {
             let match
             while ((match = linkPattern.exec(line)) !== null) {
                 const linkText = match[1]
                 const linkUrl = match[2]
-                
+
                 // Only process internal links (not URLs)
                 if (!linkUrl.startsWith('http') && !linkUrl.startsWith('mailto:')) {
                     links.push({
@@ -329,7 +327,7 @@ class DocumentationAuditor {
                 }
             }
         })
-        
+
         return links
     }
 
@@ -338,14 +336,14 @@ class DocumentationAuditor {
      */
     validateCommands(commands, filePath) {
         if (!this.packageJson) return
-        
+
         commands.forEach(cmd => {
             const { command, line, column, context } = cmd
-            
+
             // Check if it's a bun/npm script command
             if (command.startsWith('bun ') || command.startsWith('npm run ')) {
                 const scriptName = command.replace(/^(bun |npm run )/, '')
-                
+
                 if (!this.packageJson.scripts || !this.packageJson.scripts[scriptName]) {
                     this.addFinding(
                         FINDING_TYPES.INCORRECT_COMMAND,
@@ -369,7 +367,7 @@ class DocumentationAuditor {
     validateFilePaths(paths, filePath) {
         paths.forEach(pathRef => {
             const { path, line, column, context } = pathRef
-            
+
             // Resolve relative to toolkit root
             let fullPath = path
             if (path.startsWith('./') || path.startsWith('../')) {
@@ -377,7 +375,7 @@ class DocumentationAuditor {
             } else if (!path.startsWith('/')) {
                 fullPath = join(TOOLKIT_ROOT, path)
             }
-            
+
             if (!existsSync(fullPath)) {
                 this.addFinding(
                     FINDING_TYPES.MISSING_FILE,
@@ -399,12 +397,12 @@ class DocumentationAuditor {
      */
     validateVersions(versions, filePath) {
         if (!this.packageJson) return
-        
+
         const currentVersion = this.packageJson.version
-        
+
         versions.forEach(versionRef => {
             const { version, line, column, context } = versionRef
-            
+
             // Check if version matches current package.json version
             if (version !== currentVersion && !context.includes('old') && !context.includes('previous')) {
                 this.addFinding(
@@ -428,10 +426,10 @@ class DocumentationAuditor {
     validateInternalLinks(links, filePath) {
         links.forEach(link => {
             const { url, line, column, context } = link
-            
+
             // Parse URL and anchor
             const [linkPath, anchor] = url.split('#')
-            
+
             // Resolve relative to current file's directory
             let targetPath = linkPath
             if (linkPath) {
@@ -440,7 +438,7 @@ class DocumentationAuditor {
                 } else {
                     targetPath = join(TOOLKIT_ROOT, linkPath)
                 }
-                
+
                 if (!existsSync(targetPath)) {
                     this.addFinding(
                         FINDING_TYPES.BROKEN_LINK,
@@ -455,7 +453,7 @@ class DocumentationAuditor {
                     )
                 }
             }
-            
+
             // TODO: Validate anchors by parsing target file headers
         })
     }
@@ -465,7 +463,7 @@ class DocumentationAuditor {
      */
     checkDeprecatedReferences(content, filePath) {
         const lines = content.split('\n')
-        
+
         lines.forEach((line, index) => {
             DEPRECATED_FILES.forEach(deprecatedFile => {
                 if (line.includes(deprecatedFile)) {
@@ -490,7 +488,7 @@ class DocumentationAuditor {
      */
     checkCodeBlockLanguages(content, filePath) {
         const lines = content.split('\n')
-        
+
         lines.forEach((line, index) => {
             if (line.trim() === '```') {
                 this.addFinding(
@@ -524,9 +522,9 @@ class DocumentationAuditor {
             'module', 'Module', 'knowledge module',
             'agent', 'Agent', 'AI agent'
         ]
-        
+
         const lines = content.split('\n')
-        
+
         lines.forEach((line, index) => {
             terms.forEach(term => {
                 if (line.toLowerCase().includes(term.toLowerCase())) {
@@ -534,12 +532,12 @@ class DocumentationAuditor {
                     if (!this.terminologyMap.has(key)) {
                         this.terminologyMap.set(key, new Map())
                     }
-                    
+
                     const termMap = this.terminologyMap.get(key)
                     if (!termMap.has(term)) {
                         termMap.set(term, [])
                     }
-                    
+
                     termMap.get(term).push({
                         file: filePath,
                         line: index + 1,
@@ -555,14 +553,14 @@ class DocumentationAuditor {
      */
     collectPathNotation(content, filePath) {
         const lines = content.split('\n')
-        
+
         lines.forEach((line, index) => {
             // Look for path references
             const pathPatterns = [
                 /`([^`]*(?:scripts|docs|modules|agents|\.)[^`]*)`/g,
                 /(?:^|\s)([./][^\s]+)/g
             ]
-            
+
             pathPatterns.forEach(pattern => {
                 let match
                 while ((match = pattern.exec(line)) !== null) {
@@ -570,16 +568,16 @@ class DocumentationAuditor {
                     if (this.isFilePath(path)) {
                         // Normalize path for comparison
                         const normalizedPath = path.replace(/^\.\//, '').replace(/\/$/, '')
-                        
+
                         if (!this.pathNotationMap.has(normalizedPath)) {
                             this.pathNotationMap.set(normalizedPath, new Map())
                         }
-                        
+
                         const notationMap = this.pathNotationMap.get(normalizedPath)
                         if (!notationMap.has(path)) {
                             notationMap.set(path, [])
                         }
-                        
+
                         notationMap.get(path).push({
                             file: filePath,
                             line: index + 1,
@@ -597,12 +595,12 @@ class DocumentationAuditor {
     checkTerminologyConsistency() {
         for (const [termKey, termMap] of this.terminologyMap) {
             const variations = Array.from(termMap.keys())
-            
+
             if (variations.length > 1) {
                 // Find the most common variation
                 let mostCommon = variations[0]
                 let maxCount = 0
-                
+
                 for (const variation of variations) {
                     const count = termMap.get(variation).length
                     if (count > maxCount) {
@@ -610,12 +608,12 @@ class DocumentationAuditor {
                         mostCommon = variation
                     }
                 }
-                
+
                 // Report inconsistencies
                 for (const variation of variations) {
                     if (variation !== mostCommon) {
                         const occurrences = termMap.get(variation)
-                        
+
                         occurrences.forEach(occurrence => {
                             this.addFinding(
                                 FINDING_TYPES.INCONSISTENT_TERMINOLOGY,
@@ -641,16 +639,16 @@ class DocumentationAuditor {
     checkPathNotationConsistency() {
         for (const [normalizedPath, notationMap] of this.pathNotationMap) {
             const notations = Array.from(notationMap.keys())
-            
+
             if (notations.length > 1) {
                 // Prefer explicit relative paths (./path) over implicit ones
                 let preferred = notations.find(n => n.startsWith('./')) || notations[0]
-                
+
                 // Report inconsistencies
                 for (const notation of notations) {
                     if (notation !== preferred) {
                         const occurrences = notationMap.get(notation)
-                        
+
                         occurrences.forEach(occurrence => {
                             this.addFinding(
                                 FINDING_TYPES.INCONSISTENT_PATH_NOTATION,
@@ -675,20 +673,20 @@ class DocumentationAuditor {
      */
     validateVersionConsistency() {
         if (!this.packageJson) return
-        
+
         const currentVersion = this.packageJson.version
-        
+
         // Check for hardcoded version references that should be dynamic
         for (const [filePath, doc] of this.documents) {
             const lines = doc.content.split('\n')
-            
+
             lines.forEach((line, index) => {
                 // Look for version patterns in documentation
                 const versionPatterns = [
                     new RegExp(`version\\s+${currentVersion.replace(/\./g, '\\.')}`, 'gi'),
                     new RegExp(`v${currentVersion.replace(/\./g, '\\.')}`, 'gi')
                 ]
-                
+
                 versionPatterns.forEach(pattern => {
                     if (pattern.test(line) && !line.includes('package.json')) {
                         this.addFinding(
@@ -713,10 +711,10 @@ class DocumentationAuditor {
      */
     async audit() {
         console.log('🔍 CouchCMS AI Toolkit - Documentation Audit\n')
-        
+
         const files = this.findMarkdownFiles()
         console.log(`📄 Found ${files.length} markdown files to audit\n`)
-        
+
         // Parse all files
         for (const filePath of files) {
             const doc = this.parseMarkdownFile(filePath)
@@ -724,48 +722,48 @@ class DocumentationAuditor {
                 this.documents.set(filePath, doc)
             }
         }
-        
+
         // First pass: collect terminology and path notation data
         for (const [filePath, doc] of this.documents) {
             this.collectTerminology(doc.content, filePath)
             this.collectPathNotation(doc.content, filePath)
         }
-        
+
         // Audit each document
         for (const [filePath, doc] of this.documents) {
             console.log(`🔍 Auditing: ${relative(TOOLKIT_ROOT, filePath)}`)
-            
+
             // Extract and validate commands
             const commands = this.extractCommands(doc.content, filePath)
             this.validateCommands(commands, filePath)
-            
+
             // Extract and validate file paths
             const paths = this.extractFilePaths(doc.content, filePath)
             this.validateFilePaths(paths, filePath)
-            
+
             // Extract and validate versions
             const versions = this.extractVersions(doc.content, filePath)
             this.validateVersions(versions, filePath)
-            
+
             // Extract and validate internal links
             const links = this.extractInternalLinks(doc.content, filePath)
             this.validateInternalLinks(links, filePath)
-            
+
             // Check for deprecated references
             this.checkDeprecatedReferences(doc.content, filePath)
-            
+
             // Check code block language specifiers
             this.checkCodeBlockLanguages(doc.content, filePath)
         }
-        
+
         // Run consistency checks across all documents
         console.log('🔍 Checking consistency across documents...')
         this.checkTerminologyConsistency()
         this.checkPathNotationConsistency()
         this.validateVersionConsistency()
-        
+
         console.log(`\n✅ Audit complete. Found ${this.findings.length} issues.\n`)
-        
+
         return this.findings
     }
 }
@@ -847,7 +845,7 @@ Generated: ${timestamp}
 
             const emoji = severityEmojis[severity]
             const title = severity.charAt(0).toUpperCase() + severity.slice(1)
-            
+
             report += `\n## ${emoji} ${title} Issues (${severityFindings.length})\n\n`
 
             // Group by document
@@ -861,18 +859,18 @@ Generated: ${timestamp}
 
             Object.entries(byDocument).forEach(([document, findings]) => {
                 report += `### ${document}\n\n`
-                
+
                 findings.forEach((finding, index) => {
                     report += `**${index + 1}. ${finding.issue}**\n`
                     report += `- **Line**: ${finding.line}\n`
                     report += `- **Type**: ${finding.type.replace(/-/g, ' ')}\n`
                     report += `- **Current**: \`${finding.current}\`\n`
                     report += `- **Expected**: \`${finding.expected}\`\n`
-                    
+
                     if (finding.context) {
                         report += `- **Context**: \`${finding.context}\`\n`
                     }
-                    
+
                     report += '\n'
                 })
             })
@@ -880,7 +878,7 @@ Generated: ${timestamp}
 
         // Add detailed findings section
         report += `\n## Detailed Findings\n\n`
-        
+
         const byDocument = this.findings.reduce((acc, finding) => {
             if (!acc[finding.document]) {
                 acc[finding.document] = []
@@ -891,7 +889,7 @@ Generated: ${timestamp}
 
         Object.entries(byDocument).forEach(([document, findings]) => {
             report += `### ${document} (${findings.length} issues)\n\n`
-            
+
             findings.sort((a, b) => a.line - b.line).forEach((finding, index) => {
                 const severityIcon = severityEmojis[finding.severity]
                 report += `${index + 1}. ${severityIcon} **Line ${finding.line}**: ${finding.issue}\n`
@@ -899,33 +897,33 @@ Generated: ${timestamp}
                 report += `   - **Type**: ${finding.type.replace(/-/g, ' ')}\n`
                 report += `   - **Current**: \`${finding.current}\`\n`
                 report += `   - **Suggested**: \`${finding.expected}\`\n`
-                
+
                 if (finding.context) {
                     report += `   - **Context**: \`${finding.context}\`\n`
                 }
-                
+
                 report += '\n'
             })
         })
 
         // Add recommendations
         report += `\n## Recommendations\n\n`
-        
+
         if (summary.criticalCount > 0) {
             report += `### 🚨 Critical Issues (${summary.criticalCount})\n`
             report += `These issues prevent users from using the toolkit and must be fixed immediately.\n\n`
         }
-        
+
         if (summary.highCount > 0) {
             report += `### ⚠️ High Priority Issues (${summary.highCount})\n`
             report += `These issues cause confusion or incorrect behavior and should be fixed soon.\n\n`
         }
-        
+
         if (summary.mediumCount > 0) {
             report += `### 📝 Medium Priority Issues (${summary.mediumCount})\n`
             report += `These are inconsistencies and minor inaccuracies that should be addressed.\n\n`
         }
-        
+
         if (summary.lowCount > 0) {
             report += `### 💡 Low Priority Issues (${summary.lowCount})\n`
             report += `These are style and formatting improvements that can be addressed when convenient.\n\n`
@@ -937,7 +935,7 @@ Generated: ${timestamp}
         report += `3. Review and fix medium priority issues\n`
         report += `4. Consider low priority improvements\n`
         report += `5. Re-run audit to verify fixes\n\n`
-        
+
         report += `---\n`
         report += `*Report generated by CouchCMS AI Toolkit Documentation Auditor*\n`
 
@@ -949,7 +947,7 @@ Generated: ${timestamp}
      */
     generateJsonReport() {
         const summary = this.generateSummary()
-        
+
         return {
             timestamp: new Date().toISOString(),
             summary,
@@ -962,10 +960,10 @@ Generated: ${timestamp}
      */
     async saveReport(format = 'markdown', outputPath = null) {
         const { writeFileSync } = await import('fs')
-        
+
         let content
         let defaultPath
-        
+
         if (format === 'json') {
             content = JSON.stringify(this.generateJsonReport(), null, 2)
             defaultPath = join(TOOLKIT_ROOT, 'docs-audit-report.json')
@@ -973,10 +971,10 @@ Generated: ${timestamp}
             content = this.generateMarkdownReport()
             defaultPath = join(TOOLKIT_ROOT, 'docs-audit-report.md')
         }
-        
+
         const filePath = outputPath || defaultPath
         writeFileSync(filePath, content, 'utf8')
-        
+
         return filePath
     }
 }
@@ -1017,22 +1015,22 @@ REPORT FILES:
  */
 async function main() {
     const args = process.argv.slice(2)
-    
+
     if (args.includes('--help') || args.includes('-h')) {
         showHelp()
         process.exit(0)
     }
-    
+
     const reportOnly = args.includes('--report-only')
     const format = args.find(arg => arg.startsWith('--format='))?.split('=')[1] || 'markdown'
     const outputPath = args.find(arg => arg.startsWith('--output='))?.split('=')[1]
     const saveReport = args.includes('--save') || outputPath
-    
+
     const auditor = new DocumentationAuditor()
     const findings = await auditor.audit()
-    
+
     const reportGenerator = new ReportGenerator(findings)
-    
+
     if (format === 'json') {
         const jsonReport = reportGenerator.generateJsonReport()
         console.log(JSON.stringify(jsonReport, null, 2))
@@ -1052,12 +1050,12 @@ async function main() {
             console.log(markdownReport)
         }
     }
-    
+
     if (saveReport) {
         const savedPath = await reportGenerator.saveReport(format, outputPath)
         console.log(`\n📄 Report saved to: ${relative(TOOLKIT_ROOT, savedPath)}`)
     }
-    
+
     process.exit(findings.length > 0 ? 1 : 0)
 }
 

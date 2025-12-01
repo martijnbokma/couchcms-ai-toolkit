@@ -13,12 +13,10 @@
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs'
 import { join, dirname, resolve } from 'path'
-import { fileURLToPath } from 'url'
 import matter from 'gray-matter'
+import { getToolkitRootCached } from '../lib/index.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = resolve(__dirname, '..')
+const TOOLKIT_ROOT = getToolkitRootCached()
 const MODULES_DIR = join(TOOLKIT_ROOT, 'modules')
 
 const DRY_RUN = process.argv.includes('--dry-run')

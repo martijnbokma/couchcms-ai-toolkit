@@ -1,6 +1,6 @@
 ---
 description: Auto-load refactoring rules for DataBound Forms
-globs: ['{{paths.forms}}/**/*.html', '{{paths.views}}/**/create*.html', '{{paths.views}}/**/edit*.html']
+globs: ['snippets/forms/**/*.html', 'snippets/views/**/create*.html', 'snippets/views/**/edit*.html']
 alwaysApply: false
 ---
 
@@ -34,7 +34,7 @@ When refactoring this file, apply these rules:
 
 ## Security
 
-- ✅ Use `<cms:embed '{{paths.filters}}/authenticated.html' />`
+- ✅ Use `<cms:embed 'snippets/filters/authenticated.html' />`
 - ✅ Use ownership filters for edit/delete
 - ✅ Set `content_owner=k_user_name` on create
 - ✅ Add anti-spam for public forms
@@ -70,7 +70,7 @@ When refactoring this file, apply these rules:
 
 ## Security Patterns
 
-- ✅ Use `<cms:embed '{{paths.filters}}/authenticated.html' />`
+- ✅ Use `<cms:embed 'snippets/filters/authenticated.html' />`
 - ✅ Use ownership filters for edit/delete: `owns_content.html`
 - ✅ Set `content_owner=k_user_name` on create
 - ✅ Add anti-spam for public forms (honeypot, timestamp, human check)

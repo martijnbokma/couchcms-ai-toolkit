@@ -21,11 +21,25 @@ import { parse as parseYaml } from 'yaml'
 import Handlebars from 'handlebars'
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, copyFileSync } from 'fs'
 import { join, dirname, resolve } from 'path'
-import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const TOOLKIT_ROOT = resolve(__dirname, '..')
+import {
+    ModuleCache,
+    checkAndInstallDependencies,
+    validateTemplate,
+    replaceVariables,
+    ensureDir,
+    ToolkitError,
+    ConfigError,
+    handleError,
+    resolvePath,
+    getToolkitRootCached
+} from './lib/index.js'
+import { findProjectFile, resolveToolkitPath } from './utils/utils.js'
+
+const TOOLKIT_ROOT = getToolkitRootCached()
+
+// Global cache instance
+const cache = new ModuleCache()
 
 /**
  * Register Handlebars helpers
@@ -41,6 +55,8 @@ Handlebars.registerHelper('add', function (a, b) {
 
 /**
  * Load defaults from toolkit defaults.yaml
+ * @param {string} toolkitPath - Path to toolkit directory
+ * @returns {object} - Default configuration object
  */
 function loadDefaults(toolkitPath) {
     const defaultsPath = join(toolkitPath, 'defaults.yaml')
@@ -78,6 +94,9 @@ function loadDefaults(toolkitPath) {
 
 /**
  * Deep merge two objects
+ * @param {object} target - Target object to merge into
+ * @param {object} source - Source object to merge from
+ * @returns {object} - Merged object
  */
 function deepMerge(target, source) {
     const result = { ...target }
@@ -93,72 +112,12 @@ function deepMerge(target, source) {
     return result
 }
 
-/**
- * Replace {{variable}} placeholders in content
- */
-function replaceVariables(content, variables, prefix = '') {
-    let result = content
-
-    for (const [key, value] of Object.entries(variables)) {
-        if (typeof value === 'object' && !Array.isArray(value)) {
-            result = replaceVariables(result, value, prefix ? `${prefix}.${key}` : key)
-        } else {
-            const pattern = new RegExp(`\\{\\{${prefix ? `${prefix}.` : ''}${key}\\}\\}`, 'g')
-            result = result.replace(pattern, String(value))
-        }
-    }
-
-    return result
-}
-
-/**
- * Find project configuration file (standards.md) in current directory or parent directories
- * Checks in order: .project/standards.md, standards.md, docs/standards.md
- */
-function findProjectFile(startDir = process.cwd()) {
-    let currentDir = startDir
-    const possibleNames = [
-        '.project/standards.md',  // Standard location (recommended)
-        'standards.md',           // Root location
-        'docs/standards.md'       // Docs location
-    ]
-
-    while (currentDir !== '/') {
-        for (const name of possibleNames) {
-            const projectPath = join(currentDir, name)
-            if (existsSync(projectPath)) {
-                return projectPath
-            }
-        }
-        currentDir = dirname(currentDir)
-    }
-
-    return null
-}
-
-/**
- * Resolve toolkit path from project config
- */
-function resolveToolkitPath(configPath, projectDir) {
-    if (!configPath) {
-        return TOOLKIT_ROOT
-    }
-
-    // Expand ~ to home directory
-    if (configPath.startsWith('~')) {
-        configPath = configPath.replace('~', process.env.HOME)
-    }
-
-    // Resolve relative paths from project directory (not current working directory)
-    if (!configPath.startsWith('/')) {
-        configPath = resolve(projectDir, configPath)
-    }
-
-    return configPath
-}
 
 /**
  * Load a module from the toolkit (with caching)
+ * @param {string} moduleName - Name of the module to load
+ * @param {string} toolkitPath - Path to toolkit directory
+ * @returns {object|null} - Module object with meta, content, and name, or null if not found
  */
 function loadModule(moduleName, toolkitPath) {
     const cacheKey = `module:${moduleName}:${toolkitPath}`
@@ -184,6 +143,9 @@ function loadModule(moduleName, toolkitPath) {
 
 /**
  * Load an agent from the toolkit (with caching)
+ * @param {string} agentName - Name of the agent to load
+ * @param {string} toolkitPath - Path to toolkit directory
+ * @returns {object|null} - Agent object with meta, content, and name, or null if not found
  */
 function loadAgent(agentName, toolkitPath) {
     const cacheKey = `agent:${agentName}:${toolkitPath}`
@@ -209,6 +171,9 @@ function loadAgent(agentName, toolkitPath) {
 
 /**
  * Load project context from context directory
+ * @param {string|null} contextPath - Path to context directory (relative or absolute)
+ * @param {string} projectDir - Project root directory
+ * @returns {object|null} - Context object with meta, content, and path, or null if not found
  */
 function loadProjectContext(contextPath, projectDir) {
     if (!contextPath) {
@@ -246,7 +211,9 @@ function loadProjectContext(contextPath, projectDir) {
 }
 
 /**
- * Check for module conflicts
+ * Check for module conflicts and missing dependencies
+ * @param {Array<object>} modules - Array of loaded module objects
+ * @returns {Array<string>} - Array of error messages (empty if no conflicts)
  */
 function checkConflicts(modules) {
     const moduleNames = modules.map(m => m.name)
@@ -275,6 +242,8 @@ function checkConflicts(modules) {
 
 /**
  * Generate paths documentation section
+ * @param {object} paths - Paths configuration object
+ * @returns {string} - Markdown-formatted paths documentation
  */
 function generatePathsSection(paths) {
     return `## Project Paths
@@ -299,6 +268,13 @@ These are the configured paths for this project:
 
 /**
  * Generate the combined configuration content
+ * @param {object} config - Project configuration from standards.md
+ * @param {object} mergedConfig - Merged configuration (defaults + project overrides)
+ * @param {Array<object>} modules - Array of loaded module objects
+ * @param {Array<object>} agents - Array of loaded agent objects
+ * @param {object|null} projectContext - Project context object or null
+ * @param {string} projectRules - Project-specific rules content
+ * @returns {string} - Generated configuration content with variables replaced
  */
 function generateContent(config, mergedConfig, modules, agents, projectContext, projectRules) {
     const timestamp = new Date().toISOString()
@@ -306,17 +282,22 @@ function generateContent(config, mergedConfig, modules, agents, projectContext, 
     const agentNames = agents.map(a => a.name).join(', ')
     const { paths, standards } = mergedConfig
 
+    // Support both old format (config.name) and new format (config.project.name)
+    const projectName = config.project?.name || config.name || 'Unnamed Project'
+    const projectDescription = config.project?.description || config.description || 'No description'
+    const projectType = config.project?.type || config.type || 'CouchCMS Web Application'
+
     let content = `# AI Coding Standards
-# Project: ${config.name || 'Unnamed Project'}
+# Project: ${projectName}
 # Generated: ${timestamp}
 # Modules: ${moduleNames}
 ${agentNames ? `# Agents: ${agentNames}` : ''}
 
 ## Project Overview
 
-- **Name**: ${config.name || 'Unnamed'}
-- **Description**: ${config.description || 'No description'}
-- **Type**: CouchCMS Web Application
+- **Name**: ${projectName}
+- **Description**: ${projectDescription}
+- **Type**: ${projectType}
 
 ## Core Standards
 
@@ -354,15 +335,23 @@ ${generatePathsSection(paths)}
     }
 
     // Replace all {{variable}} placeholders
-    content = replaceVariables(content, mergedConfig)
+    content = replaceVariables(content, mergedConfig, '')
 
     return content
 }
 
 /**
  * Prepare template data for rendering
+ * @param {object} config - Project configuration
+ * @param {object} mergedConfig - Merged configuration
+ * @param {Array<object>} modules - Array of loaded modules
+ * @param {Array<object>} agents - Array of loaded agents
+ * @param {object|null} projectContext - Project context or null
+ * @param {string} toolkitPath - Toolkit path
+ * @param {string} configFilePath - Path to configuration file (relative to project root)
+ * @returns {object} - Template data object for Handlebars rendering
  */
-function prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath) {
+function prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath, configFilePath) {
     const { paths, standards, naming } = mergedConfig
 
     // Extract languages and frameworks from modules
@@ -405,11 +394,16 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
     // Prepare roles data (if available in config)
     const roles = config.roles || []
 
+    // Support both old format (config.name) and new format (config.project.name)
+    const projectName = config.project?.name || config.name || 'Unnamed Project'
+    const projectDescription = config.project?.description || config.description || 'No description'
+    const projectType = config.project?.type || config.type || 'CouchCMS Web Application'
+
     return {
         project: {
-            name: config.name || 'Unnamed Project',
-            type: config.type || 'CouchCMS Web Application',
-            description: config.description || 'No description',
+            name: projectName,
+            type: projectType,
+            description: projectDescription,
         },
         standards: {
             indentation: standards.indentation || 4,
@@ -433,29 +427,64 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
         project_context: projectContext?.content || '',
         toolkit_path: toolkitPath,
         context_path: config.context || null,
+        config_file_path: configFilePath || '.project/standards.md',
     }
 }
 
 /**
  * Generate editor configuration files from templates
+ * @param {string} toolkitPath - Path to toolkit directory
+ * @param {string} projectDir - Project root directory
+ * @param {object} templateData - Template data for rendering
+ * @param {object} config - Project configuration (for editor selection)
+ * @returns {number} - Number of successfully generated config files
  */
-function generateEditorConfigs(toolkitPath, projectDir, templateData) {
+function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
     const templatesDir = join(toolkitPath, 'templates', 'editors')
 
     if (!existsSync(templatesDir)) {
         return // No templates directory
     }
 
-    // Mapping of template files to output files
-    const templateMap = {
-        'cursor.template.md': { output: '.cursorrules', dir: projectDir },
-        'claude.template.md': { output: 'CLAUDE.md', dir: projectDir },
-        'copilot.template.md': { output: 'copilot-instructions.md', dir: join(projectDir, '.github') },
-        'codewhisperer.template.md': { output: '.codewhisperer/settings.json', dir: projectDir },
-        'tabnine.template.md': { output: '.tabnine/settings.json', dir: projectDir },
-        'windsurf.template.md': { output: '.windsurf/rules.md', dir: projectDir },
-        'agent.template.md': { output: 'AGENT.md', dir: projectDir },
+    // Mapping of editor IDs to template files and output files
+    const editorMap = {
+        cursor: { template: 'cursor.template.md', output: '.cursorrules', dir: projectDir },
+        windsurf: { template: 'windsurf.template.md', output: '.windsurf/rules.md', dir: projectDir },
+        zed: { template: 'zed.template.md', output: '.rules', dir: projectDir },
+        copilot: { template: 'copilot.template.md', output: 'copilot-instructions.md', dir: join(projectDir, '.github') },
+        claude: { template: 'claude.template.md', output: 'CLAUDE.md', dir: projectDir },
+        codewhisperer: { template: 'codewhisperer.template.md', output: '.codewhisperer/settings.json', dir: projectDir },
+        kiro: { template: 'kiro.template.md', output: '.kiro/rules.md', dir: projectDir },
+        antigravity: { template: 'antigravity.template.md', output: '.antigravity/rules.md', dir: projectDir },
+        jules: { template: 'jules.template.md', output: '.jules/rules.md', dir: projectDir },
+        roocode: { template: 'roocode.template.md', output: '.roocode/rules.md', dir: projectDir },
+        'vscode-ai': { template: 'vscode-ai.template.md', output: '.vscode/ai-toolkit.md', dir: projectDir },
+        tabnine: { template: 'tabnine.template.md', output: '.tabnine/settings.json', dir: projectDir },
+        agent: { template: 'agent.template.md', output: 'AGENT.md', dir: projectDir },
     }
+
+    // Get selected editors from config (default to all if not specified)
+    const editors = config.editors || {}
+    const selectedEditors = Object.entries(editors)
+        .filter(([_, enabled]) => enabled === true)
+        .map(([editorId]) => editorId)
+
+    // If no editors are selected, default to all (backward compatibility)
+    const editorsToGenerate = selectedEditors.length > 0
+        ? selectedEditors
+        : Object.keys(editorMap)
+
+    // Build templateMap from selected editors only
+    const templateMap = {}
+    editorsToGenerate.forEach(editorId => {
+        const editorConfig = editorMap[editorId]
+        if (editorConfig) {
+            templateMap[editorConfig.template] = {
+                output: editorConfig.output,
+                dir: editorConfig.dir
+            }
+        }
+    })
 
     const templateFiles = readdirSync(templatesDir).filter(f => f.endsWith('.template.md'))
     let generatedCount = 0
@@ -481,9 +510,9 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData) {
                 try {
                     validateTemplate(templateContent, templateData, templatePath)
                 } catch (error) {
-                    console.error(`❌ Template validation failed for ${templateFile}:`)
-                    console.error(error.message)
-                    throw error
+                    const templateError = new ToolkitError(`Template validation failed for ${templateFile}`, 'TEMPLATE_VALIDATION', error)
+                    handleError(templateError, 'Template Validation')
+                    throw templateError
                 }
 
                 // Compile and cache template
@@ -498,9 +527,7 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData) {
 
             // Ensure output directory exists (handle subdirectories in output path)
             const outputDir = dirname(outputPath)
-            if (!existsSync(outputDir)) {
-                mkdirSync(outputDir, { recursive: true })
-            }
+            ensureDir(outputDir)
 
             // Write output file
             writeFileSync(outputPath, rendered)
@@ -517,6 +544,9 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData) {
 
 /**
  * Load skill rules from a module
+ * @param {string} moduleName - Name of the module
+ * @param {string} toolkitPath - Path to toolkit directory
+ * @returns {object|null} - Parsed skill rules JSON or null if not found
  */
 function loadModuleSkillRules(moduleName, toolkitPath) {
     const skillRulesPath = join(toolkitPath, 'modules', `${moduleName}.skill-rules.json`)
@@ -536,6 +566,11 @@ function loadModuleSkillRules(moduleName, toolkitPath) {
 
 /**
  * Generate Claude Code configuration (.claude/ directory)
+ * @param {string} toolkitPath - Path to toolkit directory
+ * @param {string} projectDir - Project root directory
+ * @param {Array<string>} moduleNames - Array of module names
+ * @param {object} mergedConfig - Merged configuration
+ * @returns {number} - Number of skill rules loaded
  */
 function generateClaudeCodeConfig(toolkitPath, projectDir, moduleNames, mergedConfig) {
     const claudeDir = join(projectDir, '.claude')
@@ -645,6 +680,10 @@ function generateClaudeCodeConfig(toolkitPath, projectDir, moduleNames, mergedCo
 
 /**
  * Sync Cursor rules from toolkit to project
+ * @param {string} toolkitPath - Path to toolkit directory
+ * @param {string} projectDir - Project root directory
+ * @param {object} mergedConfig - Merged configuration for variable replacement
+ * @returns {void}
  */
 function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
     const rulesSource = join(toolkitPath, 'rules')
@@ -675,7 +714,7 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
         let content = readFileSync(sourcePath, 'utf8')
 
         // Replace {{paths.xxx}} variables
-        content = replaceVariables(content, mergedConfig)
+        content = replaceVariables(content, mergedConfig, '')
 
         writeFileSync(targetPath, content)
     }
@@ -687,19 +726,21 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
 }
 
 /**
- * Main sync function
+ * Load and parse project configuration
+ * @returns {{config: object, projectRules: string, projectDir: string, toolkitPath: string}}
+ * @throws {ConfigError} If configuration cannot be loaded
  */
-async function sync() {
-    try {
-        console.log('🔄 CouchCMS AI Toolkit - Sync\n')
+function loadProjectConfiguration() {
+    console.log('🔄 CouchCMS AI Toolkit - Sync\n')
 
-        // Find standards.md configuration file
-        const projectPath = findProjectFile()
+    // Find standards.md configuration file
+    const projectPath = findProjectFile()
 
-        if (!projectPath) {
-            console.error('❌ No configuration file found in current directory or parent directories.')
-            console.log('\nCreate a standards.md file with:\n')
-            console.log(`---
+    if (!projectPath) {
+        const error = new ConfigError('No configuration file found in current directory or parent directories.')
+        handleError(error, 'Configuration Discovery')
+        console.log('\nCreate a standards.md file with:\n')
+        console.log(`---
 name: "my-project"
 description: "Project description"
 toolkit: "./ai-toolkit"
@@ -720,146 +761,217 @@ paths:
 
 Add your project-specific instructions here...
 `)
-            process.exit(1)
+        process.exit(1)
+    }
+
+    console.log(`📄 Found: ${projectPath}`)
+
+    // Determine project root directory
+    // If config is in .project/ or docs/, use parent directory as project root
+    let projectDir = dirname(projectPath)
+    const normalizedPath = projectPath.replace(/\\/g, '/')
+    if (normalizedPath.includes('/.project/') || normalizedPath.includes('/docs/')) {
+        projectDir = dirname(projectDir)
+    }
+
+    console.log(`📁 Project root: ${projectDir}`)
+
+    // Parse standards.md configuration file
+    let config, projectRules
+    try {
+        const projectContent = readFileSync(projectPath, 'utf8')
+        const parsed = matter(projectContent)
+        config = parsed.data
+        projectRules = parsed.content
+    } catch (error) {
+        const configError = new ConfigError('Failed to parse configuration file', error)
+        handleError(configError, 'Configuration Parsing')
+        console.log('\nEnsure your configuration file has valid YAML frontmatter.\n')
+        process.exit(1)
+    }
+
+    // Support both old format (config.name) and new format (config.project.name)
+    const projectName = config.project?.name || config.name || 'Unnamed'
+    console.log(`📦 Project: ${projectName}`)
+
+    // Resolve toolkit path
+    const toolkitPath = resolveToolkitPath(config.toolkit, projectDir, TOOLKIT_ROOT)
+
+    // Verify toolkit path exists
+    if (!existsSync(toolkitPath)) {
+        const error = new ConfigError(`Toolkit path not found: ${toolkitPath}`)
+        handleError(error, 'Toolkit Path Resolution')
+        console.log("\nCheck the 'toolkit' path in your standards.md\n")
+        process.exit(1)
+    }
+
+    console.log(`🛠️  Toolkit: ${toolkitPath}`)
+
+    // Determine relative config file path (cross-platform)
+    const relativeConfigPath = projectPath.startsWith(projectDir)
+        ? projectPath.slice(projectDir.length + 1).replace(/\\/g, '/')
+        : projectPath.replace(/\\/g, '/')
+
+    return { config, projectRules, projectDir, toolkitPath, configFilePath: relativeConfigPath }
+}
+
+/**
+ * Load toolkit resources (modules, agents, context)
+ * @param {object} config - Project configuration
+ * @param {string} toolkitPath - Toolkit root directory
+ * @param {string} projectDir - Project root directory
+ * @returns {{modules: Array, agents: Array, projectContext: object|null}}
+ */
+function loadToolkitResources(config, toolkitPath, projectDir) {
+    // Load defaults and merge with project config
+    const defaults = loadDefaults(toolkitPath)
+    const mergedConfig = deepMerge(defaults, {
+        paths: config.paths || {},
+        standards: config.standards || config.overrides || {},
+        naming: config.naming || {},
+    })
+
+    console.log(`📁 Paths: ${Object.keys(mergedConfig.paths).length} configured`)
+
+    // Ensure couchcms-core is always included
+    const moduleList = config.modules || ['couchcms-core']
+    if (!moduleList.includes('couchcms-core')) {
+        moduleList.unshift('couchcms-core')
+    }
+
+    console.log(`📚 Modules: ${moduleList.join(', ')}`)
+
+    // Load modules
+    const modules = moduleList.map(name => loadModule(name, toolkitPath)).filter(Boolean)
+
+    // Load agents
+    const agentList = config.agents || []
+    const agents = agentList.map(name => loadAgent(name, toolkitPath)).filter(Boolean)
+
+    if (agents.length > 0) {
+        console.log(`🤖 Agents: ${agents.map(a => a.name).join(', ')}`)
+    }
+
+    // Load project context
+    const projectContext = loadProjectContext(config.context, projectDir)
+    if (projectContext) {
+        console.log(`📋 Context: ${projectContext.path}`)
+    }
+
+    // Check for conflicts
+    const conflicts = checkConflicts(modules)
+    if (conflicts.length > 0) {
+        console.log('\n')
+        conflicts.forEach(c => console.log(c))
+        process.exit(1)
+    }
+
+    return { modules, agents, projectContext, mergedConfig }
+}
+
+/**
+ * Generate all configuration files
+ * @param {object} config - Project configuration
+ * @param {object} mergedConfig - Merged configuration
+ * @param {Array} modules - Loaded modules
+ * @param {Array} agents - Loaded agents
+ * @param {object|null} projectContext - Project context
+ * @param {string} projectRules - Project-specific rules content
+ * @param {string} toolkitPath - Toolkit root directory
+ * @param {string} projectDir - Project root directory
+ * @param {string} configFilePath - Relative path to configuration file
+ */
+function generateAllConfigurations(config, mergedConfig, modules, agents, projectContext, projectRules, toolkitPath, projectDir, configFilePath) {
+    // Prepare template data
+    const templateData = prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath, configFilePath)
+
+    // Add project rules to template data
+    if (projectRules && projectRules.trim()) {
+        templateData.project_rules = projectRules
+    }
+
+    // Add module list for templates
+    templateData.module_list = (config.modules || ['couchcms-core']).join(', ')
+
+    // Generate editor configurations from templates
+    try {
+        const generatedCount = generateEditorConfigs(toolkitPath, projectDir, templateData, config)
+        if (generatedCount === 0) {
+            console.warn('⚠️  No editor configs generated - templates may be missing or no editors selected')
+        } else {
+            const editors = config.editors || {}
+            const selectedEditors = Object.entries(editors)
+                .filter(([_, enabled]) => enabled === true)
+                .map(([editorId]) => editorId)
+            if (selectedEditors.length > 0) {
+                console.log(`📝 Generated configs for: ${selectedEditors.join(', ')}`)
+            }
         }
+    } catch (error) {
+        const templateError = new ToolkitError('Failed to generate editor configs', 'TEMPLATE_GENERATION', error)
+        handleError(templateError, 'Editor Config Generation')
+        console.log('\nCheck template files in toolkit.\n')
+        process.exit(1)
+    }
 
-        console.log(`📄 Found: ${projectPath}`)
+    // Sync Cursor rules
+    try {
+        syncCursorRules(toolkitPath, projectDir, mergedConfig)
+    } catch (error) {
+        console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
+    }
 
-        // Determine project root directory
-        // If config is in .project/ or docs/, use parent directory as project root
-        let projectDir = dirname(projectPath)
-        const normalizedPath = projectPath.replace(/\\/g, '/')
-        if (normalizedPath.includes('/.project/') || normalizedPath.includes('/docs/')) {
-            projectDir = dirname(projectDir)
-        }
-
-        console.log(`📁 Project root: ${projectDir}`)
-
-        // Parse standards.md configuration file
-        let config, projectRules
-        try {
-            const projectContent = readFileSync(projectPath, 'utf8')
-            const parsed = matter(projectContent)
-            config = parsed.data
-            projectRules = parsed.content
-        } catch (error) {
-            console.error(`❌ Failed to parse configuration file: ${error.message}`)
-            console.log('\nEnsure your configuration file has valid YAML frontmatter.\n')
-            process.exit(1)
-        }
-
-        console.log(`📦 Project: ${config.name || 'Unnamed'}`)
-
-        // Resolve toolkit path
-        const toolkitPath = resolveToolkitPath(config.toolkit, projectDir)
-
-        // Verify toolkit path exists
-        if (!existsSync(toolkitPath)) {
-            console.error(`❌ Toolkit path not found: ${toolkitPath}`)
-            console.log("\nCheck the 'toolkit' path in your standards.md\n")
-            process.exit(1)
-        }
-
-        console.log(`🛠️  Toolkit: ${toolkitPath}`)
-
-        // Check and install dependencies if needed
-        try {
-            await checkAndInstallDependencies(toolkitPath)
-        } catch (error) {
-            console.error(`❌ ${error.message}`)
-            process.exit(1)
-        }
-
-        // Load defaults and merge with project config
-        const defaults = loadDefaults(toolkitPath)
-        const mergedConfig = deepMerge(defaults, {
-            paths: config.paths || {},
-            standards: config.standards || config.overrides || {},
-            naming: config.naming || {},
-        })
-
-        console.log(`📁 Paths: ${Object.keys(mergedConfig.paths).length} configured`)
-
-        // Ensure couchcms-core is always included
+    // Generate Claude Code configuration (always creates .claude directory)
+    try {
         const moduleList = config.modules || ['couchcms-core']
-        if (!moduleList.includes('couchcms-core')) {
-            moduleList.unshift('couchcms-core')
+        // Support both old format (config.name) and new format (config.project.name)
+        const projectName = config.project?.name || config.name || 'Unnamed Project'
+        const skillRulesCount = generateClaudeCodeConfig(toolkitPath, projectDir, moduleList, {
+            ...mergedConfig,
+            name: projectName,
+        })
+        console.log(`✅ Generated: .claude/ directory structure`)
+        if (skillRulesCount > 0) {
+            console.log(`🤖 Claude Code: ${skillRulesCount} skill-rules configured`)
         }
+    } catch (error) {
+        console.warn(`⚠️  Failed to generate Claude Code config: ${error.message}`)
+    }
+}
 
-        console.log(`📚 Modules: ${moduleList.join(', ')}`)
+/**
+ * Main sync function
+ * Orchestrates the entire sync process: loading config, modules, agents,
+ * generating editor configs, and syncing rules
+ * @returns {Promise<void>}
+ */
+async function sync() {
+    try {
+        // Load project configuration
+        const { config, projectRules, projectDir, toolkitPath, configFilePath } = loadProjectConfiguration()
 
-        // Load modules
-        const modules = moduleList.map(name => loadModule(name, toolkitPath)).filter(Boolean)
-
-        // Load agents
-        const agentList = config.agents || []
-        const agents = agentList.map(name => loadAgent(name, toolkitPath)).filter(Boolean)
-
-        if (agents.length > 0) {
-            console.log(`🤖 Agents: ${agents.map(a => a.name).join(', ')}`)
-        }
-
-        // Load project context
-        const projectContext = loadProjectContext(config.context, projectDir)
-        if (projectContext) {
-            console.log(`📋 Context: ${projectContext.path}`)
-        }
-
-        // Check for conflicts
-        const conflicts = checkConflicts(modules)
-        if (conflicts.length > 0) {
-            console.log('\n')
-            conflicts.forEach(c => console.log(c))
-            process.exit(1)
-        }
-
-        // Prepare template data
-        const templateData = prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath)
-
-        // Add project rules to template data
-        if (projectRules && projectRules.trim()) {
-            templateData.project_rules = projectRules
-        }
-
-        // Add module list for templates
-        templateData.module_list = (config.modules || ['couchcms-core']).join(', ')
-
-        // Generate editor configurations from templates
-        try {
-            const generatedCount = generateEditorConfigs(toolkitPath, projectDir, templateData)
-            if (generatedCount === 0) {
-                console.warn('⚠️  No editor configs generated - templates may be missing')
+        // Check and install dependencies if needed (non-blocking)
+        if (typeof checkAndInstallDependencies === 'function') {
+            try {
+                await checkAndInstallDependencies(toolkitPath)
+            } catch (error) {
+                console.warn(`⚠️  Dependency check failed: ${error.message}`)
+                console.warn('⚠️  Continuing with sync, but some features may not work correctly')
+                console.warn('⚠️  Run "bun install" in the toolkit directory to fix this\n')
             }
-        } catch (error) {
-            console.error(`❌ Failed to generate editor configs: ${error.message}`)
-            console.log('\nCheck template files in toolkit.\n')
-            process.exit(1)
+        } else {
+            console.warn('⚠️  Dependency checker not available, skipping dependency check\n')
         }
 
-        // Sync Cursor rules
-        try {
-            syncCursorRules(toolkitPath, projectDir, mergedConfig)
-        } catch (error) {
-            console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
-        }
+        // Load toolkit resources
+        const { modules, agents, projectContext, mergedConfig } = loadToolkitResources(config, toolkitPath, projectDir)
 
-        // Generate Claude Code configuration (always creates .claude directory)
-        try {
-            const skillRulesCount = generateClaudeCodeConfig(toolkitPath, projectDir, moduleList, {
-                ...mergedConfig,
-                name: config.name,
-            })
-            console.log(`✅ Generated: .claude/ directory structure`)
-            if (skillRulesCount > 0) {
-                console.log(`🤖 Claude Code: ${skillRulesCount} skill-rules configured`)
-            }
-        } catch (error) {
-            console.warn(`⚠️  Failed to generate Claude Code config: ${error.message}`)
-        }
+        // Generate all configurations
+        generateAllConfigurations(config, mergedConfig, modules, agents, projectContext, projectRules, toolkitPath, projectDir, configFilePath)
 
         console.log(`\n✨ Sync complete! ${modules.length} modules, ${agents.length} agents loaded.\n`)
     } catch (error) {
-        console.error(`\n❌ Sync failed: ${error.message}\n`)
+        handleError(error, 'Sync Process')
         console.log('Troubleshooting:')
         console.log('  1. Verify standards.md has valid YAML frontmatter')
         console.log('  2. Check toolkit path in standards.md')
@@ -870,7 +982,7 @@ Add your project-specific instructions here...
 }
 // Run
 sync().catch(error => {
-    console.error(`\n❌ Unexpected error: ${error.message}\n`)
+    handleError(error, 'Sync Script')
     process.exit(1)
 })
 

@@ -57,6 +57,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Refactored `scripts/sync.js`**: Improved modularity and error handling
+  - Extracted `loadProjectConfiguration()` - Handles config discovery and parsing (~75 lines)
+  - Extracted `loadToolkitResources()` - Loads modules, agents, and context (~45 lines)
+  - Extracted `generateAllConfigurations()` - Orchestrates template rendering and file writing (~45 lines)
+  - Main `sync()` function reduced from ~180 lines to ~30 lines (83% reduction)
+  - Replaced local `resolveToolkitPath()` with `resolvePath()` utility from `file-utils.js`
+  - Standardized error handling using `ToolkitError`, `ConfigError`, and `handleError()` from `errors.js`
+  - Improved code organization and maintainability
+
+### Fixed
+- Standardized error handling across `scripts/sync.js` - All critical errors now use ToolkitError classes
+- Improved error messages with automatic solution suggestions via `handleError()`
+- Made dependency check non-blocking to prevent sync failures when dependencies are missing
+
 ### Added
 - feat(setup): add Simple Standards Creator wizard for beginners
 - New `create-standards.js` script with guided setup in simple language
@@ -222,13 +237,13 @@ Since this is a **CouchCMS AI Toolkit**, all CouchCMS-specific features (databou
 ## [1.0.0] - 2025-11-27
 
 ### Added
-- 
+-
 
 ### Changed
-- 
+-
 
 ### Fixed
-- 
+-
 
 
 ## [Unreleased]

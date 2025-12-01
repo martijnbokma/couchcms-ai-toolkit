@@ -114,3 +114,11 @@ export {
     formatTemplateErrors,
     validateTemplate
 } from './template-validator.js'
+
+// Path utilities
+export {
+    getToolkitRoot,
+    getToolkitRootCached,
+    getScriptsDir,
+    getLibDir
+} from './paths.js'

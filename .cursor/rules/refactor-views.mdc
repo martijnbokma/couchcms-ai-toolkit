@@ -1,6 +1,6 @@
 ---
 description: Auto-load refactoring rules for CouchCMS views
-globs: ['{{paths.views}}/**/*.html', '*.php']
+globs: ['snippets/views/**/*.html', '*.php']
 alwaysApply: false
 ---
 
@@ -35,7 +35,7 @@ When refactoring this file, apply these rules:
 - ✅ Use `cms:else` for list view content
 - ✅ Handle all view types: page, home, folder, archive
 - ✅ Use consistent layout structure across views
-- ✅ Place views in `{{paths.views}}/` directory
+- ✅ Place views in `snippets/views/` directory
 
 ## Page View Patterns
 

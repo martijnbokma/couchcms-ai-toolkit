@@ -61,6 +61,75 @@ export function getAvailableModules() {
 }
 
 /**
+ * Get available editors/tools list
+ * @returns {Array<{id: string, name: string, description: string}>} - Available editors
+ */
+export function getAvailableEditors() {
+    return [
+        { id: 'cursor', name: 'Cursor', description: 'Cursor IDE (.cursorrules)' },
+        { id: 'windsurf', name: 'Windsurf', description: 'Windsurf IDE (.windsurf/rules.md)' },
+        { id: 'zed', name: 'Zed', description: 'Zed Editor - Open-source, AI-integrated (.rules)' },
+        { id: 'copilot', name: 'GitHub Copilot', description: 'GitHub Copilot (.github/copilot-instructions.md)' },
+        { id: 'claude', name: 'Claude Code', description: 'Claude Code (CLAUDE.md + .claude/)' },
+        { id: 'codewhisperer', name: 'Amazon CodeWhisperer', description: 'Amazon CodeWhisperer (.codewhisperer/settings.json)' },
+        { id: 'kiro', name: 'Amazon Kiro', description: 'Amazon Kiro - AI coding tool (.kiro/rules.md)' },
+        { id: 'antigravity', name: 'Google Antigravity', description: 'Google Antigravity - Gemini 3 agent-first (.antigravity/rules.md)' },
+        { id: 'jules', name: 'Jules (Google)', description: 'Jules - Google AI coding agent (.jules/rules.md)' },
+        { id: 'roocode', name: 'Roo Code', description: 'Roo Code - Autonomous AI coding agent (.roocode/rules.md)' },
+        { id: 'vscode-ai', name: 'VS Code AI Toolkit', description: 'VS Code AI Toolkit - Microsoft extension (.vscode/ai-toolkit.md)' },
+        { id: 'tabnine', name: 'Tabnine', description: 'Tabnine (.tabnine/settings.json)' },
+        { id: 'agent', name: 'Generic Agent', description: 'Generic AI Agent (AGENT.md)' },
+    ]
+}
+
+/**
+ * Select which editors/tools to configure
+ * @param {boolean} simpleMode - Whether in simple mode
+ * @returns {Promise<Array<string>>} - Selected editor IDs
+ */
+export async function selectEditors(simpleMode) {
+    if (simpleMode) {
+        // Simple mode: Default to most popular editors
+        console.log('\n🛠️  Using default editor selection:')
+        console.log('   ✓ Cursor - Cursor IDE')
+        console.log('   ✓ Windsurf - Windsurf IDE')
+        console.log('   ✓ Claude Code - Claude Code')
+        return ['cursor', 'windsurf', 'claude']
+    }
+
+    const availableEditors = getAvailableEditors()
+
+    console.log('\n🛠️  Which editors/tools do you use?')
+    console.log('Select the tools you want to configure (comma-separated numbers, or "all"):\n')
+
+    availableEditors.forEach((editor, index) => {
+        console.log(`  ${index + 1}. ${editor.name} - ${editor.description}`)
+    })
+    console.log(`  ${availableEditors.length + 1}. All - Configure all editors`)
+    console.log(`  0. None - Skip editor configuration`)
+
+    const answer = await prompt(`\nChoice [1-${availableEditors.length + 1}, comma-separated, or 0]`, '1,2,4')
+
+    if (answer === '0' || answer.toLowerCase() === 'none') {
+        return []
+    }
+
+    if (answer.toLowerCase() === 'all' || answer === String(availableEditors.length + 1)) {
+        return availableEditors.map(e => e.id)
+    }
+
+    // Parse comma-separated numbers
+    const selectedIndices = answer.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n) && n > 0 && n <= availableEditors.length)
+
+    if (selectedIndices.length === 0) {
+        console.log('⚠️  No valid selections, using defaults (Cursor, Windsurf, Claude)')
+        return ['cursor', 'windsurf', 'claude']
+    }
+
+    return selectedIndices.map(i => availableEditors[i - 1].id)
+}
+
+/**
  * Get available agents list
  * @returns {Array<{name: string, description: string}>} - Available agents
  */
