@@ -273,17 +273,23 @@ async function init() {
         selectedAgents = await selectAgents(simpleMode)
     }
 
-    // Group 4: Editor/Tool Selection
+    // Group 4: Editor/Tool Selection (always optional)
     let selectedEditors
     if (autoMode) {
-        // Auto mode: Default to Cursor, Windsurf, and Claude
-        selectedEditors = ['cursor', 'windsurf', 'claude']
-        console.log('\n🛠️  Editor selection (auto):')
-        console.log('   ✓ Cursor - Cursor IDE')
-        console.log('   ✓ Windsurf - Windsurf IDE')
-        console.log('   ✓ Claude Code - Claude Code')
+        // Auto mode: Ask user which editors they want (default to none)
+        console.log('\n🛠️  Editor/Tool Selection (optional)')
+        console.log('   Templates will only be generated for the editors you select.')
+        console.log('   You can skip this and add templates later by editing .project/standards.md')
+        selectedEditors = await selectEditors(false) // Use full selection in auto mode
     } else {
         selectedEditors = await selectEditors(simpleMode)
+    }
+
+    if (selectedEditors.length === 0) {
+        console.log('\nℹ️  No editors selected - templates will not be generated')
+        console.log('   You can add templates later by editing .project/standards.md and running sync')
+    } else {
+        console.log(`\n✓ Selected ${selectedEditors.length} editor(s): ${selectedEditors.join(', ')}`)
     }
 
     // Group 5: Advanced Options (only shown in custom mode, with progressive disclosure)
