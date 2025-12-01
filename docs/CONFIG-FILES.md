@@ -279,7 +279,6 @@ bun ai-toolkit-shared/scripts/validate.js
 # - Module and agent validation
 # - Compliance score (0-100%)
 # - Specific issues and recommendations
-```
 ```text
 
 ### 5. Watch Mode (Optional)
@@ -381,7 +380,7 @@ bun ai-toolkit-shared/scripts/validate.js
 # - Module and agent validation
 # - Compliance score (0-100%)
 # - Specific issues and recommendations
-```
+```text
 
 This checks:
 - ✅ Required fields are present

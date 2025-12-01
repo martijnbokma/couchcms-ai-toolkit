@@ -63,7 +63,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
 # bun ai-toolkit-shared/scripts/sync.js --watch
-```
+```text
 
 
 # Optional: Watch mode - auto-sync when standards.md changes

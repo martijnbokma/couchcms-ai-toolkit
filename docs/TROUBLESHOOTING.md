@@ -36,7 +36,7 @@ ls -la .cursorrules CLAUDE.md AGENTS.md 2>/dev/null || echo "Generated files mis
 
 # Quick syntax check for YAML frontmatter
 head -20 standards.md | grep -A 20 "^---$" | head -19 | tail -18 | bun -e "console.log(require('yaml').parse(require('fs').readFileSync(0, 'utf8')))" 2>/dev/null && echo "✓ YAML syntax valid" || echo "✗ YAML syntax error"
-```
+```yaml
 
 The validation output will point you to specific problems.
 
@@ -128,7 +128,7 @@ modules:                     # ✓ Consistent indentation
     - couchcms-core         # ✓ No trailing comma
     - tailwindcss           # ✓ Spaces only
 ---
-```
+```yaml
 
 **✅ Correct YAML example (standards.md frontmatter)**:
 
@@ -208,7 +208,7 @@ cd ai-toolkit-shared && git pull origin master && cd ..
 
 # 5. Verify fix worked
 bun ai-toolkit-shared/scripts/validate.js | grep -i agent
-```
+```yaml
 
 ---
 
@@ -451,7 +451,7 @@ Or remove the `context:` line from `standards.md` if not needed:
 ```bash
 # Remove context line from standards.md
 sed -i '/^context:/d' standards.md
-```
+```yaml
 
 **Note:** For most projects, you don't need `context.md`. Just add all rules to the `standards.md` body.
 
@@ -975,7 +975,7 @@ toolkit: "./ai-toolkit"          # ✗ Wrong directory name
 toolkit: "../ai-toolkit-shared"  # ✗ Wrong relative path
 toolkit: "/ai-toolkit-shared"    # ✗ Absolute path
 toolkit: "~/ai-toolkit"          # ✗ Wrong name in home
-```
+```yaml
 
 **✅ Correct toolkit paths**:
 
@@ -1005,7 +1005,7 @@ modules:
   - alpine             # ✗ Should be alpinejs
   - typescript-core    # ✗ Should be typescript
   - databound          # ✗ Should be databound-forms
-```
+```yaml
 
 **✅ Correct module names**:
 
@@ -1032,7 +1032,7 @@ agents:
   - tailwind           # ✗ Should be tailwindcss
   - alpine-js          # ✗ Should be alpinejs
   - db-forms           # ✗ Should be databound-forms
-```
+```yaml
 
 **✅ Correct agent names**:
 
@@ -1064,7 +1064,7 @@ bun scripts/sync.js
 
 # ✗ Missing cd back to project root
 cd ai-toolkit-shared && bun scripts/sync.js
-```
+```bash
 
 **✅ Correct commands**:
 
@@ -1099,7 +1099,7 @@ context.md
 
 # ✗ Generated files in toolkit directory
 ai-toolkit-shared/.cursorrules
-```
+```text
 
 **✅ Correct file locations**:
 
@@ -1134,7 +1134,7 @@ modules:
 agents:
       - couchcms             # ✗ Too much indentation
 ---
-```
+```yaml
 
 **✅ Correct YAML indentation**:
 
@@ -1170,7 +1170,7 @@ git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-too
 
 # ✗ Wrong update command
 git submodule update
-```
+```bash
 
 **✅ Correct git commands**:
 

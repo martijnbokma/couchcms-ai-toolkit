@@ -22,7 +22,7 @@ The toolkit now provides comprehensive support for multiple AI-powered editors w
   ├── refactor-forms.mdc
   ├── refactor-tailwind.mdc
   └── ...
-```
+```yaml
 
 **How It Works:**
 - Rules automatically activate when you open matching files
@@ -62,7 +62,7 @@ globs:
       └── ...
 CLAUDE.md                     # Memory file
 AGENTS.md                     # Agent documentation
-```
+```yaml
 
 **Skills Features:**
 - One skill per module/agent
@@ -99,7 +99,7 @@ allowed-tools: Read, Write, Bash, Grep
     "NODE_ENV": "development"
   }
 }
-```
+```text
 
 📖 See [Editor Support Guide](EDITOR-SUPPORT.md) for details.
 
@@ -150,7 +150,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
 # bun ai-toolkit-shared/scripts/sync.js --watch
-```
+```text
 
 This generates:
 - ✅ Cursor rules (global + MDC)

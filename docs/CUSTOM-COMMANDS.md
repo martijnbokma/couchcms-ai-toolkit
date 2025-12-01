@@ -64,7 +64,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
 # bun ai-toolkit-shared/scripts/sync.js --watch
-```
+```text
 
 This:
 1. Copies commands from toolkit `commands/` to project `.cursor/commands/`
@@ -94,7 +94,7 @@ Description of what this command does.
 1. First step
 2. 📝 Second step
 3. 📝 Third step
-```
+```text
 
 ### Shared Commands (Toolkit Contribution)
 
@@ -206,7 +206,7 @@ Create a new component in {{paths.components}}/{name}.html
 1. Create component file
 2. 📝 Add structure
 3. 📝 Style with daisyUI
-```
+```text
 
 ### Example 3: Fix Issues Command
 
