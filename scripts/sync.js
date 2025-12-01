@@ -1617,13 +1617,14 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
     const rulesSource = join(toolkitPath, 'rules')
     const rulesTarget = join(projectDir, '.cursor', 'rules')
 
-    if (!existsSync(rulesSource)) {
-        return // No rules in toolkit
-    }
-
-    // Create target directory if needed
+    // Always create .cursor/rules directory, even if no rules exist
     if (!existsSync(rulesTarget)) {
         mkdirSync(rulesTarget, { recursive: true })
+    }
+
+    if (!existsSync(rulesSource)) {
+        console.log(`ℹ️  No rules directory in toolkit, .cursor/rules/ created (empty)`)
+        return // No rules in toolkit
     }
 
     // Get all .mdc and .md files from toolkit rules
@@ -1857,12 +1858,13 @@ Add your project-specific instructions here...
             console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
         }
 
-        // Generate Claude Code configuration
+        // Generate Claude Code configuration (always creates .claude directory)
         try {
             const skillRulesCount = generateClaudeCodeConfig(toolkitPath, projectDir, moduleList, {
                 ...mergedConfig,
                 name: config.name,
             })
+            console.log(`✅ Generated: .claude/ directory structure`)
             if (skillRulesCount > 0) {
                 console.log(`🤖 Claude Code: ${skillRulesCount} skill-rules configured`)
             }
