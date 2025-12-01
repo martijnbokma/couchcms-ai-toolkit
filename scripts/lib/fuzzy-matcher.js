@@ -167,3 +167,4 @@ export function formatNameError(name, type, suggestions) {
 
     return message
 }
+

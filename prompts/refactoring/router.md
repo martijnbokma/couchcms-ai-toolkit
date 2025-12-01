@@ -9,7 +9,6 @@ This router automatically detects and uses project standards from:
 1. **`.project/standards.md`** (recommended - project configuration directory)
 2. **`docs/standards.md`** (documentation location)
 3. **`standards.md`** (root directory)
-4. **`project.md`** (fallback for legacy projects)
 
 The standards file contains:
 
@@ -47,7 +46,6 @@ These rules automatically load when matching files are selected:
 
 - **`design-preserving.md`** - Preserve visual design while updating functionality
 - **`functionality-preserving.md`** - Preserve functionality while updating design/structure
-- **`toolkit.md`** - Refactor or optimize toolkit components (scripts, configs, prompts, modules, agents, rules)
 
 ### Development Agents
 
@@ -68,12 +66,10 @@ Analyze the user's refactoring request to determine:
 1. **File Types Involved**:
     - `.php` files → CouchCMS or PHP refactoring
     - `.ts` files → TypeScript refactoring
-    - `.js` files → JavaScript to TypeScript conversion or toolkit script refactoring
+    - `.js` files → JavaScript to TypeScript conversion
     - `.html` files → CouchCMS template or component refactoring
     - `.css` files → CSS refactoring
-    - `.md` files → Documentation or prompt/module/agent refactoring
-    - `.yaml` files → Configuration refactoring (toolkit configs)
-    - `.mdc` files → Rule refactoring (toolkit rules)
+    - `.md` files → Documentation refactoring
 
 2. **Technology Stack Indicators**:
     - CouchCMS tags (`<cms:...>`) → CouchCMS refactoring
@@ -82,9 +78,6 @@ Analyze the user's refactoring request to determine:
     - Inline CSS/JS → CSS/JavaScript extraction
     - DataBound Forms → DataBound Forms refactoring
     - TailwindCSS classes → TailwindCSS optimization
-    - Toolkit paths (`scripts/`, `prompts/`, `modules/`, `agents/`, `rules/`) → Toolkit refactoring
-    - Path variables (`{{paths.xxx}}`) → Toolkit configuration refactoring
-    - Handlebars templates → Toolkit script refactoring
 
 3. **Scope of Changes**:
     - Single file → Specific agent/rule
@@ -98,10 +91,6 @@ Analyze the user's refactoring request to determine:
     - "refactor component" → Component refactoring
     - "refactor Alpine" → Alpine.js refactoring
     - "refactor form" → DataBound Forms refactoring
-    - "refactor toolkit" → Toolkit refactoring specialist
-    - "optimize sync script" → Toolkit refactoring specialist
-    - "refactor prompt" → Toolkit refactoring specialist (if in `prompts/`)
-    - "refactor module" → Toolkit refactoring specialist (if in `modules/`)
     - "preserve design" → Design-preserving specialist
     - "preserve functionality" → Functionality-preserving specialist
     - General "refactor" → Analyze and select appropriate specialist
@@ -121,7 +110,6 @@ Based on the analysis, select one or more resources:
 
 - **Design preservation** → `design-preserving.md`
 - **Functionality preservation** → `functionality-preserving.md`
-- **Toolkit components** (scripts, configs, prompts, modules, agents, rules) → `toolkit.md`
 
 **Development Agents** (for guidance and patterns):
 
@@ -263,9 +251,6 @@ Based on the file analysis:
 | "refactor component"     | Component files               | `refactor-html.mdc` + relevant agent     |
 | "refactor Alpine"        | Files with `x-` directives    | `refactor-html.mdc` + `alpinejs`         |
 | "refactor form"          | DataBound Forms               | `refactor-forms.mdc` + `databound-forms` |
-| "refactor toolkit"       | Toolkit paths                 | `toolkit.md`                             |
-| "optimize sync script"   | `scripts/*.js`                | `toolkit.md`                             |
-| "refactor prompt/module" | `prompts/`, `modules/`        | `toolkit.md`                             |
 | "preserve design"        | Any                           | `design-preserving.md`                   |
 | "preserve functionality" | Any                           | `functionality-preserving.md`            |
 | General "refactor"       | Mixed or unclear              | Analyze and select appropriate           |
