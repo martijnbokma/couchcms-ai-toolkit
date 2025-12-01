@@ -22,30 +22,30 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 | View Type   | Description                          | URL Pattern                    | Variables                    |
 | ----------- | ------------------------------------ | ------------------------------ | ---------------------------- |
-| **Page View** | Display single page                  | &#x60;/page-name.html&#x60;              | &#x60;k_is_page &#x3D; &#x27;1&#x27;&#x60;            |
-| **List View** | Display list of pages                | &#x60;/&#x60;                            | &#x60;k_is_list &#x3D; &#x27;1&#x27;&#x60;            |
-| **Home View** | List view (not folder/archive)       | &#x60;/&#x60;                            | &#x60;k_is_list &#x3D; &#x27;1&#x27;&#x60;, &#x60;k_is_home &#x3D; &#x27;1&#x27;&#x60; |
-| **Folder View** | List pages in folder                 | &#x60;/folder-name/&#x60;                | &#x60;k_is_list &#x3D; &#x27;1&#x27;&#x60;, &#x60;k_is_folder &#x3D; &#x27;1&#x27;&#x60; |
-| **Archive View** | List pages by date                   | &#x60;/2010/05/&#x60;                    | &#x60;k_is_list &#x3D; &#x27;1&#x27;&#x60;, &#x60;k_is_archive &#x3D; &#x27;1&#x27;&#x60; |
+| **Page View** | Display single page                  | `/page-name.html`              | `k_is_page = '1'`            |
+| **List View** | Display list of pages                | `/`                            | `k_is_list = '1'`            |
+| **Home View** | List view (not folder/archive)       | `/`                            | `k_is_list = '1'`, `k_is_home = '1'` |
+| **Folder View** | List pages in folder                 | `/folder-name/`                | `k_is_list = '1'`, `k_is_folder = '1'` |
+| **Archive View** | List pages by date                   | `/2010/05/`                    | `k_is_list = '1'`, `k_is_archive = '1'` |
 
 ### View Recognition Variables
 
 | Variable        | Purpose                                    |
 | --------------- | ------------------------------------------ |
-| &#x60;k_is_page&#x60;     | Page view (single page)                    |
-| &#x60;k_is_list&#x60;     | List view (any list type)                  |
-| &#x60;k_is_home&#x60;     | Home view (list, not folder/archive)       |
-| &#x60;k_is_folder&#x60;   | Folder view                                |
-| &#x60;k_is_archive&#x60;  | Archive view                               |
-| &#x60;k_is_day&#x60;      | Daily archive                              |
-| &#x60;k_is_month&#x60;    | Monthly archive                            |
-| &#x60;k_is_year&#x60;     | Yearly archive                             |
+| `k_is_page`     | Page view (single page)                    |
+| `k_is_list`     | List view (any list type)                  |
+| `k_is_home`     | Home view (list, not folder/archive)       |
+| `k_is_folder`   | Folder view                                |
+| `k_is_archive`  | Archive view                               |
+| `k_is_day`      | Daily archive                              |
+| `k_is_month`    | Monthly archive                            |
+| `k_is_year`     | Yearly archive                             |
 
 ### Your Approach
 
 - Always check view type before displaying content
-- Use &#x60;k_is_page&#x60; for single page display
-- Use &#x60;k_is_list&#x60; for any listing
+- Use `k_is_page` for single page display
+- Use `k_is_list` for any listing
 - Distinguish between home, folder, and archive views
 - Handle URL patterns correctly for each view type
 - Use appropriate variables for each view context
@@ -56,195 +56,195 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### Basic View Detection
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Blog&#x27; clonable&#x3D;&#x27;1&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Blog' clonable='1' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:if k_is_page&gt;
-        &lt;!-- Page View - Display single page --&gt;
-        &lt;article&gt;
-            &lt;h1&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-            &lt;div&gt;&lt;cms:show k_page_content /&gt;&lt;/div&gt;
-        &lt;/article&gt;
-    &lt;cms:else /&gt;
-        &lt;!-- List View - Display list of pages --&gt;
-        &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-            &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-                &lt;h2&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;&lt;/h2&gt;
-                &lt;p&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-            &lt;/div&gt;
-        &lt;/cms:pages&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+<cms:block 'content'>
+    <cms:if k_is_page>
+        <!-- Page View - Display single page -->
+        <article>
+            <h1><cms:show k_page_title /></h1>
+            <div><cms:show k_page_content /></div>
+        </article>
+    <cms:else />
+        <!-- List View - Display list of pages -->
+        <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+            <div class="mb-4">
+                <h2><a href="<cms:show k_page_link />"><cms:show k_page_title /></a></h2>
+                <p><cms:show k_page_excerpt /></p>
+            </div>
+        </cms:pages>
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Complete View Implementation
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Blog&#x27; clonable&#x3D;&#x27;1&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Blog' clonable='1' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:if k_is_page&gt;
-        &lt;!-- Page View --&gt;
-        &lt;article class&#x3D;&quot;prose max-w-none&quot;&gt;
-            &lt;h1&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-            &lt;p class&#x3D;&quot;text-base-content/70 text-sm&quot;&gt;
-                &lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-            &lt;/p&gt;
-            &lt;div&gt;&lt;cms:show k_page_content /&gt;&lt;/div&gt;
-        &lt;/article&gt;
-    &lt;cms:else /&gt;
-        &lt;!-- List View --&gt;
-        &lt;cms:if k_is_folder&gt;
-            &lt;!-- Folder View --&gt;
-            &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-                &lt;h1&gt;Category: &lt;cms:show k_folder_title /&gt;&lt;/h1&gt;
-                &lt;p&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
+<cms:block 'content'>
+    <cms:if k_is_page>
+        <!-- Page View -->
+        <article class="prose max-w-none">
+            <h1><cms:show k_page_title /></h1>
+            <p class="text-base-content/70 text-sm">
+                <cms:date k_page_date format='F j, Y' />
+            </p>
+            <div><cms:show k_page_content /></div>
+        </article>
+    <cms:else />
+        <!-- List View -->
+        <cms:if k_is_folder>
+            <!-- Folder View -->
+            <div class="mb-6">
+                <h1>Category: <cms:show k_folder_title /></h1>
+                <p><cms:show k_folder_desc /></p>
+            </div>
+        </cms:if>
 
-        &lt;cms:if k_is_archive&gt;
-            &lt;!-- Archive View --&gt;
-            &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-                &lt;h1&gt;Archive&lt;/h1&gt;
-                &lt;cms:if k_is_year&gt;
-                    &lt;p&gt;Year: &lt;cms:show k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;&lt;/p&gt;
-                &lt;/cms:if&gt;
-                &lt;cms:if k_is_month&gt;
-                    &lt;p&gt;Month: &lt;cms:show k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;&lt;/p&gt;
-                &lt;/cms:if&gt;
-                &lt;cms:if k_is_day&gt;
-                    &lt;p&gt;Day: &lt;cms:show k_archive_date format&#x3D;&#x27;F j, Y&#x27; /&gt;&lt;/p&gt;
-                &lt;/cms:if&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
+        <cms:if k_is_archive>
+            <!-- Archive View -->
+            <div class="mb-6">
+                <h1>Archive</h1>
+                <cms:if k_is_year>
+                    <p>Year: <cms:show k_archive_date format='Y' /></p>
+                </cms:if>
+                <cms:if k_is_month>
+                    <p>Month: <cms:show k_archive_date format='F Y' /></p>
+                </cms:if>
+                <cms:if k_is_day>
+                    <p>Day: <cms:show k_archive_date format='F j, Y' /></p>
+                </cms:if>
+            </div>
+        </cms:if>
 
-        &lt;cms:if k_is_home&gt;
-            &lt;!-- Home View (not folder, not archive) --&gt;
-            &lt;h1&gt;All Posts&lt;/h1&gt;
-        &lt;/cms:if&gt;
+        <cms:if k_is_home>
+            <!-- Home View (not folder, not archive) -->
+            <h1>All Posts</h1>
+        </cms:if>
 
-        &lt;!-- Display pages list --&gt;
-        &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-            &lt;article class&#x3D;&quot;mb-8 pb-8 border-b border-base-300&quot;&gt;
-                &lt;h2 class&#x3D;&quot;text-2xl font-semibold mb-2&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                        &lt;cms:show k_page_title /&gt;
-                    &lt;/a&gt;
-                &lt;/h2&gt;
-                &lt;p class&#x3D;&quot;text-base-content/70 text-sm mb-2&quot;&gt;
-                    &lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-                &lt;/p&gt;
-                &lt;p class&#x3D;&quot;text-base-content/80 mb-4&quot;&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Read more&lt;/a&gt;
-            &lt;/article&gt;
-        &lt;/cms:pages&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+        <!-- Display pages list -->
+        <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+            <article class="mb-8 pb-8 border-b border-base-300">
+                <h2 class="text-2xl font-semibold mb-2">
+                    <a href="<cms:show k_page_link />" class="link link-primary">
+                        <cms:show k_page_title />
+                    </a>
+                </h2>
+                <p class="text-base-content/70 text-sm mb-2">
+                    <cms:date k_page_date format='F j, Y' />
+                </p>
+                <p class="text-base-content/80 mb-4"><cms:show k_page_excerpt /></p>
+                <a href="<cms:show k_page_link />" class="btn btn-sm btn-primary">Read more</a>
+            </article>
+        </cms:pages>
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Simple View Implementation
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:if k_is_list&gt;
-    &lt;!-- List View - Display list of pages --&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;h2&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;&lt;/h2&gt;
-            &lt;p&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/cms:pages&gt;
-&lt;cms:else /&gt;
-    &lt;!-- Page View - Display single page --&gt;
-    &lt;article&gt;
-        &lt;h1&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-        &lt;div&gt;&lt;cms:show k_page_content /&gt;&lt;/div&gt;
-    &lt;/article&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:if k_is_list>
+    <!-- List View - Display list of pages -->
+    <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+        <div class="mb-4">
+            <h2><a href="<cms:show k_page_link />"><cms:show k_page_title /></a></h2>
+            <p><cms:show k_page_excerpt /></p>
+        </div>
+    </cms:pages>
+<cms:else />
+    <!-- Page View - Display single page -->
+    <article>
+        <h1><cms:show k_page_title /></h1>
+        <div><cms:show k_page_content /></div>
+    </article>
+</cms:if>
+```
 
 ### Folder View with Breadcrumbs
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:if k_is_list&gt;
-    &lt;cms:if k_is_folder&gt;
-        &lt;nav class&#x3D;&quot;breadcrumbs mb-6&quot;&gt;
-            &lt;ul&gt;
-                &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;Blog&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;cms:show k_folder_title /&gt;&lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;/nav&gt;
+```php title="blog.php"
+<cms:if k_is_list>
+    <cms:if k_is_folder>
+        <nav class="breadcrumbs mb-6">
+            <ul>
+                <li><a href="<cms:show k_site_link />">Home</a></li>
+                <li><a href="<cms:show k_template_link />">Blog</a></li>
+                <li><cms:show k_folder_title /></li>
+            </ul>
+        </nav>
 
-        &lt;h1&gt;Category: &lt;cms:show k_folder_title /&gt;&lt;/h1&gt;
-        &lt;p&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-    &lt;/cms:if&gt;
+        <h1>Category: <cms:show k_folder_title /></h1>
+        <p><cms:show k_folder_desc /></p>
+    </cms:if>
 
-    &lt;!-- List pages in folder --&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;!-- Page items --&gt;
-    &lt;/cms:pages&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+    <!-- List pages in folder -->
+    <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+        <!-- Page items -->
+    </cms:pages>
+</cms:if>
+```
 
 ### Archive View with Date Display
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:if k_is_list&gt;
-    &lt;cms:if k_is_archive&gt;
-        &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-            &lt;h1&gt;Archive&lt;/h1&gt;
-            &lt;cms:if k_is_year&gt;
-                &lt;p class&#x3D;&quot;text-2xl font-bold&quot;&gt;Year: &lt;cms:show k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-            &lt;cms:if k_is_month&gt;
-                &lt;p class&#x3D;&quot;text-2xl font-bold&quot;&gt;Month: &lt;cms:show k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-            &lt;cms:if k_is_day&gt;
-                &lt;p class&#x3D;&quot;text-2xl font-bold&quot;&gt;Day: &lt;cms:show k_archive_date format&#x3D;&#x27;F j, Y&#x27; /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
+```php title="blog.php"
+<cms:if k_is_list>
+    <cms:if k_is_archive>
+        <div class="mb-6">
+            <h1>Archive</h1>
+            <cms:if k_is_year>
+                <p class="text-2xl font-bold">Year: <cms:show k_archive_date format='Y' /></p>
+            </cms:if>
+            <cms:if k_is_month>
+                <p class="text-2xl font-bold">Month: <cms:show k_archive_date format='F Y' /></p>
+            </cms:if>
+            <cms:if k_is_day>
+                <p class="text-2xl font-bold">Day: <cms:show k_archive_date format='F j, Y' /></p>
+            </cms:if>
+        </div>
+    </cms:if>
 
-    &lt;!-- List archived pages --&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;!-- Page items --&gt;
-    &lt;/cms:pages&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+    <!-- List archived pages -->
+    <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+        <!-- Page items -->
+    </cms:pages>
+</cms:if>
+```
 
 ### View-Specific Navigation
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:if k_is_page&gt;
-    &lt;!-- Page View Navigation --&gt;
-    &lt;nav class&#x3D;&quot;flex justify-between mb-6&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;← Back to List&lt;/a&gt;
-        &lt;cms:if k_prev_page_link&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_prev_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;← Previous&lt;/a&gt;
-        &lt;/cms:if&gt;
-        &lt;cms:if k_next_page_link&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_next_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;Next →&lt;/a&gt;
-        &lt;/cms:if&gt;
-    &lt;/nav&gt;
+```php title="blog.php"
+<cms:if k_is_page>
+    <!-- Page View Navigation -->
+    <nav class="flex justify-between mb-6">
+        <a href="<cms:show k_template_link />" class="btn btn-sm btn-ghost">← Back to List</a>
+        <cms:if k_prev_page_link>
+            <a href="<cms:show k_prev_page_link />" class="btn btn-sm btn-ghost">← Previous</a>
+        </cms:if>
+        <cms:if k_next_page_link>
+            <a href="<cms:show k_next_page_link />" class="btn btn-sm btn-ghost">Next →</a>
+        </cms:if>
+    </nav>
 
-    &lt;article&gt;
-        &lt;h1&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-        &lt;div&gt;&lt;cms:show k_page_content /&gt;&lt;/div&gt;
-    &lt;/article&gt;
-&lt;cms:else /&gt;
-    &lt;!-- List View --&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;!-- Page items --&gt;
-    &lt;/cms:pages&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+    <article>
+        <h1><cms:show k_page_title /></h1>
+        <div><cms:show k_page_content /></div>
+    </article>
+<cms:else />
+    <!-- List View -->
+    <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+        <!-- Page items -->
+    </cms:pages>
+</cms:if>
+```
 
 ---
 
@@ -252,110 +252,110 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ### Conditional Content Based on View
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:if k_is_page&gt;
-    &lt;!-- Page-specific content --&gt;
-    &lt;article&gt;
-        &lt;h1&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-        &lt;div&gt;&lt;cms:show k_page_content /&gt;&lt;/div&gt;
+```php title="blog.php"
+<cms:if k_is_page>
+    <!-- Page-specific content -->
+    <article>
+        <h1><cms:show k_page_title /></h1>
+        <div><cms:show k_page_content /></div>
 
-        &lt;!-- Show comments only in page view --&gt;
-        &lt;cms:if k_is_commentable&gt;
-            &lt;cms:comments page_id&#x3D;k_page_id limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-                &lt;!-- Comments --&gt;
-            &lt;/cms:comments&gt;
-        &lt;/cms:if&gt;
-    &lt;/article&gt;
-&lt;cms:else /&gt;
-    &lt;!-- List view content --&gt;
-    &lt;div class&#x3D;&quot;grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4&quot;&gt;
-        &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;12&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-            &lt;div class&#x3D;&quot;card bg-base-100 shadow-md&quot;&gt;
-                &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                    &lt;h3 class&#x3D;&quot;card-title&quot;&gt;
-                        &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;
-                    &lt;/h3&gt;
-                    &lt;p&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/cms:pages&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+        <!-- Show comments only in page view -->
+        <cms:if k_is_commentable>
+            <cms:comments page_id=k_page_id limit='10' paginate='1'>
+                <!-- Comments -->
+            </cms:comments>
+        </cms:if>
+    </article>
+<cms:else />
+    <!-- List view content -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <cms:pages masterpage='blog.php' limit='12' paginate='1'>
+            <div class="card bg-base-100 shadow-md">
+                <div class="card-body">
+                    <h3 class="card-title">
+                        <a href="<cms:show k_page_link />"><cms:show k_page_title /></a>
+                    </h3>
+                    <p><cms:show k_page_excerpt /></p>
+                </div>
+            </div>
+        </cms:pages>
+    </div>
+</cms:if>
+```
 
 ### View-Specific Headers
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_page&gt;
-    &lt;header class&#x3D;&quot;mb-6&quot;&gt;
-        &lt;h1 class&#x3D;&quot;text-4xl font-bold&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-        &lt;p class&#x3D;&quot;text-base-content/70&quot;&gt;
-            &lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-        &lt;/p&gt;
-    &lt;/header&gt;
-&lt;cms:else /&gt;
-    &lt;cms:if k_is_folder&gt;
-        &lt;header class&#x3D;&quot;mb-6&quot;&gt;
-            &lt;h1 class&#x3D;&quot;text-4xl font-bold&quot;&gt;&lt;cms:show k_folder_title /&gt;&lt;/h1&gt;
-            &lt;p&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-        &lt;/header&gt;
-    &lt;/cms:if&gt;
+```php title="template.php"
+<cms:if k_is_page>
+    <header class="mb-6">
+        <h1 class="text-4xl font-bold"><cms:show k_page_title /></h1>
+        <p class="text-base-content/70">
+            <cms:date k_page_date format='F j, Y' />
+        </p>
+    </header>
+<cms:else />
+    <cms:if k_is_folder>
+        <header class="mb-6">
+            <h1 class="text-4xl font-bold"><cms:show k_folder_title /></h1>
+            <p><cms:show k_folder_desc /></p>
+        </header>
+    </cms:if>
 
-    &lt;cms:if k_is_archive&gt;
-        &lt;header class&#x3D;&quot;mb-6&quot;&gt;
-            &lt;h1 class&#x3D;&quot;text-4xl font-bold&quot;&gt;Archive&lt;/h1&gt;
-            &lt;p&gt;&lt;cms:show k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;&lt;/p&gt;
-        &lt;/header&gt;
-    &lt;/cms:if&gt;
+    <cms:if k_is_archive>
+        <header class="mb-6">
+            <h1 class="text-4xl font-bold">Archive</h1>
+            <p><cms:show k_archive_date format='F Y' /></p>
+        </header>
+    </cms:if>
 
-    &lt;cms:if k_is_home&gt;
-        &lt;header class&#x3D;&quot;mb-6&quot;&gt;
-            &lt;h1 class&#x3D;&quot;text-4xl font-bold&quot;&gt;All Posts&lt;/h1&gt;
-        &lt;/header&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_is_home>
+        <header class="mb-6">
+            <h1 class="text-4xl font-bold">All Posts</h1>
+        </header>
+    </cms:if>
+</cms:if>
+```
 
 ### View-Based Filtering
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:if k_is_list&gt;
-    &lt;cms:if k_is_folder&gt;
-        &lt;!-- Filter by folder --&gt;
-        &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; folder&#x3D;k_folder_name limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-            &lt;!-- Folder pages --&gt;
-        &lt;/cms:pages&gt;
-    &lt;cms:else /&gt;
-        &lt;cms:if k_is_archive&gt;
-            &lt;!-- Filter by date --&gt;
-            &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-                &lt;cms:if k_page_date gte&#x3D;k_archive_date_start AND k_page_date lte&#x3D;k_archive_date_end&gt;
-                    &lt;!-- Archive pages --&gt;
-                &lt;/cms:if&gt;
-            &lt;/cms:pages&gt;
-        &lt;cms:else /&gt;
-            &lt;!-- All pages --&gt;
-            &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-                &lt;!-- All pages --&gt;
-            &lt;/cms:pages&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:if k_is_list>
+    <cms:if k_is_folder>
+        <!-- Filter by folder -->
+        <cms:pages masterpage='blog.php' folder=k_folder_name limit='10' paginate='1'>
+            <!-- Folder pages -->
+        </cms:pages>
+    <cms:else />
+        <cms:if k_is_archive>
+            <!-- Filter by date -->
+            <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+                <cms:if k_page_date gte=k_archive_date_start AND k_page_date lte=k_archive_date_end>
+                    <!-- Archive pages -->
+                </cms:if>
+            </cms:pages>
+        <cms:else />
+            <!-- All pages -->
+            <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+                <!-- All pages -->
+            </cms:pages>
+        </cms:if>
+    </cms:if>
+</cms:if>
+```
 
 ---
 
 ## Best Practices
 
-1. **Always Check View Type**: Use &#x60;k_is_page&#x60; vs &#x60;k_is_list&#x60; to determine what to display
+1. **Always Check View Type**: Use `k_is_page` vs `k_is_list` to determine what to display
 
-2. **Distinguish List Types**: Use &#x60;k_is_home&#x60;, &#x60;k_is_folder&#x60;, &#x60;k_is_archive&#x60; to provide different content for each
+2. **Distinguish List Types**: Use `k_is_home`, `k_is_folder`, `k_is_archive` to provide different content for each
 
 3. **URL Patterns**: Understand how URLs map to views:
-   - &#x60;/&#x60; → Home view (list)
-   - &#x60;/folder-name/&#x60; → Folder view
-   - &#x60;/2010/05/&#x60; → Archive view
-   - &#x60;/page-name.html&#x60; → Page view
+   - `/` → Home view (list)
+   - `/folder-name/` → Folder view
+   - `/2010/05/` → Archive view
+   - `/page-name.html` → Page view
 
 4. **View-Specific Variables**: Each view has different variables available. Check documentation for view-specific variables.
 
@@ -375,72 +375,72 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ## Quick Fixes
 
-### &quot;Wrong content showing in view&quot;
+### "Wrong content showing in view"
 
 **Problem**: Page view shows list content or vice versa
 
 **Solution**: Always check view type first:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_page&gt;
-    &lt;!-- Page content --&gt;
-&lt;cms:else /&gt;
-    &lt;!-- List content --&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_is_page>
+    <!-- Page content -->
+<cms:else />
+    <!-- List content -->
+</cms:if>
+```
 
-### &quot;Folder view not working&quot;
+### "Folder view not working"
 
-**Problem**: Folder view doesn&#x27;t show folder-specific content
+**Problem**: Folder view doesn't show folder-specific content
 
-**Solution**: Check for &#x60;k_is_folder&#x60; within list view:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_list&gt;
-    &lt;cms:if k_is_folder&gt;
-        &lt;!-- Folder-specific content --&gt;
-    &lt;/cms:if&gt;
-    &lt;!-- List content --&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Check for `k_is_folder` within list view:
+```php title="template.php"
+<cms:if k_is_list>
+    <cms:if k_is_folder>
+        <!-- Folder-specific content -->
+    </cms:if>
+    <!-- List content -->
+</cms:if>
+```
 
-### &quot;Archive view not detecting&quot;
+### "Archive view not detecting"
 
 **Problem**: Archive view not recognized
 
 **Solution**: Check archive variables:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_list&gt;
-    &lt;cms:if k_is_archive&gt;
-        &lt;cms:if k_is_year&gt;
-            &lt;!-- Year archive --&gt;
-        &lt;/cms:if&gt;
-        &lt;cms:if k_is_month&gt;
-            &lt;!-- Month archive --&gt;
-        &lt;/cms:if&gt;
-        &lt;cms:if k_is_day&gt;
-            &lt;!-- Day archive --&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_is_list>
+    <cms:if k_is_archive>
+        <cms:if k_is_year>
+            <!-- Year archive -->
+        </cms:if>
+        <cms:if k_is_month>
+            <!-- Month archive -->
+        </cms:if>
+        <cms:if k_is_day>
+            <!-- Day archive -->
+        </cms:if>
+    </cms:if>
+</cms:if>
+```
 
-### &quot;Home view showing folder content&quot;
+### "Home view showing folder content"
 
 **Problem**: Home view incorrectly shows folder-specific content
 
-**Solution**: Check &#x60;k_is_home&#x60; explicitly:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_list&gt;
-    &lt;cms:if k_is_folder&gt;
-        &lt;!-- Folder content --&gt;
-    &lt;cms:else /&gt;
-        &lt;cms:if k_is_archive&gt;
-            &lt;!-- Archive content --&gt;
-        &lt;cms:else /&gt;
-            &lt;!-- Home content (k_is_home) --&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Check `k_is_home` explicitly:
+```php title="template.php"
+<cms:if k_is_list>
+    <cms:if k_is_folder>
+        <!-- Folder content -->
+    <cms:else />
+        <cms:if k_is_archive>
+            <!-- Archive content -->
+        <cms:else />
+            <!-- Home content (k_is_home) -->
+        </cms:if>
+    </cms:if>
+</cms:if>
+```
 
 ---
 
@@ -452,88 +452,88 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Blog&#x27; clonable&#x3D;&#x27;1&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Blog' clonable='1' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;div class&#x3D;&quot;container mx-auto p-4&quot;&gt;
-        &lt;cms:if k_is_page&gt;
-            &lt;!-- Page View --&gt;
-            &lt;article class&#x3D;&quot;prose max-w-none&quot;&gt;
-                &lt;nav class&#x3D;&quot;mb-6&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;← Back to Blog&lt;/a&gt;
-                &lt;/nav&gt;
+<cms:block 'content'>
+    <div class="container mx-auto p-4">
+        <cms:if k_is_page>
+            <!-- Page View -->
+            <article class="prose max-w-none">
+                <nav class="mb-6">
+                    <a href="<cms:show k_template_link />" class="btn btn-sm btn-ghost">← Back to Blog</a>
+                </nav>
 
-                &lt;h1 class&#x3D;&quot;text-4xl font-bold mb-4&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-                &lt;p class&#x3D;&quot;text-base-content/70 text-sm mb-6&quot;&gt;
-                    &lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-                &lt;/p&gt;
+                <h1 class="text-4xl font-bold mb-4"><cms:show k_page_title /></h1>
+                <p class="text-base-content/70 text-sm mb-6">
+                    <cms:date k_page_date format='F j, Y' />
+                </p>
 
-                &lt;div&gt;&lt;cms:show k_page_content /&gt;&lt;/div&gt;
+                <div><cms:show k_page_content /></div>
 
-                &lt;!-- Comments --&gt;
-                &lt;cms:if k_is_commentable&gt;
-                    &lt;div class&#x3D;&quot;mt-12&quot;&gt;
-                        &lt;h2 class&#x3D;&quot;text-2xl font-bold mb-6&quot;&gt;Comments&lt;/h2&gt;
-                        &lt;cms:comments page_id&#x3D;k_page_id limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-                            &lt;!-- Comments display --&gt;
-                        &lt;/cms:comments&gt;
-                    &lt;/div&gt;
-                &lt;/cms:if&gt;
-            &lt;/article&gt;
-        &lt;cms:else /&gt;
-            &lt;!-- List View --&gt;
-            &lt;cms:if k_is_folder&gt;
-                &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-                    &lt;nav class&#x3D;&quot;breadcrumbs mb-4&quot;&gt;
-                        &lt;ul&gt;
-                            &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-                            &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;Blog&lt;/a&gt;&lt;/li&gt;
-                            &lt;li&gt;&lt;cms:show k_folder_title /&gt;&lt;/li&gt;
-                        &lt;/ul&gt;
-                    &lt;/nav&gt;
-                    &lt;h1 class&#x3D;&quot;text-4xl font-bold mb-2&quot;&gt;&lt;cms:show k_folder_title /&gt;&lt;/h1&gt;
-                    &lt;p class&#x3D;&quot;text-base-content/70&quot;&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/cms:if&gt;
+                <!-- Comments -->
+                <cms:if k_is_commentable>
+                    <div class="mt-12">
+                        <h2 class="text-2xl font-bold mb-6">Comments</h2>
+                        <cms:comments page_id=k_page_id limit='10' paginate='1'>
+                            <!-- Comments display -->
+                        </cms:comments>
+                    </div>
+                </cms:if>
+            </article>
+        <cms:else />
+            <!-- List View -->
+            <cms:if k_is_folder>
+                <div class="mb-6">
+                    <nav class="breadcrumbs mb-4">
+                        <ul>
+                            <li><a href="<cms:show k_site_link />">Home</a></li>
+                            <li><a href="<cms:show k_template_link />">Blog</a></li>
+                            <li><cms:show k_folder_title /></li>
+                        </ul>
+                    </nav>
+                    <h1 class="text-4xl font-bold mb-2"><cms:show k_folder_title /></h1>
+                    <p class="text-base-content/70"><cms:show k_folder_desc /></p>
+                </div>
+            </cms:if>
 
-            &lt;cms:if k_is_archive&gt;
-                &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-                    &lt;h1 class&#x3D;&quot;text-4xl font-bold mb-2&quot;&gt;Archive&lt;/h1&gt;
-                    &lt;p class&#x3D;&quot;text-base-content/70&quot;&gt;
-                        &lt;cms:if k_is_year&gt;&lt;cms:show k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;&lt;/cms:if&gt;
-                        &lt;cms:if k_is_month&gt;&lt;cms:show k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;&lt;/cms:if&gt;
-                        &lt;cms:if k_is_day&gt;&lt;cms:show k_archive_date format&#x3D;&#x27;F j, Y&#x27; /&gt;&lt;/cms:if&gt;
-                    &lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/cms:if&gt;
+            <cms:if k_is_archive>
+                <div class="mb-6">
+                    <h1 class="text-4xl font-bold mb-2">Archive</h1>
+                    <p class="text-base-content/70">
+                        <cms:if k_is_year><cms:show k_archive_date format='Y' /></cms:if>
+                        <cms:if k_is_month><cms:show k_archive_date format='F Y' /></cms:if>
+                        <cms:if k_is_day><cms:show k_archive_date format='F j, Y' /></cms:if>
+                    </p>
+                </div>
+            </cms:if>
 
-            &lt;cms:if k_is_home&gt;
-                &lt;h1 class&#x3D;&quot;text-4xl font-bold mb-6&quot;&gt;All Posts&lt;/h1&gt;
-            &lt;/cms:if&gt;
+            <cms:if k_is_home>
+                <h1 class="text-4xl font-bold mb-6">All Posts</h1>
+            </cms:if>
 
-            &lt;!-- Pages List --&gt;
-            &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-                &lt;article class&#x3D;&quot;mb-8 pb-8 border-b border-base-300&quot;&gt;
-                    &lt;h2 class&#x3D;&quot;text-2xl font-semibold mb-2&quot;&gt;
-                        &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                            &lt;cms:show k_page_title /&gt;
-                        &lt;/a&gt;
-                    &lt;/h2&gt;
-                    &lt;p class&#x3D;&quot;text-base-content/70 text-sm mb-2&quot;&gt;
-                        &lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-                    &lt;/p&gt;
-                    &lt;p class&#x3D;&quot;text-base-content/80 mb-4&quot;&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Read more&lt;/a&gt;
-                &lt;/article&gt;
-            &lt;/cms:pages&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
-&lt;/cms:block&gt;
+            <!-- Pages List -->
+            <cms:pages masterpage='blog.php' limit='10' paginate='1'>
+                <article class="mb-8 pb-8 border-b border-base-300">
+                    <h2 class="text-2xl font-semibold mb-2">
+                        <a href="<cms:show k_page_link />" class="link link-primary">
+                            <cms:show k_page_title />
+                        </a>
+                    </h2>
+                    <p class="text-base-content/70 text-sm mb-2">
+                        <cms:date k_page_date format='F j, Y' />
+                    </p>
+                    <p class="text-base-content/80 mb-4"><cms:show k_page_excerpt /></p>
+                    <a href="<cms:show k_page_link />" class="btn btn-sm btn-primary">Read more</a>
+                </article>
+            </cms:pages>
+        </cms:if>
+    </div>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
@@ -573,8 +573,8 @@ You are a CouchCMS views expert specializing in implementing different view type
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;concepts/views.mdx&#x60;
-- CouchCMS Documentation: &#x60;concepts/variables-in-views.mdx&#x60;
-- CouchCMS Documentation: &#x60;concepts/listing-pages.mdx&#x60;
+- CouchCMS Documentation: `concepts/views.mdx`
+- CouchCMS Documentation: `concepts/variables-in-views.mdx`
+- CouchCMS Documentation: `concepts/listing-pages.mdx`
 
 

@@ -83,29 +83,29 @@ bun ai-toolkit-shared/scripts/init.js
 
 After installation, you have two setup options:
 
-### Option A: Simple Setup (Nieuw! Voor Beginners) ✨
+### Option A: Simple Setup (New! For Beginners) ✨
 
-**Perfect als je:**
-- Voor het eerst met de toolkit werkt
-- Snel wilt starten zonder technische details
-- Niet precies weet welke modules je nodig hebt
+**Perfect if you:**
+- Are using the toolkit for the first time
+- Want to start quickly without technical details
+- Are not sure exactly which modules you need
 
 ```bash
 bun ai-toolkit-shared/scripts/create-standards.js
-# of
+# or
 bun run create
-```text
+```
 
-**Wat gebeurt er:**
-- 📝 Beantwoord simpele vragen in begrijpelijke taal
-- 🎯 Kies je project type (blog, webapp, portfolio, etc.)
-- 🛠️ Selecteer technologieën via eenvoudige vragen
-- ✅ Automatische aanbevelingen op basis van je keuzes
-- ⚡ Klaar in 2 minuten!
+**What happens:**
+- Answer simple questions in understandable language
+- Choose your project type (blog, webapp, portfolio, etc.)
+- Select technologies via simple questions
+- Automatic recommendations based on your choices
+- Ready in 2 minutes!
 
-**Zie:** [Simple Setup Guide](SIMPLE-SETUP.md) voor details
+**See:** [Simple Setup Guide](SIMPLE-SETUP.md) for details
 
-### Option B: Advanced Setup (Voor Gevorderden) 🔧
+### Option B: Advanced Setup (For Advanced Users) 🔧
 
 After installation, the advanced setup wizard starts automatically. You get 4 options:
 

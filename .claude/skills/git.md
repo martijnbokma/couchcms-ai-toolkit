@@ -21,28 +21,28 @@ You are a Git expert specializing in version control, branching strategies, and 
 
 | Command | Purpose |
 |---------|---------|
-| &#x60;git status&#x60; | Check working tree status |
-| &#x60;git add .&#x60; | Stage all changes |
-| &#x60;git commit -m &quot;msg&quot;&#x60; | Commit with message |
-| &#x60;git push&#x60; | Push to remote |
-| &#x60;git pull&#x60; | Pull from remote |
-| &#x60;git branch&#x60; | List branches |
-| &#x60;git checkout -b &lt;name&gt;&#x60; | Create &amp; switch branch |
-| &#x60;git merge &lt;branch&gt;&#x60; | Merge branch |
-| &#x60;git stash&#x60; | Stash changes |
-| &#x60;git log --oneline&#x60; | View commit history |
+| `git status` | Check working tree status |
+| `git add .` | Stage all changes |
+| `git commit -m "msg"` | Commit with message |
+| `git push` | Push to remote |
+| `git pull` | Pull from remote |
+| `git branch` | List branches |
+| `git checkout -b <name>` | Create & switch branch |
+| `git merge <branch>` | Merge branch |
+| `git stash` | Stash changes |
+| `git log --oneline` | View commit history |
 
 ### Commit Message Format
 
-&#x60;&#x60;&#x60;
+```
 type(scope): description
 
 [optional body]
 
 [optional footer]
-&#x60;&#x60;&#x60;
+```
 
-Types: &#x60;feat&#x60;, &#x60;fix&#x60;, &#x60;docs&#x60;, &#x60;style&#x60;, &#x60;refactor&#x60;, &#x60;test&#x60;, &#x60;chore&#x60;
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ### Your Approach
 
@@ -57,7 +57,7 @@ Types: &#x60;feat&#x60;, &#x60;fix&#x60;, &#x60;docs&#x60;, &#x60;style&#x60;, &
 
 ### Feature Branch Workflow
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Start new feature
 git checkout main
 git pull origin main
@@ -65,45 +65,45 @@ git checkout -b feature/add-video-player
 
 # Work on feature...
 git add .
-git commit -m &quot;feat(video): add video player component&quot;
+git commit -m "feat(video): add video player component"
 
 # Push and create PR
 git push -u origin feature/add-video-player
-gh pr create --title &quot;Add video player&quot; --body &quot;...&quot;
+gh pr create --title "Add video player" --body "..."
 
 # After merge, cleanup
 git checkout main
 git pull origin main
 git branch -d feature/add-video-player
-&#x60;&#x60;&#x60;
+```
 
 ### Commit Examples
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Feature
-git commit -m &quot;feat(episodes): add episode manager component&quot;
+git commit -m "feat(episodes): add episode manager component"
 
 # Bug fix
-git commit -m &quot;fix(forms): resolve validation error on empty fields&quot;
+git commit -m "fix(forms): resolve validation error on empty fields"
 
 # Documentation
-git commit -m &quot;docs(readme): update installation instructions&quot;
+git commit -m "docs(readme): update installation instructions"
 
 # Refactoring
-git commit -m &quot;refactor(api): simplify response handling&quot;
+git commit -m "refactor(api): simplify response handling"
 
 # Chore
-git commit -m &quot;chore(deps): update tailwindcss to v4&quot;
-&#x60;&#x60;&#x60;
+git commit -m "chore(deps): update tailwindcss to v4"
+```
 
 ### Undo Changes
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Unstage file (keep changes)
-git reset HEAD &lt;file&gt;
+git reset HEAD <file>
 
 # Discard changes in file
-git checkout -- &lt;file&gt;
+git checkout -- <file>
 
 # Undo last commit (keep changes)
 git reset --soft HEAD~1
@@ -112,17 +112,17 @@ git reset --soft HEAD~1
 git reset --hard HEAD~1
 
 # Revert a pushed commit
-git revert &lt;commit-hash&gt;
-&#x60;&#x60;&#x60;
+git revert <commit-hash>
+```
 
 ### Stashing
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Stash changes
 git stash
 
 # Stash with message
-git stash push -m &quot;WIP: video player refactor&quot;
+git stash push -m "WIP: video player refactor"
 
 # List stashes
 git stash list
@@ -135,7 +135,7 @@ git stash apply stash@{1}
 
 # Drop stash
 git stash drop stash@{0}
-&#x60;&#x60;&#x60;
+```
 
 ---
 
@@ -143,7 +143,7 @@ git stash drop stash@{0}
 
 ### Interactive Rebase
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Rebase last 3 commits
 git rebase -i HEAD~3
 
@@ -157,42 +157,42 @@ git rebase main
 
 # Abort if problems
 git rebase --abort
-&#x60;&#x60;&#x60;
+```
 
 ### Handling Conflicts
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # During merge/rebase with conflicts
 git status  # See conflicting files
 
 # Edit files to resolve conflicts
-# Look for &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD markers
+# Look for <<<<<<< HEAD markers
 
 # After resolving
-git add &lt;resolved-file&gt;
+git add <resolved-file>
 git rebase --continue  # or git merge --continue
 
 # Or abort
 git rebase --abort
 git merge --abort
-&#x60;&#x60;&#x60;
+```
 
 ### Cherry-Pick
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Apply specific commit to current branch
-git cherry-pick &lt;commit-hash&gt;
+git cherry-pick <commit-hash>
 
 # Cherry-pick without committing
-git cherry-pick --no-commit &lt;commit-hash&gt;
+git cherry-pick --no-commit <commit-hash>
 
 # Cherry-pick range
-git cherry-pick &lt;start-hash&gt;^..&lt;end-hash&gt;
-&#x60;&#x60;&#x60;
+git cherry-pick <start-hash>^..<end-hash>
+```
 
 ### Submodule Management
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Add submodule
 git submodule add https://github.com/user/repo.git path/to/submodule
 
@@ -205,37 +205,37 @@ git fetch origin
 git checkout origin/main
 cd ..
 git add path/to/submodule
-git commit -m &quot;chore: update submodule&quot;
+git commit -m "chore: update submodule"
 
 # Remove submodule
 git submodule deinit path/to/submodule
 git rm path/to/submodule
 rm -rf .git/modules/path/to/submodule
-&#x60;&#x60;&#x60;
+```
 
 ### Git Hooks
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Pre-commit hook (.git/hooks/pre-commit)
 #!/bin/sh
 bun run lint
 bun run test
-&#x60;&#x60;&#x60;
+```
 
 ### Useful Aliases
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Add to ~/.gitconfig
 [alias]
-    co &#x3D; checkout
-    br &#x3D; branch
-    ci &#x3D; commit
-    st &#x3D; status
-    lg &#x3D; log --oneline --graph --decorate
-    undo &#x3D; reset --soft HEAD~1
-    amend &#x3D; commit --amend --no-edit
-    wip &#x3D; commit -am &quot;WIP&quot;
-&#x60;&#x60;&#x60;
+    co = checkout
+    br = branch
+    ci = commit
+    st = status
+    lg = log --oneline --graph --decorate
+    undo = reset --soft HEAD~1
+    amend = commit --amend --no-edit
+    wip = commit -am "WIP"
+```
 
 ---
 
@@ -243,30 +243,30 @@ bun run test
 
 | Problem | Cause | Solution |
 |---------|-------|----------|
-| Push rejected | Remote has new commits | &#x60;git pull --rebase&#x60; then push |
+| Push rejected | Remote has new commits | `git pull --rebase` then push |
 | Merge conflict | Overlapping changes | Manually resolve, then commit |
-| Detached HEAD | Checked out commit | &#x60;git checkout main&#x60; |
-| Lost commits | Reset too hard | &#x60;git reflog&#x60; to find and recover |
+| Detached HEAD | Checked out commit | `git checkout main` |
+| Lost commits | Reset too hard | `git reflog` to find and recover |
 
 ### Recovery Commands
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # View all actions (including deleted commits)
 git reflog
 
 # Recover deleted branch
-git checkout -b recovered-branch &lt;commit-hash&gt;
+git checkout -b recovered-branch <commit-hash>
 
 # Find lost commits
 git fsck --lost-found
 
 # Reset to specific reflog entry
 git reset --hard HEAD@{2}
-&#x60;&#x60;&#x60;
+```
 
 ### .gitignore Patterns
 
-&#x60;&#x60;&#x60;gitignore title&#x3D;&quot;gitignore-patterns.txt&quot;
+```gitignore title="gitignore-patterns.txt"
 # Dependencies
 node_modules/
 vendor/
@@ -291,5 +291,5 @@ Thumbs.db
 # CouchCMS
 couch/uploads/
 couch/cache/
-&#x60;&#x60;&#x60;
+```
 

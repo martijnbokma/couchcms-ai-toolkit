@@ -9,8 +9,9 @@
  * - Editor-specific validation
  */
 
-import { existsSync } from 'fs'
+import { existsSync, readdirSync } from 'fs'
 import { join } from 'path'
+import { validateName, formatNameError, getSuggestions } from './fuzzy-matcher.js'
 
 /**
  * Validate editor configurations
@@ -337,7 +338,39 @@ function checkConfigurationConflicts(config, editors) {
 }
 
 /**
- * Validate module and agent existence
+ * Get list of available modules
+ * @param {string} toolkitPath - Toolkit root directory
+ * @returns {Array<string>} - Array of module names
+ */
+function getAvailableModules(toolkitPath) {
+    const modulesDir = join(toolkitPath, 'modules')
+    if (!existsSync(modulesDir)) {
+        return []
+    }
+
+    return readdirSync(modulesDir)
+        .filter(file => file.endsWith('.md') && !file.includes('skill-rules'))
+        .map(file => file.replace('.md', ''))
+}
+
+/**
+ * Get list of available agents
+ * @param {string} toolkitPath - Toolkit root directory
+ * @returns {Array<string>} - Array of agent names
+ */
+function getAvailableAgents(toolkitPath) {
+    const agentsDir = join(toolkitPath, 'agents')
+    if (!existsSync(agentsDir)) {
+        return []
+    }
+
+    return readdirSync(agentsDir)
+        .filter(file => file.endsWith('.md'))
+        .map(file => file.replace('.md', ''))
+}
+
+/**
+ * Validate module and agent existence with fuzzy matching
  *
  * @param {object} config - Configuration object
  * @param {string} toolkitPath - Toolkit root directory
@@ -347,6 +380,10 @@ export function validateModulesAndAgents(config, toolkitPath) {
     const errors = []
     const warnings = []
 
+    // Get available modules and agents
+    const availableModules = getAvailableModules(toolkitPath)
+    const availableAgents = getAvailableAgents(toolkitPath)
+
     // Validate modules
     if (config.modules) {
         const moduleList = Array.isArray(config.modules) ? config.modules : [config.modules]
@@ -354,13 +391,19 @@ export function validateModulesAndAgents(config, toolkitPath) {
         for (const moduleName of moduleList) {
             const modulePath = join(toolkitPath, 'modules', `${moduleName}.md`)
             if (!existsSync(modulePath)) {
-                errors.push(`Module not found: ${moduleName} (expected at modules/${moduleName}.md)`)
-            }
-
-            // Check for skill rules file
-            const skillRulesPath = join(toolkitPath, 'modules', `${moduleName}.skill-rules.json`)
-            if (!existsSync(skillRulesPath)) {
-                warnings.push(`Skill rules not found for module: ${moduleName} (optional)`)
+                // Use fuzzy matching to suggest corrections
+                const validation = validateName(moduleName, availableModules)
+                if (validation.suggestions.length > 0) {
+                    errors.push(formatNameError(moduleName, 'Module', validation.suggestions))
+                } else {
+                    errors.push(`Module not found: ${moduleName} (expected at modules/${moduleName}.md)`)
+                }
+            } else {
+                // Check for skill rules file
+                const skillRulesPath = join(toolkitPath, 'modules', `${moduleName}.skill-rules.json`)
+                if (!existsSync(skillRulesPath)) {
+                    warnings.push(`Skill rules not found for module: ${moduleName} (optional)`)
+                }
             }
         }
     }
@@ -383,7 +426,13 @@ export function validateModulesAndAgents(config, toolkitPath) {
         for (const agentName of agentList) {
             const agentPath = join(toolkitPath, 'agents', `${agentName}.md`)
             if (!existsSync(agentPath)) {
-                errors.push(`Agent not found: ${agentName} (expected at agents/${agentName}.md)`)
+                // Use fuzzy matching to suggest corrections
+                const validation = validateName(agentName, availableAgents)
+                if (validation.suggestions.length > 0) {
+                    errors.push(formatNameError(agentName, 'Agent', validation.suggestions))
+                } else {
+                    errors.push(`Agent not found: ${agentName} (expected at agents/${agentName}.md)`)
+                }
             }
         }
     }

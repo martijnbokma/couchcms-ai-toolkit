@@ -22,32 +22,32 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 | Tag                    | Purpose                          |
 | ---------------------- | -------------------------------- |
-| &#x60;&lt;cms:folder&gt;&#x60;         | Define folder                    |
-| &#x60;&lt;cms:folders&gt;&#x60;        | List folders                     |
-| &#x60;&lt;cms:listfolders&gt;&#x60;    | Quick folder list                |
-| &#x60;&lt;cms:parentfolders&gt;&#x60;  | List parent folders              |
-| &#x60;&lt;cms:breadcrumbs&gt;&#x60;    | Generate breadcrumbs             |
-| &#x60;&lt;cms:is_ancestor&gt;&#x60;    | Check folder ancestry            |
+| `<cms:folder>`         | Define folder                    |
+| `<cms:folders>`        | List folders                     |
+| `<cms:listfolders>`    | Quick folder list                |
+| `<cms:parentfolders>`  | List parent folders              |
+| `<cms:breadcrumbs>`    | Generate breadcrumbs             |
+| `<cms:is_ancestor>`    | Check folder ancestry            |
 
 ### Folder Variables
 
 | Variable            | Purpose                          |
 | ------------------- | -------------------------------- |
-| &#x60;k_folder_name&#x60;     | Folder name (identifier)         |
-| &#x60;k_folder_title&#x60;    | Folder display title             |
-| &#x60;k_folder_link&#x60;     | Link to folder view              |
-| &#x60;k_folder_desc&#x60;     | Folder description               |
-| &#x60;k_level&#x60;           | Folder level in hierarchy        |
-| &#x60;k_page_foldername&#x60; | Current page&#x27;s folder            |
+| `k_folder_name`     | Folder name (identifier)         |
+| `k_folder_title`    | Folder display title             |
+| `k_folder_link`     | Link to folder view              |
+| `k_folder_desc`     | Folder description               |
+| `k_level`           | Folder level in hierarchy        |
+| `k_page_foldername` | Current page's folder            |
 
 ### Your Approach
 
 - Create folders with nested structure for hierarchy
-- Use &#x60;name&#x60; for unique identifier, &#x60;title&#x60; for display
+- Use `name` for unique identifier, `title` for display
 - Place folder definitions in template tag
-- Use &#x60;folders&#x60; tag for navigation menus
-- Use &#x60;breadcrumbs&#x60; for navigation paths
-- Filter pages by folder using &#x60;folder&#x60; parameter
+- Use `folders` tag for navigation menus
+- Use `breadcrumbs` for navigation paths
+- Filter pages by folder using `folder` parameter
 - Use hierarchical listing for nested menus
 
 ---
@@ -56,171 +56,171 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Define Folder Structure
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;News&#x27; clonable&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:folder name&#x3D;&quot;world&quot; title&#x3D;&quot;World News&quot;&gt;
-        &lt;cms:folder name&#x3D;&quot;north-america&quot; title&#x3D;&quot;North American News&quot;&gt;
-            &lt;cms:folder name&#x3D;&quot;united-states&quot; title&#x3D;&quot;United States News&quot;&gt;
-                &lt;cms:folder name&#x3D;&quot;ohio&quot; title&#x3D;&quot;Ohio News&quot; /&gt;
-                &lt;cms:folder name&#x3D;&quot;nevada&quot; title&#x3D;&quot;Nevada News&quot; /&gt;
-            &lt;/cms:folder&gt;
-        &lt;/cms:folder&gt;
-        &lt;cms:folder name&#x3D;&quot;asia&quot; title&#x3D;&quot;Asian News&quot;&gt;
-            &lt;cms:folder name&#x3D;&quot;china&quot; title&#x3D;&quot;China News&quot; /&gt;
-            &lt;cms:folder name&#x3D;&quot;japan&quot; title&#x3D;&quot;Japan News&quot; /&gt;
-        &lt;/cms:folder&gt;
-    &lt;/cms:folder&gt;
-    &lt;cms:folder name&#x3D;&quot;sports&quot; title&#x3D;&quot;Sports News&quot; /&gt;
-    &lt;cms:folder name&#x3D;&quot;music&quot; title&#x3D;&quot;Music News&quot; /&gt;
-    &lt;cms:folder name&#x3D;&quot;entertainment&quot; title&#x3D;&quot;Entertainment News&quot; /&gt;
-&lt;/cms:template&gt;
-&#x60;&#x60;&#x60;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='News' clonable='1'>
+    <cms:folder name="world" title="World News">
+        <cms:folder name="north-america" title="North American News">
+            <cms:folder name="united-states" title="United States News">
+                <cms:folder name="ohio" title="Ohio News" />
+                <cms:folder name="nevada" title="Nevada News" />
+            </cms:folder>
+        </cms:folder>
+        <cms:folder name="asia" title="Asian News">
+            <cms:folder name="china" title="China News" />
+            <cms:folder name="japan" title="Japan News" />
+        </cms:folder>
+    </cms:folder>
+    <cms:folder name="sports" title="Sports News" />
+    <cms:folder name="music" title="Music News" />
+    <cms:folder name="entertainment" title="Entertainment News" />
+</cms:template>
+```
 
 ### List All Folders
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-2&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-            &lt;cms:show k_folder_title /&gt;
-        &lt;/a&gt;
-    &lt;/div&gt;
-&lt;/cms:folders&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<cms:folders masterpage='news.php'>
+    <div class="mb-2">
+        <a href="<cms:show k_folder_link />" class="link link-primary">
+            <cms:show k_folder_title />
+        </a>
+    </div>
+</cms:folders>
+```
 
 ### Hierarchical Folder List
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-2&quot; style&#x3D;&quot;padding-left: &lt;cms:show k_level /&gt;em;&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-            &lt;cms:show k_folder_title /&gt;
-        &lt;/a&gt;
-    &lt;/div&gt;
-&lt;/cms:folders&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<cms:folders masterpage='news.php' hierarchical='1'>
+    <div class="mb-2" style="padding-left: <cms:show k_level />em;">
+        <a href="<cms:show k_folder_link />" class="link link-primary">
+            <cms:show k_folder_title />
+        </a>
+    </div>
+</cms:folders>
+```
 
 ### Folder Navigation Menu
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27; extended_info&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_level_start&gt;&lt;ul class&#x3D;&quot;menu&quot;&gt;&lt;/cms:if&gt;
-    &lt;cms:if k_element_start&gt;
-        &lt;li&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot;&gt;
-                &lt;cms:show k_folder_title /&gt;
-            &lt;/a&gt;
-    &lt;/cms:if&gt;
-    &lt;cms:if k_element_end&gt;&lt;/li&gt;&lt;/cms:if&gt;
-    &lt;cms:if k_level_end&gt;&lt;/ul&gt;&lt;/cms:if&gt;
-&lt;/cms:folders&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<cms:folders masterpage='news.php' hierarchical='1' extended_info='1'>
+    <cms:if k_level_start><ul class="menu"></cms:if>
+    <cms:if k_element_start>
+        <li>
+            <a href="<cms:show k_folder_link />">
+                <cms:show k_folder_title />
+            </a>
+    </cms:if>
+    <cms:if k_element_end></li></cms:if>
+    <cms:if k_level_end></ul></cms:if>
+</cms:folders>
+```
 
 ### Breadcrumbs
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_page || k_is_folder&gt;
-    &lt;nav class&#x3D;&quot;breadcrumbs&quot;&gt;
-        &lt;ul&gt;
-            &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;&lt;cms:show k_template_title /&gt;&lt;/a&gt;&lt;/li&gt;
-            &lt;cms:breadcrumbs separator&#x3D;&#x27;&#x27; include_template&#x3D;&#x27;0&#x27; /&gt;
-        &lt;/ul&gt;
-    &lt;/nav&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_is_page || k_is_folder>
+    <nav class="breadcrumbs">
+        <ul>
+            <li><a href="<cms:show k_site_link />">Home</a></li>
+            <li><a href="<cms:show k_template_link />"><cms:show k_template_title /></a></li>
+            <cms:breadcrumbs separator='' include_template='0' />
+        </ul>
+    </nav>
+</cms:if>
+```
 
 ### Custom Breadcrumbs
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_page || k_is_folder&gt;
-    &lt;nav class&#x3D;&quot;breadcrumbs&quot;&gt;
-        &lt;ul&gt;
-            &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;&lt;cms:show k_template_title /&gt;&lt;/a&gt;&lt;/li&gt;
-            &lt;cms:if k_folder_name&gt;
-                &lt;cms:set my_folder&#x3D;k_folder_name /&gt;
-            &lt;/cms:if&gt;
-            &lt;cms:if k_page_foldername&gt;
-                &lt;cms:set my_folder&#x3D;k_page_foldername /&gt;
-            &lt;/cms:if&gt;
-            &lt;cms:if my_folder&gt;
-                &lt;cms:parentfolders folder&#x3D;my_folder&gt;
-                    &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot;&gt;&lt;cms:show k_folder_title /&gt;&lt;/a&gt;&lt;/li&gt;
-                &lt;/cms:parentfolders&gt;
-            &lt;/cms:if&gt;
-        &lt;/ul&gt;
-    &lt;/nav&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_is_page || k_is_folder>
+    <nav class="breadcrumbs">
+        <ul>
+            <li><a href="<cms:show k_site_link />">Home</a></li>
+            <li><a href="<cms:show k_template_link />"><cms:show k_template_title /></a></li>
+            <cms:if k_folder_name>
+                <cms:set my_folder=k_folder_name />
+            </cms:if>
+            <cms:if k_page_foldername>
+                <cms:set my_folder=k_page_foldername />
+            </cms:if>
+            <cms:if my_folder>
+                <cms:parentfolders folder=my_folder>
+                    <li><a href="<cms:show k_folder_link />"><cms:show k_folder_title /></a></li>
+                </cms:parentfolders>
+            </cms:if>
+        </ul>
+    </nav>
+</cms:if>
+```
 
 ### Filter Pages by Folder
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;news.php&#x27; folder&#x3D;&#x27;sports&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-        &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-        &lt;p&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-    &lt;/div&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<cms:pages masterpage='news.php' folder='sports' limit='10' paginate='1'>
+    <div class="mb-4">
+        <h3><a href="<cms:show k_page_link />"><cms:show k_page_title /></a></h3>
+        <p><cms:show k_page_excerpt /></p>
+    </div>
+</cms:pages>
+```
 
 ### Folder View Implementation
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:if k_is_folder&gt;
-    &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-        &lt;h1&gt;&lt;cms:show k_folder_title /&gt;&lt;/h1&gt;
-        &lt;cms:if k_folder_desc&gt;
-            &lt;p&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
+```php title="news.php"
+<cms:if k_is_folder>
+    <div class="mb-6">
+        <h1><cms:show k_folder_title /></h1>
+        <cms:if k_folder_desc>
+            <p><cms:show k_folder_desc /></p>
+        </cms:if>
+    </div>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;news.php&#x27; folder&#x3D;k_folder_name limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-            &lt;p&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/cms:pages&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='news.php' folder=k_folder_name limit='10' paginate='1'>
+        <div class="mb-4">
+            <h3><a href="<cms:show k_page_link />"><cms:show k_page_title /></a></h3>
+            <p><cms:show k_page_excerpt /></p>
+        </div>
+    </cms:pages>
+</cms:if>
+```
 
 ### Subfolders Only
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; childof&#x3D;&#x27;world&#x27; hierarchical&#x3D;&#x27;1&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-2&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-            &lt;cms:show k_folder_title /&gt;
-        &lt;/a&gt;
-    &lt;/div&gt;
-&lt;/cms:folders&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<cms:folders masterpage='news.php' childof='world' hierarchical='1'>
+    <div class="mb-2">
+        <a href="<cms:show k_folder_link />" class="link link-primary">
+            <cms:show k_folder_title />
+        </a>
+    </div>
+</cms:folders>
+```
 
 ### Limited Depth
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27; depth&#x3D;&#x27;2&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-2&quot; style&#x3D;&quot;padding-left: &lt;cms:show k_level /&gt;em;&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-            &lt;cms:show k_folder_title /&gt;
-        &lt;/a&gt;
-    &lt;/div&gt;
-&lt;/cms:folders&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<cms:folders masterpage='news.php' hierarchical='1' depth='2'>
+    <div class="mb-2" style="padding-left: <cms:show k_level />em;">
+        <a href="<cms:show k_folder_link />" class="link link-primary">
+            <cms:show k_folder_title />
+        </a>
+    </div>
+</cms:folders>
+```
 
 ### Exclude Folders
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27; exclude&#x3D;&#x27;music,asia&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-2&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-            &lt;cms:show k_folder_title /&gt;
-        &lt;/a&gt;
-    &lt;/div&gt;
-&lt;/cms:folders&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<cms:folders masterpage='news.php' hierarchical='1' exclude='music,asia'>
+    <div class="mb-2">
+        <a href="<cms:show k_folder_link />" class="link link-primary">
+            <cms:show k_folder_title />
+        </a>
+    </div>
+</cms:folders>
+```
 
 ---
 
@@ -228,145 +228,145 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ### Folder Menu with Active State
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:if k_is_page || k_is_folder&gt;
-    &lt;cms:if k_folder_name&gt;&lt;cms:set current_folder&#x3D;k_folder_name /&gt;&lt;/cms:if&gt;
-    &lt;cms:if k_page_foldername&gt;&lt;cms:set current_folder&#x3D;k_page_foldername /&gt;&lt;/cms:if&gt;
-&lt;/cms:if&gt;
+```php title="news.php"
+<cms:if k_is_page || k_is_folder>
+    <cms:if k_folder_name><cms:set current_folder=k_folder_name /></cms:if>
+    <cms:if k_page_foldername><cms:set current_folder=k_page_foldername /></cms:if>
+</cms:if>
 
-&lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27; extended_info&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_level_start&gt;&lt;ul class&#x3D;&quot;menu&quot;&gt;&lt;/cms:if&gt;
-    &lt;cms:if k_element_start&gt;
-        &lt;cms:set my_class&#x3D;&#x27;&#x27; /&gt;
-        &lt;cms:if &quot;&lt;cms:is_ancestor parent&#x3D;k_folder_name child&#x3D;current_folder /&gt;&quot;&gt;
-            &lt;cms:set my_class&#x3D;&#x27;class&#x3D;&quot;active&quot;&#x27; /&gt;
-        &lt;/cms:if&gt;
-        &lt;li &lt;cms:show my_class /&gt;&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot;&gt;
-                &lt;cms:show k_folder_title /&gt;
-            &lt;/a&gt;
-    &lt;/cms:if&gt;
-    &lt;cms:if k_element_end&gt;&lt;/li&gt;&lt;/cms:if&gt;
-    &lt;cms:if k_level_end&gt;&lt;/ul&gt;&lt;/cms:if&gt;
-&lt;/cms:folders&gt;
-&#x60;&#x60;&#x60;
+<cms:folders masterpage='news.php' hierarchical='1' extended_info='1'>
+    <cms:if k_level_start><ul class="menu"></cms:if>
+    <cms:if k_element_start>
+        <cms:set my_class='' />
+        <cms:if "<cms:is_ancestor parent=k_folder_name child=current_folder />">
+            <cms:set my_class='class="active"' />
+        </cms:if>
+        <li <cms:show my_class />>
+            <a href="<cms:show k_folder_link />">
+                <cms:show k_folder_title />
+            </a>
+    </cms:if>
+    <cms:if k_element_end></li></cms:if>
+    <cms:if k_level_end></ul></cms:if>
+</cms:folders>
+```
 
 ### Folder with Page Count
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:listfolders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27; show_count&#x3D;&#x27;1&#x27; /&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<cms:listfolders masterpage='news.php' hierarchical='1' show_count='1' />
+```
 
 ### Folder Dropdown Navigation
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;select class&#x3D;&quot;select select-bordered&quot; onchange&#x3D;&quot;window.location.href&#x3D;this.value&quot;&gt;
-    &lt;option value&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;All Categories&lt;/option&gt;
-    &lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27;&gt;
-        &lt;option value&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot;&gt;
-            &lt;cms:repeat count&#x3D;k_level&gt;&amp;nbsp;&amp;nbsp;&lt;/cms:repeat&gt;
-            &lt;cms:show k_folder_title /&gt;
-        &lt;/option&gt;
-    &lt;/cms:folders&gt;
-&lt;/select&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<select class="select select-bordered" onchange="window.location.href=this.value">
+    <option value="<cms:show k_template_link />">All Categories</option>
+    <cms:folders masterpage='news.php' hierarchical='1'>
+        <option value="<cms:show k_folder_link />">
+            <cms:repeat count=k_level>&nbsp;&nbsp;</cms:repeat>
+            <cms:show k_folder_title />
+        </option>
+    </cms:folders>
+</select>
+```
 
 ### Folder Cards with Images
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;div class&#x3D;&quot;grid grid-cols-1 md:grid-cols-3 gap-4&quot;&gt;
-    &lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; depth&#x3D;&#x27;1&#x27;&gt;
-        &lt;div class&#x3D;&quot;card bg-base-100 shadow-md&quot;&gt;
-            &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                &lt;h3 class&#x3D;&quot;card-title&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                        &lt;cms:show k_folder_title /&gt;
-                    &lt;/a&gt;
-                &lt;/h3&gt;
-                &lt;cms:if k_folder_desc&gt;
-                    &lt;p&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-                &lt;/cms:if&gt;
-                &lt;div class&#x3D;&quot;card-actions&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;View&lt;/a&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/cms:folders&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="news.php"
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <cms:folders masterpage='news.php' depth='1'>
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <h3 class="card-title">
+                    <a href="<cms:show k_folder_link />" class="link link-primary">
+                        <cms:show k_folder_title />
+                    </a>
+                </h3>
+                <cms:if k_folder_desc>
+                    <p><cms:show k_folder_desc /></p>
+                </cms:if>
+                <div class="card-actions">
+                    <a href="<cms:show k_folder_link />" class="btn btn-sm btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+    </cms:folders>
+</div>
+```
 
 ---
 
 ## Best Practices
 
-1. **Nested Structure**: Use nested &#x60;&lt;cms:folder&gt;&#x60; tags to create hierarchy
+1. **Nested Structure**: Use nested `<cms:folder>` tags to create hierarchy
 
-2. **Unique Names**: Always use unique &#x60;name&#x60; parameters for folders
+2. **Unique Names**: Always use unique `name` parameters for folders
 
-3. **Descriptive Titles**: Use clear &#x60;title&#x60; parameters for display
+3. **Descriptive Titles**: Use clear `title` parameters for display
 
 4. **Template Placement**: Define folders within the template tag
 
-5. **Hierarchical Listing**: Use &#x60;hierarchical&#x3D;&#x27;1&#x27;&#x60; for nested menus
+5. **Hierarchical Listing**: Use `hierarchical='1'` for nested menus
 
-6. **Extended Info**: Use &#x60;extended_info&#x3D;&#x27;1&#x27;&#x60; for complex menu structures
+6. **Extended Info**: Use `extended_info='1'` for complex menu structures
 
 7. **Breadcrumbs**: Always provide breadcrumbs for folder navigation
 
-8. **Folder Filtering**: Use &#x60;folder&#x60; parameter to filter pages by folder
+8. **Folder Filtering**: Use `folder` parameter to filter pages by folder
 
 9. **SEO Friendly**: Folders create SEO-friendly URLs automatically
 
-10. **Depth Control**: Use &#x60;depth&#x60; parameter to limit hierarchy depth
+10. **Depth Control**: Use `depth` parameter to limit hierarchy depth
 
 ---
 
 ## Quick Fixes
 
-### &quot;Folders not appearing&quot;
+### "Folders not appearing"
 
-**Problem**: Folders don&#x27;t show in admin panel
+**Problem**: Folders don't show in admin panel
 
 **Solution**: Ensure you visit the template as super-admin after defining folders:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- Define folders --&gt;
-&lt;cms:folder name&#x3D;&quot;category&quot; title&#x3D;&quot;Category&quot; /&gt;
+```php title="template.php"
+<!-- Define folders -->
+<cms:folder name="category" title="Category" />
 
-&lt;!-- Visit template as super-admin to persist --&gt;
-&#x60;&#x60;&#x60;
+<!-- Visit template as super-admin to persist -->
+```
 
-### &quot;Folder hierarchy not working&quot;
+### "Folder hierarchy not working"
 
-**Problem**: Folders don&#x27;t show in hierarchical order
+**Problem**: Folders don't show in hierarchical order
 
-**Solution**: Use &#x60;hierarchical&#x3D;&#x27;1&#x27;&#x60; parameter:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27;&gt;
-    &lt;!-- Folders in hierarchy --&gt;
-&lt;/cms:folders&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Use `hierarchical='1'` parameter:
+```php title="news.php"
+<cms:folders masterpage='news.php' hierarchical='1'>
+    <!-- Folders in hierarchy -->
+</cms:folders>
+```
 
-### &quot;Breadcrumbs not showing&quot;
+### "Breadcrumbs not showing"
 
-**Problem**: Breadcrumbs don&#x27;t appear
+**Problem**: Breadcrumbs don't appear
 
 **Solution**: Check if in page or folder view:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_page || k_is_folder&gt;
-    &lt;cms:breadcrumbs separator&#x3D;&#x27; &gt; &#x27; include_template&#x3D;&#x27;1&#x27; /&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_is_page || k_is_folder>
+    <cms:breadcrumbs separator=' > ' include_template='1' />
+</cms:if>
+```
 
-### &quot;Pages not filtering by folder&quot;
+### "Pages not filtering by folder"
 
-**Problem**: Pages don&#x27;t filter correctly by folder
+**Problem**: Pages don't filter correctly by folder
 
-**Solution**: Use &#x60;folder&#x60; parameter correctly:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;news.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;news.php&#x27; folder&#x3D;&#x27;sports&#x27; limit&#x3D;&#x27;10&#x27;&gt;
-    &lt;!-- Pages in sports folder --&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Use `folder` parameter correctly:
+```php title="news.php"
+<cms:pages masterpage='news.php' folder='sports' limit='10'>
+    <!-- Pages in sports folder -->
+</cms:pages>
+```
 
 ---
 
@@ -378,68 +378,68 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;News&#x27; clonable&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:folder name&#x3D;&quot;world&quot; title&#x3D;&quot;World News&quot;&gt;
-        &lt;cms:folder name&#x3D;&quot;sports&quot; title&#x3D;&quot;Sports&quot; /&gt;
-        &lt;cms:folder name&#x3D;&quot;politics&quot; title&#x3D;&quot;Politics&quot; /&gt;
-    &lt;/cms:folder&gt;
-    &lt;cms:folder name&#x3D;&quot;technology&quot; title&#x3D;&quot;Technology&quot; /&gt;
-    &lt;cms:folder name&#x3D;&quot;entertainment&quot; title&#x3D;&quot;Entertainment&quot; /&gt;
-&lt;/cms:template&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='News' clonable='1'>
+    <cms:folder name="world" title="World News">
+        <cms:folder name="sports" title="Sports" />
+        <cms:folder name="politics" title="Politics" />
+    </cms:folder>
+    <cms:folder name="technology" title="Technology" />
+    <cms:folder name="entertainment" title="Entertainment" />
+</cms:template>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;!-- Breadcrumbs --&gt;
-    &lt;cms:if k_is_page || k_is_folder&gt;
-        &lt;nav class&#x3D;&quot;breadcrumbs mb-6&quot;&gt;
-            &lt;ul&gt;
-                &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;&lt;cms:show k_template_title /&gt;&lt;/a&gt;&lt;/li&gt;
-                &lt;cms:breadcrumbs separator&#x3D;&#x27;&#x27; include_template&#x3D;&#x27;0&#x27; /&gt;
-            &lt;/ul&gt;
-        &lt;/nav&gt;
-    &lt;/cms:if&gt;
+<cms:block 'content'>
+    <!-- Breadcrumbs -->
+    <cms:if k_is_page || k_is_folder>
+        <nav class="breadcrumbs mb-6">
+            <ul>
+                <li><a href="<cms:show k_site_link />">Home</a></li>
+                <li><a href="<cms:show k_template_link />"><cms:show k_template_title /></a></li>
+                <cms:breadcrumbs separator='' include_template='0' />
+            </ul>
+        </nav>
+    </cms:if>
 
-    &lt;!-- Folder Navigation --&gt;
-    &lt;aside class&#x3D;&quot;mb-6&quot;&gt;
-        &lt;h3&gt;Categories&lt;/h3&gt;
-        &lt;ul class&#x3D;&quot;menu&quot;&gt;
-            &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;All News&lt;/a&gt;&lt;/li&gt;
-            &lt;cms:folders masterpage&#x3D;&#x27;news.php&#x27; hierarchical&#x3D;&#x27;1&#x27; extended_info&#x3D;&#x27;1&#x27;&gt;
-                &lt;cms:if k_level_start&gt;&lt;ul&gt;&lt;/cms:if&gt;
-                &lt;cms:if k_element_start&gt;
-                    &lt;li&gt;
-                        &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot;&gt;
-                            &lt;cms:show k_folder_title /&gt;
-                        &lt;/a&gt;
-                &lt;/cms:if&gt;
-                &lt;cms:if k_element_end&gt;&lt;/li&gt;&lt;/cms:if&gt;
-                &lt;cms:if k_level_end&gt;&lt;/ul&gt;&lt;/cms:if&gt;
-            &lt;/cms:folders&gt;
-        &lt;/ul&gt;
-    &lt;/aside&gt;
+    <!-- Folder Navigation -->
+    <aside class="mb-6">
+        <h3>Categories</h3>
+        <ul class="menu">
+            <li><a href="<cms:show k_template_link />">All News</a></li>
+            <cms:folders masterpage='news.php' hierarchical='1' extended_info='1'>
+                <cms:if k_level_start><ul></cms:if>
+                <cms:if k_element_start>
+                    <li>
+                        <a href="<cms:show k_folder_link />">
+                            <cms:show k_folder_title />
+                        </a>
+                </cms:if>
+                <cms:if k_element_end></li></cms:if>
+                <cms:if k_level_end></ul></cms:if>
+            </cms:folders>
+        </ul>
+    </aside>
 
-    &lt;!-- Content --&gt;
-    &lt;cms:if k_is_folder&gt;
-        &lt;h1&gt;&lt;cms:show k_folder_title /&gt;&lt;/h1&gt;
-        &lt;cms:pages masterpage&#x3D;&#x27;news.php&#x27; folder&#x3D;k_folder_name limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-            &lt;!-- Pages --&gt;
-        &lt;/cms:pages&gt;
-    &lt;cms:else /&gt;
-        &lt;cms:if k_is_page&gt;
-            &lt;!-- Page view --&gt;
-        &lt;cms:else /&gt;
-            &lt;!-- List view --&gt;
-            &lt;cms:pages masterpage&#x3D;&#x27;news.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-                &lt;!-- All pages --&gt;
-            &lt;/cms:pages&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+    <!-- Content -->
+    <cms:if k_is_folder>
+        <h1><cms:show k_folder_title /></h1>
+        <cms:pages masterpage='news.php' folder=k_folder_name limit='10' paginate='1'>
+            <!-- Pages -->
+        </cms:pages>
+    <cms:else />
+        <cms:if k_is_page>
+            <!-- Page view -->
+        <cms:else />
+            <!-- List view -->
+            <cms:pages masterpage='news.php' limit='10' paginate='1'>
+                <!-- All pages -->
+            </cms:pages>
+        </cms:if>
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
@@ -477,9 +477,9 @@ You are a CouchCMS folders expert specializing in virtual folder creation, hiera
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;concepts/folders.mdx&#x60;
-- Tag Reference: &#x60;tags-reference/core/folder/&#x60;
-- Tag Reference: &#x60;tags-reference/core/folders/&#x60;
-- Tag Reference: &#x60;tags-reference/core/breadcrumbs/&#x60;
+- CouchCMS Documentation: `concepts/folders.mdx`
+- Tag Reference: `tags-reference/core/folder/`
+- Tag Reference: `tags-reference/core/folders/`
+- Tag Reference: `tags-reference/core/breadcrumbs/`
 
 

@@ -1,5 +1,6 @@
-# Setup Methode Vergelijking
+# Setup Method Comparison
 
+Choose the setup method that best fits your needs.
 
 :::warning[Critical Step]
 You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
@@ -9,52 +10,49 @@ You **must** install the toolkit's dependencies before running any scripts. The 
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```text
+```
 
 This installs the required packages:
 - `gray-matter` - YAML frontmatter parsing
 - `yaml` - YAML processing
 - `handlebars` - Template generation
 
+## Which Method Should I Choose?
 
-Kies de setup methode die het beste bij jou past.
+### Choose Simple Creator if:
+- ✅ You're using the toolkit for the first time
+- ✅ You want to start quickly without technical details
+- ✅ You're not sure exactly which modules you need
+- ✅ You want a guided experience with clear explanations
+- ✅ You want questions in understandable language (no jargon)
 
-## 🎯 Welke Methode Kies Ik?
+### Choose Advanced Init if:
+- ✅ You have experience with development tools
+- ✅ You want full control over all options
+- ✅ You know exactly which modules and agents you need
+- ✅ You want to choose between different configuration locations
+- ✅ You want to configure the AAPF framework in detail
 
-### Kies Simple Creator als:
-- ✅ Je voor het eerst met de toolkit werkt
-- ✅ Je snel wilt starten zonder technische details
-- ✅ Je niet precies weet welke modules je nodig hebt
-- ✅ Je een begeleide ervaring wilt met duidelijke uitleg
-- ✅ Je vragen wilt in begrijpelijke taal (geen jargon)
-
-### Kies Advanced Init als:
-- ✅ Je ervaring hebt met development tools
-- ✅ Je volledige controle wilt over alle opties
-- ✅ Je precies weet welke modules en agents je nodig hebt
-- ✅ Je verschillende configuratie locaties wilt kunnen kiezen
-- ✅ Je het AAPF framework in detail wilt configureren
-
-## 📊 Gedetailleerde Vergelijking
+## Detailed Comparison
 
 | Aspect | Simple Creator | Advanced Init |
 |--------|---------------|---------------|
-| **Commando** | `bun run create` | `bun run init` |
-| **Tijd** | 2 minuten | 5 minuten |
-| **Moeilijkheid** | ⭐ Makkelijk | ⭐⭐⭐ Gevorderd |
-| **Vragen** | 5-8 simpele vragen | 10-15 technische vragen |
-| **Taal** | Begrijpelijk Nederlands/Engels | Technisch Engels |
-| **Project detectie** | Via project type keuze | Automatische detectie |
-| **Module selectie** | Via simpele vragen | Volledige lijst met checkboxes |
-| **Agent selectie** | Automatisch op basis van modules | Handmatige selectie |
-| **Config locatie** | Altijd `.project/standards.md` | Keuze uit meerdere locaties |
-| **Framework config** | Simpele ja/nee vraag | Gedetailleerde configuratie |
-| **Aanbevelingen** | Op basis van project type | Op basis van detectie |
-| **Presets** | Geïntegreerd in vragen | Apart preset menu |
+| **Command** | `bun run create` | `bun run init` |
+| **Time** | 2 minutes | 5 minutes |
+| **Difficulty** | ⭐ Easy | ⭐⭐⭐ Advanced |
+| **Questions** | 5-8 simple questions | 10-15 technical questions |
+| **Language** | Understandable English | Technical English |
+| **Project detection** | Via project type choice | Automatic detection |
+| **Module selection** | Via simple questions | Full list with checkboxes |
+| **Agent selection** | Automatic based on modules | Manual selection |
+| **Config location** | Always `.project/standards.md` | Choice between different locations |
+| **Framework config** | Simple yes/no question | Detailed configuration |
+| **Recommendations** | Based on project type | Based on detection |
+| **Presets** | Integrated in questions | Separate preset menu |
 
-## 🎨 Voorbeeld Vragen
+## Example Questions
 
-### Simple Creator Vragen
+### Simple Creator Questions
 
 ```text
 📝 Tell me about your project
@@ -67,44 +65,32 @@ Project description:
 
 🎯 What type of project are you building?
   1. Landing Page
-  2. 📝 Blog
-  3. 📝 Portfolio
-  4. 📝 Web Application
-  5. 📝 E-commerce
-  6. 📝 Documentation
-  7. 📝 Other
+  2. Blog
+  3. Portfolio
+  4. Web Application
+  5. E-commerce
+  6. Documentation
+  7. Other
 
 Choice [1-7]: 2
 
 💅 Styling Framework:
   1. TailwindCSS only
-  2. 📝 TailwindCSS + daisyUI (recommended)
-  3. 📝 None - I'll use custom CSS
+  2. TailwindCSS + daisyUI (recommended)
+  3. None - I'll use custom CSS
 
 Choice [1-3]: 2
 
 ⚡ Interactivity:
   1. Alpine.js (recommended)
-  2. 📝 Alpine.js + TypeScript
-  3. 📝 HTMX
-  4. 📝 None - Static site
+  2. Alpine.js + TypeScript
+  3. HTMX
+  4. None - Static site
 
 Choice [1-4]: 1
-
-📋 Forms:
-Do you need advanced forms (DataBound Forms)? (y/N): n
-
-👥 User Management:
-Do you need user accounts? (y/N): n
-
-🔍 Search:
-Do you need search functionality? (Y/n): y
-
-💬 Comments:
-Do you need comments? (Y/n): y
 ```
 
-### Advanced Init Vragen
+### Advanced Init Questions
 
 ```text
 🔍 Detecting project...
@@ -114,9 +100,9 @@ Do you need comments? (Y/n): y
 
 🎯 Setup mode:
   1. Auto (recommended) - Use detected settings
-  2. 📝 Preset - Choose from common project types
-  3. ⚙️ Simple - Quick setup with defaults
-  4. 📝 Custom - Full control over all options
+  2. Preset - Choose from common project types
+  3. Simple - Quick setup with defaults
+  4. Custom - Full control over all options
 
 Choice [1-4]: 4
 
@@ -156,104 +142,104 @@ Enable AAPF framework? (y/N): n
 📁 Context directory:
 Create context directory? (Y/n): y
 Context path: .project/context
-```text
+```
 
-## 🎯 Setup Modes (Advanced Init)
+## Setup Modes (Advanced Init)
 
-Advanced Init heeft 4 verschillende modes:
+Advanced Init has 4 different modes:
 
 ### 1. Auto Mode
-- Detecteert automatisch project type en frameworks
-- Stelt modules en agents voor
-- Minimale vragen (0-2)
-- Snelste optie binnen Advanced Init
+- Automatically detects project type and frameworks
+- Suggests modules and agents
+- Minimal questions (0-2)
+- Fastest option within Advanced Init
 
 ### 2. Preset Mode
-- Kies uit 8 voorgedefinieerde project types
-- Automatische module en agent selectie
-- Optie om aanbevelingen te accepteren of zelf te kiezen
+- Choose from 8 predefined project types
+- Automatic module and agent selection
+- Option to accept recommendations or choose yourself
 
 ### 3. Simple Mode
-- Standaard configuratie (`.project/standards.md`)
-- Basis modules (core + tailwindcss + alpinejs)
-- Framework uitgeschakeld
-- Snelle setup met defaults
+- Standard configuration (`.project/standards.md`)
+- Basic modules (core + tailwindcss + alpinejs)
+- Framework disabled
+- Quick setup with defaults
 
 ### 4. Custom Mode
-- Volledige controle over alle opties
-- Handmatige module en agent selectie
-- Keuze configuratie locatie
-- Gedetailleerde framework configuratie
+- Full control over all options
+- Manual module and agent selection
+- Choice of configuration location
+- Detailed framework configuration
 
-## 💡 Aanbevelingen
+## Recommendations
 
-### Voor Beginners
+### For Beginners
 ```bash
 bun run create
 ```
-Start met Simple Creator. Je kunt later altijd overstappen naar Advanced Init als je meer controle wilt.
+Start with Simple Creator. You can always switch to Advanced Init later if you want more control.
 
-### Voor Teams
+### For Teams
 ```bash
 bun run init
-# Kies: Auto mode
-```bash
-Gebruik Advanced Init in Auto mode voor consistente setup binnen teams.
-
-### Voor Experts
-```bash
-bun run init
-# Kies: Custom mode
+# Choose: Auto mode
 ```
-Gebruik Advanced Init in Custom mode voor volledige controle.
+Use Advanced Init in Auto mode for consistent setup within teams.
 
-### Voor Snelle Prototypes
+### For Experts
+```bash
+bun run init
+# Choose: Custom mode
+```
+Use Advanced Init in Custom mode for full control.
+
+### For Quick Prototypes
 ```bash
 bun run create
-# Kies: Landing Page of Blog
-```text
-Simple Creator met een basis project type is het snelst.
+# Choose: Landing Page or Blog
+```
+Simple Creator with a basic project type is the fastest.
 
-## 🔄 Overstappen
+## Switching Between Methods
 
-Je kunt altijd overstappen tussen methodes:
+You can always switch between methods:
 
-### Van Simple naar Advanced
+### From Simple to Advanced
 ```bash
-# Simple Creator maakt .project/standards.md
+# Simple Creator creates .project/standards.md
 bun run create
 
-# Later: meer controle nodig?
+# Later: need more control?
 bun run init
-# Kies: Overwrite existing config
+# Choose: Overwrite existing config
 ```
 
-### Van Advanced naar Simple
+### From Advanced to Simple
 ```bash
-# Advanced Init maakt config
+# Advanced Init creates config
 bun run init
 
-# Later: opnieuw beginnen met simpele setup?
+# Later: start over with simple setup?
 bun run create
-# Kies: Overwrite existing config
+# Choose: Overwrite existing config
 ```
 
-## 📝 Resultaat
+## Result
 
-Beide methodes genereren:
-- ✅ `standards.md` configuratie bestand
-- ✅ `.cursorrules` voor Cursor IDE
-- ✅ `.claude/` voor Claude Code
-- ✅ `.github/copilot-instructions.md` voor GitHub Copilot
-- ✅ `.windsurf/` voor Windsurf
-- ✅ `.kiro/` voor Kiro
-- ✅ Context directory voor project documentatie
+Both methods generate:
+- ✅ `standards.md` configuration file
+- ✅ `.cursorrules` for Cursor IDE
+- ✅ `.claude/` for Claude Code
+- ✅ `.github/copilot-instructions.md` for GitHub Copilot
+- ✅ `.windsurf/` for Windsurf
+- ✅ `.kiro/` for Kiro
+- ✅ Context directory for project documentation
 
-Het enige verschil is **hoe** je daar komt - via simpele vragen of gedetailleerde configuratie.
+The only difference is **how** you get there - via simple questions or detailed configuration.
 
-## 🆘 Hulp Nodig?
+## Need Help?
 
 - **Simple Creator**: [SIMPLE-SETUP.md](SIMPLE-SETUP.md)
 - **Advanced Init**: [GETTING-STARTED.md](GETTING-STARTED.md)
-- **Problemen**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
-- **Configuratie**: [CONFIG-FILES.md](CONFIG-FILES.md)
+- **Problems**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- **Configuration**: [CONFIG-FILES.md](CONFIG-FILES.md)

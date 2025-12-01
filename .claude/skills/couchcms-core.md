@@ -15,52 +15,52 @@ version: 2.3
 
 ### Basic Template
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:extends &#x27;layouts/base.html&#x27; /&gt;
-&lt;cms:block &#x27;templates&#x27;&gt;
-    &lt;cms:template title&#x3D;&#x27;Page Name&#x27; clonable&#x3D;&#x27;1&#x27; routable&#x3D;&#x27;1&#x27;&gt;
-        &lt;cms:editable name&#x3D;&#x27;content&#x27; label&#x3D;&#x27;Content&#x27; type&#x3D;&#x27;richtext&#x27; /&gt;
-    &lt;/cms:template&gt;
-&lt;/cms:block&gt;
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;!-- Page content here --&gt;
-&lt;/cms:block&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:extends 'layouts/base.html' />
+<cms:block 'templates'>
+    <cms:template title='Page Name' clonable='1' routable='1'>
+        <cms:editable name='content' label='Content' type='richtext' />
+    </cms:template>
+</cms:block>
+<cms:block 'content'>
+    <!-- Page content here -->
+</cms:block>
+<?php COUCH::invoke(); ?>
+```
 
 ### Template Inheritance
 
-- Use &#x60;&lt;cms:extends&gt;&#x60; for layout inheritance
-- Define blocks with &#x60;&lt;cms:block&gt;&#x60;
-- Use &#x60;&lt;cms:embed&gt;&#x60; for reusable snippets
+- Use `<cms:extends>` for layout inheritance
+- Define blocks with `<cms:block>`
+- Use `<cms:embed>` for reusable snippets
 
 ## Security Standards
 
 ### 🚨 CRITICAL: HTML Comment Security
 
-- **NEVER** use &#x60;&lt;cms:&#x60; tags inside HTML comments - CouchCMS executes them!
-- Use &#x60;[cms:&#x60; instead of &#x60;&lt;cms:&#x60; in comments
-- Wrap multiline comments with CouchCMS tags in &#x60;&lt;cms:ignore&gt;&#x60; blocks
+- **NEVER** use `<cms:` tags inside HTML comments - CouchCMS executes them!
+- Use `[cms:` instead of `<cms:` in comments
+- Wrap multiline comments with CouchCMS tags in `<cms:ignore>` blocks
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ❌ BAD: This will execute and crash the site --&gt;
-&lt;!-- &lt;cms:show my_variable /&gt; --&gt;
+```html title="template.html"
+<!-- ❌ BAD: This will execute and crash the site -->
+<!-- <cms:show my_variable /> -->
 
-&lt;!-- ✅ GOOD: Use square brackets in comments --&gt;
-&lt;!-- [cms:show my_variable /] --&gt;
+<!-- ✅ GOOD: Use square brackets in comments -->
+<!-- [cms:show my_variable /] -->
 
-&lt;!-- ✅ GOOD: Use cms:ignore for multiline --&gt;
-&lt;cms:ignore&gt;
-  &lt;cms:show my_variable /&gt;
-  &lt;cms:if condition&gt;...&lt;/cms:if&gt;
-&lt;/cms:ignore&gt;
-&#x60;&#x60;&#x60;
+<!-- ✅ GOOD: Use cms:ignore for multiline -->
+<cms:ignore>
+  <cms:show my_variable />
+  <cms:if condition>...</cms:if>
+</cms:ignore>
+```
 
 ### Authentication Patterns
 
-- Use &#x60;snippets/filters/authenticated.html&#x60; for authentication checks
-- Use &#x60;snippets/filters/owns_{content}.html&#x60; for ownership validation
+- Use `snippets/filters/authenticated.html` for authentication checks
+- Use `snippets/filters/owns_{content}.html` for ownership validation
 - Always validate user input and sanitize outputs
 - Implement CSRF protection for all forms
 
@@ -68,66 +68,66 @@ version: 2.3
 
 ### 🚨 CRITICAL: else/else_if Syntax
 
-&#x60;&lt;cms:else /&gt;&#x60; and &#x60;&lt;cms:else_if /&gt;&#x60; are **self-closing** tags:
+`<cms:else />` and `<cms:else_if />` are **self-closing** tags:
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ✅ GOOD: Self-closing syntax --&gt;
-&lt;cms:if condition&gt;
-  &lt;div&gt;Condition is true&lt;/div&gt;
-  &lt;cms:else_if other_condition /&gt;
-  &lt;div&gt;Other condition is true&lt;/div&gt;
-  &lt;cms:else /&gt;
-  &lt;div&gt;Default content&lt;/div&gt;
-&lt;/cms:if&gt;
+```html title="template.html"
+<!-- ✅ GOOD: Self-closing syntax -->
+<cms:if condition>
+  <div>Condition is true</div>
+  <cms:else_if other_condition />
+  <div>Other condition is true</div>
+  <cms:else />
+  <div>Default content</div>
+</cms:if>
 
-&lt;!-- ❌ BAD: Paired tags cause parsing errors --&gt;
-&lt;cms:if condition&gt;
-  &lt;cms:else&gt;&lt;/cms:else&gt;
-  &lt;!-- WRONG! --&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+<!-- ❌ BAD: Paired tags cause parsing errors -->
+<cms:if condition>
+  <cms:else></cms:else>
+  <!-- WRONG! -->
+</cms:if>
+```
 
 ## Data Patterns
 
 ### Pages Query
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.php&quot;
-&lt;cms:pages
-  masterpage&#x3D;&quot;template.php&quot;
-  limit&#x3D;&quot;10&quot;
-  orderby&#x3D;&quot;publish_date&quot;
-  order&#x3D;&quot;desc&quot;
-&gt;
-  &lt;h2&gt;&lt;cms:show k_page_title /&gt;&lt;/h2&gt;
-  &lt;cms:show content /&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+```html title="template.php"
+<cms:pages
+  masterpage="template.php"
+  limit="10"
+  orderby="publish_date"
+  order="desc"
+>
+  <h2><cms:show k_page_title /></h2>
+  <cms:show content />
+</cms:pages>
+```
 
 ### Relationships
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;items.php&quot;
-&lt;cms:editable name&#x3D;&#x27;related_items&#x27; label&#x3D;&#x27;Related Items&#x27;
-    type&#x3D;&#x27;relation&#x27; masterpage&#x3D;&#x27;items.php&#x27; /&gt;
+```html title="items.php"
+<cms:editable name='related_items' label='Related Items'
+    type='relation' masterpage='items.php' />
 
-&lt;!-- Display related items --&gt;
-&lt;cms:related_pages &#x27;related_items&#x27;&gt;
-    &lt;cms:show k_page_title /&gt;
-&lt;/cms:related_pages&gt;
-&#x60;&#x60;&#x60;
+<!-- Display related items -->
+<cms:related_pages 'related_items'>
+    <cms:show k_page_title />
+</cms:related_pages>
+```
 
 ### Repeatable Regions
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;cms:editable name&#x3D;&#x27;gallery&#x27; label&#x3D;&#x27;Gallery&#x27; type&#x3D;&#x27;repeatable&#x27;&gt;
-    &lt;cms:editable name&#x3D;&#x27;image&#x27; label&#x3D;&#x27;Image&#x27; type&#x3D;&#x27;image&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;caption&#x27; label&#x3D;&#x27;Caption&#x27; type&#x3D;&#x27;text&#x27; /&gt;
-&lt;/cms:editable&gt;
+```html title="template.html"
+<cms:editable name='gallery' label='Gallery' type='repeatable'>
+    <cms:editable name='image' label='Image' type='image' />
+    <cms:editable name='caption' label='Caption' type='text' />
+</cms:editable>
 
-&lt;!-- Display --&gt;
-&lt;cms:show_repeatable &#x27;gallery&#x27;&gt;
-    &lt;img src&#x3D;&quot;&lt;cms:show image /&gt;&quot; alt&#x3D;&quot;&lt;cms:show caption /&gt;&quot; /&gt;
-&lt;/cms:show_repeatable&gt;
-&#x60;&#x60;&#x60;
+<!-- Display -->
+<cms:show_repeatable 'gallery'>
+    <img src="<cms:show image />" alt="<cms:show caption />" />
+</cms:show_repeatable>
+```
 
 ## Template Execution Order
 
@@ -135,8 +135,8 @@ version: 2.3
 
 In CouchCMS template inheritance:
 
-- &#x60;&lt;cms:embed&gt;&#x60; components execute at their position in the parent template
-- Child &#x60;&lt;cms:block&gt;&#x60; content executes AFTER all parent template code
+- `<cms:embed>` components execute at their position in the parent template
+- Child `<cms:block>` content executes AFTER all parent template code
 - Variables set in child blocks are NOT available to components embedded earlier in the parent
 
 **Always verify execution order before using variables.**
@@ -145,24 +145,24 @@ In CouchCMS template inheritance:
 
 ### DO
 
-- Use idiomatic CouchCMS tags, avoid &#x60;&lt;cms:php&gt;&#x60; when possible
+- Use idiomatic CouchCMS tags, avoid `<cms:php>` when possible
 - Create reusable snippets for common patterns
 - Use template inheritance for consistent layouts
 - Validate all user input
 - Use Extended Users for authentication
 
-### DON&#x27;T
+### DON'T
 
-- Put &#x60;&lt;cms:&#x60; tags in HTML comments
-- Use paired tags for &#x60;&lt;cms:else /&gt;&#x60; or &#x60;&lt;cms:else_if /&gt;&#x60;
+- Put `<cms:` tags in HTML comments
+- Use paired tags for `<cms:else />` or `<cms:else_if />`
 - Assume variables are available without checking execution order
 - Skip CSRF protection on forms
-- Use &#x60;&lt;cms:php&gt;&#x60; for things CouchCMS tags can do
+- Use `<cms:php>` for things CouchCMS tags can do
 
 ## Naming Conventions
 
-- **Template files**: &#x60;kebab-case.php&#x60; (e.g., &#x60;user-profile.php&#x60;)
-- **Snippet files**: &#x60;kebab-case.html&#x60; (e.g., &#x60;user-card.html&#x60;)
-- **Editable names**: &#x60;snake_case&#x60; (e.g., &#x60;content_owner&#x60;)
-- **Variables**: &#x60;snake_case&#x60; (e.g., &#x60;my_variable&#x60;)
+- **Template files**: `kebab-case.php` (e.g., `user-profile.php`)
+- **Snippet files**: `kebab-case.html` (e.g., `user-card.html`)
+- **Editable names**: `snake_case` (e.g., `content_owner`)
+- **Variables**: `snake_case` (e.g., `my_variable`)
 

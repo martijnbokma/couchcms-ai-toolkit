@@ -21,34 +21,34 @@ You are a Bun expert specializing in fast JavaScript runtime, package management
 
 | Command | Purpose |
 |---------|---------|
-| &#x60;bun install&#x60; | Install dependencies |
-| &#x60;bun add &lt;pkg&gt;&#x60; | Add package |
-| &#x60;bun add -d &lt;pkg&gt;&#x60; | Add dev dependency |
-| &#x60;bun remove &lt;pkg&gt;&#x60; | Remove package |
-| &#x60;bun run &lt;script&gt;&#x60; | Run script |
-| &#x60;bun run dev&#x60; | Start dev server |
-| &#x60;bun run build&#x60; | Production build |
-| &#x60;bun update&#x60; | Update dependencies |
+| `bun install` | Install dependencies |
+| `bun add <pkg>` | Add package |
+| `bun add -d <pkg>` | Add dev dependency |
+| `bun remove <pkg>` | Remove package |
+| `bun run <script>` | Run script |
+| `bun run dev` | Start dev server |
+| `bun run build` | Production build |
+| `bun update` | Update dependencies |
 
 ### package.json Scripts
 
-&#x60;&#x60;&#x60;json title&#x3D;&quot;package.js&quot;
+```json title="package.js"
 {
-    &quot;scripts&quot;: {
-        &quot;dev&quot;: &quot;bun run --watch {{paths.typescript}}/input.ts&quot;,
-        &quot;build&quot;: &quot;bun build {{paths.typescript}}/input.ts --outdir&#x3D;{{paths.javascript}} --minify&quot;,
-        &quot;build:css&quot;: &quot;bunx tailwindcss -i {{paths.css}}/input.css -o {{paths.css}}/output.css&quot;,
-        &quot;watch:css&quot;: &quot;bunx tailwindcss -i {{paths.css}}/input.css -o {{paths.css}}/output.css --watch&quot;,
-        &quot;ai:sync&quot;: &quot;bun run ai-toolkit-shared/scripts/sync.js&quot;
+    "scripts": {
+        "dev": "bun run --watch {{paths.typescript}}/input.ts",
+        "build": "bun build {{paths.typescript}}/input.ts --outdir={{paths.javascript}} --minify",
+        "build:css": "bunx tailwindcss -i {{paths.css}}/input.css -o {{paths.css}}/output.css",
+        "watch:css": "bunx tailwindcss -i {{paths.css}}/input.css -o {{paths.css}}/output.css --watch",
+        "ai:sync": "bun run ai-toolkit-shared/scripts/sync.js"
     }
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Your Approach
 
 - Use Bun for all package management (faster than npm/yarn)
-- Prefer Bun&#x27;s native APIs over Node.js equivalents
-- Use &#x60;bunx&#x60; for one-off package executions
+- Prefer Bun's native APIs over Node.js equivalents
+- Use `bunx` for one-off package executions
 - Configure scripts in package.json for common tasks
 
 ---
@@ -57,64 +57,64 @@ You are a Bun expert specializing in fast JavaScript runtime, package management
 
 ### TypeScript Build
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;input.ts&quot;
+```typescript title="input.ts"
 // build.ts
-import { build } from &#x27;bun&#x27;
+import { build } from 'bun'
 
 await build({
-    entrypoints: [&#x27;{{paths.typescript}}/input.ts&#x27;],
-    outdir: &#x27;{{paths.javascript}}&#x27;,
+    entrypoints: ['{{paths.typescript}}/input.ts'],
+    outdir: '{{paths.javascript}}',
     minify: true,
-    sourcemap: &#x27;external&#x27;,
-    target: &#x27;browser&#x27;,
+    sourcemap: 'external',
+    target: 'browser',
     splitting: true,
 })
-&#x60;&#x60;&#x60;
+```
 
 ### File Operations
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;config.json&quot;
-import { readFile, writeFile, exists } from &#x27;fs/promises&#x27;
+```typescript title="config.json"
+import { readFile, writeFile, exists } from 'fs/promises'
 
 // Read file
-const content &#x3D; await Bun.file(&#x27;config.json&#x27;).text()
-const json &#x3D; await Bun.file(&#x27;config.json&#x27;).json()
+const content = await Bun.file('config.json').text()
+const json = await Bun.file('config.json').json()
 
 // Write file
-await Bun.write(&#x27;output.txt&#x27;, &#x27;Hello, World!&#x27;)
-await Bun.write(&#x27;data.json&#x27;, JSON.stringify(data, null, 2))
+await Bun.write('output.txt', 'Hello, World!')
+await Bun.write('data.json', JSON.stringify(data, null, 2))
 
 // Check file exists
-const fileExists &#x3D; await Bun.file(&#x27;config.json&#x27;).exists()
-&#x60;&#x60;&#x60;
+const fileExists = await Bun.file('config.json').exists()
+```
 
 ### Environment Variables
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Access env vars
-const apiKey &#x3D; Bun.env.API_KEY
-const isDev &#x3D; Bun.env.NODE_ENV &#x3D;&#x3D;&#x3D; &#x27;development&#x27;
+const apiKey = Bun.env.API_KEY
+const isDev = Bun.env.NODE_ENV === 'development'
 
 // .env file is auto-loaded
 // .env.local takes precedence
-&#x60;&#x60;&#x60;
+```
 
 ### HTTP Server
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 Bun.serve({
     port: 3000,
     fetch(request) {
-        const url &#x3D; new URL(request.url)
+        const url = new URL(request.url)
 
-        if (url.pathname &#x3D;&#x3D;&#x3D; &#x27;/api/health&#x27;) {
-            return Response.json({ status: &#x27;ok&#x27; })
+        if (url.pathname === '/api/health') {
+            return Response.json({ status: 'ok' })
         }
 
-        return new Response(&#x27;Not Found&#x27;, { status: 404 })
+        return new Response('Not Found', { status: 404 })
     },
 })
-&#x60;&#x60;&#x60;
+```
 
 ---
 
@@ -122,12 +122,12 @@ Bun.serve({
 
 ### Custom Build Script
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;input.ts&quot;
+```typescript title="input.ts"
 // scripts/build.ts
-import { build, type BuildConfig } from &#x27;bun&#x27;
-import { rmSync, mkdirSync, existsSync } from &#x27;fs&#x27;
+import { build, type BuildConfig } from 'bun'
+import { rmSync, mkdirSync, existsSync } from 'fs'
 
-const OUT_DIR &#x3D; &#x27;{{paths.javascript}}&#x27;
+const OUT_DIR = '{{paths.javascript}}'
 
 // Clean output directory
 if (existsSync(OUT_DIR)) {
@@ -135,54 +135,54 @@ if (existsSync(OUT_DIR)) {
 }
 mkdirSync(OUT_DIR, { recursive: true })
 
-const config: BuildConfig &#x3D; {
+const config: BuildConfig = {
     entrypoints: [
-        &#x27;{{paths.typescript}}/input.ts&#x27;,
-        &#x27;{{paths.typescript}}/components/video-player.ts&#x27;,
+        '{{paths.typescript}}/input.ts',
+        '{{paths.typescript}}/components/video-player.ts',
     ],
     outdir: OUT_DIR,
-    minify: Bun.env.NODE_ENV &#x3D;&#x3D;&#x3D; &#x27;production&#x27;,
-    sourcemap: Bun.env.NODE_ENV &#x3D;&#x3D;&#x3D; &#x27;development&#x27; ? &#x27;inline&#x27; : &#x27;none&#x27;,
-    target: &#x27;browser&#x27;,
+    minify: Bun.env.NODE_ENV === 'production',
+    sourcemap: Bun.env.NODE_ENV === 'development' ? 'inline' : 'none',
+    target: 'browser',
     splitting: true,
     naming: {
-        entry: &#x27;[name].[hash].js&#x27;,
-        chunk: &#x27;chunks/[name].[hash].js&#x27;,
+        entry: '[name].[hash].js',
+        chunk: 'chunks/[name].[hash].js',
     },
-    external: [&#x27;alpinejs&#x27;], // Load from CDN
+    external: ['alpinejs'], // Load from CDN
 }
 
-const result &#x3D; await build(config)
+const result = await build(config)
 
 if (!result.success) {
-    console.error(&#x27;Build failed:&#x27;)
-    result.logs.forEach(log &#x3D;&gt; console.error(log))
+    console.error('Build failed:')
+    result.logs.forEach(log => console.error(log))
     process.exit(1)
 }
 
-console.log(&#x27;Build complete!&#x27;)
-console.log(&#x60;Output: ${result.outputs.length} files&#x60;)
-&#x60;&#x60;&#x60;
+console.log('Build complete!')
+console.log(`Output: ${result.outputs.length} files`)
+```
 
 ### Watch Mode Script
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // scripts/watch.ts
-import { watch } from &#x27;fs&#x27;
-import { spawn } from &#x27;bun&#x27;
+import { watch } from 'fs'
+import { spawn } from 'bun'
 
-const SRC_DIR &#x3D; &#x27;{{paths.typescript}}&#x27;
-let buildProcess: ReturnType&lt;typeof spawn&gt; | null &#x3D; null
+const SRC_DIR = '{{paths.typescript}}'
+let buildProcess: ReturnType<typeof spawn> | null = null
 
 async function runBuild() {
     if (buildProcess) {
         buildProcess.kill()
     }
 
-    console.log(&#x27;Building...&#x27;)
-    buildProcess &#x3D; spawn([&#x27;bun&#x27;, &#x27;run&#x27;, &#x27;build&#x27;], {
-        stdout: &#x27;inherit&#x27;,
-        stderr: &#x27;inherit&#x27;,
+    console.log('Building...')
+    buildProcess = spawn(['bun', 'run', 'build'], {
+        stdout: 'inherit',
+        stderr: 'inherit',
     })
 
     await buildProcess.exited
@@ -192,74 +192,74 @@ async function runBuild() {
 await runBuild()
 
 // Watch for changes
-const watcher &#x3D; watch(SRC_DIR, { recursive: true }, async (event, filename) &#x3D;&gt; {
-    if (filename?.endsWith(&#x27;.ts&#x27;)) {
-        console.log(&#x60;Changed: ${filename}&#x60;)
+const watcher = watch(SRC_DIR, { recursive: true }, async (event, filename) => {
+    if (filename?.endsWith('.ts')) {
+        console.log(`Changed: ${filename}`)
         await runBuild()
     }
 })
 
-console.log(&#x60;Watching ${SRC_DIR}...&#x60;)
+console.log(`Watching ${SRC_DIR}...`)
 
-process.on(&#x27;SIGINT&#x27;, () &#x3D;&gt; {
+process.on('SIGINT', () => {
     watcher.close()
     process.exit(0)
 })
-&#x60;&#x60;&#x60;
+```
 
 ### Parallel Task Runner
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // scripts/dev.ts
-import { spawn, type Subprocess } from &#x27;bun&#x27;
+import { spawn, type Subprocess } from 'bun'
 
-const processes: Subprocess[] &#x3D; []
+const processes: Subprocess[] = []
 
 function runTask(name: string, command: string[]) {
-    console.log(&#x60;Starting: ${name}&#x60;)
-    const proc &#x3D; spawn(command, {
-        stdout: &#x27;inherit&#x27;,
-        stderr: &#x27;inherit&#x27;,
+    console.log(`Starting: ${name}`)
+    const proc = spawn(command, {
+        stdout: 'inherit',
+        stderr: 'inherit',
     })
     processes.push(proc)
     return proc
 }
 
 // Run tasks in parallel
-runTask(&#x27;TypeScript&#x27;, [&#x27;bun&#x27;, &#x27;run&#x27;, &#x27;watch:ts&#x27;])
-runTask(&#x27;TailwindCSS&#x27;, [&#x27;bun&#x27;, &#x27;run&#x27;, &#x27;watch:css&#x27;])
+runTask('TypeScript', ['bun', 'run', 'watch:ts'])
+runTask('TailwindCSS', ['bun', 'run', 'watch:css'])
 
 // Cleanup on exit
-process.on(&#x27;SIGINT&#x27;, () &#x3D;&gt; {
-    console.log(&#x27;\nShutting down...&#x27;)
-    processes.forEach(p &#x3D;&gt; p.kill())
+process.on('SIGINT', () => {
+    console.log('\nShutting down...')
+    processes.forEach(p => p.kill())
     process.exit(0)
 })
-&#x60;&#x60;&#x60;
+```
 
 ### Dependency Analysis
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;package.json&quot;
+```typescript title="package.json"
 // scripts/analyze-deps.ts
-const pkg &#x3D; await Bun.file(&#x27;package.json&#x27;).json()
+const pkg = await Bun.file('package.json').json()
 
-console.log(&#x27;&#x3D;&#x3D;&#x3D; Dependencies &#x3D;&#x3D;&#x3D;&#x27;)
+console.log('=== Dependencies ===')
 for (const [name, version] of Object.entries(pkg.dependencies || {})) {
-    console.log(&#x60;${name}: ${version}&#x60;)
+    console.log(`${name}: ${version}`)
 }
 
-console.log(&#x27;\n&#x3D;&#x3D;&#x3D; Dev Dependencies &#x3D;&#x3D;&#x3D;&#x27;)
+console.log('\n=== Dev Dependencies ===')
 for (const [name, version] of Object.entries(pkg.devDependencies || {})) {
-    console.log(&#x60;${name}: ${version}&#x60;)
+    console.log(`${name}: ${version}`)
 }
 
 // Check for outdated
-console.log(&#x27;\n&#x3D;&#x3D;&#x3D; Checking for updates &#x3D;&#x3D;&#x3D;&#x27;)
-const result &#x3D; await Bun.spawn([&#x27;bun&#x27;, &#x27;outdated&#x27;], {
-    stdout: &#x27;inherit&#x27;,
+console.log('\n=== Checking for updates ===')
+const result = await Bun.spawn(['bun', 'outdated'], {
+    stdout: 'inherit',
 })
 await result.exited
-&#x60;&#x60;&#x60;
+```
 
 ---
 
@@ -269,38 +269,38 @@ await result.exited
 
 When writing scripts that support both Bun and Node.js, always check for API availability before calling Node.js-specific methods:
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;runtime-compatible.ts&quot;
+```typescript title="runtime-compatible.ts"
 // ✅ GOOD: Check before calling
-if (typeof process.stdin.setRawMode &#x3D;&#x3D;&#x3D; &#x27;function&#x27;) {
+if (typeof process.stdin.setRawMode === 'function') {
     process.stdin.setRawMode(false)
 }
 
 // ❌ BAD: Direct call (fails in Bun)
 process.stdin.setRawMode(false)
-&#x60;&#x60;&#x60;
+```
 
 ### Common Incompatibilities
 
 | Node.js API | Bun Status | Solution |
 |-------------|------------|----------|
-| &#x60;process.stdin.setRawMode()&#x60; | Not available | Use feature detection |
-| &#x60;process.binding()&#x60; | Limited | Use Bun-specific APIs |
+| `process.stdin.setRawMode()` | Not available | Use feature detection |
+| `process.binding()` | Limited | Use Bun-specific APIs |
 | Some built-in modules | Different APIs | Check Bun documentation |
 
 ### Best Practices
 
 1. **Feature Detection:** Always check if API exists before calling
-   &#x60;&#x60;&#x60;typescript
-   if (typeof someAPI &#x3D;&#x3D;&#x3D; &#x27;function&#x27;) {
+   ```typescript
+   if (typeof someAPI === 'function') {
        someAPI()
    }
-   &#x60;&#x60;&#x60;
+   ```
 
 2. **Prefer Bun APIs:** Use Bun-native APIs when available (faster, better integration)
-   &#x60;&#x60;&#x60;typescript
+   ```typescript
    // Prefer Bun.file() over fs/promises
-   const content &#x3D; await Bun.file(&#x27;data.json&#x27;).text()
-   &#x60;&#x60;&#x60;
+   const content = await Bun.file('data.json').text()
+   ```
 
 3. **Test Both Runtimes:** When possible, test scripts with both Bun and Node.js
 
@@ -308,15 +308,15 @@ process.stdin.setRawMode(false)
 
 | Problem | Cause | Solution |
 |---------|-------|----------|
-| &#x60;bun install&#x60; fails | Lock file conflict | Delete &#x60;bun.lock&#x60;, reinstall |
-| Module not found | Not installed | Run &#x60;bun install&#x60; |
-| Build error | TypeScript issue | Check &#x60;tsconfig.json&#x60; |
+| `bun install` fails | Lock file conflict | Delete `bun.lock`, reinstall |
+| Module not found | Not installed | Run `bun install` |
+| Build error | TypeScript issue | Check `tsconfig.json` |
 | Slow first run | No cache | Normal, subsequent runs are fast |
-| &#x60;setRawMode&#x60; error | Bun compatibility | Add runtime check (see Runtime Compatibility section) |
+| `setRawMode` error | Bun compatibility | Add runtime check (see Runtime Compatibility section) |
 
 ### Debug Commands
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 # Check Bun version
 bun --version
 
@@ -324,12 +324,12 @@ bun --version
 bun pm cache rm
 
 # Reinstall all
-rm -rf node_modules bun.lock &amp;&amp; bun install
+rm -rf node_modules bun.lock && bun install
 
 # Check package info
 bun pm ls
 
 # Run with verbose logging
 bun run --verbose dev
-&#x60;&#x60;&#x60;
+```
 

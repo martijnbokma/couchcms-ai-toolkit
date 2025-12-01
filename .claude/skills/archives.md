@@ -22,31 +22,31 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 | Tag                    | Purpose                          |
 | ---------------------- | -------------------------------- |
-| &#x60;&lt;cms:archives&gt;&#x60;       | List archive periods              |
-| &#x60;&lt;cms:pages&gt;&#x60;          | List pages in archive period      |
+| `<cms:archives>`       | List archive periods              |
+| `<cms:pages>`          | List pages in archive period      |
 
 ### Archive Types
 
 | Type      | Description                    | URL Pattern              |
 | --------- | ------------------------------ | ------------------------ |
-| &#x60;yearly&#x60;  | Group by year                  | &#x60;/2010/&#x60;                 |
-| &#x60;monthly&#x60; | Group by month (default)       | &#x60;/2010/05/&#x60;              |
-| &#x60;daily&#x60;   | Group by day                   | &#x60;/2010/05/31/&#x60;           |
+| `yearly`  | Group by year                  | `/2010/`                 |
+| `monthly` | Group by month (default)       | `/2010/05/`              |
+| `daily`   | Group by day                   | `/2010/05/31/`           |
 
 ### Archive Variables
 
 | Variable              | Purpose                          |
 | --------------------- | -------------------------------- |
-| &#x60;k_archive_date&#x60;      | Start of archive period          |
-| &#x60;k_next_archive_date&#x60;| End of archive period            |
-| &#x60;k_archive_link&#x60;      | Link to archive view             |
-| &#x60;k_archive_count&#x60;     | Number of pages in period        |
-| &#x60;k_count&#x60;             | Current iteration count          |
+| `k_archive_date`      | Start of archive period          |
+| `k_next_archive_date`| End of archive period            |
+| `k_archive_link`      | Link to archive view             |
+| `k_archive_count`     | Number of pages in period        |
+| `k_count`             | Current iteration count          |
 
 ### Your Approach
 
-- Use &#x60;archives&#x60; tag to list available periods
-- Use &#x60;pages&#x60; tag with &#x60;start_on&#x60; and &#x60;stop_before&#x60; to filter by period
+- Use `archives` tag to list available periods
+- Use `pages` tag with `start_on` and `stop_before` to filter by period
 - Display archive links for navigation
 - Show page counts for each period
 - Handle archive view in template
@@ -58,222 +58,222 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Basic Archive List
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;ul class&#x3D;&quot;menu&quot;&gt;
-  &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;12&#x27;&gt;
-    &lt;li&gt;
-      &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-        &lt;cms:date k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;
-      &lt;/a&gt;
-      (&lt;cms:show k_archive_count /&gt;)
-    &lt;/li&gt;
-  &lt;/cms:archives&gt;
-&lt;/ul&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<ul class="menu">
+  <cms:archives masterpage='blog.php' limit='12'>
+    <li>
+      <a href="<cms:show k_archive_link />">
+        <cms:date k_archive_date format='F Y' />
+      </a>
+      (<cms:show k_archive_count />)
+    </li>
+  </cms:archives>
+</ul>
+```
 
 ### Archive Menu with Counts
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;aside class&#x3D;&quot;mb-6&quot;&gt;
-  &lt;h3 class&#x3D;&quot;text-xl font-bold mb-4&quot;&gt;Archives&lt;/h3&gt;
-  &lt;ul class&#x3D;&quot;menu bg-base-200 rounded-box&quot;&gt;
-    &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;12&#x27;&gt;
-      &lt;li&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot; class&#x3D;&quot;flex justify-between&quot;&gt;
-          &lt;span&gt;&lt;cms:date k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;&lt;/span&gt;
-          &lt;span class&#x3D;&quot;badge badge-primary&quot;&gt;&lt;cms:show k_archive_count /&gt;&lt;/span&gt;
-        &lt;/a&gt;
-      &lt;/li&gt;
-    &lt;/cms:archives&gt;
-  &lt;/ul&gt;
-&lt;/aside&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<aside class="mb-6">
+  <h3 class="text-xl font-bold mb-4">Archives</h3>
+  <ul class="menu bg-base-200 rounded-box">
+    <cms:archives masterpage='blog.php' limit='12'>
+      <li>
+        <a href="<cms:show k_archive_link />" class="flex justify-between">
+          <span><cms:date k_archive_date format='F Y' /></span>
+          <span class="badge badge-primary"><cms:show k_archive_count /></span>
+        </a>
+      </li>
+    </cms:archives>
+  </ul>
+</aside>
+```
 
 ### Yearly Archives
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;div class&#x3D;&quot;mb-6&quot;&gt;
-  &lt;h3 class&#x3D;&quot;text-xl font-bold mb-4&quot;&gt;Archives by Year&lt;/h3&gt;
-  &lt;ul&gt;
-    &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;yearly&#x27;&gt;
-      &lt;li&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-          &lt;cms:date k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;
-        &lt;/a&gt;
-        (&lt;cms:show k_archive_count /&gt; posts)
-      &lt;/li&gt;
-    &lt;/cms:archives&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<div class="mb-6">
+  <h3 class="text-xl font-bold mb-4">Archives by Year</h3>
+  <ul>
+    <cms:archives masterpage='blog.php' type='yearly'>
+      <li>
+        <a href="<cms:show k_archive_link />">
+          <cms:date k_archive_date format='Y' />
+        </a>
+        (<cms:show k_archive_count /> posts)
+      </li>
+    </cms:archives>
+  </ul>
+</div>
+```
 
 ### Monthly Archives
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;div class&#x3D;&quot;mb-6&quot;&gt;
-  &lt;h3 class&#x3D;&quot;text-xl font-bold mb-4&quot;&gt;Archives by Month&lt;/h3&gt;
-  &lt;ul&gt;
-    &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;monthly&#x27; limit&#x3D;&#x27;12&#x27;&gt;
-      &lt;li&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-          &lt;cms:date k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;
-        &lt;/a&gt;
-        (&lt;cms:show k_archive_count /&gt;)
-      &lt;/li&gt;
-    &lt;/cms:archives&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<div class="mb-6">
+  <h3 class="text-xl font-bold mb-4">Archives by Month</h3>
+  <ul>
+    <cms:archives masterpage='blog.php' type='monthly' limit='12'>
+      <li>
+        <a href="<cms:show k_archive_link />">
+          <cms:date k_archive_date format='F Y' />
+        </a>
+        (<cms:show k_archive_count />)
+      </li>
+    </cms:archives>
+  </ul>
+</div>
+```
 
 ### Daily Archives
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;div class&#x3D;&quot;mb-6&quot;&gt;
-  &lt;h3 class&#x3D;&quot;text-xl font-bold mb-4&quot;&gt;Archives by Day&lt;/h3&gt;
-  &lt;ul&gt;
-    &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;daily&#x27; limit&#x3D;&#x27;30&#x27;&gt;
-      &lt;li&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-          &lt;cms:date k_archive_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-        &lt;/a&gt;
-        (&lt;cms:show k_archive_count /&gt;)
-      &lt;/li&gt;
-    &lt;/cms:archives&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<div class="mb-6">
+  <h3 class="text-xl font-bold mb-4">Archives by Day</h3>
+  <ul>
+    <cms:archives masterpage='blog.php' type='daily' limit='30'>
+      <li>
+        <a href="<cms:show k_archive_link />">
+          <cms:date k_archive_date format='F j, Y' />
+        </a>
+        (<cms:show k_archive_count />)
+      </li>
+    </cms:archives>
+  </ul>
+</div>
+```
 
 ### Complete Archive List with Pages
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;div class&#x3D;&quot;archives-list&quot;&gt;
-  &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-8&quot;&gt;
-      &lt;h2 class&#x3D;&quot;text-2xl font-bold mb-4&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-          &lt;cms:date k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;
-        &lt;/a&gt;
-        (&lt;cms:show k_archive_count /&gt; posts)
-      &lt;/h2&gt;
+```php title="blog.php"
+<div class="archives-list">
+  <cms:archives masterpage='blog.php'>
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">
+        <a href="<cms:show k_archive_link />">
+          <cms:date k_archive_date format='F Y' />
+        </a>
+        (<cms:show k_archive_count /> posts)
+      </h2>
 
-      &lt;ul class&#x3D;&quot;list-disc list-inside&quot;&gt;
-        &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; start_on&#x3D;k_archive_date stop_before&#x3D;k_next_archive_date&gt;
-          &lt;li&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-              &lt;cms:show k_page_title /&gt;
-            &lt;/a&gt;
-            &lt;span class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;
-              - &lt;cms:date k_page_date format&#x3D;&#x27;F j&#x27; /&gt;
-            &lt;/span&gt;
-          &lt;/li&gt;
-        &lt;/cms:pages&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/cms:archives&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+      <ul class="list-disc list-inside">
+        <cms:pages masterpage='blog.php' start_on=k_archive_date stop_before=k_next_archive_date>
+          <li>
+            <a href="<cms:show k_page_link />" class="link link-primary">
+              <cms:show k_page_title />
+            </a>
+            <span class="text-sm text-base-content/70">
+              - <cms:date k_page_date format='F j' />
+            </span>
+          </li>
+        </cms:pages>
+      </ul>
+    </div>
+  </cms:archives>
+</div>
+```
 
 ### Archive View Implementation
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Blog&#x27; clonable&#x3D;&#x27;1&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Blog' clonable='1' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:if k_is_archive&gt;
-        &lt;!-- Archive View --&gt;
-        &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-            &lt;h1 class&#x3D;&quot;text-4xl font-bold mb-2&quot;&gt;Archive&lt;/h1&gt;
-            &lt;cms:if k_is_year&gt;
-                &lt;p class&#x3D;&quot;text-2xl text-base-content/70&quot;&gt;
-                    &lt;cms:date k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;
-                &lt;/p&gt;
-            &lt;/cms:if&gt;
-            &lt;cms:if k_is_month&gt;
-                &lt;p class&#x3D;&quot;text-2xl text-base-content/70&quot;&gt;
-                    &lt;cms:date k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;
-                &lt;/p&gt;
-            &lt;/cms:if&gt;
-            &lt;cms:if k_is_day&gt;
-                &lt;p class&#x3D;&quot;text-2xl text-base-content/70&quot;&gt;
-                    &lt;cms:date k_archive_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-                &lt;/p&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
+<cms:block 'content'>
+    <cms:if k_is_archive>
+        <!-- Archive View -->
+        <div class="mb-6">
+            <h1 class="text-4xl font-bold mb-2">Archive</h1>
+            <cms:if k_is_year>
+                <p class="text-2xl text-base-content/70">
+                    <cms:date k_archive_date format='Y' />
+                </p>
+            </cms:if>
+            <cms:if k_is_month>
+                <p class="text-2xl text-base-content/70">
+                    <cms:date k_archive_date format='F Y' />
+                </p>
+            </cms:if>
+            <cms:if k_is_day>
+                <p class="text-2xl text-base-content/70">
+                    <cms:date k_archive_date format='F j, Y' />
+                </p>
+            </cms:if>
+        </div>
 
-        &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; start_on&#x3D;k_archive_date stop_before&#x3D;k_next_archive_date limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-            &lt;article class&#x3D;&quot;mb-8 pb-8 border-b border-base-300&quot;&gt;
-                &lt;h2 class&#x3D;&quot;text-2xl font-semibold mb-2&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                        &lt;cms:show k_page_title /&gt;
-                    &lt;/a&gt;
-                &lt;/h2&gt;
-                &lt;p class&#x3D;&quot;text-base-content/70 text-sm mb-2&quot;&gt;
-                    &lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-                &lt;/p&gt;
-                &lt;p class&#x3D;&quot;text-base-content/80 mb-4&quot;&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Read more&lt;/a&gt;
-            &lt;/article&gt;
+        <cms:pages masterpage='blog.php' start_on=k_archive_date stop_before=k_next_archive_date limit='20' paginate='1'>
+            <article class="mb-8 pb-8 border-b border-base-300">
+                <h2 class="text-2xl font-semibold mb-2">
+                    <a href="<cms:show k_page_link />" class="link link-primary">
+                        <cms:show k_page_title />
+                    </a>
+                </h2>
+                <p class="text-base-content/70 text-sm mb-2">
+                    <cms:date k_page_date format='F j, Y' />
+                </p>
+                <p class="text-base-content/80 mb-4"><cms:show k_page_excerpt /></p>
+                <a href="<cms:show k_page_link />" class="btn btn-sm btn-primary">Read more</a>
+            </article>
 
-            &lt;cms:if k_paginated_bottom&gt;
-                &lt;nav class&#x3D;&quot;mt-6&quot;&gt;
-                    &lt;cms:paginator /&gt;
-                &lt;/nav&gt;
-            &lt;/cms:if&gt;
-        &lt;/cms:pages&gt;
-    &lt;cms:else /&gt;
-        &lt;!-- Other views --&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+            <cms:if k_paginated_bottom>
+                <nav class="mt-6">
+                    <cms:paginator />
+                </nav>
+            </cms:if>
+        </cms:pages>
+    <cms:else />
+        <!-- Other views -->
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Archive Navigation Sidebar
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;aside class&#x3D;&quot;w-64&quot;&gt;
-  &lt;div class&#x3D;&quot;card bg-base-200 shadow-md&quot;&gt;
-    &lt;div class&#x3D;&quot;card-body&quot;&gt;
-      &lt;h3 class&#x3D;&quot;card-title&quot;&gt;Archives&lt;/h3&gt;
+```php title="blog.php"
+<aside class="w-64">
+  <div class="card bg-base-200 shadow-md">
+    <div class="card-body">
+      <h3 class="card-title">Archives</h3>
 
-      &lt;div class&#x3D;&quot;collapse collapse-arrow bg-base-100&quot;&gt;
-        &lt;input type&#x3D;&quot;radio&quot; name&#x3D;&quot;archive-accordion&quot; /&gt;
-        &lt;div class&#x3D;&quot;collapse-title font-medium&quot;&gt;By Year&lt;/div&gt;
-        &lt;div class&#x3D;&quot;collapse-content&quot;&gt;
-          &lt;ul class&#x3D;&quot;menu&quot;&gt;
-            &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;yearly&#x27;&gt;
-              &lt;li&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-                  &lt;cms:date k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;
-                  &lt;span class&#x3D;&quot;badge badge-primary&quot;&gt;&lt;cms:show k_archive_count /&gt;&lt;/span&gt;
-                &lt;/a&gt;
-              &lt;/li&gt;
-            &lt;/cms:archives&gt;
-          &lt;/ul&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+      <div class="collapse collapse-arrow bg-base-100">
+        <input type="radio" name="archive-accordion" />
+        <div class="collapse-title font-medium">By Year</div>
+        <div class="collapse-content">
+          <ul class="menu">
+            <cms:archives masterpage='blog.php' type='yearly'>
+              <li>
+                <a href="<cms:show k_archive_link />">
+                  <cms:date k_archive_date format='Y' />
+                  <span class="badge badge-primary"><cms:show k_archive_count /></span>
+                </a>
+              </li>
+            </cms:archives>
+          </ul>
+        </div>
+      </div>
 
-      &lt;div class&#x3D;&quot;collapse collapse-arrow bg-base-100&quot;&gt;
-        &lt;input type&#x3D;&quot;radio&quot; name&#x3D;&quot;archive-accordion&quot; /&gt;
-        &lt;div class&#x3D;&quot;collapse-title font-medium&quot;&gt;By Month&lt;/div&gt;
-        &lt;div class&#x3D;&quot;collapse-content&quot;&gt;
-          &lt;ul class&#x3D;&quot;menu&quot;&gt;
-            &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;monthly&#x27; limit&#x3D;&#x27;12&#x27;&gt;
-              &lt;li&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-                  &lt;cms:date k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;
-                  &lt;span class&#x3D;&quot;badge badge-primary&quot;&gt;&lt;cms:show k_archive_count /&gt;&lt;/span&gt;
-                &lt;/a&gt;
-              &lt;/li&gt;
-            &lt;/cms:archives&gt;
-          &lt;/ul&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/aside&gt;
-&#x60;&#x60;&#x60;
+      <div class="collapse collapse-arrow bg-base-100">
+        <input type="radio" name="archive-accordion" />
+        <div class="collapse-title font-medium">By Month</div>
+        <div class="collapse-content">
+          <ul class="menu">
+            <cms:archives masterpage='blog.php' type='monthly' limit='12'>
+              <li>
+                <a href="<cms:show k_archive_link />">
+                  <cms:date k_archive_date format='F Y' />
+                  <span class="badge badge-primary"><cms:show k_archive_count /></span>
+                </a>
+              </li>
+            </cms:archives>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+```
 
 ---
 
@@ -281,54 +281,54 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ### Archive Calendar View
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;div class&#x3D;&quot;calendar-view&quot;&gt;
-  &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;daily&#x27; limit&#x3D;&#x27;31&#x27;&gt;
-    &lt;div class&#x3D;&quot;calendar-day&quot;&gt;
-      &lt;div class&#x3D;&quot;day-header&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-          &lt;cms:date k_archive_date format&#x3D;&#x27;j&#x27; /&gt;
-        &lt;/a&gt;
-      &lt;/div&gt;
-      &lt;div class&#x3D;&quot;day-count&quot;&gt;
-        &lt;cms:if k_archive_count&gt;
-          &lt;span class&#x3D;&quot;badge badge-primary&quot;&gt;&lt;cms:show k_archive_count /&gt;&lt;/span&gt;
-        &lt;/cms:if&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/cms:archives&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<div class="calendar-view">
+  <cms:archives masterpage='blog.php' type='daily' limit='31'>
+    <div class="calendar-day">
+      <div class="day-header">
+        <a href="<cms:show k_archive_link />">
+          <cms:date k_archive_date format='j' />
+        </a>
+      </div>
+      <div class="day-count">
+        <cms:if k_archive_count>
+          <span class="badge badge-primary"><cms:show k_archive_count /></span>
+        </cms:if>
+      </div>
+    </div>
+  </cms:archives>
+</div>
+```
 
 ### Archive with Year/Month Breakdown
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;yearly&#x27;&gt;
-  &lt;div class&#x3D;&quot;mb-8&quot;&gt;
-    &lt;h2 class&#x3D;&quot;text-3xl font-bold mb-4&quot;&gt;
-      &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-        &lt;cms:date k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;
-      &lt;/a&gt;
-      (&lt;cms:show k_archive_count /&gt; posts)
-    &lt;/h2&gt;
+```php title="blog.php"
+<cms:archives masterpage='blog.php' type='yearly'>
+  <div class="mb-8">
+    <h2 class="text-3xl font-bold mb-4">
+      <a href="<cms:show k_archive_link />">
+        <cms:date k_archive_date format='Y' />
+      </a>
+      (<cms:show k_archive_count /> posts)
+    </h2>
 
-    &lt;div class&#x3D;&quot;ml-4&quot;&gt;
-      &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;monthly&#x27;&gt;
-        &lt;cms:if &quot;&lt;cms:date k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;&quot; eq&#x3D;&quot;&lt;cms:date k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;&quot;&gt;
-          &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;h3 class&#x3D;&quot;text-xl font-semibold mb-2&quot;&gt;
-              &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot;&gt;
-                &lt;cms:date k_archive_date format&#x3D;&#x27;F&#x27; /&gt;
-              &lt;/a&gt;
-              (&lt;cms:show k_archive_count /&gt;)
-            &lt;/h3&gt;
-          &lt;/div&gt;
-        &lt;/cms:if&gt;
-      &lt;/cms:archives&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/cms:archives&gt;
-&#x60;&#x60;&#x60;
+    <div class="ml-4">
+      <cms:archives masterpage='blog.php' type='monthly'>
+        <cms:if "<cms:date k_archive_date format='Y' />" eq="<cms:date k_archive_date format='Y' />">
+          <div class="mb-4">
+            <h3 class="text-xl font-semibold mb-2">
+              <a href="<cms:show k_archive_link />">
+                <cms:date k_archive_date format='F' />
+              </a>
+              (<cms:show k_archive_count />)
+            </h3>
+          </div>
+        </cms:if>
+      </cms:archives>
+    </div>
+  </div>
+</cms:archives>
+```
 
 ---
 
@@ -336,17 +336,17 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 1. **Archive Type**: Choose appropriate type (yearly, monthly, daily) based on content volume
 
-2. **Limit Results**: Use &#x60;limit&#x60; parameter to show recent archives only
+2. **Limit Results**: Use `limit` parameter to show recent archives only
 
 3. **Date Formatting**: Use clear, readable date formats for archive links
 
-4. **Page Counts**: Always show &#x60;k_archive_count&#x60; for user feedback
+4. **Page Counts**: Always show `k_archive_count` for user feedback
 
-5. **Archive Links**: Use &#x60;k_archive_link&#x60; for proper archive view navigation
+5. **Archive Links**: Use `k_archive_link` for proper archive view navigation
 
-6. **Date Filtering**: Use &#x60;start_on&#x60; and &#x60;stop_before&#x60; with archive dates for filtering
+6. **Date Filtering**: Use `start_on` and `stop_before` with archive dates for filtering
 
-7. **Archive View**: Handle &#x60;k_is_archive&#x60; in template for archive-specific display
+7. **Archive View**: Handle `k_is_archive` in template for archive-specific display
 
 8. **Navigation**: Provide archive navigation in sidebar or footer
 
@@ -358,45 +358,45 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ## Quick Fixes
 
-### &quot;Archives not showing&quot;
+### "Archives not showing"
 
 **Problem**: Archive list is empty
 
 **Solution**: Ensure pages exist and are published:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27;&gt;
-  &lt;!-- Archives will only show if pages exist --&gt;
-&lt;/cms:archives&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:archives masterpage='blog.php'>
+  <!-- Archives will only show if pages exist -->
+</cms:archives>
+```
 
-### &quot;Wrong archive type&quot;
+### "Wrong archive type"
 
 **Problem**: Archives grouped incorrectly
 
 **Solution**: Specify archive type:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;!-- Yearly --&gt;
-&lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;yearly&#x27;&gt;
+```php title="blog.php"
+<!-- Yearly -->
+<cms:archives masterpage='blog.php' type='yearly'>
 
-&lt;!-- Monthly (default) --&gt;
-&lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;monthly&#x27;&gt;
+<!-- Monthly (default) -->
+<cms:archives masterpage='blog.php' type='monthly'>
 
-&lt;!-- Daily --&gt;
-&lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; type&#x3D;&#x27;daily&#x27;&gt;
-&#x60;&#x60;&#x60;
+<!-- Daily -->
+<cms:archives masterpage='blog.php' type='daily'>
+```
 
-### &quot;Archive view not working&quot;
+### "Archive view not working"
 
-**Problem**: Archive view doesn&#x27;t show correct pages
+**Problem**: Archive view doesn't show correct pages
 
-**Solution**: Use &#x60;start_on&#x60; and &#x60;stop_before&#x60; with archive dates:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:if k_is_archive&gt;
-  &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; start_on&#x3D;k_archive_date stop_before&#x3D;k_next_archive_date&gt;
-    &lt;!-- Pages in archive period --&gt;
-  &lt;/cms:pages&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Use `start_on` and `stop_before` with archive dates:
+```php title="blog.php"
+<cms:if k_is_archive>
+  <cms:pages masterpage='blog.php' start_on=k_archive_date stop_before=k_next_archive_date>
+    <!-- Pages in archive period -->
+  </cms:pages>
+</cms:if>
+```
 
 ---
 
@@ -408,88 +408,88 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Blog&#x27; clonable&#x3D;&#x27;1&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Blog' clonable='1' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;div class&#x3D;&quot;container mx-auto p-4&quot;&gt;
-        &lt;cms:if k_is_archive&gt;
-            &lt;!-- Archive View --&gt;
-            &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-                &lt;nav class&#x3D;&quot;breadcrumbs mb-4&quot;&gt;
-                    &lt;ul&gt;
-                        &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-                        &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;Blog&lt;/a&gt;&lt;/li&gt;
-                        &lt;li&gt;Archive&lt;/li&gt;
-                    &lt;/ul&gt;
-                &lt;/nav&gt;
+<cms:block 'content'>
+    <div class="container mx-auto p-4">
+        <cms:if k_is_archive>
+            <!-- Archive View -->
+            <div class="mb-6">
+                <nav class="breadcrumbs mb-4">
+                    <ul>
+                        <li><a href="<cms:show k_site_link />">Home</a></li>
+                        <li><a href="<cms:show k_template_link />">Blog</a></li>
+                        <li>Archive</li>
+                    </ul>
+                </nav>
 
-                &lt;h1 class&#x3D;&quot;text-4xl font-bold mb-2&quot;&gt;Archive&lt;/h1&gt;
-                &lt;cms:if k_is_year&gt;
-                    &lt;p class&#x3D;&quot;text-2xl text-base-content/70&quot;&gt;
-                        &lt;cms:date k_archive_date format&#x3D;&#x27;Y&#x27; /&gt;
-                    &lt;/p&gt;
-                &lt;/cms:if&gt;
-                &lt;cms:if k_is_month&gt;
-                    &lt;p class&#x3D;&quot;text-2xl text-base-content/70&quot;&gt;
-                        &lt;cms:date k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;
-                    &lt;/p&gt;
-                &lt;/cms:if&gt;
-                &lt;cms:if k_is_day&gt;
-                    &lt;p class&#x3D;&quot;text-2xl text-base-content/70&quot;&gt;
-                        &lt;cms:date k_archive_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-                    &lt;/p&gt;
-                &lt;/cms:if&gt;
-            &lt;/div&gt;
+                <h1 class="text-4xl font-bold mb-2">Archive</h1>
+                <cms:if k_is_year>
+                    <p class="text-2xl text-base-content/70">
+                        <cms:date k_archive_date format='Y' />
+                    </p>
+                </cms:if>
+                <cms:if k_is_month>
+                    <p class="text-2xl text-base-content/70">
+                        <cms:date k_archive_date format='F Y' />
+                    </p>
+                </cms:if>
+                <cms:if k_is_day>
+                    <p class="text-2xl text-base-content/70">
+                        <cms:date k_archive_date format='F j, Y' />
+                    </p>
+                </cms:if>
+            </div>
 
-            &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; start_on&#x3D;k_archive_date stop_before&#x3D;k_next_archive_date limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-                &lt;article class&#x3D;&quot;mb-8 pb-8 border-b border-base-300&quot;&gt;
-                    &lt;h2 class&#x3D;&quot;text-2xl font-semibold mb-2&quot;&gt;
-                        &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                            &lt;cms:show k_page_title /&gt;
-                        &lt;/a&gt;
-                    &lt;/h2&gt;
-                    &lt;p class&#x3D;&quot;text-base-content/70 text-sm mb-2&quot;&gt;
-                        &lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-                    &lt;/p&gt;
-                    &lt;p class&#x3D;&quot;text-base-content/80 mb-4&quot;&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Read more&lt;/a&gt;
-                &lt;/article&gt;
+            <cms:pages masterpage='blog.php' start_on=k_archive_date stop_before=k_next_archive_date limit='20' paginate='1'>
+                <article class="mb-8 pb-8 border-b border-base-300">
+                    <h2 class="text-2xl font-semibold mb-2">
+                        <a href="<cms:show k_page_link />" class="link link-primary">
+                            <cms:show k_page_title />
+                        </a>
+                    </h2>
+                    <p class="text-base-content/70 text-sm mb-2">
+                        <cms:date k_page_date format='F j, Y' />
+                    </p>
+                    <p class="text-base-content/80 mb-4"><cms:show k_page_excerpt /></p>
+                    <a href="<cms:show k_page_link />" class="btn btn-sm btn-primary">Read more</a>
+                </article>
 
-                &lt;cms:if k_paginated_bottom&gt;
-                    &lt;nav class&#x3D;&quot;mt-6&quot;&gt;
-                        &lt;cms:paginator /&gt;
-                    &lt;/nav&gt;
-                &lt;/cms:if&gt;
-            &lt;/cms:pages&gt;
-        &lt;cms:else /&gt;
-            &lt;!-- Other views --&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
-&lt;/cms:block&gt;
+                <cms:if k_paginated_bottom>
+                    <nav class="mt-6">
+                        <cms:paginator />
+                    </nav>
+                </cms:if>
+            </cms:pages>
+        <cms:else />
+            <!-- Other views -->
+        </cms:if>
+    </div>
+</cms:block>
 
-&lt;!-- Archive Sidebar --&gt;
-&lt;aside class&#x3D;&quot;w-64&quot;&gt;
-  &lt;div class&#x3D;&quot;card bg-base-200 shadow-md&quot;&gt;
-    &lt;div class&#x3D;&quot;card-body&quot;&gt;
-      &lt;h3 class&#x3D;&quot;card-title&quot;&gt;Archives&lt;/h3&gt;
-      &lt;ul class&#x3D;&quot;menu&quot;&gt;
-        &lt;cms:archives masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;12&#x27;&gt;
-          &lt;li&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_archive_link /&gt;&quot; class&#x3D;&quot;flex justify-between&quot;&gt;
-              &lt;span&gt;&lt;cms:date k_archive_date format&#x3D;&#x27;F Y&#x27; /&gt;&lt;/span&gt;
-              &lt;span class&#x3D;&quot;badge badge-primary&quot;&gt;&lt;cms:show k_archive_count /&gt;&lt;/span&gt;
-            &lt;/a&gt;
-          &lt;/li&gt;
-        &lt;/cms:archives&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/aside&gt;
+<!-- Archive Sidebar -->
+<aside class="w-64">
+  <div class="card bg-base-200 shadow-md">
+    <div class="card-body">
+      <h3 class="card-title">Archives</h3>
+      <ul class="menu">
+        <cms:archives masterpage='blog.php' limit='12'>
+          <li>
+            <a href="<cms:show k_archive_link />" class="flex justify-between">
+              <span><cms:date k_archive_date format='F Y' /></span>
+              <span class="badge badge-primary"><cms:show k_archive_count /></span>
+            </a>
+          </li>
+        </cms:archives>
+      </ul>
+    </div>
+  </div>
+</aside>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
@@ -507,9 +507,9 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ## Warning Signs
 
-- ⚠️ Not using &#x60;start_on&#x60; and &#x60;stop_before&#x60; for archive filtering
+- ⚠️ Not using `start_on` and `stop_before` for archive filtering
 - ⚠️ Missing archive view handling in template
-- ⚠️ Not checking &#x60;k_is_archive&#x60; before displaying archive content
+- ⚠️ Not checking `k_is_archive` before displaying archive content
 - ⚠️ Wrong archive type for content volume
 - ⚠️ Not showing page counts
 - ⚠️ Archive links not working
@@ -527,8 +527,8 @@ You are a CouchCMS archives expert specializing in organizing and displaying arc
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;concepts/archives.mdx&#x60;
-- Tag Reference: &#x60;tags-reference/core/archives/&#x60;
+- CouchCMS Documentation: `concepts/archives.mdx`
+- Tag Reference: `tags-reference/core/archives/`
 
 
 

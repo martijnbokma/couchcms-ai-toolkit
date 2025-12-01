@@ -21,43 +21,43 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 | Tag                        | Purpose                 |
 | -------------------------- | ----------------------- |
-| &#x60;&lt;cms:form&gt;&#x60;               | Create bound form       |
-| &#x60;&lt;cms:input type&#x3D;&quot;bound&quot;&gt;&#x60; | Bind to editable field  |
-| &#x60;&lt;cms:db_persist_form&gt;&#x60;    | Save form data          |
-| &#x60;&lt;cms:if k_success&gt;&#x60;       | Check form success      |
-| &#x60;&lt;cms:if k_error&gt;&#x60;         | Check validation errors |
+| `<cms:form>`               | Create bound form       |
+| `<cms:input type="bound">` | Bind to editable field  |
+| `<cms:db_persist_form>`    | Save form data          |
+| `<cms:if k_success>`       | Check form success      |
+| `<cms:if k_error>`         | Check validation errors |
 
 ### Basic Form Structure
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;create&quot; enctype&#x3D;&quot;multipart/form-data&quot;&gt;
-  &lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;title&quot; /&gt;
-  &lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;description&quot; /&gt;
+```html title="projects.php"
+<cms:form masterpage="projects.php" mode="create" enctype="multipart/form-data">
+  <cms:input type="bound" name="title" />
+  <cms:input type="bound" name="description" />
 
-  &lt;button type&#x3D;&quot;submit&quot;&gt;Save&lt;/button&gt;
+  <button type="submit">Save</button>
 
-  &lt;cms:if k_success&gt;
-    &lt;cms:db_persist_form
-      content_owner&#x3D;&quot;k_user_name&quot;
-      is_published&#x3D;&quot;0&quot;
-      _invalidate_cache&#x3D;&quot;1&quot;
-    /&gt;
-    &lt;cms:redirect k_page_link /&gt;
-  &lt;/cms:if&gt;
+  <cms:if k_success>
+    <cms:db_persist_form
+      content_owner="k_user_name"
+      is_published="0"
+      _invalidate_cache="1"
+    />
+    <cms:redirect k_page_link />
+  </cms:if>
 
-  &lt;cms:if k_error&gt;
-    &lt;div class&#x3D;&quot;alert alert-error&quot;&gt;&lt;cms:show k_error /&gt;&lt;/div&gt;
-  &lt;/cms:if&gt;
-&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+  <cms:if k_error>
+    <div class="alert alert-error"><cms:show k_error /></div>
+  </cms:if>
+</cms:form>
+```
 
 ### Your Approach
 
 - Always validate server-side (client-side is UX only)
-- Set &#x60;content_owner&#x60; for ownership tracking
-- Use &#x60;enctype&#x3D;&#x27;multipart/form-data&#x27;&#x60; for file uploads
-- Place form snippets in &#x60;{{paths.forms}}/&#x60;
-- Use &#x60;{{paths.filters}}/authenticated.html&#x60; for auth
+- Set `content_owner` for ownership tracking
+- Use `enctype='multipart/form-data'` for file uploads
+- Place form snippets in `{{paths.forms}}/`
+- Use `{{paths.filters}}/authenticated.html` for auth
 
 ---
 
@@ -65,125 +65,125 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Create Form
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt;
+```html title="projects.php"
+<cms:embed '{{paths.filters}}/authenticated.html' />
 
-&lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;create&quot; enctype&#x3D;&quot;multipart/form-data&quot;&gt;
-  &lt;!-- Title --&gt;
-  &lt;label class&#x3D;&quot;form-control&quot;&gt;
-    &lt;span class&#x3D;&quot;label-text&quot;&gt;Title *&lt;/span&gt;
-    &lt;cms:input
-      type&#x3D;&quot;bound&quot;
-      name&#x3D;&quot;title&quot;
-      class&#x3D;&quot;input input-bordered&quot;
-      required&#x3D;&quot;1&quot;
-    /&gt;
-    &lt;cms:if k_error_title&gt;
-      &lt;span class&#x3D;&quot;text-error text-sm&quot;&gt;&lt;cms:show k_error_title /&gt;&lt;/span&gt;
-    &lt;/cms:if&gt;
-  &lt;/label&gt;
+<cms:form masterpage="projects.php" mode="create" enctype="multipart/form-data">
+  <!-- Title -->
+  <label class="form-control">
+    <span class="label-text">Title *</span>
+    <cms:input
+      type="bound"
+      name="title"
+      class="input input-bordered"
+      required="1"
+    />
+    <cms:if k_error_title>
+      <span class="text-error text-sm"><cms:show k_error_title /></span>
+    </cms:if>
+  </label>
 
-  &lt;!-- Description --&gt;
-  &lt;label class&#x3D;&quot;form-control&quot;&gt;
-    &lt;span class&#x3D;&quot;label-text&quot;&gt;Description&lt;/span&gt;
-    &lt;cms:input
-      type&#x3D;&quot;bound&quot;
-      name&#x3D;&quot;description&quot;
-      class&#x3D;&quot;textarea textarea-bordered&quot;
-    /&gt;
-  &lt;/label&gt;
+  <!-- Description -->
+  <label class="form-control">
+    <span class="label-text">Description</span>
+    <cms:input
+      type="bound"
+      name="description"
+      class="textarea textarea-bordered"
+    />
+  </label>
 
-  &lt;!-- Image Upload --&gt;
-  &lt;label class&#x3D;&quot;form-control&quot;&gt;
-    &lt;span class&#x3D;&quot;label-text&quot;&gt;Poster Image&lt;/span&gt;
-    &lt;cms:input
-      type&#x3D;&quot;bound&quot;
-      name&#x3D;&quot;poster&quot;
-      class&#x3D;&quot;file-input file-input-bordered&quot;
-    /&gt;
-  &lt;/label&gt;
+  <!-- Image Upload -->
+  <label class="form-control">
+    <span class="label-text">Poster Image</span>
+    <cms:input
+      type="bound"
+      name="poster"
+      class="file-input file-input-bordered"
+    />
+  </label>
 
-  &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;Create&lt;/button&gt;
+  <button type="submit" class="btn btn-primary">Create</button>
 
-  &lt;cms:if k_success&gt;
-    &lt;cms:db_persist_form
-      content_owner&#x3D;&quot;k_user_name&quot;
-      is_published&#x3D;&quot;0&quot;
-      _invalidate_cache&#x3D;&quot;1&quot;
-    /&gt;
-    &lt;cms:set_flash name&#x3D;&quot;success&quot; value&#x3D;&quot;Project created!&quot; /&gt;
-    &lt;cms:redirect k_page_link /&gt;
-  &lt;/cms:if&gt;
-&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+  <cms:if k_success>
+    <cms:db_persist_form
+      content_owner="k_user_name"
+      is_published="0"
+      _invalidate_cache="1"
+    />
+    <cms:set_flash name="success" value="Project created!" />
+    <cms:redirect k_page_link />
+  </cms:if>
+</cms:form>
+```
 
 ### Edit Form
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt; &lt;cms:embed
-&#x27;{{paths.filters}}/owns_content.html&#x27; /&gt;
+```html title="projects.php"
+<cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
+'{{paths.filters}}/owns_content.html' />
 
-&lt;cms:form
-  masterpage&#x3D;&quot;projects.php&quot;
-  mode&#x3D;&quot;edit&quot;
-  page_id&#x3D;&quot;k_page_id&quot;
-  enctype&#x3D;&quot;multipart/form-data&quot;
-&gt;
-  &lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;title&quot; class&#x3D;&quot;input input-bordered&quot; /&gt;
-  &lt;cms:input
-    type&#x3D;&quot;bound&quot;
-    name&#x3D;&quot;description&quot;
-    class&#x3D;&quot;textarea textarea-bordered&quot;
-  /&gt;
+<cms:form
+  masterpage="projects.php"
+  mode="edit"
+  page_id="k_page_id"
+  enctype="multipart/form-data"
+>
+  <cms:input type="bound" name="title" class="input input-bordered" />
+  <cms:input
+    type="bound"
+    name="description"
+    class="textarea textarea-bordered"
+  />
 
-  &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;Update&lt;/button&gt;
+  <button type="submit" class="btn btn-primary">Update</button>
 
-  &lt;cms:if k_success&gt;
-    &lt;cms:db_persist_form _invalidate_cache&#x3D;&quot;1&quot; /&gt;
-    &lt;cms:set_flash name&#x3D;&quot;success&quot; value&#x3D;&quot;Project updated!&quot; /&gt;
-    &lt;cms:redirect k_page_link /&gt;
-  &lt;/cms:if&gt;
-&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+  <cms:if k_success>
+    <cms:db_persist_form _invalidate_cache="1" />
+    <cms:set_flash name="success" value="Project updated!" />
+    <cms:redirect k_page_link />
+  </cms:if>
+</cms:form>
+```
 
 ### Delete with Confirmation
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt; &lt;cms:embed
-&#x27;{{paths.filters}}/owns_content.html&#x27; /&gt;
+```html title="projects.php"
+<cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
+'{{paths.filters}}/owns_content.html' />
 
-&lt;cms:form method&#x3D;&quot;post&quot; anchor&#x3D;&quot;0&quot;&gt;
-  &lt;cms:input type&#x3D;&quot;hidden&quot; name&#x3D;&quot;confirm_delete&quot; value&#x3D;&quot;1&quot; /&gt;
+<cms:form method="post" anchor="0">
+  <cms:input type="hidden" name="confirm_delete" value="1" />
 
-  &lt;div class&#x3D;&quot;alert alert-warning&quot;&gt;
-    &lt;p&gt;Are you sure you want to delete &quot;&lt;cms:show k_page_title /&gt;&quot;?&lt;/p&gt;
-  &lt;/div&gt;
+  <div class="alert alert-warning">
+    <p>Are you sure you want to delete "<cms:show k_page_title />"?</p>
+  </div>
 
-  &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-error&quot;&gt;Delete&lt;/button&gt;
-  &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn&quot;&gt;Cancel&lt;/a&gt;
+  <button type="submit" class="btn btn-error">Delete</button>
+  <a href="<cms:show k_page_link />" class="btn">Cancel</a>
 
-  &lt;cms:if k_success&gt;
-    &lt;cms:if frm_confirm_delete&#x3D;&quot;1&quot;&gt;
-      &lt;cms:db_delete masterpage&#x3D;&quot;projects.php&quot; page_id&#x3D;&quot;k_page_id&quot; /&gt;
-      &lt;cms:set_flash name&#x3D;&quot;success&quot; value&#x3D;&quot;Project deleted!&quot; /&gt;
-      &lt;cms:redirect &quot;&lt;cms:link &#x27;projects.php&#x27; /&gt;&quot; /&gt;
-    &lt;/cms:if&gt;
-  &lt;/cms:if&gt;
-&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+  <cms:if k_success>
+    <cms:if frm_confirm_delete="1">
+      <cms:db_delete masterpage="projects.php" page_id="k_page_id" />
+      <cms:set_flash name="success" value="Project deleted!" />
+      <cms:redirect "<cms:link 'projects.php' />" />
+    </cms:if>
+  </cms:if>
+</cms:form>
+```
 
 ### Ownership Filter
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- {{paths.filters}}/owns_content.html --&gt;
-&lt;cms:if k_is_page&gt;
-    &lt;cms:if content_owner ne k_user_name&gt;
-        &lt;cms:if k_user_access_level lt &#x27;7&#x27;&gt;
-            &lt;cms:abort is_404&#x3D;&#x27;1&#x27; /&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<!-- {{paths.filters}}/owns_content.html -->
+<cms:if k_is_page>
+    <cms:if content_owner ne k_user_name>
+        <cms:if k_user_access_level lt '7'>
+            <cms:abort is_404='1' />
+        </cms:if>
+    </cms:if>
+</cms:if>
+```
 
 ---
 
@@ -191,101 +191,101 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Multi-Step Wizard
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;div x-data&#x3D;&quot;{ step: 1, maxStep: 3 }&quot;&gt;
-  &lt;!-- Progress --&gt;
-  &lt;ul class&#x3D;&quot;steps w-full mb-6&quot;&gt;
-    &lt;li class&#x3D;&quot;step&quot; x-bind:class&#x3D;&quot;{ &#x27;step-primary&#x27;: step &gt;&#x3D; 1 }&quot;&gt;Info&lt;/li&gt;
-    &lt;li class&#x3D;&quot;step&quot; x-bind:class&#x3D;&quot;{ &#x27;step-primary&#x27;: step &gt;&#x3D; 2 }&quot;&gt;Media&lt;/li&gt;
-    &lt;li class&#x3D;&quot;step&quot; x-bind:class&#x3D;&quot;{ &#x27;step-primary&#x27;: step &gt;&#x3D; 3 }&quot;&gt;Review&lt;/li&gt;
-  &lt;/ul&gt;
+```html title="projects.php"
+<div x-data="{ step: 1, maxStep: 3 }">
+  <!-- Progress -->
+  <ul class="steps w-full mb-6">
+    <li class="step" x-bind:class="{ 'step-primary': step >= 1 }">Info</li>
+    <li class="step" x-bind:class="{ 'step-primary': step >= 2 }">Media</li>
+    <li class="step" x-bind:class="{ 'step-primary': step >= 3 }">Review</li>
+  </ul>
 
-  &lt;cms:form
-    masterpage&#x3D;&quot;projects.php&quot;
-    mode&#x3D;&quot;create&quot;
-    enctype&#x3D;&quot;multipart/form-data&quot;
-  &gt;
-    &lt;!-- Step 1: Basic Info --&gt;
-    &lt;div x-show&#x3D;&quot;step &#x3D;&#x3D;&#x3D; 1&quot;&gt;
-      &lt;cms:input
-        type&#x3D;&quot;bound&quot;
-        name&#x3D;&quot;title&quot;
-        class&#x3D;&quot;input input-bordered w-full&quot;
-      /&gt;
-      &lt;cms:input
-        type&#x3D;&quot;bound&quot;
-        name&#x3D;&quot;description&quot;
-        class&#x3D;&quot;textarea textarea-bordered w-full&quot;
-      /&gt;
-    &lt;/div&gt;
+  <cms:form
+    masterpage="projects.php"
+    mode="create"
+    enctype="multipart/form-data"
+  >
+    <!-- Step 1: Basic Info -->
+    <div x-show="step === 1">
+      <cms:input
+        type="bound"
+        name="title"
+        class="input input-bordered w-full"
+      />
+      <cms:input
+        type="bound"
+        name="description"
+        class="textarea textarea-bordered w-full"
+      />
+    </div>
 
-    &lt;!-- Step 2: Media --&gt;
-    &lt;div x-show&#x3D;&quot;step &#x3D;&#x3D;&#x3D; 2&quot; x-cloak&gt;
-      &lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;poster&quot; class&#x3D;&quot;file-input&quot; /&gt;
-      &lt;cms:input
-        type&#x3D;&quot;bound&quot;
-        name&#x3D;&quot;youtube_id&quot;
-        class&#x3D;&quot;input input-bordered w-full&quot;
-      /&gt;
-    &lt;/div&gt;
+    <!-- Step 2: Media -->
+    <div x-show="step === 2" x-cloak>
+      <cms:input type="bound" name="poster" class="file-input" />
+      <cms:input
+        type="bound"
+        name="youtube_id"
+        class="input input-bordered w-full"
+      />
+    </div>
 
-    &lt;!-- Step 3: Review --&gt;
-    &lt;div x-show&#x3D;&quot;step &#x3D;&#x3D;&#x3D; 3&quot; x-cloak&gt;
-      &lt;p&gt;Review your submission...&lt;/p&gt;
-    &lt;/div&gt;
+    <!-- Step 3: Review -->
+    <div x-show="step === 3" x-cloak>
+      <p>Review your submission...</p>
+    </div>
 
-    &lt;!-- Navigation --&gt;
-    &lt;div class&#x3D;&quot;flex justify-between mt-6&quot;&gt;
-      &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;btn&quot; x-show&#x3D;&quot;step &gt; 1&quot; x-on:click&#x3D;&quot;step--&quot;&gt;
+    <!-- Navigation -->
+    <div class="flex justify-between mt-6">
+      <button type="button" class="btn" x-show="step > 1" x-on:click="step--">
         Previous
-      &lt;/button&gt;
-      &lt;button
-        type&#x3D;&quot;button&quot;
-        class&#x3D;&quot;btn btn-primary&quot;
-        x-show&#x3D;&quot;step &lt; maxStep&quot;
-        x-on:click&#x3D;&quot;step++&quot;
-      &gt;
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        x-show="step < maxStep"
+        x-on:click="step++"
+      >
         Next
-      &lt;/button&gt;
-      &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-success&quot; x-show&#x3D;&quot;step &#x3D;&#x3D;&#x3D; maxStep&quot;&gt;
+      </button>
+      <button type="submit" class="btn btn-success" x-show="step === maxStep">
         Submit
-      &lt;/button&gt;
-    &lt;/div&gt;
+      </button>
+    </div>
 
-    &lt;cms:if k_success&gt;
-      &lt;cms:db_persist_form content_owner&#x3D;&quot;k_user_name&quot; is_published&#x3D;&quot;0&quot; /&gt;
-      &lt;cms:redirect k_page_link /&gt;
-    &lt;/cms:if&gt;
-  &lt;/cms:form&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_success>
+      <cms:db_persist_form content_owner="k_user_name" is_published="0" />
+      <cms:redirect k_page_link />
+    </cms:if>
+  </cms:form>
+</div>
+```
 
 ### Repeatable Regions (Episodes)
 
 **Template Definition:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;cms:repeatable name&#x3D;&quot;episodes&quot; label&#x3D;&quot;Episodes&quot;&gt;
-  &lt;cms:editable name&#x3D;&quot;episode_title&quot; type&#x3D;&quot;text&quot; required&#x3D;&quot;1&quot; /&gt;
-  &lt;cms:editable
-    name&#x3D;&quot;episode_youtube_id&quot;
-    type&#x3D;&quot;text&quot;
-    required&#x3D;&quot;1&quot;
-    validator&#x3D;&quot;regex&#x3D;/^[a-zA-Z0-9_-]{11}$/&quot;
-  /&gt;
-  &lt;cms:editable name&#x3D;&quot;episode_description&quot; type&#x3D;&quot;textarea&quot; /&gt;
-&lt;/cms:repeatable&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<cms:repeatable name="episodes" label="Episodes">
+  <cms:editable name="episode_title" type="text" required="1" />
+  <cms:editable
+    name="episode_youtube_id"
+    type="text"
+    required="1"
+    validator="regex=/^[a-zA-Z0-9_-]{11}$/"
+  />
+  <cms:editable name="episode_description" type="textarea" />
+</cms:repeatable>
+```
 
 **Form with Alpine.js Episode Manager:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;div
-  x-data&#x3D;&quot;{
+```html title="template.html"
+<div
+  x-data="{
     episodes: [],
 
     addEpisode() {
-        this.episodes.push({ title: &#x27;&#x27;, youtube_id: &#x27;&#x27;, description: &#x27;&#x27; })
+        this.episodes.push({ title: '', youtube_id: '', description: '' })
     },
 
     removeEpisode(index) {
@@ -293,146 +293,146 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
     },
 
     serialize() {
-        return JSON.stringify(this.episodes.filter(e &#x3D;&gt; e.title &amp;&amp; e.youtube_id))
+        return JSON.stringify(this.episodes.filter(e => e.title && e.youtube_id))
     }
-}&quot;
-  x-init&#x3D;&quot;episodes &#x3D; &lt;cms:show_json episodes /&gt;&quot;
-&gt;
-  &lt;template x-for&#x3D;&quot;(episode, index) in episodes&quot; x-bind:key&#x3D;&quot;index&quot;&gt;
-    &lt;div class&#x3D;&quot;card bg-base-200 p-4 mb-2&quot;&gt;
-      &lt;input
-        type&#x3D;&quot;text&quot;
-        x-model&#x3D;&quot;episode.title&quot;
-        placeholder&#x3D;&quot;Title&quot;
-        class&#x3D;&quot;input input-bordered mb-2&quot;
-      /&gt;
-      &lt;input
-        type&#x3D;&quot;text&quot;
-        x-model&#x3D;&quot;episode.youtube_id&quot;
-        placeholder&#x3D;&quot;YouTube ID&quot;
-        class&#x3D;&quot;input input-bordered mb-2&quot;
-      /&gt;
-      &lt;textarea
-        x-model&#x3D;&quot;episode.description&quot;
-        placeholder&#x3D;&quot;Description&quot;
-        class&#x3D;&quot;textarea textarea-bordered&quot;
-      &gt;&lt;/textarea&gt;
-      &lt;button
-        type&#x3D;&quot;button&quot;
-        x-on:click&#x3D;&quot;removeEpisode(index)&quot;
-        class&#x3D;&quot;btn btn-ghost btn-sm&quot;
-      &gt;
+}"
+  x-init="episodes = <cms:show_json episodes />"
+>
+  <template x-for="(episode, index) in episodes" x-bind:key="index">
+    <div class="card bg-base-200 p-4 mb-2">
+      <input
+        type="text"
+        x-model="episode.title"
+        placeholder="Title"
+        class="input input-bordered mb-2"
+      />
+      <input
+        type="text"
+        x-model="episode.youtube_id"
+        placeholder="YouTube ID"
+        class="input input-bordered mb-2"
+      />
+      <textarea
+        x-model="episode.description"
+        placeholder="Description"
+        class="textarea textarea-bordered"
+      ></textarea>
+      <button
+        type="button"
+        x-on:click="removeEpisode(index)"
+        class="btn btn-ghost btn-sm"
+      >
         Remove
-      &lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/template&gt;
+      </button>
+    </div>
+  </template>
 
-  &lt;button type&#x3D;&quot;button&quot; x-on:click&#x3D;&quot;addEpisode()&quot; class&#x3D;&quot;btn btn-outline&quot;&gt;
+  <button type="button" x-on:click="addEpisode()" class="btn btn-outline">
     Add Episode
-  &lt;/button&gt;
+  </button>
 
-  &lt;!-- Hidden field for form submission --&gt;
-  &lt;textarea name&#x3D;&quot;episodes_json&quot; class&#x3D;&quot;hidden&quot; x-text&#x3D;&quot;serialize()&quot;&gt;&lt;/textarea&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+  <!-- Hidden field for form submission -->
+  <textarea name="episodes_json" class="hidden" x-text="serialize()"></textarea>
+</div>
+```
 
 **Form Persistence:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;cms:if k_success&gt;
-  &lt;cms:db_persist_form
-    episodes&#x3D;&quot;frm_episodes_json&quot;
-    content_owner&#x3D;&quot;k_user_name&quot;
-    _invalidate_cache&#x3D;&quot;1&quot;
-  /&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<cms:if k_success>
+  <cms:db_persist_form
+    episodes="frm_episodes_json"
+    content_owner="k_user_name"
+    _invalidate_cache="1"
+  />
+</cms:if>
+```
 
 ### Anti-Spam Protection
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;contact.php&quot;
-&lt;cms:form masterpage&#x3D;&#x27;contact.php&#x27; mode&#x3D;&#x27;create&#x27;&gt;
-    &lt;!-- Honeypot (hidden from users) --&gt;
-    &lt;div style&#x3D;&quot;display:none&quot;&gt;
-        &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;website&quot; value&#x3D;&quot;&quot; /&gt;
-    &lt;/div&gt;
+```html title="contact.php"
+<cms:form masterpage='contact.php' mode='create'>
+    <!-- Honeypot (hidden from users) -->
+    <div style="display:none">
+        <input type="text" name="website" value="" />
+    </div>
 
-    &lt;!-- Timestamp for bot detection --&gt;
-    &lt;input type&#x3D;&quot;hidden&quot; name&#x3D;&quot;form_timestamp&quot; value&#x3D;&quot;&lt;cms:date format&#x3D;&#x27;U&#x27; /&gt;&quot; /&gt;
+    <!-- Timestamp for bot detection -->
+    <input type="hidden" name="form_timestamp" value="<cms:date format='U' />" />
 
-    &lt;!-- Human verification --&gt;
-    &lt;label class&#x3D;&quot;form-control&quot;&gt;
-        &lt;span class&#x3D;&quot;label-text&quot;&gt;What is 2 + 2?&lt;/span&gt;
-        &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;human_check&quot; class&#x3D;&quot;input input-bordered&quot; /&gt;
-    &lt;/label&gt;
+    <!-- Human verification -->
+    <label class="form-control">
+        <span class="label-text">What is 2 + 2?</span>
+        <input type="text" name="human_check" class="input input-bordered" />
+    </label>
 
-    &lt;cms:if k_success&gt;
-        &lt;!-- Honeypot check --&gt;
-        &lt;cms:if &quot;&lt;cms:not_empty frm_website /&gt;&quot;&gt;
-            &lt;cms:abort /&gt;
-        &lt;/cms:if&gt;
+    <cms:if k_success>
+        <!-- Honeypot check -->
+        <cms:if "<cms:not_empty frm_website />">
+            <cms:abort />
+        </cms:if>
 
-        &lt;!-- Time check (minimum 3 seconds) --&gt;
-        &lt;cms:set time_diff&#x3D;&quot;&lt;cms:sub &#x27;&lt;cms:date format&#x3D;&quot;U&quot; /&gt;&#x27; frm_form_timestamp /&gt;&quot; /&gt;
-        &lt;cms:if time_diff lt &#x27;3&#x27;&gt;
-            &lt;cms:abort /&gt;
-        &lt;/cms:if&gt;
+        <!-- Time check (minimum 3 seconds) -->
+        <cms:set time_diff="<cms:sub '<cms:date format="U" />' frm_form_timestamp />" />
+        <cms:if time_diff lt '3'>
+            <cms:abort />
+        </cms:if>
 
-        &lt;!-- Human verification --&gt;
-        &lt;cms:if frm_human_check ne &#x27;4&#x27;&gt;
-            &lt;cms:set k_error&#x3D;&#x27;Verification failed&#x27; scope&#x3D;&#x27;parent&#x27; /&gt;
-            &lt;cms:abort /&gt;
-        &lt;/cms:if&gt;
+        <!-- Human verification -->
+        <cms:if frm_human_check ne '4'>
+            <cms:set k_error='Verification failed' scope='parent' />
+            <cms:abort />
+        </cms:if>
 
-        &lt;cms:db_persist_form /&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+        <cms:db_persist_form />
+    </cms:if>
+</cms:form>
+```
 
 ### Auto-Save Drafts
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;div
-  x-data&#x3D;&quot;{
+```html title="projects.php"
+<div
+  x-data="{
     formData: {},
     isDirty: false,
 
     init() {
-        const draft &#x3D; localStorage.getItem(&#x27;draft_&lt;cms:show k_template_name /&gt;&#x27;)
-        if (draft) this.formData &#x3D; JSON.parse(draft)
+        const draft = localStorage.getItem('draft_<cms:show k_template_name />')
+        if (draft) this.formData = JSON.parse(draft)
 
-        setInterval(() &#x3D;&gt; {
+        setInterval(() => {
             if (this.isDirty) this.saveDraft()
         }, 30000)
     },
 
     saveDraft() {
-        localStorage.setItem(&#x27;draft_&lt;cms:show k_template_name /&gt;&#x27;, JSON.stringify(this.formData))
-        this.isDirty &#x3D; false
+        localStorage.setItem('draft_<cms:show k_template_name />', JSON.stringify(this.formData))
+        this.isDirty = false
     },
 
     clearDraft() {
-        localStorage.removeItem(&#x27;draft_&lt;cms:show k_template_name /&gt;&#x27;)
+        localStorage.removeItem('draft_<cms:show k_template_name />')
     }
-}&quot;
-&gt;
-  &lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;create&quot;&gt;
-    &lt;input
-      type&#x3D;&quot;text&quot;
-      name&#x3D;&quot;title&quot;
-      x-model&#x3D;&quot;formData.title&quot;
-      x-on:input&#x3D;&quot;isDirty &#x3D; true&quot;
-    /&gt;
+}"
+>
+  <cms:form masterpage="projects.php" mode="create">
+    <input
+      type="text"
+      name="title"
+      x-model="formData.title"
+      x-on:input="isDirty = true"
+    />
 
-    &lt;cms:if k_success&gt;
-      &lt;cms:db_persist_form /&gt;
-      &lt;script&gt;
-        localStorage.removeItem(&quot;draft_&lt;cms:show k_template_name /&gt;&quot;);
-      &lt;/script&gt;
-    &lt;/cms:if&gt;
-  &lt;/cms:form&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_success>
+      <cms:db_persist_form />
+      <script>
+        localStorage.removeItem("draft_<cms:show k_template_name />");
+      </script>
+    </cms:if>
+  </cms:form>
+</div>
+```
 
 ---
 
@@ -440,7 +440,7 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### When to Refactor
 
-- ⚠️ Missing &#x60;enctype&#x60; for file uploads
+- ⚠️ Missing `enctype` for file uploads
 - ⚠️ Validation on inputs instead of editable regions
 - ⚠️ Missing ownership/authentication checks
 - ⚠️ No error handling or user feedback
@@ -448,90 +448,90 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 ### Anti-Patterns to Fix
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ❌ Bad: Validation on bound input --&gt;
-&lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;title&quot; required&#x3D;&quot;1&quot; validator&#x3D;&quot;min_len&#x3D;3&quot; /&gt;
+```html title="template.html"
+<!-- ❌ Bad: Validation on bound input -->
+<cms:input type="bound" name="title" required="1" validator="min_len=3" />
 
-&lt;!-- ✅ Good: Validation on editable region in template --&gt;
-&lt;cms:editable name&#x3D;&quot;title&quot; type&#x3D;&quot;text&quot; required&#x3D;&quot;1&quot; validator&#x3D;&quot;min_len&#x3D;3&quot; /&gt;
-&lt;!-- Then bound input just binds --&gt;
-&lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;title&quot; /&gt;
-&#x60;&#x60;&#x60;
+<!-- ✅ Good: Validation on editable region in template -->
+<cms:editable name="title" type="text" required="1" validator="min_len=3" />
+<!-- Then bound input just binds -->
+<cms:input type="bound" name="title" />
+```
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;!-- ❌ Bad: No ownership check on edit --&gt;
-&lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;edit&quot; page_id&#x3D;&quot;k_page_id&quot;&gt;
-  &lt;!-- ✅ Good: With ownership validation --&gt;
-  &lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt; &lt;cms:embed
-  &#x27;{{paths.filters}}/owns_content.html&#x27; /&gt;
-  &lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;edit&quot; page_id&#x3D;&quot;k_page_id&quot;&gt;&lt;/cms:form
-&gt;&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+```html title="projects.php"
+<!-- ❌ Bad: No ownership check on edit -->
+<cms:form masterpage="projects.php" mode="edit" page_id="k_page_id">
+  <!-- ✅ Good: With ownership validation -->
+  <cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
+  '{{paths.filters}}/owns_content.html' />
+  <cms:form masterpage="projects.php" mode="edit" page_id="k_page_id"></cms:form
+></cms:form>
+```
 
 ### Refactoring Patterns
 
 **Add Proper Error Handling:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;!-- Before: No error display --&gt;
-&lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;create&quot;&gt;
-  &lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;title&quot; /&gt;
-  &lt;button type&#x3D;&quot;submit&quot;&gt;Save&lt;/button&gt;
-&lt;/cms:form&gt;
+```html title="projects.php"
+<!-- Before: No error display -->
+<cms:form masterpage="projects.php" mode="create">
+  <cms:input type="bound" name="title" />
+  <button type="submit">Save</button>
+</cms:form>
 
-&lt;!-- After: Complete error handling --&gt;
-&lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;create&quot;&gt;
-  &lt;cms:if k_error&gt;
-    &lt;div class&#x3D;&quot;alert alert-error&quot;&gt;
-      &lt;cms:each k_error
-        &gt;&lt;p&gt;&lt;cms:show item /&gt;&lt;/p
-      &gt;&lt;/cms:each&gt;
-    &lt;/div&gt;
-  &lt;/cms:if&gt;
+<!-- After: Complete error handling -->
+<cms:form masterpage="projects.php" mode="create">
+  <cms:if k_error>
+    <div class="alert alert-error">
+      <cms:each k_error
+        ><p><cms:show item /></p
+      ></cms:each>
+    </div>
+  </cms:if>
 
-  &lt;label class&#x3D;&quot;form-control&quot;&gt;
-    &lt;span class&#x3D;&quot;label-text&quot;&gt;Title *&lt;/span&gt;
-    &lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;title&quot; class&#x3D;&quot;input input-bordered&quot; /&gt;
-    &lt;cms:if k_error_title&gt;
-      &lt;span class&#x3D;&quot;text-error text-sm&quot;&gt;&lt;cms:show k_error_title /&gt;&lt;/span&gt;
-    &lt;/cms:if&gt;
-  &lt;/label&gt;
+  <label class="form-control">
+    <span class="label-text">Title *</span>
+    <cms:input type="bound" name="title" class="input input-bordered" />
+    <cms:if k_error_title>
+      <span class="text-error text-sm"><cms:show k_error_title /></span>
+    </cms:if>
+  </label>
 
-  &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;Save&lt;/button&gt;
+  <button type="submit" class="btn btn-primary">Save</button>
 
-  &lt;cms:if k_success&gt;
-    &lt;cms:db_persist_form content_owner&#x3D;&quot;k_user_name&quot; _invalidate_cache&#x3D;&quot;1&quot; /&gt;
-    &lt;cms:set_flash name&#x3D;&quot;success&quot; value&#x3D;&quot;Saved!&quot; /&gt;
-    &lt;cms:redirect k_page_link /&gt;
-  &lt;/cms:if&gt;
-&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+  <cms:if k_success>
+    <cms:db_persist_form content_owner="k_user_name" _invalidate_cache="1" />
+    <cms:set_flash name="success" value="Saved!" />
+    <cms:redirect k_page_link />
+  </cms:if>
+</cms:form>
+```
 
 **Extract Reusable Form Steps:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;project-fields.html&quot;
-&lt;!-- Before: Duplicated form fields --&gt;
-&lt;!-- In create.html and edit.html --&gt;
+```html title="project-fields.html"
+<!-- Before: Duplicated form fields -->
+<!-- In create.html and edit.html -->
 
-&lt;!-- After: Shared snippet --&gt;
-&lt;!-- {{paths.forms}}/project-fields.html --&gt;
-&lt;label class&#x3D;&quot;form-control&quot;&gt;
-  &lt;span class&#x3D;&quot;label-text&quot;&gt;Title *&lt;/span&gt;
-  &lt;cms:input type&#x3D;&quot;bound&quot; name&#x3D;&quot;title&quot; class&#x3D;&quot;input input-bordered&quot; /&gt;
-&lt;/label&gt;
+<!-- After: Shared snippet -->
+<!-- {{paths.forms}}/project-fields.html -->
+<label class="form-control">
+  <span class="label-text">Title *</span>
+  <cms:input type="bound" name="title" class="input input-bordered" />
+</label>
 
-&lt;!-- Usage in both create and edit --&gt;
-&lt;cms:embed &#x27;{{paths.forms}}/project-fields.html&#x27; /&gt;
-&#x60;&#x60;&#x60;
+<!-- Usage in both create and edit -->
+<cms:embed '{{paths.forms}}/project-fields.html' />
+```
 
 ### Refactoring Checklist
 
-- [ ] &#x60;enctype&#x3D;&#x27;multipart/form-data&#x27;&#x60; for file uploads
+- [ ] `enctype='multipart/form-data'` for file uploads
 - [ ] Validation defined on editable regions (not inputs)
 - [ ] Authentication filter on protected forms
 - [ ] Ownership check on edit/delete forms
-- [ ] Setting &#x60;content_owner&#x60; on create
-- [ ] Proper error display with &#x60;k_error&#x60;
+- [ ] Setting `content_owner` on create
+- [ ] Proper error display with `k_error`
 - [ ] Success feedback with flash messages
 - [ ] Reusable form snippets (DRY)
 - [ ] Anti-spam measures for public forms
@@ -542,31 +542,31 @@ You are a CouchCMS DataBound Forms expert specializing in frontend CRUD operatio
 
 | Problem                | Cause                           | Solution                              |
 | ---------------------- | ------------------------------- | ------------------------------------- |
-| Form not submitting    | Missing &#x60;enctype&#x60;               | Add &#x60;enctype&#x3D;&#x27;multipart/form-data&#x27;&#x60;   |
-| File upload fails      | File too large                  | Check &#x60;php.ini&#x60; upload limits         |
-| Data not saved         | Missing &#x60;&lt;cms:db_persist_form&gt;&#x60; | Add inside &#x60;&lt;cms:if k_success&gt;&#x60;       |
-| Validation not working | Wrong field name                | Match &#x60;name&#x60; with editable field name |
-| Edit not loading data  | Missing &#x60;page_id&#x60;               | Add &#x60;page_id&#x3D;k_page_id&#x60;               |
-| Owner mismatch         | Not setting owner               | Add &#x60;content_owner&#x3D;k_user_name&#x60;       |
+| Form not submitting    | Missing `enctype`               | Add `enctype='multipart/form-data'`   |
+| File upload fails      | File too large                  | Check `php.ini` upload limits         |
+| Data not saved         | Missing `<cms:db_persist_form>` | Add inside `<cms:if k_success>`       |
+| Validation not working | Wrong field name                | Match `name` with editable field name |
+| Edit not loading data  | Missing `page_id`               | Add `page_id=k_page_id`               |
+| Owner mismatch         | Not setting owner               | Add `content_owner=k_user_name`       |
 
 ### Debug Form Data
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Show all form data --&gt;
-&lt;cms:if k_success&gt;
-  &lt;pre&gt;&lt;cms:dump frm_data /&gt;&lt;/pre&gt;
-&lt;/cms:if&gt;
+```html title="template.html"
+<!-- Show all form data -->
+<cms:if k_success>
+  <pre><cms:dump frm_data /></pre>
+</cms:if>
 
-&lt;!-- Show specific field error --&gt;
-&lt;cms:if k_error_title&gt;
-  &lt;span class&#x3D;&quot;text-error&quot;&gt;&lt;cms:show k_error_title /&gt;&lt;/span&gt;
-&lt;/cms:if&gt;
+<!-- Show specific field error -->
+<cms:if k_error_title>
+  <span class="text-error"><cms:show k_error_title /></span>
+</cms:if>
 
-&lt;!-- Show all errors --&gt;
-&lt;cms:if k_error&gt;
-  &lt;cms:each k_error&gt;
-    &lt;p class&#x3D;&quot;text-error&quot;&gt;&lt;cms:show item /&gt;&lt;/p&gt;
-  &lt;/cms:each&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+<!-- Show all errors -->
+<cms:if k_error>
+  <cms:each k_error>
+    <p class="text-error"><cms:show item /></p>
+  </cms:each>
+</cms:if>
+```
 

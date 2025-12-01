@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * CouchCMS AI Toolkit - Library Index
- * 
+ *
  * Central export point for all library modules
  */
 
@@ -58,3 +58,59 @@ export {
     writeConfig,
     formatWriteStats
 } from './file-writer.js'
+
+// Dependency checker
+export {
+    areDependenciesInstalled,
+    ensureDependencies,
+    checkAndInstallDependencies
+} from './dependency-checker.js'
+
+// Error solutions
+export {
+    ERROR_SOLUTIONS,
+    getSolutionForError,
+    formatSolution
+} from './error-solutions.js'
+
+// Toolkit detector
+export {
+    detectToolkitPath,
+    detectToolkitPathAbsolute
+} from './toolkit-detector.js'
+
+// Onboarding
+export {
+    isFirstTimeUser,
+    showWelcomeMessage,
+    showConceptExplanation,
+    showProgress,
+    getConceptExplanation,
+    showSummary,
+    CONCEPT_EXPLANATIONS
+} from './onboarding.js'
+
+// YAML validator
+export {
+    YAMLSyntaxError,
+    validateYAMLSyntax,
+    validateYAMLFile,
+    formatYAMLErrors
+} from './yaml-validator.js'
+
+// Fuzzy matcher
+export {
+    findBestMatches,
+    getSuggestions,
+    checkCommonTypo,
+    validateName,
+    formatNameError
+} from './fuzzy-matcher.js'
+
+// Template validator
+export {
+    extractTemplateVariables,
+    validateTemplateVariables,
+    formatTemplateErrors,
+    validateTemplate
+} from './template-validator.js'

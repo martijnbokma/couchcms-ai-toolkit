@@ -13,111 +13,111 @@ version: 5.0
 
 ## Installation
 
-&#x60;&#x60;&#x60;bash title&#x3D;&quot;command.sh&quot;
+```bash title="command.sh"
 bun add daisyui
-&#x60;&#x60;&#x60;
+```
 
 ## Configuration
 
 ### CSS Setup
 
-&#x60;&#x60;&#x60;css title&#x3D;&quot;styles.css&quot;
-@import &quot;tailwindcss&quot;;
-@plugin &quot;daisyui&quot;;
-&#x60;&#x60;&#x60;
+```css title="styles.css"
+@import "tailwindcss";
+@plugin "daisyui";
+```
 
 ### Theme Configuration
 
-&#x60;&#x60;&#x60;css title&#x3D;&quot;styles.css&quot;
-@plugin &quot;daisyui&quot; {
+```css title="styles.css"
+@plugin "daisyui" {
   themes: light --default, dark --prefersdark;
 }
-&#x60;&#x60;&#x60;
+```
 
 ## Content-Aware Colors
 
 ### 🚨 CRITICAL: Use Semantic Colors
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ✅ GOOD: Adapts to theme --&gt;
-&lt;div class&#x3D;&quot;bg-base-100 text-base-content&quot;&gt;
-  &lt;button class&#x3D;&quot;btn btn-primary&quot;&gt;
-    &lt;!-- ❌ BAD: Breaks in dark theme --&gt;
-    &lt;div class&#x3D;&quot;bg-white text-gray-900&quot;&gt;&lt;/div&gt;
-  &lt;/button&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<!-- ✅ GOOD: Adapts to theme -->
+<div class="bg-base-100 text-base-content">
+  <button class="btn btn-primary">
+    <!-- ❌ BAD: Breaks in dark theme -->
+    <div class="bg-white text-gray-900"></div>
+  </button>
+</div>
+```
 
 ### Color System
 
 | Color                        | Usage                  |
 | ---------------------------- | ---------------------- |
-| &#x60;base-100/200/300&#x60;           | Background surfaces    |
-| &#x60;base-content&#x60;               | Text on base colors    |
-| &#x60;primary&#x60;                    | Primary brand color    |
-| &#x60;primary-content&#x60;            | Text on primary        |
-| &#x60;secondary&#x60;                  | Secondary brand color  |
-| &#x60;accent&#x60;                     | Accent/highlight color |
-| &#x60;neutral&#x60;                    | Neutral elements       |
-| &#x60;info/success/warning/error&#x60; | Status colors          |
+| `base-100/200/300`           | Background surfaces    |
+| `base-content`               | Text on base colors    |
+| `primary`                    | Primary brand color    |
+| `primary-content`            | Text on primary        |
+| `secondary`                  | Secondary brand color  |
+| `accent`                     | Accent/highlight color |
+| `neutral`                    | Neutral elements       |
+| `info/success/warning/error` | Status colors          |
 
 ## Common Components
 
 ### Buttons
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;button class&#x3D;&quot;btn&quot;&gt;Default&lt;/button&gt;
-&lt;button class&#x3D;&quot;btn btn-primary&quot;&gt;Primary&lt;/button&gt;
-&lt;button class&#x3D;&quot;btn btn-outline btn-secondary&quot;&gt;Outline&lt;/button&gt;
-&lt;button class&#x3D;&quot;btn btn-ghost&quot;&gt;Ghost&lt;/button&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<button class="btn">Default</button>
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-outline btn-secondary">Outline</button>
+<button class="btn btn-ghost">Ghost</button>
+```
 
 ### Cards
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;div class&#x3D;&quot;card bg-base-100 shadow-xl&quot;&gt;
-  &lt;figure&gt;&lt;img src&#x3D;&quot;...&quot; alt&#x3D;&quot;...&quot; /&gt;&lt;/figure&gt;
-  &lt;div class&#x3D;&quot;card-body&quot;&gt;
-    &lt;h2 class&#x3D;&quot;card-title&quot;&gt;Title&lt;/h2&gt;
-    &lt;p&gt;Content&lt;/p&gt;
-    &lt;div class&#x3D;&quot;card-actions justify-end&quot;&gt;
-      &lt;button class&#x3D;&quot;btn btn-primary&quot;&gt;Action&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<div class="card bg-base-100 shadow-xl">
+  <figure><img src="..." alt="..." /></figure>
+  <div class="card-body">
+    <h2 class="card-title">Title</h2>
+    <p>Content</p>
+    <div class="card-actions justify-end">
+      <button class="btn btn-primary">Action</button>
+    </div>
+  </div>
+</div>
+```
 
 ### Forms
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;div class&#x3D;&quot;form-control&quot;&gt;
-  &lt;label class&#x3D;&quot;label&quot;&gt;
-    &lt;span class&#x3D;&quot;label-text&quot;&gt;Label&lt;/span&gt;
-  &lt;/label&gt;
-  &lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;input input-bordered&quot; /&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<div class="form-control">
+  <label class="label">
+    <span class="label-text">Label</span>
+  </label>
+  <input type="text" class="input input-bordered" />
+</div>
+```
 
 ### Modal
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;button onclick&#x3D;&quot;my_modal.showModal()&quot; class&#x3D;&quot;btn&quot;&gt;Open&lt;/button&gt;
-&lt;dialog id&#x3D;&quot;my_modal&quot; class&#x3D;&quot;modal&quot;&gt;
-  &lt;div class&#x3D;&quot;modal-box&quot;&gt;
-    &lt;h3 class&#x3D;&quot;text-lg font-bold&quot;&gt;Title&lt;/h3&gt;
-    &lt;p&gt;Content&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;form method&#x3D;&quot;dialog&quot; class&#x3D;&quot;modal-backdrop&quot;&gt;
-    &lt;button&gt;close&lt;/button&gt;
-  &lt;/form&gt;
-&lt;/dialog&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<button onclick="my_modal.showModal()" class="btn">Open</button>
+<dialog id="my_modal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Title</h3>
+    <p>Content</p>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+```
 
 ## Custom Theme
 
-&#x60;&#x60;&#x60;css title&#x3D;&quot;styles.css&quot;
-@plugin &quot;daisyui/theme&quot; {
-  name: &quot;custom&quot;;
+```css title="styles.css"
+@plugin "daisyui/theme" {
+  name: "custom";
   default: true;
   color-scheme: dark;
 
@@ -135,21 +135,21 @@ bun add daisyui
   --radius-box: 0.5rem;
   --radius-field: 0.25rem;
 }
-&#x60;&#x60;&#x60;
+```
 
 ## Best Practices
 
 ### DO
 
 - Use daisyUI components for common UI patterns
-- Use semantic color classes (&#x60;base-content&#x60;, &#x60;primary&#x60;, etc.)
+- Use semantic color classes (`base-content`, `primary`, etc.)
 - Customize via themes, not utility overrides
 - Check existing components before creating custom ones
 
-### DON&#x27;T
+### DON'T
 
-- Use Tailwind color classes (&#x60;text-gray-800&#x60;) with daisyUI
-- Override component styles with &#x60;!important&#x60;
+- Use Tailwind color classes (`text-gray-800`) with daisyUI
+- Override component styles with `!important`
 - Mix Bootstrap and daisyUI
 - Ignore theme consistency
 

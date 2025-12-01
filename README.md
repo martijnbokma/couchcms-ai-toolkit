@@ -11,7 +11,7 @@ Provides consistent AI assistance across all your projects with modules, agents,
 
 > [!WARNING]
 > **Critical Step**
-> 
+>
 > You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
 
 ```bash
@@ -70,7 +70,7 @@ This installs the required packages:
 
 > [!CAUTION]
 > **Important**
-> 
+>
 > After adding the submodule, **always** run `bun install` in `ai-toolkit-shared/` before using any scripts.
 
 ## 🚀 Quick Start
@@ -244,12 +244,28 @@ Key terms used throughout this documentation:
 
 | Guide | Purpose |
 |-------|---------|
-| **[Config Files Guide](docs/CONFIG-FILES.md)** | Understanding `standards.md` configuration |
+| **[Config Files Guide](docs/CONFIG-FILES.md)** | Understanding `standards.md` configuration (Single Source of Truth) |
+| **[Standards Guide](docs/STANDARDS-GUIDE.md)** | Complete guide to creating and maintaining `standards.md` |
 | **[Editor Support](docs/EDITOR-SUPPORT.md)** | Cursor, Claude Code, and other editor configs |
 | **[Editor Quick Reference](docs/EDITOR-QUICK-REFERENCE.md)** | Quick reference for editor features |
 | **[Project Rules](docs/PROJECT-RULES.md)** | Cursor Project Rules |
 | **[User Rules](docs/USER-RULES.md)** | Cursor User Rules |
 | **[Custom Commands](docs/CUSTOM-COMMANDS.md)** | Cursor Custom Commands |
+
+**Quick Example - Minimal `standards.md`:**
+```yaml
+---
+name: "my-project"
+toolkit: "./ai-toolkit-shared"
+modules:
+  - couchcms-core
+  - tailwindcss
+agents:
+  - couchcms
+  - tailwindcss
+---
+# Your project-specific rules here
+```
 
 ### Reference
 
@@ -262,8 +278,10 @@ Key terms used throughout this documentation:
 
 | Guide | For |
 |-------|-----|
-| **[Extending Modules](docs/EXTENDING-MODULES.md)** | Creating custom modules |
-| **[Contributing](CONTRIBUTING.md)** | Contributing to toolkit |
+| **[Creating Custom Modules/Agents](docs/CUSTOM-MODULES-AGENTS.md)** | Adding new modules and agents |
+| **[Extending Modules](docs/EXTENDING-MODULES.md)** | Extending existing modules |
+| **[Contributing](CONTRIBUTING.md)** | Contributing to toolkit development |
+| **[Git Workflow](docs/GIT-WORKFLOW.md)** | Collaboration and branching strategy |
 | **[Changelog](CHANGELOG.md)** | Version history |
 
 ## 🎯 Commands

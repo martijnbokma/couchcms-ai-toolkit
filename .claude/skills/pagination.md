@@ -22,39 +22,39 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 | Tag                | Purpose                    |
 | ------------------ | -------------------------- |
-| &#x60;&lt;cms:pages&gt;&#x60;      | List pages with pagination |
-| &#x60;&lt;cms:search&gt;&#x60;     | Search with pagination     |
-| &#x60;&lt;cms:comments&gt;&#x60;   | Comments with pagination   |
-| &#x60;&lt;cms:paginator /&gt;&#x60;| Display pagination links   |
+| `<cms:pages>`      | List pages with pagination |
+| `<cms:search>`     | Search with pagination     |
+| `<cms:comments>`   | Comments with pagination   |
+| `<cms:paginator />`| Display pagination links   |
 
 ### Pagination Parameters
 
 | Parameter   | Purpose                          |
 | ----------- | -------------------------------- |
-| &#x60;paginate&#x60;  | Enable pagination (set to &#x60;1&#x60;)   |
-| &#x60;limit&#x60;     | Items per page                   |
-| &#x60;startcount&#x60;| Starting count number (default 1)|
+| `paginate`  | Enable pagination (set to `1`)   |
+| `limit`     | Items per page                   |
+| `startcount`| Starting count number (default 1)|
 
 ### Pagination Variables
 
 | Variable            | Purpose                                    |
 | ------------------- | ------------------------------------------ |
-| &#x60;k_total_records&#x60;   | Total number of records                    |
-| &#x60;k_count&#x60;           | Current record number on page (1-10)       |
-| &#x60;k_current_record&#x60;  | Absolute record number (1-23)              |
-| &#x60;k_record_from&#x60;     | First record number on current page        |
-| &#x60;k_record_to&#x60;       | Last record number on current page         |
-| &#x60;k_current_page&#x60;    | Current page number                        |
-| &#x60;k_total_pages&#x60;     | Total number of pages                      |
-| &#x60;k_paginator_required&#x60; | Whether pagination is needed            |
-| &#x60;k_paginated_top&#x60;   | True at start of paginated section         |
-| &#x60;k_paginated_bottom&#x60;| True at end of paginated section           |
+| `k_total_records`   | Total number of records                    |
+| `k_count`           | Current record number on page (1-10)       |
+| `k_current_record`  | Absolute record number (1-23)              |
+| `k_record_from`     | First record number on current page        |
+| `k_record_to`       | Last record number on current page         |
+| `k_current_page`    | Current page number                        |
+| `k_total_pages`     | Total number of pages                      |
+| `k_paginator_required` | Whether pagination is needed            |
+| `k_paginated_top`   | True at start of paginated section         |
+| `k_paginated_bottom`| True at end of paginated section           |
 
 ### Your Approach
 
-- Always use &#x60;paginate&#x3D;&#x27;1&#x27;&#x60; for large result sets
+- Always use `paginate='1'` for large result sets
 - Display pagination info at top and bottom
-- Use &#x60;&lt;cms:paginator /&gt;&#x60; for navigation links
+- Use `<cms:paginator />` for navigation links
 - Show record counts for user feedback
 - Handle edge cases (no results, single page)
 - Place pagination controls in accessible locations
@@ -65,130 +65,130 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ### Basic Pagination
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;cms:if k_paginator_required&gt;
-                &lt;p&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-            &lt;p&gt;Showing &lt;cms:show k_record_from /&gt;-&lt;cms:show k_record_to /&gt; of &lt;cms:show k_total_records /&gt; results&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1'>
+    <cms:if k_paginated_top>
+        <div class="mb-4">
+            <cms:if k_paginator_required>
+                <p>Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+            </cms:if>
+            <p>Showing <cms:show k_record_from />-<cms:show k_record_to /> of <cms:show k_total_records /> results</p>
+        </div>
+    </cms:if>
 
-    &lt;!-- Page content here --&gt;
-    &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-        &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-        &lt;p&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-    &lt;/div&gt;
+    <!-- Page content here -->
+    <div class="mb-4">
+        <h3><a href="<cms:show k_page_link />"><cms:show k_page_title /></a></h3>
+        <p><cms:show k_page_excerpt /></p>
+    </div>
 
-    &lt;cms:paginator /&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+    <cms:paginator />
+</cms:pages>
+```
 
 ### Pagination with Search
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;div class&#x3D;&quot;alert alert-info mb-4&quot;&gt;
-            &lt;cms:if k_paginator_required&gt;
-                &lt;p&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-            &lt;p&gt;&lt;cms:show k_total_records /&gt; results found&lt;/p&gt;
-            &lt;p&gt;Displaying: &lt;cms:show k_record_from /&gt;-&lt;cms:show k_record_to /&gt;&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
+```php title="blog.php"
+<cms:search masterpage='blog.php' limit='10' paginate='1'>
+    <cms:if k_paginated_top>
+        <div class="alert alert-info mb-4">
+            <cms:if k_paginator_required>
+                <p>Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+            </cms:if>
+            <p><cms:show k_total_records /> results found</p>
+            <p>Displaying: <cms:show k_record_from />-<cms:show k_record_to /></p>
+        </div>
+    </cms:if>
 
-    &lt;!-- Search results --&gt;
-    &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-        &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_search_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-        &lt;p&gt;&lt;cms:show k_search_excerpt /&gt;&lt;/p&gt;
-    &lt;/div&gt;
+    <!-- Search results -->
+    <div class="mb-4">
+        <h3><a href="<cms:show k_page_link />"><cms:show k_search_title /></a></h3>
+        <p><cms:show k_search_excerpt /></p>
+    </div>
 
-    &lt;cms:paginator /&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+    <cms:paginator />
+</cms:search>
+```
 
 ### Pagination with Comments
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:comments limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;p&gt;&lt;cms:show k_total_records /&gt; comments&lt;/p&gt;
-            &lt;cms:if k_paginator_required&gt;
-                &lt;p&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
+```php title="template.php"
+<cms:comments limit='10' paginate='1'>
+    <cms:if k_paginated_top>
+        <div class="mb-4">
+            <p><cms:show k_total_records /> comments</p>
+            <cms:if k_paginator_required>
+                <p>Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+            </cms:if>
+        </div>
+    </cms:if>
 
-    &lt;!-- Comment display --&gt;
-    &lt;div class&#x3D;&quot;comment mb-4&quot;&gt;
-        &lt;p&gt;&lt;cms:show k_comment_author /&gt; said:&lt;/p&gt;
-        &lt;p&gt;&lt;cms:show k_comment_content /&gt;&lt;/p&gt;
-    &lt;/div&gt;
+    <!-- Comment display -->
+    <div class="comment mb-4">
+        <p><cms:show k_comment_author /> said:</p>
+        <p><cms:show k_comment_content /></p>
+    </div>
 
-    &lt;cms:paginator /&gt;
-&lt;/cms:comments&gt;
-&#x60;&#x60;&#x60;
+    <cms:paginator />
+</cms:comments>
+```
 
 ### Custom Pagination Display
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;div class&#x3D;&quot;flex justify-between items-center mb-6&quot;&gt;
-            &lt;div&gt;
-                &lt;p class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;
-                    Showing &lt;cms:show k_record_from /&gt;-&lt;cms:show k_record_to /&gt;
-                    of &lt;cms:show k_total_records /&gt; results
-                &lt;/p&gt;
-            &lt;/div&gt;
-            &lt;cms:if k_paginator_required&gt;
-                &lt;div class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;
-                    Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;
-                &lt;/div&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1'>
+    <cms:if k_paginated_top>
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <p class="text-sm text-base-content/70">
+                    Showing <cms:show k_record_from />-<cms:show k_record_to />
+                    of <cms:show k_total_records /> results
+                </p>
+            </div>
+            <cms:if k_paginator_required>
+                <div class="text-sm text-base-content/70">
+                    Page <cms:show k_current_page /> of <cms:show k_total_pages />
+                </div>
+            </cms:if>
+        </div>
+    </cms:if>
 
-    &lt;!-- Content --&gt;
+    <!-- Content -->
 
-    &lt;cms:if k_paginated_bottom&gt;
-        &lt;div class&#x3D;&quot;mt-6&quot;&gt;
-            &lt;cms:paginator /&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_paginated_bottom>
+        <div class="mt-6">
+            <cms:paginator />
+        </div>
+    </cms:if>
+</cms:pages>
+```
 
 ### Pagination with Start Count
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;!-- Start counting from 0 instead of 1 --&gt;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27; startcount&#x3D;&#x27;0&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;p&gt;Record &lt;cms:show k_current_record /&gt; of &lt;cms:show k_total_records /&gt;&lt;/p&gt;
-    &lt;/cms:if&gt;
+```php title="blog.php"
+<!-- Start counting from 0 instead of 1 -->
+<cms:pages masterpage='blog.php' limit='10' paginate='1' startcount='0'>
+    <cms:if k_paginated_top>
+        <p>Record <cms:show k_current_record /> of <cms:show k_total_records /></p>
+    </cms:if>
 
-    &lt;!-- Content (k_count will be 0-9 instead of 1-10) --&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+    <!-- Content (k_count will be 0-9 instead of 1-10) -->
+</cms:pages>
+```
 
 ### Pagination Navigation Only
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;!-- Content --&gt;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1'>
+    <!-- Content -->
 
-    &lt;cms:if k_paginated_bottom&gt;
-        &lt;nav class&#x3D;&quot;flex justify-center gap-2 mt-6&quot;&gt;
-            &lt;cms:paginator /&gt;
-        &lt;/nav&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_paginated_bottom>
+        <nav class="flex justify-center gap-2 mt-6">
+            <cms:paginator />
+        </nav>
+    </cms:if>
+</cms:pages>
+```
 
 ---
 
@@ -196,81 +196,81 @@ You are a CouchCMS pagination expert specializing in implementing pagination for
 
 ### Pagination with Custom Styling
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;!-- Content --&gt;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1'>
+    <!-- Content -->
 
-    &lt;cms:if k_paginated_bottom&gt;
-        &lt;div class&#x3D;&quot;join mt-6&quot;&gt;
-            &lt;cms:paginator /&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_paginated_bottom>
+        <div class="join mt-6">
+            <cms:paginator />
+        </div>
+    </cms:if>
+</cms:pages>
+```
 
-The &#x60;&lt;cms:paginator /&gt;&#x60; tag generates links that can be styled with daisyUI&#x27;s &#x60;join&#x60; class for button groups.
+The `<cms:paginator />` tag generates links that can be styled with daisyUI's `join` class for button groups.
 
 ### Conditional Pagination Display
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;cms:if k_paginator_required&gt;
-            &lt;div class&#x3D;&quot;alert alert-info mb-4&quot;&gt;
-                &lt;p&gt;Multiple pages of results available&lt;/p&gt;
-                &lt;p&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1'>
+    <cms:if k_paginated_top>
+        <cms:if k_paginator_required>
+            <div class="alert alert-info mb-4">
+                <p>Multiple pages of results available</p>
+                <p>Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+            </div>
+        </cms:if>
+    </cms:if>
 
-    &lt;!-- Content --&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+    <!-- Content -->
+</cms:pages>
+```
 
 ### Pagination with Record Numbers
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-        &lt;span class&#x3D;&quot;badge badge-ghost&quot;&gt;#&lt;cms:show k_current_record /&gt;&lt;/span&gt;
-        &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-        &lt;p&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-    &lt;/div&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1'>
+    <div class="mb-4">
+        <span class="badge badge-ghost">#<cms:show k_current_record /></span>
+        <h3><a href="<cms:show k_page_link />"><cms:show k_page_title /></a></h3>
+        <p><cms:show k_page_excerpt /></p>
+    </div>
+</cms:pages>
+```
 
 ### Pagination Info in Card
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;div class&#x3D;&quot;card bg-base-200 mb-4&quot;&gt;
-            &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                &lt;h2 class&#x3D;&quot;card-title&quot;&gt;Results&lt;/h2&gt;
-                &lt;p&gt;
-                    &lt;cms:show k_record_from /&gt;-&lt;cms:show k_record_to /&gt;
-                    of &lt;cms:show k_total_records /&gt;
-                &lt;/p&gt;
-                &lt;cms:if k_paginator_required&gt;
-                    &lt;p class&#x3D;&quot;text-sm&quot;&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-                &lt;/cms:if&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1'>
+    <cms:if k_paginated_top>
+        <div class="card bg-base-200 mb-4">
+            <div class="card-body">
+                <h2 class="card-title">Results</h2>
+                <p>
+                    <cms:show k_record_from />-<cms:show k_record_to />
+                    of <cms:show k_total_records />
+                </p>
+                <cms:if k_paginator_required>
+                    <p class="text-sm">Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+                </cms:if>
+            </div>
+        </div>
+    </cms:if>
 
-    &lt;!-- Content --&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+    <!-- Content -->
+</cms:pages>
+```
 
 ---
 
 ## Best Practices
 
-1. **Always Enable Pagination**: Use &#x60;paginate&#x3D;&#x27;1&#x27;&#x60; for any list that might exceed the limit
+1. **Always Enable Pagination**: Use `paginate='1'` for any list that might exceed the limit
 
-2. **Show Record Counts**: Display &#x60;k_record_from&#x60;, &#x60;k_record_to&#x60;, and &#x60;k_total_records&#x60; for user feedback
+2. **Show Record Counts**: Display `k_record_from`, `k_record_to`, and `k_total_records` for user feedback
 
-3. **Check Paginator Required**: Use &#x60;k_paginator_required&#x60; to conditionally show pagination info
+3. **Check Paginator Required**: Use `k_paginator_required` to conditionally show pagination info
 
 4. **Top and Bottom Controls**: Show pagination info at top, navigation at bottom
 
@@ -278,9 +278,9 @@ The &#x60;&lt;cms:paginator /&gt;&#x60; tag generates links that can be styled w
 
 6. **Accessible Navigation**: Use semantic HTML and proper ARIA labels for pagination links
 
-7. **Consistent Limits**: Use consistent &#x60;limit&#x60; values across similar sections
+7. **Consistent Limits**: Use consistent `limit` values across similar sections
 
-8. **Start Count**: Use &#x60;startcount&#x3D;&#x27;0&#x27;&#x60; if you need zero-based indexing
+8. **Start Count**: Use `startcount='0'` if you need zero-based indexing
 
 9. **Performance**: Reasonable limits (10-20 items) balance UX and performance
 
@@ -290,56 +290,56 @@ The &#x60;&lt;cms:paginator /&gt;&#x60; tag generates links that can be styled w
 
 ## Quick Fixes
 
-### &quot;Pagination not showing&quot;
+### "Pagination not showing"
 
-**Problem**: Pagination links don&#x27;t appear
+**Problem**: Pagination links don't appear
 
-**Solution**: Ensure &#x60;paginate&#x3D;&#x27;1&#x27;&#x60; is set and there are more records than the limit:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;!-- Content --&gt;
-    &lt;cms:paginator /&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Ensure `paginate='1'` is set and there are more records than the limit:
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1'>
+    <!-- Content -->
+    <cms:paginator />
+</cms:pages>
+```
 
-### &quot;Wrong record numbers&quot;
+### "Wrong record numbers"
 
-**Problem**: Record numbers don&#x27;t match expectations
+**Problem**: Record numbers don't match expectations
 
-**Solution**: Check &#x60;startcount&#x60; parameter - default is 1, use 0 for zero-based:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27; startcount&#x3D;&#x27;0&#x27;&gt;
-    &lt;!-- k_count will be 0-9, k_current_record will be 0-9 --&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Check `startcount` parameter - default is 1, use 0 for zero-based:
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='10' paginate='1' startcount='0'>
+    <!-- k_count will be 0-9, k_current_record will be 0-9 -->
+</cms:pages>
+```
 
-### &quot;Pagination info shows on single page&quot;
+### "Pagination info shows on single page"
 
 **Problem**: Pagination info displays even when only one page
 
-**Solution**: Use &#x60;k_paginator_required&#x60; to conditionally display:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_paginator_required&gt;
-    &lt;p&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Use `k_paginator_required` to conditionally display:
+```php title="template.php"
+<cms:if k_paginator_required>
+    <p>Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+</cms:if>
+```
 
-### &quot;Pagination at wrong location&quot;
+### "Pagination at wrong location"
 
 **Problem**: Pagination appears in unexpected place
 
-**Solution**: Use &#x60;k_paginated_top&#x60; and &#x60;k_paginated_bottom&#x60; to control placement:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_paginated_top&gt;
-    &lt;!-- Info at top --&gt;
-&lt;/cms:if&gt;
+**Solution**: Use `k_paginated_top` and `k_paginated_bottom` to control placement:
+```php title="template.php"
+<cms:if k_paginated_top>
+    <!-- Info at top -->
+</cms:if>
 
-&lt;!-- Content --&gt;
+<!-- Content -->
 
-&lt;cms:if k_paginated_bottom&gt;
-    &lt;cms:paginator /&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+<cms:if k_paginated_bottom>
+    <cms:paginator />
+</cms:if>
+```
 
 ---
 
@@ -351,63 +351,63 @@ The &#x60;&lt;cms:paginator /&gt;&#x60; tag generates links that can be styled w
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Blog&#x27; clonable&#x3D;&#x27;1&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Blog' clonable='1' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;div class&#x3D;&quot;container mx-auto p-4&quot;&gt;
-        &lt;h1 class&#x3D;&quot;text-3xl font-bold mb-6&quot;&gt;Blog&lt;/h1&gt;
+<cms:block 'content'>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-6">Blog</h1>
 
-        &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-            &lt;cms:if k_paginated_top&gt;
-                &lt;div class&#x3D;&quot;mb-6 flex justify-between items-center&quot;&gt;
-                    &lt;div&gt;
-                        &lt;p class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;
-                            Showing &lt;cms:show k_record_from /&gt;-&lt;cms:show k_record_to /&gt;
-                            of &lt;cms:show k_total_records /&gt; posts
-                        &lt;/p&gt;
-                    &lt;/div&gt;
-                    &lt;cms:if k_paginator_required&gt;
-                        &lt;div class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;
-                            Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;
-                        &lt;/div&gt;
-                    &lt;/cms:if&gt;
-                &lt;/div&gt;
-            &lt;/cms:if&gt;
+        <cms:pages masterpage='blog.php' limit='10' paginate='1' orderby='publish_date' order_dir='desc'>
+            <cms:if k_paginated_top>
+                <div class="mb-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-sm text-base-content/70">
+                            Showing <cms:show k_record_from />-<cms:show k_record_to />
+                            of <cms:show k_total_records /> posts
+                        </p>
+                    </div>
+                    <cms:if k_paginator_required>
+                        <div class="text-sm text-base-content/70">
+                            Page <cms:show k_current_page /> of <cms:show k_total_pages />
+                        </div>
+                    </cms:if>
+                </div>
+            </cms:if>
 
-            &lt;article class&#x3D;&quot;mb-8 pb-8 border-b border-base-300&quot;&gt;
-                &lt;h2 class&#x3D;&quot;text-2xl font-semibold mb-2&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                        &lt;cms:show k_page_title /&gt;
-                    &lt;/a&gt;
-                &lt;/h2&gt;
-                &lt;p class&#x3D;&quot;text-base-content/70 text-sm mb-2&quot;&gt;
-                    &lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;
-                &lt;/p&gt;
-                &lt;p class&#x3D;&quot;text-base-content/80 mb-4&quot;&gt;&lt;cms:show k_page_excerpt /&gt;&lt;/p&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Read more&lt;/a&gt;
-            &lt;/article&gt;
+            <article class="mb-8 pb-8 border-b border-base-300">
+                <h2 class="text-2xl font-semibold mb-2">
+                    <a href="<cms:show k_page_link />" class="link link-primary">
+                        <cms:show k_page_title />
+                    </a>
+                </h2>
+                <p class="text-base-content/70 text-sm mb-2">
+                    <cms:date k_page_date format='F j, Y' />
+                </p>
+                <p class="text-base-content/80 mb-4"><cms:show k_page_excerpt /></p>
+                <a href="<cms:show k_page_link />" class="btn btn-sm btn-primary">Read more</a>
+            </article>
 
-            &lt;cms:if k_paginated_bottom&gt;
-                &lt;nav class&#x3D;&quot;flex justify-center mt-8&quot;&gt;
-                    &lt;div class&#x3D;&quot;join&quot;&gt;
-                        &lt;cms:paginator /&gt;
-                    &lt;/div&gt;
-                &lt;/nav&gt;
-            &lt;/cms:if&gt;
-        &lt;/cms:pages&gt;
+            <cms:if k_paginated_bottom>
+                <nav class="flex justify-center mt-8">
+                    <div class="join">
+                        <cms:paginator />
+                    </div>
+                </nav>
+            </cms:if>
+        </cms:pages>
 
-        &lt;cms:if k_total_records&#x3D;&#x27;0&#x27;&gt;
-            &lt;div class&#x3D;&quot;alert alert-info&quot;&gt;
-                &lt;p&gt;No posts found.&lt;/p&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
-&lt;/cms:block&gt;
+        <cms:if k_total_records='0'>
+            <div class="alert alert-info">
+                <p>No posts found.</p>
+            </div>
+        </cms:if>
+    </div>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Solution: Pagination for Search Results
 
@@ -415,30 +415,30 @@ The &#x60;&lt;cms:paginator /&gt;&#x60; tag generates links that can be styled w
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;div class&#x3D;&quot;alert alert-info mb-4&quot;&gt;
-            &lt;p&gt;&lt;strong&gt;&lt;cms:show k_total_records /&gt;&lt;/strong&gt; results found&lt;/p&gt;
-            &lt;cms:if k_paginator_required&gt;
-                &lt;p class&#x3D;&quot;text-sm&quot;&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-                &lt;p class&#x3D;&quot;text-sm&quot;&gt;Showing &lt;cms:show k_record_from /&gt;-&lt;cms:show k_record_to /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
+```php title="blog.php"
+<cms:search masterpage='blog.php' limit='10' paginate='1'>
+    <cms:if k_paginated_top>
+        <div class="alert alert-info mb-4">
+            <p><strong><cms:show k_total_records /></strong> results found</p>
+            <cms:if k_paginator_required>
+                <p class="text-sm">Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+                <p class="text-sm">Showing <cms:show k_record_from />-<cms:show k_record_to /></p>
+            </cms:if>
+        </div>
+    </cms:if>
 
-    &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-        &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_search_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-        &lt;p&gt;&lt;cms:show k_search_excerpt /&gt;&lt;/p&gt;
-    &lt;/div&gt;
+    <div class="mb-4">
+        <h3><a href="<cms:show k_page_link />"><cms:show k_search_title /></a></h3>
+        <p><cms:show k_search_excerpt /></p>
+    </div>
 
-    &lt;cms:if k_paginated_bottom&gt;
-        &lt;div class&#x3D;&quot;mt-6&quot;&gt;
-            &lt;cms:paginator /&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_paginated_bottom>
+        <div class="mt-6">
+            <cms:paginator />
+        </div>
+    </cms:if>
+</cms:search>
+```
 
 ### Solution: Comments Pagination
 
@@ -446,43 +446,43 @@ The &#x60;&lt;cms:paginator /&gt;&#x60; tag generates links that can be styled w
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:comments limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_paginated_top&gt;
-        &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;h3&gt;&lt;cms:show k_total_records /&gt; Comments&lt;/h3&gt;
-            &lt;cms:if k_paginator_required&gt;
-                &lt;p class&#x3D;&quot;text-sm&quot;&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
+```php title="template.php"
+<cms:comments limit='10' paginate='1'>
+    <cms:if k_paginated_top>
+        <div class="mb-4">
+            <h3><cms:show k_total_records /> Comments</h3>
+            <cms:if k_paginator_required>
+                <p class="text-sm">Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+            </cms:if>
+        </div>
+    </cms:if>
 
-    &lt;div class&#x3D;&quot;comment mb-4 pb-4 border-b border-base-300&quot;&gt;
-        &lt;div class&#x3D;&quot;flex items-start gap-4&quot;&gt;
-            &lt;div class&#x3D;&quot;avatar placeholder&quot;&gt;
-                &lt;div class&#x3D;&quot;bg-neutral text-neutral-content rounded-full w-12&quot;&gt;
-                    &lt;span&gt;&lt;cms:show k_comment_author_initial /&gt;&lt;/span&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class&#x3D;&quot;flex-1&quot;&gt;
-                &lt;div class&#x3D;&quot;flex items-center gap-2 mb-2&quot;&gt;
-                    &lt;strong&gt;&lt;cms:show k_comment_author /&gt;&lt;/strong&gt;
-                    &lt;span class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;
-                        &lt;cms:date k_comment_date format&#x3D;&#x27;F j, Y g:i a&#x27; /&gt;
-                    &lt;/span&gt;
-                &lt;/div&gt;
-                &lt;p&gt;&lt;cms:show k_comment_content /&gt;&lt;/p&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
+    <div class="comment mb-4 pb-4 border-b border-base-300">
+        <div class="flex items-start gap-4">
+            <div class="avatar placeholder">
+                <div class="bg-neutral text-neutral-content rounded-full w-12">
+                    <span><cms:show k_comment_author_initial /></span>
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                    <strong><cms:show k_comment_author /></strong>
+                    <span class="text-sm text-base-content/70">
+                        <cms:date k_comment_date format='F j, Y g:i a' />
+                    </span>
+                </div>
+                <p><cms:show k_comment_content /></p>
+            </div>
+        </div>
+    </div>
 
-    &lt;cms:if k_paginated_bottom&gt;
-        &lt;nav class&#x3D;&quot;mt-6&quot;&gt;
-            &lt;cms:paginator /&gt;
-        &lt;/nav&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:comments&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_paginated_bottom>
+        <nav class="mt-6">
+            <cms:paginator />
+        </nav>
+    </cms:if>
+</cms:comments>
+```
 
 ---
 
@@ -501,9 +501,9 @@ The &#x60;&lt;cms:paginator /&gt;&#x60; tag generates links that can be styled w
 
 ## Warning Signs
 
-- ⚠️ Not using &#x60;paginate&#x3D;&#x27;1&#x27;&#x60; for large result sets
+- ⚠️ Not using `paginate='1'` for large result sets
 - ⚠️ Showing pagination info when only one page exists
-- ⚠️ Not checking &#x60;k_paginator_required&#x60; before displaying info
+- ⚠️ Not checking `k_paginator_required` before displaying info
 - ⚠️ Pagination controls in wrong location
 - ⚠️ Confusing record numbering (not explaining startcount)
 - ⚠️ Not showing total records count
@@ -522,9 +522,9 @@ The &#x60;&lt;cms:paginator /&gt;&#x60; tag generates links that can be styled w
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;concepts/pagination.mdx&#x60;
-- Tag Reference: &#x60;tags-reference/core/pages/&#x60;
-- Tag Reference: &#x60;tags-reference/core/search/&#x60;
-- Tag Reference: &#x60;tags-reference/core/comments/&#x60;
+- CouchCMS Documentation: `concepts/pagination.mdx`
+- Tag Reference: `tags-reference/core/pages/`
+- Tag Reference: `tags-reference/core/search/`
+- Tag Reference: `tags-reference/core/comments/`
 
 

@@ -1,542 +1,860 @@
 #!/usr/bin/env bun
 /**
- * CouchCMS AI Toolkit - Sync Script (Refactored)
+ * CouchCMS AI Toolkit - Sync Script
  *
- * Orchestrates the generation of editor configurations from project configuration,
- * toolkit modules, agents, and framework components.
+ * Generates editor configurations from project.md, toolkit modules,
+ * agents, and project-specific context.
  *
- * This is a lightweight orchestrator that delegates to specialized modules:
- * - config-loader: Load and merge configuration
- * - module-loader: Load modules, agents, and framework
- * - template-engine: Prepare data and render templates
- * - file-writer: Write generated configs to disk
+ * Features:
+ * - Loads default configuration from defaults.yaml
+ * - Merges project-specific overrides from project.md
+ * - Replaces {{paths.xxx}} variables in output
+ * - Supports modules, agents, and project context
  *
  * Usage:
- *   bun scripts/sync.js [--watch]
- *   
- * Options:
- *   --watch    Watch for changes and auto-sync
+ *   bun ai-toolkit/scripts/sync.js
+ *   bun ~/couchcms-ai-toolkit/scripts/sync.js
  */
 
-import { loadConfig, validateConfig } from './lib/config-loader.js'
-import { loadModules, loadAgents, loadFramework, checkConflicts } from './lib/module-loader.js'
-import { prepareTemplateData, renderTemplates, getEditorConfig } from './lib/template-engine.js'
-import { writeConfigs, formatWriteStats, copyDirectory } from './lib/file-writer.js'
-import { findProjectFile, resolveToolkitPath, handleError, ToolkitError } from './utils/utils.js'
-import { validateConfiguration } from './lib/config-validator.js'
-import { dirname, join } from 'path'
-import { existsSync, readFileSync, watch } from 'fs'
 import matter from 'gray-matter'
-import { checkAndNotify } from './lib/update-notifier.js'
+import { parse as parseYaml } from 'yaml'
+import Handlebars from 'handlebars'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, copyFileSync } from 'fs'
+import { join, dirname, resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const TOOLKIT_ROOT = resolve(__dirname, '..')
 
 /**
- * Find and validate project configuration file
- * @returns {object} - { configPath, projectDir }
+ * Register Handlebars helpers
  */
-function findProjectConfiguration() {
-    const configPath = findProjectFile()
+Handlebars.registerHelper('join', function (array, separator) {
+    if (!Array.isArray(array)) return ''
+    return array.join(separator || ', ')
+})
 
+Handlebars.registerHelper('add', function (a, b) {
+    return Number(a) + Number(b)
+})
+
+/**
+ * Load defaults from toolkit defaults.yaml
+ */
+function loadDefaults(toolkitPath) {
+    const defaultsPath = join(toolkitPath, 'defaults.yaml')
+
+    if (!existsSync(defaultsPath)) {
+        console.warn('⚠️  defaults.yaml not found, using built-in defaults')
+        return {
+            paths: {
+                css: 'assets/css',
+                typescript: 'assets/ts',
+                javascript: 'assets/js',
+                components: 'snippets/components',
+                views: 'snippets/views',
+                layouts: 'snippets/layouts',
+                filters: 'snippets/filters',
+                forms: 'snippets/forms',
+                public: 'public',
+            },
+            standards: {
+                indentation: 4,
+                language: 'english',
+                lineLength: 120,
+            },
+            naming: {
+                php_variables: 'snake_case',
+                ts_variables: 'camelCase',
+                css_classes: 'kebab-case',
+            },
+        }
+    }
+
+    const content = readFileSync(defaultsPath, 'utf8')
+    return parseYaml(content)
+}
+
+/**
+ * Deep merge two objects
+ */
+function deepMerge(target, source) {
+    const result = { ...target }
+
+    for (const key in source) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+            result[key] = deepMerge(target[key] || {}, source[key])
+        } else if (source[key] !== undefined) {
+            result[key] = source[key]
+        }
+    }
+
+    return result
+}
+
+/**
+ * Replace {{variable}} placeholders in content
+ */
+function replaceVariables(content, variables, prefix = '') {
+    let result = content
+
+    for (const [key, value] of Object.entries(variables)) {
+        if (typeof value === 'object' && !Array.isArray(value)) {
+            result = replaceVariables(result, value, prefix ? `${prefix}.${key}` : key)
+        } else {
+            const pattern = new RegExp(`\\{\\{${prefix ? `${prefix}.` : ''}${key}\\}\\}`, 'g')
+            result = result.replace(pattern, String(value))
+        }
+    }
+
+    return result
+}
+
+/**
+ * Find project.md in current directory or parent directories
+ */
+function findProjectFile(startDir = process.cwd()) {
+    let currentDir = startDir
+    const possibleNames = ['project.md', 'PROJECT.md']
+
+    while (currentDir !== '/') {
+        for (const name of possibleNames) {
+            const projectPath = join(currentDir, name)
+            if (existsSync(projectPath)) {
+                return projectPath
+            }
+        }
+        currentDir = dirname(currentDir)
+    }
+
+    return null
+}
+
+/**
+ * Resolve toolkit path from project config
+ */
+function resolveToolkitPath(configPath, projectDir) {
     if (!configPath) {
-        console.error('❌ No configuration file found')
-        console.log('\nCreate a standards.md file with:')
-        console.log('---')
-        console.log('name: "my-project"')
-        console.log('toolkit: "./ai-toolkit-shared"')
-        console.log('modules:')
-        console.log('  - couchcms-core')
-        console.log('---\n')
-        console.log('💡 Tip: Use .project/standards.md for the recommended location.')
-        process.exit(1)
+        return TOOLKIT_ROOT
     }
 
-    // Determine project root directory
-    // If config is in .project/ or docs/, use parent directory as project root
-    let projectDir = dirname(configPath)
-    // Normalize path separators for cross-platform compatibility
-    const normalizedPath = configPath.replace(/\\/g, '/')
-    if (normalizedPath.includes('/.project/') || normalizedPath.includes('/docs/')) {
-        projectDir = dirname(projectDir)
+    // Expand ~ to home directory
+    if (configPath.startsWith('~')) {
+        configPath = configPath.replace('~', process.env.HOME)
     }
-    
-    console.log(`📄 Config: ${configPath}`)
-    console.log(`📁 Project: ${projectDir}`)
 
-    return { configPath, projectDir }
+    // Resolve relative paths from project directory (not current working directory)
+    if (!configPath.startsWith('/')) {
+        configPath = resolve(projectDir, configPath)
+    }
+
+    return configPath
 }
 
 /**
- * Load and validate all toolkit resources
- * @param {object} config - Configuration object
- * @param {string} toolkitPath - Toolkit root directory
- * @returns {object} - { modules, agents, framework }
+ * Load a module from the toolkit (with caching)
  */
-function loadAllResources(config, toolkitPath) {
-    // Load modules
-    const moduleList = config.modules || ['couchcms-core']
-    console.log(`📚 Loading ${moduleList.length} modules...`)
-    const modules = loadModules(moduleList, toolkitPath)
-
-    // Check for conflicts
-    const conflicts = checkConflicts(modules)
-    if (conflicts.length > 0) {
-        console.log('')
-        conflicts.forEach(c => console.log(c))
-        throw new ToolkitError('Module conflicts detected', 'MODULE_CONFLICT')
+function loadModule(moduleName, toolkitPath) {
+    const cacheKey = `module:${moduleName}:${toolkitPath}`
+    const cached = cache.get(cacheKey)
+    if (cached) {
+        return cached
     }
 
-    // Load agents
-    const agentList = config.agents || []
-    const agents = agentList.length > 0 ? loadAgents(agentList, toolkitPath) : []
+    const modulePath = join(toolkitPath, 'modules', `${moduleName}.md`)
+
+    if (!existsSync(modulePath)) {
+        console.warn(`⚠️  Module not found: ${moduleName}`)
+        return null
+    }
+
+    const fileContent = readFileSync(modulePath, 'utf8')
+    const { data: meta, content } = matter(fileContent)
+
+    const module = { meta, content, name: moduleName }
+    cache.set(cacheKey, module)
+    return module
+}
+
+/**
+ * Load an agent from the toolkit (with caching)
+ */
+function loadAgent(agentName, toolkitPath) {
+    const cacheKey = `agent:${agentName}:${toolkitPath}`
+    const cached = cache.get(cacheKey)
+    if (cached) {
+        return cached
+    }
+
+    // Agents are now in a flat structure under agents/
+    const agentPath = join(toolkitPath, 'agents', `${agentName}.md`)
+
+    if (existsSync(agentPath)) {
+        const fileContent = readFileSync(agentPath, 'utf8')
+        const { data: meta, content } = matter(fileContent)
+        const agent = { meta, content, name: agentName }
+        cache.set(cacheKey, agent)
+        return agent
+    }
+
+    console.warn(`⚠️  Agent not found: ${agentName}`)
+    return null
+}
+
+/**
+ * Load project context from context directory
+ */
+function loadProjectContext(contextPath, projectDir) {
+    if (!contextPath) {
+        return null
+    }
+
+    // Resolve relative paths from project directory
+    const fullPath = contextPath.startsWith('/') ? contextPath : resolve(projectDir, contextPath)
+
+    if (!existsSync(fullPath)) {
+        console.warn(`⚠️  Context directory not found: ${fullPath}`)
+        return null
+    }
+
+    // Load context.md if it exists
+    const contextFile = join(fullPath, 'context.md')
+    if (existsSync(contextFile)) {
+        const fileContent = readFileSync(contextFile, 'utf8')
+        const { data: meta, content } = matter(fileContent)
+        return { meta, content, path: fullPath }
+    }
+
+    // Otherwise, load all .md files in the directory
+    const files = readdirSync(fullPath).filter(f => f.endsWith('.md'))
+    let combinedContent = ''
+
+    for (const file of files) {
+        const filePath = join(fullPath, file)
+        const fileContent = readFileSync(filePath, 'utf8')
+        const { content } = matter(fileContent)
+        combinedContent += `\n${content}\n`
+    }
+
+    return { meta: {}, content: combinedContent, path: fullPath }
+}
+
+/**
+ * Check for module conflicts
+ */
+function checkConflicts(modules) {
+    const moduleNames = modules.map(m => m.name)
+    const errors = []
+
+    for (const mod of modules) {
+        if (mod.meta.conflicts) {
+            for (const conflict of mod.meta.conflicts) {
+                if (moduleNames.includes(conflict)) {
+                    errors.push(`❌ Conflict: ${mod.name} cannot be used with ${conflict}`)
+                }
+            }
+        }
+
+        if (mod.meta.requires) {
+            for (const required of mod.meta.requires) {
+                if (!moduleNames.includes(required)) {
+                    errors.push(`❌ Missing dependency: ${mod.name} requires ${required}`)
+                }
+            }
+        }
+    }
+
+    return errors
+}
+
+/**
+ * Generate paths documentation section
+ */
+function generatePathsSection(paths) {
+    return `## Project Paths
+
+These are the configured paths for this project:
+
+| Type | Path |
+|------|------|
+| CSS | \`${paths.css}\` |
+| TypeScript | \`${paths.typescript}\` |
+| JavaScript | \`${paths.javascript}\` |
+| Components | \`${paths.components}\` |
+| Views | \`${paths.views}\` |
+| Layouts | \`${paths.layouts}\` |
+| Filters | \`${paths.filters}\` |
+| Forms | \`${paths.forms}\` |
+| Public | \`${paths.public}\` |
+
+**Always use these paths when creating or referencing files.**
+`
+}
+
+/**
+ * Generate the combined configuration content
+ */
+function generateContent(config, mergedConfig, modules, agents, projectContext, projectRules) {
+    const timestamp = new Date().toISOString()
+    const moduleNames = modules.map(m => m.name).join(', ')
+    const agentNames = agents.map(a => a.name).join(', ')
+    const { paths, standards } = mergedConfig
+
+    let content = `# AI Coding Standards
+# Project: ${config.name || 'Unnamed Project'}
+# Generated: ${timestamp}
+# Modules: ${moduleNames}
+${agentNames ? `# Agents: ${agentNames}` : ''}
+
+## Project Overview
+
+- **Name**: ${config.name || 'Unnamed'}
+- **Description**: ${config.description || 'No description'}
+- **Type**: CouchCMS Web Application
+
+## Core Standards
+
+- **Indentation**: ${standards.indentation} spaces
+- **Language**: ${standards.language} only for all code and content
+- **Line Length**: ${standards.lineLength} characters
+
+${generatePathsSection(paths)}
+
+---
+
+`
+
+    // Add each module's content
+    for (const mod of modules) {
+        content += `\n${mod.content}\n\n---\n`
+    }
+
+    // Add agents content
     if (agents.length > 0) {
-        console.log(`🤖 Loading ${agents.length} agents...`)
+        content += `\n# AI Agents\n\n`
+        for (const agent of agents) {
+            content += `\n${agent.content}\n\n---\n`
+        }
     }
 
-    // Load framework
-    const framework = loadFramework(config.framework, toolkitPath)
-    if (framework) {
-        const categories = framework.meta.categories || []
-        console.log(`📐 Framework: ${categories.join(', ')}`)
+    // Add project context
+    if (projectContext && projectContext.content.trim()) {
+        content += `\n# Project Context\n\n${projectContext.content}\n\n---\n`
     }
 
-    return { modules, agents, framework }
+    // Add project-specific rules from project.md
+    if (projectRules && projectRules.trim()) {
+        content += `\n# Project-Specific Rules\n\n${projectRules}\n`
+    }
+
+    // Replace all {{variable}} placeholders
+    content = replaceVariables(content, mergedConfig)
+
+    return content
 }
 
 /**
- * Generate all editor configurations
- * @param {object} config - Configuration object
- * @param {object} resources - Loaded resources
- * @param {string} toolkitPath - Toolkit root directory
- * @param {string} projectDir - Project root directory
- * @returns {object} - { configs: Map, templateData: object }
+ * Prepare template data for rendering
  */
-async function generateConfigurations(config, resources, toolkitPath, projectDir) {
-    const { modules, agents, framework } = resources
+function prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath) {
+    const { paths, standards, naming } = mergedConfig
 
-    // Prepare template data
-    console.log('📝 Preparing template data...')
-    const templateData = prepareTemplateData(
-        config,
-        config, // mergedConfig is same as config after loadConfig
-        modules,
-        agents,
-        framework,
-        null, // projectContext - not used in new structure
-        toolkitPath,
-        projectDir
+    // Extract languages and frameworks from modules
+    const languages = []
+    const frameworks = []
+    const techHierarchy = []
+
+    modules.forEach((mod, index) => {
+        if (mod.meta?.category === 'language') {
+            languages.push(mod.meta.name || mod.name)
+        }
+        if (mod.meta?.category === 'framework') {
+            frameworks.push(mod.meta.name || mod.name)
+        }
+        techHierarchy.push({
+            name: mod.meta?.name || mod.name,
+            description: mod.meta?.description || 'No description',
+            order: index + 1,
+        })
+    })
+
+    // Check for CMS and frontend
+    const hasCms = modules.some(m => m.name.includes('couchcms') || m.name.includes('cms'))
+    const hasFrontend = modules.some(
+        m =>
+            m.name.includes('tailwind') ||
+            m.name.includes('alpine') ||
+            m.name.includes('react') ||
+            m.name.includes('vue')
     )
 
-    // Determine which editors to generate for
-    // Note: 'claude' generates CLAUDE.md memory file and .claude/ directory
-    // Note: 'agents' generates AGENTS.md with all configured agents
-    const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot', 'agents']
-    
-    // Add cursor-rules if cursor is enabled
-    if (editors.includes('cursor')) {
-        editors.push('cursor-rules')
-    }
-    
-    // Add claude-settings and claude-skills if claude is enabled
-    if (editors.includes('claude')) {
-        if (!editors.includes('claude-settings')) {
-            editors.push('claude-settings')
-        }
-        if (!editors.includes('claude-skills')) {
-            editors.push('claude-skills')
-        }
-    }
-    
-    console.log(`🎨 Rendering templates for: ${editors.join(', ')}`)
+    // Prepare modules data
+    const modulesData = modules.map(mod => ({
+        name: mod.meta?.name || mod.name,
+        description: mod.meta?.description || 'No description',
+        version: mod.meta?.version || '1.0',
+        slug: mod.name,
+    }))
 
-    // Render templates
-    const configs = await renderTemplates(templateData, editors, toolkitPath)
+    // Prepare roles data (if available in config)
+    const roles = config.roles || []
 
-    return { configs, templateData }
+    return {
+        project: {
+            name: config.name || 'Unnamed Project',
+            type: config.type || 'CouchCMS Web Application',
+            description: config.description || 'No description',
+        },
+        standards: {
+            indentation: standards.indentation || 4,
+            line_length: standards.lineLength || 120,
+            language: standards.language || 'english',
+            naming: naming || {},
+        },
+        paths: paths,
+        languages: languages,
+        frameworks: frameworks,
+        tech_hierarchy: techHierarchy,
+        modules: modulesData,
+        agents: agents.map(a => ({
+            name: a.meta?.name || a.name,
+            description: a.meta?.description || 'No description',
+            type: a.meta?.type || 'daily',
+        })),
+        roles: roles,
+        has_cms: hasCms,
+        has_frontend: hasFrontend,
+        project_context: projectContext?.content || '',
+        toolkit_path: toolkitPath,
+        context_path: config.context || null,
+    }
 }
 
 /**
- * Write configurations to disk
- * @param {Map} configs - Map of output path → content
- * @param {string} projectDir - Project root directory
- * @param {string} toolkitPath - Toolkit root directory
- * @param {Array<string>} editors - List of enabled editors
- * @param {object} templateData - Template data for generating additional files
+ * Generate editor configuration files from templates
  */
-async function writeConfigurationFiles(configs, projectDir, toolkitPath, editors, templateData) {
-    console.log('💾 Writing configuration files...')
-    
-    // Initialize comprehensive statistics
-    const stats = {
-        written: 0,
-        skipped: 0,
-        copied: 0,
-        failed: 0,
-        errors: [],
-        validationErrors: [],
-        operations: []
+function generateEditorConfigs(toolkitPath, projectDir, templateData) {
+    const templatesDir = join(toolkitPath, 'templates', 'editors')
+
+    if (!existsSync(templatesDir)) {
+        return // No templates directory
     }
-    
-    // Track operation progress
-    const totalOperations = configs.size + 
-        (editors.includes('cursor-rules') ? 1 : 0) + 
-        (editors.includes('claude-skills') ? 1 : 0)
-    let completedOperations = 0
-    
-    // Write base configuration files
+
+    // Mapping of template files to output files
+    const templateMap = {
+        'cursor.template.md': { output: '.cursorrules', dir: projectDir },
+        'claude.template.md': { output: 'CLAUDE.md', dir: projectDir },
+        'copilot.template.md': { output: 'copilot-instructions.md', dir: join(projectDir, '.github') },
+        'codewhisperer.template.md': { output: '.codewhisperer/settings.json', dir: projectDir },
+        'tabnine.template.md': { output: '.tabnine/settings.json', dir: projectDir },
+        'windsurf.template.md': { output: '.windsurf/rules.md', dir: projectDir },
+        'agent.template.md': { output: 'AGENT.md', dir: projectDir },
+    }
+
+    const templateFiles = readdirSync(templatesDir).filter(f => f.endsWith('.template.md'))
+    let generatedCount = 0
+
+    for (const templateFile of templateFiles) {
+        const mapping = templateMap[templateFile]
+        if (!mapping) {
+            continue // Skip unmapped templates
+        }
+
+        try {
+            // Load template
+            const templatePath = join(templatesDir, templateFile)
+
+            // Check cache for compiled template
+            let template = cache.getTemplate(templatePath)
+            let templateContent = null
+
+            if (!template) {
+                templateContent = readFileSync(templatePath, 'utf8')
+
+                // Validate template variables before rendering
+                try {
+                    validateTemplate(templateContent, templateData, templatePath)
+                } catch (error) {
+                    console.error(`❌ Template validation failed for ${templateFile}:`)
+                    console.error(error.message)
+                    throw error
+                }
+
+                // Compile and cache template
+                template = Handlebars.compile(templateContent)
+                cache.setTemplate(templatePath, template)
+            }
+
+            const rendered = template(templateData)
+
+            // Build full output path
+            const outputPath = join(mapping.dir, mapping.output)
+
+            // Ensure output directory exists (handle subdirectories in output path)
+            const outputDir = dirname(outputPath)
+            if (!existsSync(outputDir)) {
+                mkdirSync(outputDir, { recursive: true })
+            }
+
+            // Write output file
+            writeFileSync(outputPath, rendered)
+            generatedCount++
+
+            console.log(`✅ Generated: ${mapping.output}`)
+        } catch (error) {
+            console.warn(`⚠️  Failed to generate from ${templateFile}: ${error.message}`)
+        }
+    }
+
+    return generatedCount
+}
+
+/**
+ * Load skill rules from a module
+ */
+function loadModuleSkillRules(moduleName, toolkitPath) {
+    const skillRulesPath = join(toolkitPath, 'modules', `${moduleName}.skill-rules.json`)
+
+    if (!existsSync(skillRulesPath)) {
+        return null
+    }
+
     try {
-        const writeStats = writeConfigs(configs, projectDir)
-        stats.written += writeStats.written
-        stats.skipped += writeStats.skipped
-        stats.failed += writeStats.failed
-        if (writeStats.errors) {
-            stats.errors.push(...writeStats.errors)
-        }
-        completedOperations += configs.size
-        console.log(`   Progress: ${completedOperations}/${totalOperations} operations`)
+        const content = readFileSync(skillRulesPath, 'utf8')
+        return JSON.parse(content)
     } catch (error) {
-        const errorMsg = `Failed to write configuration files: ${error.message}`
-        stats.errors.push(errorMsg)
-        console.log(`   ⚠️  ${errorMsg}`)
+        console.warn(`⚠️  Failed to parse skill rules for ${moduleName}: ${error.message}`)
+        return null
+    }
+}
+
+/**
+ * Generate Claude Code configuration (.claude/ directory)
+ */
+function generateClaudeCodeConfig(toolkitPath, projectDir, moduleNames, mergedConfig) {
+    const claudeDir = join(projectDir, '.claude')
+    const skillsDir = join(claudeDir, 'skills')
+    const hooksDir = join(claudeDir, 'hooks')
+
+    // Create directories
+    if (!existsSync(claudeDir)) {
+        mkdirSync(claudeDir, { recursive: true })
+    }
+    if (!existsSync(skillsDir)) {
+        mkdirSync(skillsDir, { recursive: true })
+    }
+    if (!existsSync(hooksDir)) {
+        mkdirSync(hooksDir, { recursive: true })
     }
 
-    // Handle MDC rules copying for Cursor
-    if (editors.includes('cursor-rules')) {
-        console.log('📋 Copying MDC rules for Cursor...')
-        try {
-            const cursorRulesConfig = getEditorConfig('cursor-rules')
-            if (cursorRulesConfig && cursorRulesConfig.copyMode) {
-                const sourcePath = join(toolkitPath, cursorRulesConfig.source)
-                const targetPath = join(projectDir, cursorRulesConfig.output)
-                
-                // Check if source directory exists
-                if (!existsSync(sourcePath)) {
-                    const errorMsg = `Source directory not found: ${sourcePath}`
-                    stats.errors.push(errorMsg)
-                    console.log(`   ⚠️  ${errorMsg}`)
-                } else {
-                    const result = copyDirectory(sourcePath, targetPath, cursorRulesConfig.pattern, true)
-                    stats.copied += result.copiedFiles.length
-                    stats.operations.push({
-                        type: 'copy',
-                        source: sourcePath,
-                        target: targetPath,
-                        count: result.copiedFiles.length
-                    })
-                    
-                    console.log(`   ✓ Copied ${result.copiedFiles.length} MDC rule files`)
-                    
-                    // Report validation errors if any
-                    if (result.validationErrors.length > 0) {
-                        stats.validationErrors.push(...result.validationErrors)
-                        console.log(`   ⚠️  ${result.validationErrors.length} validation warnings:`)
-                        result.validationErrors.forEach(err => {
-                            console.log(`      ${err.file}: ${err.errors.join(', ')}`)
-                        })
-                    }
-                }
-            }
-            completedOperations++
-            console.log(`   Progress: ${completedOperations}/${totalOperations} operations`)
-        } catch (error) {
-            const errorMsg = `Failed to copy MDC rules: ${error.message}`
-            stats.errors.push(errorMsg)
-            stats.failed++
-            console.log(`   ⚠️  ${errorMsg}`)
-            completedOperations++
+    // Combine skill rules from all modules
+    const combinedSkillRules = {}
+    let loadedCount = 0
+
+    for (const moduleName of moduleNames) {
+        const skillRules = loadModuleSkillRules(moduleName, toolkitPath)
+        if (skillRules) {
+            Object.assign(combinedSkillRules, skillRules)
+            loadedCount++
         }
     }
 
-    // Handle Claude Skills generation
-    if (editors.includes('claude-skills')) {
-        console.log('🎯 Generating Claude Skills...')
-        try {
-            const { generateClaudeSkills } = await import('./lib/template-engine.js')
-            const skills = generateClaudeSkills(templateData, toolkitPath)
-            
-            if (skills.size === 0) {
-                console.log('   ℹ️  No skills to generate (no modules or agents configured)')
-            } else {
-                // Write each skill file
-                const skillStats = writeConfigs(skills, projectDir)
-                stats.written += skillStats.written
-                stats.skipped += skillStats.skipped
-                stats.failed += skillStats.failed
-                if (skillStats.errors) {
-                    stats.errors.push(...skillStats.errors)
-                }
-                
-                stats.operations.push({
-                    type: 'generate',
-                    category: 'claude-skills',
-                    count: skills.size
-                })
-                
-                console.log(`   ✓ Generated ${skills.size} skill files (${skillStats.written} written, ${skillStats.skipped} skipped)`)
+    // Write combined skill-rules.json
+    if (Object.keys(combinedSkillRules).length > 0) {
+        const skillRulesPath = join(skillsDir, 'skill-rules.json')
+        writeFileSync(skillRulesPath, JSON.stringify(combinedSkillRules, null, 2))
+        console.log(`✅ Generated: .claude/skills/skill-rules.json (${loadedCount} modules)`)
+    }
+
+    // Copy hooks from toolkit
+    const toolkitHooksDir = join(toolkitPath, '.claude', 'hooks')
+    if (existsSync(toolkitHooksDir)) {
+        const hookFiles = readdirSync(toolkitHooksDir)
+        let copiedHooks = 0
+
+        for (const hookFile of hookFiles) {
+            const sourcePath = join(toolkitHooksDir, hookFile)
+            const targetPath = join(hooksDir, hookFile)
+
+            try {
+                copyFileSync(sourcePath, targetPath)
+                copiedHooks++
+            } catch (error) {
+                console.warn(`⚠️  Failed to copy hook ${hookFile}: ${error.message}`)
             }
-            completedOperations++
-            console.log(`   Progress: ${completedOperations}/${totalOperations} operations`)
-        } catch (error) {
-            const errorMsg = `Failed to generate Claude Skills: ${error.message}`
-            stats.errors.push(errorMsg)
-            stats.failed++
-            console.log(`   ⚠️  ${errorMsg}`)
-            completedOperations++
+        }
+
+        if (copiedHooks > 0) {
+            console.log(`✅ Synced: ${copiedHooks} hooks to .claude/hooks/`)
         }
     }
 
-    // Display comprehensive results
-    console.log(`\n✅ Configuration generation complete`)
-    console.log(`   ${formatWriteStats(stats)}`)
-
-    // Display detailed error information if any
-    if (stats.errors && stats.errors.length > 0) {
-        console.log(`\n⚠️  ${stats.errors.length} error(s) occurred:`)
-        stats.errors.forEach((err, index) => {
-            console.log(`   ${index + 1}. ${err}`)
-        })
+    // Generate settings.json
+    const settings = {
+        $schema: 'https://claude.ai/schemas/claude-code-settings.json',
+        version: '1.0.0',
+        name: mergedConfig.name || 'CouchCMS Project',
+        hooks: {
+            UserPromptSubmit: [
+                {
+                    path: '.claude/hooks/skill-activation.js',
+                    description: 'Auto-suggest relevant skills based on prompt',
+                },
+            ],
+            PostToolUse: [
+                {
+                    matcher: 'Edit|Write|MultiEdit',
+                    path: '.claude/hooks/post-edit-tracker.sh',
+                    description: 'Track edited files for build checks',
+                },
+            ],
+            Stop: [
+                {
+                    path: '.claude/hooks/preflight-check.sh',
+                    description: 'Run CouchCMS-specific preflight checks',
+                },
+            ],
+        },
+        skills: {
+            autoLoad: ['couchcms-core'],
+            suggest: true,
+            rulesPath: '.claude/skills/skill-rules.json',
+        },
+        devDocs: {
+            enabled: true,
+            directory: 'dev/active',
+        },
+        defaults: {
+            mode: 'standard',
+            autoApprove: false,
+        },
     }
-    
-    // Display validation warnings summary
-    if (stats.validationErrors && stats.validationErrors.length > 0) {
-        console.log(`\n⚠️  ${stats.validationErrors.length} validation warning(s)`)
+
+    const settingsPath = join(claudeDir, 'settings.json')
+    writeFileSync(settingsPath, JSON.stringify(settings, null, 2))
+    console.log(`✅ Generated: .claude/settings.json`)
+
+    return loadedCount
+}
+
+/**
+ * Sync Cursor rules from toolkit to project
+ */
+function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
+    const rulesSource = join(toolkitPath, 'rules')
+    const rulesTarget = join(projectDir, '.cursor', 'rules')
+
+    if (!existsSync(rulesSource)) {
+        return // No rules in toolkit
     }
 
-    return stats
+    // Create target directory if needed
+    if (!existsSync(rulesTarget)) {
+        mkdirSync(rulesTarget, { recursive: true })
+    }
+
+    // Get all .mdc and .md files from toolkit rules
+    const ruleFiles = readdirSync(rulesSource).filter(f => f.endsWith('.mdc') || f.endsWith('.md'))
+
+    for (const ruleFile of ruleFiles) {
+        // Skip README.md
+        if (ruleFile === 'README.md') {
+            continue
+        }
+
+        const sourcePath = join(rulesSource, ruleFile)
+        const targetPath = join(rulesTarget, ruleFile)
+
+        let content = readFileSync(sourcePath, 'utf8')
+
+        // Replace {{paths.xxx}} variables
+        content = replaceVariables(content, mergedConfig)
+
+        writeFileSync(targetPath, content)
+    }
+
+    if (ruleFiles.length > 0) {
+        const copiedCount = ruleFiles.filter(f => f !== 'README.md').length
+        console.log(`✅ Synced: ${copiedCount} Cursor rules to .cursor/rules/`)
+    }
 }
 
 /**
  * Main sync function
  */
 async function sync() {
-    const startTime = Date.now()
-    let stats = null
-
     try {
         console.log('🔄 CouchCMS AI Toolkit - Sync\n')
-        console.log('━'.repeat(60))
 
-        // 1. Find project configuration
-        console.log('\n[1/6] 📄 Finding project configuration...')
-        const { configPath, projectDir } = findProjectConfiguration()
-        console.log(`      ✓ Config: ${configPath}`)
-        console.log(`      ✓ Project: ${projectDir}`)
+        // Find project.md
+        const projectPath = findProjectFile()
 
-        // 2. Resolve toolkit path first (needed for loadConfig)
-        console.log('\n[2/6] 🛠️  Resolving toolkit path...')
-        const configContent = readFileSync(configPath, 'utf8')
-        const { data: frontmatter } = matter(configContent)
-        const toolkitPathConfig = frontmatter.toolkit?.path || frontmatter.toolkit || './ai-toolkit-shared'
-        const toolkitPath = resolveToolkitPath(toolkitPathConfig, projectDir)
+        if (!projectPath) {
+            console.error('❌ No project.md found in current directory or parent directories.')
+            console.log('\nCreate a project.md file with:\n')
+            console.log(`---
+name: "my-project"
+description: "Project description"
+toolkit: "./ai-toolkit"
+modules:
+  - couchcms-core
+  - tailwindcss
+  - daisyui
+  - alpinejs
+agents:
+  - couchcms-agent
+context: ".project/ai"
+paths:
+  css: "src/css"        # Override default if needed
+  typescript: "src/ts"  # Override default if needed
+---
 
+# Project-Specific Rules
+
+Add your project-specific instructions here...
+`)
+            process.exit(1)
+        }
+
+        console.log(`📄 Found: ${projectPath}`)
+        const projectDir = dirname(projectPath)
+
+        // Parse project.md
+        let config, projectRules
+        try {
+            const projectContent = readFileSync(projectPath, 'utf8')
+            const parsed = matter(projectContent)
+            config = parsed.data
+            projectRules = parsed.content
+        } catch (error) {
+            console.error(`❌ Failed to parse project.md: ${error.message}`)
+            console.log('\nEnsure project.md has valid YAML frontmatter.\n')
+            process.exit(1)
+        }
+
+        console.log(`📦 Project: ${config.name || 'Unnamed'}`)
+
+        // Resolve toolkit path
+        const toolkitPath = resolveToolkitPath(config.toolkit, projectDir)
+
+        // Verify toolkit path exists
         if (!existsSync(toolkitPath)) {
-            throw new ToolkitError(
-                `Toolkit path not found: ${toolkitPath}`,
-                'TOOLKIT_NOT_FOUND'
-            )
-        }
-        console.log(`      ✓ Toolkit: ${toolkitPath}`)
-
-        // 3. Load and validate configuration
-        console.log('\n[3/6] ⚙️  Loading and validating configuration...')
-        const config = loadConfig(projectDir, toolkitPath)
-
-        // Basic configuration validation
-        const basicErrors = validateConfig(config)
-        if (basicErrors.length > 0) {
-            console.log('\n      ❌ Configuration errors:')
-            basicErrors.forEach(err => console.log(`         • ${err}`))
-            throw new ToolkitError('Invalid configuration', 'CONFIG_INVALID')
+            console.error(`❌ Toolkit path not found: ${toolkitPath}`)
+            console.log("\nCheck the 'toolkit' path in your project.md\n")
+            process.exit(1)
         }
 
-        // Enhanced editor configuration validation
-        const validation = validateConfiguration(config, toolkitPath, projectDir)
-        
-        if (validation.errors.length > 0) {
-            console.log('\n      ❌ Editor configuration errors:')
-            validation.errors.forEach(err => console.log(`         • ${err}`))
-            throw new ToolkitError('Invalid editor configuration', 'EDITOR_CONFIG_INVALID')
-        }
-        
-        if (validation.warnings.length > 0) {
-            console.log('\n      ⚠️  Configuration warnings:')
-            validation.warnings.forEach(warn => console.log(`         • ${warn}`))
-        }
-        
-        console.log(`      ✓ Configuration valid`)
+        console.log(`🛠️  Toolkit: ${toolkitPath}`)
 
-        // Check for updates (non-blocking)
-        checkAndNotify(toolkitPath)
-
-        // 4. Load all resources
-        console.log('\n[4/6] 📚 Loading toolkit resources...')
-        const resources = loadAllResources(config, toolkitPath)
-        console.log(`      ✓ Loaded ${resources.modules.length} modules`)
-        console.log(`      ✓ Loaded ${resources.agents.length} agents`)
-        if (resources.framework) {
-            console.log(`      ✓ Loaded framework components`)
+        // Check and install dependencies if needed
+        try {
+            await checkAndInstallDependencies(toolkitPath)
+        } catch (error) {
+            console.error(`❌ ${error.message}`)
+            process.exit(1)
         }
 
-        // 5. Generate configurations
-        console.log('\n[5/6] 🎨 Generating editor configurations...')
-        const { configs, templateData } = await generateConfigurations(config, resources, toolkitPath, projectDir)
+        // Load defaults and merge with project config
+        const defaults = loadDefaults(toolkitPath)
+        const mergedConfig = deepMerge(defaults, {
+            paths: config.paths || {},
+            standards: config.standards || config.overrides || {},
+            naming: config.naming || {},
+        })
 
-        // Determine which editors are enabled
-        const editors = config.editors || ['cursor', 'claude', 'windsurf', 'kiro', 'copilot', 'agents']
-        if (editors.includes('cursor')) {
-            editors.push('cursor-rules')
+        console.log(`📁 Paths: ${Object.keys(mergedConfig.paths).length} configured`)
+
+        // Ensure couchcms-core is always included
+        const moduleList = config.modules || ['couchcms-core']
+        if (!moduleList.includes('couchcms-core')) {
+            moduleList.unshift('couchcms-core')
         }
-        
-        // Add claude-settings and claude-skills if claude is enabled
-        if (editors.includes('claude')) {
-            if (!editors.includes('claude-settings')) {
-                editors.push('claude-settings')
+
+        console.log(`📚 Modules: ${moduleList.join(', ')}`)
+
+        // Load modules
+        const modules = moduleList.map(name => loadModule(name, toolkitPath)).filter(Boolean)
+
+        // Load agents
+        const agentList = config.agents || []
+        const agents = agentList.map(name => loadAgent(name, toolkitPath)).filter(Boolean)
+
+        if (agents.length > 0) {
+            console.log(`🤖 Agents: ${agents.map(a => a.name).join(', ')}`)
+        }
+
+        // Load project context
+        const projectContext = loadProjectContext(config.context, projectDir)
+        if (projectContext) {
+            console.log(`📋 Context: ${projectContext.path}`)
+        }
+
+        // Check for conflicts
+        const conflicts = checkConflicts(modules)
+        if (conflicts.length > 0) {
+            console.log('\n')
+            conflicts.forEach(c => console.log(c))
+            process.exit(1)
+        }
+
+        // Prepare template data
+        const templateData = prepareTemplateData(config, mergedConfig, modules, agents, projectContext, toolkitPath)
+
+        // Add project rules to template data
+        if (projectRules && projectRules.trim()) {
+            templateData.project_rules = projectRules
+        }
+
+        // Add module list for templates
+        templateData.module_list = (config.modules || ['couchcms-core']).join(', ')
+
+        // Generate editor configurations from templates
+        try {
+            const generatedCount = generateEditorConfigs(toolkitPath, projectDir, templateData)
+            if (generatedCount === 0) {
+                console.warn('⚠️  No editor configs generated - templates may be missing')
             }
-            if (!editors.includes('claude-skills')) {
-                editors.push('claude-skills')
-            }
+        } catch (error) {
+            console.error(`❌ Failed to generate editor configs: ${error.message}`)
+            console.log('\nCheck template files in toolkit.\n')
+            process.exit(1)
         }
-        console.log(`      ✓ Generated ${configs.size} configuration files`)
-        console.log(`      ✓ Target editors: ${editors.filter(e => !e.includes('-')).join(', ')}`)
 
-        // 6. Write to disk
-        console.log('\n[6/6] 💾 Writing files to disk...')
-        stats = await writeConfigurationFiles(configs, projectDir, toolkitPath, editors, templateData)
+        // Sync Cursor rules
+        try {
+            syncCursorRules(toolkitPath, projectDir, mergedConfig)
+        } catch (error) {
+            console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
+        }
 
-        // 7. Display comprehensive summary
-        const elapsed = Date.now() - startTime
-        console.log('\n' + '━'.repeat(60))
-        console.log('\n✨ Sync completed successfully!\n')
-        
-        console.log('📊 Summary:')
-        console.log(`   ⏱️  Time: ${elapsed}ms`)
-        console.log(`   📚 Resources: ${resources.modules.length} modules, ${resources.agents.length} agents`)
-        console.log(`   📝 Files: ${stats.written} written, ${stats.skipped} skipped`)
-        if (stats.copied > 0) {
-            console.log(`   📋 Copied: ${stats.copied} MDC rules`)
-        }
-        if (stats.failed > 0) {
-            console.log(`   ⚠️  Failed: ${stats.failed} operations`)
-        }
-        
-        // Show operation breakdown if available
-        if (stats.operations && stats.operations.length > 0) {
-            console.log('\n📋 Operations:')
-            stats.operations.forEach(op => {
-                if (op.type === 'copy') {
-                    console.log(`   • Copied ${op.count} files: ${op.source} → ${op.target}`)
-                } else if (op.type === 'generate') {
-                    console.log(`   • Generated ${op.count} ${op.category} files`)
-                }
+        // Generate Claude Code configuration
+        try {
+            const skillRulesCount = generateClaudeCodeConfig(toolkitPath, projectDir, moduleList, {
+                ...mergedConfig,
+                name: config.name,
             })
+            if (skillRulesCount > 0) {
+                console.log(`🤖 Claude Code: ${skillRulesCount} skill-rules configured`)
+            }
+        } catch (error) {
+            console.warn(`⚠️  Failed to generate Claude Code config: ${error.message}`)
         }
-        
-        console.log('\n' + '━'.repeat(60))
-        console.log()
 
+        console.log(`\n✨ Sync complete! ${modules.length} modules, ${agents.length} agents loaded.\n`)
     } catch (error) {
-        const elapsed = Date.now() - startTime
-        console.log('\n' + '━'.repeat(60))
-        console.log(`\n❌ Sync failed after ${elapsed}ms\n`)
-        
-        // Provide detailed error information
-        if (error instanceof ToolkitError) {
-            console.log(`Error: ${error.message}`)
-            console.log(`Code: ${error.code}`)
-            if (error.details) {
-                console.log(`Details: ${JSON.stringify(error.details, null, 2)}`)
-            }
-        } else {
-            console.log(`Error: ${error.message}`)
-            if (error.stack) {
-                console.log(`\nStack trace:`)
-                console.log(error.stack)
-            }
-        }
-        
-        // Show partial statistics if available
-        if (stats) {
-            console.log(`\n📊 Partial results before failure:`)
-            console.log(`   Files written: ${stats.written}`)
-            console.log(`   Files skipped: ${stats.skipped}`)
-            if (stats.copied > 0) {
-                console.log(`   Files copied: ${stats.copied}`)
-            }
-        }
-        
-        console.log('\n💡 Troubleshooting tips:')
-        console.log('   • Check that your standards.md file is valid YAML')
-        console.log('   • Verify toolkit path exists and is accessible')
-        console.log('   • Ensure all referenced modules and agents exist')
-        console.log('   • Run "bun run validate" for detailed diagnostics')
-        console.log('\n' + '━'.repeat(60))
-        console.log()
-        
-        handleError(error, 'Sync failed')
+        console.error(`\n❌ Sync failed: ${error.message}\n`)
+        console.log('Troubleshooting:')
+        console.log('  1. Verify project.md has valid YAML frontmatter')
+        console.log('  2. Check toolkit path in project.md')
+        console.log('  3. Ensure all referenced modules exist')
+        console.log("  4. Run 'bun run validate' for detailed diagnostics\n")
         process.exit(1)
     }
 }
+// Run
+sync().catch(error => {
+    console.error(`\n❌ Unexpected error: ${error.message}\n`)
+    process.exit(1)
+})
 
-/**
- * Watch mode - monitor config file for changes
- */
-function watchMode(configPath) {
-    console.log('━'.repeat(60))
-    console.log('\n👀 Watch mode enabled')
-    console.log(`   Monitoring: ${configPath}`)
-    console.log('   Press Ctrl+C to stop\n')
-    console.log('━'.repeat(60))
-    console.log()
-
-    let syncTimeout = null
-    let isRunning = false
-    let syncCount = 0
-
-    const watcher = watch(configPath, (eventType) => {
-        if (eventType === 'change' && !isRunning) {
-            // Debounce: wait 500ms after last change
-            clearTimeout(syncTimeout)
-            syncTimeout = setTimeout(async () => {
-                syncCount++
-                const timestamp = new Date().toLocaleTimeString()
-                console.log(`\n[${timestamp}] 🔄 Configuration changed, syncing... (sync #${syncCount})\n`)
-                isRunning = true
-                try {
-                    await sync()
-                    console.log(`[${timestamp}] ✅ Sync #${syncCount} completed`)
-                } catch (error) {
-                    console.error(`[${timestamp}] ❌ Sync #${syncCount} failed: ${error.message}`)
-                }
-                isRunning = false
-                console.log(`\n👀 Watching for changes...\n`)
-            }, 500)
-        }
-    })
-
-    // Handle cleanup
-    process.on('SIGINT', () => {
-        console.log('\n\n━'.repeat(60))
-        console.log('\n👋 Stopping watch mode...')
-        console.log(`   Total syncs performed: ${syncCount}`)
-        console.log('\n━'.repeat(60))
-        console.log()
-        watcher.close()
-        process.exit(0)
-    })
-}
-
-// Parse arguments
-const args = process.argv.slice(2)
-const watchFlag = args.includes('--watch') || args.includes('-w')
-
-// Run sync
-if (watchFlag) {
-    // Run initial sync, then watch
-    sync().then(() => {
-        const { configPath } = findProjectConfiguration()
-        watchMode(configPath)
-    }).catch(error => {
-        handleError(error, 'Initial sync failed')
-        process.exit(1)
-    })
-} else {
-    sync()
-}

@@ -14,7 +14,9 @@ The toolkit uses a single configuration file: **`standards.md`** in your project
 
 ## `standards.md` - Single Source of Truth
 
-The toolkit uses a single configuration file with YAML frontmatter for settings and Markdown for project-specific rules.
+The toolkit uses a single configuration file with [YAML frontmatter](GLOSSARY.md#yaml-frontmatter) for settings and Markdown for project-specific rules.
+
+**New to these terms?** See [Glossary](GLOSSARY.md) for definitions.
 
 ### Why This Format?
 

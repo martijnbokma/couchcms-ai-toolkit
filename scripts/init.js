@@ -21,11 +21,14 @@ import {
     cleanGeneratedFiles
 } from './lib/config-generator.js'
 import { runInitialSync, displaySuccessMessage } from './lib/sync-runner.js'
-import { 
-    detectProject, 
-    getRecommendedModules, 
-    getRecommendedAgents 
+import {
+    detectProject,
+    getRecommendedModules,
+    getRecommendedAgents
 } from './lib/project-detector.js'
+import { checkAndInstallDependencies } from './lib/dependency-checker.js'
+import { detectToolkitPath } from './lib/toolkit-detector.js'
+import { resolveToolkitPath } from './utils/utils.js'
 import yaml from 'yaml'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -61,7 +64,7 @@ function determineProjectDirectory(currentDir) {
  */
 function loadPresets() {
     const presetsPath = join(TOOLKIT_ROOT, 'presets.yaml')
-    
+
     if (!existsSync(presetsPath)) {
         return {}
     }
@@ -82,14 +85,14 @@ function loadPresets() {
 async function selectPreset() {
     const presets = loadPresets()
     const presetKeys = Object.keys(presets)
-    
+
     if (presetKeys.length === 0) {
         return null
     }
 
     console.log('\n📋 Available presets:')
     console.log('  0. None - Configure manually')
-    
+
     presetKeys.forEach((key, index) => {
         const preset = presets[key]
         console.log(`  ${index + 1}. ${preset.name} - ${preset.description}`)
@@ -116,14 +119,14 @@ async function checkExistingConfig(projectDir) {
 
     if (existingConfig) {
         const configName = getConfigFileName(projectDir) || 'standards.md'
-        
+
         // If running in auto mode (from installer), skip if config exists
         if (process.env.TOOLKIT_AUTO_MODE === 'true') {
             console.log(`✅ ${configName} already exists - skipping setup`)
             console.log(`   To reconfigure, run: bun ai-toolkit-shared/scripts/init.js\n`)
             return false
         }
-        
+
         console.log(`⚠️  ${configName} already exists in this directory\n`)
         const overwrite = await confirm(`Overwrite existing ${configName}?`, false)
 
@@ -164,7 +167,7 @@ async function init() {
 
     // Ask for setup mode (unless auto mode from installer)
     let autoMode, presetMode, simpleMode
-    
+
     if (process.env.TOOLKIT_AUTO_MODE === 'true') {
         console.log('🎯 Setup mode: Auto (from installer)')
         autoMode = true
@@ -181,7 +184,7 @@ async function init() {
         presetMode = modeChoice === '2'
         simpleMode = modeChoice === '3'
     }
-    
+
     // Select preset if in preset mode
     let selectedPreset = null
     if (presetMode) {
@@ -191,8 +194,10 @@ async function init() {
         }
     }
 
-    // Determine config path
-    const { configPath, configDir } = await determineConfigPath(projectDir, simpleMode || autoMode || presetMode)
+    // Determine config path (always .project/standards.md now)
+    const { configPath, configDir } = await determineConfigPath(projectDir, true)
+
+    const isCustomMode = !simpleMode && !autoMode && !presetMode
 
     if (autoMode) {
         console.log('\n✨ Auto mode: Using detected settings')
@@ -212,33 +217,66 @@ async function init() {
         console.log('   - Agents: ALL CouchCMS agents + TailwindCSS + Alpine.js')
         console.log('   - Framework: Disabled (can be enabled later in standards.md)')
         console.log('\n   💡 This gives you full CouchCMS support out of the box!')
+    } else if (isCustomMode) {
+        console.log('\n✨ Custom mode: Full control')
+        console.log('   We\'ll ask you a few grouped questions...\n')
     }
 
-    // Gather project information (Questions 1-2 in simple/auto mode)
-    // Check if provided via environment (from installer)
-    const projectName = process.env.TOOLKIT_PROJECT_NAME || 
-        (autoMode ? detected.name : await prompt('\n📝 Project name', detected.name))
+    // Group 1: Project Information
+    if (isCustomMode) {
+        console.log('📋 Group 1: Project Information\n')
+    }
+
+    // Gather project information
+    const projectName = process.env.TOOLKIT_PROJECT_NAME ||
+        (autoMode ? detected.name : await prompt(isCustomMode ? 'Project name' : '\n📝 Project name', detected.name))
     const projectDescription = process.env.TOOLKIT_PROJECT_DESC ||
         (autoMode ? detected.description : await prompt('Project description', detected.description))
 
-    // Determine toolkit path - auto-detect based on current location
-    // Path must be relative to config directory, not project root
-    const toolkitDirName = basename(TOOLKIT_ROOT)
-    let toolkitPath = configDir === projectDir
-        ? `./${toolkitDirName}`  // Config in root: ./ai-toolkit-shared
-        : `../${toolkitDirName}` // Config in subdirectory: ../ai-toolkit-shared
+    // Group 2: Toolkit and Configuration (only in custom mode)
+    if (isCustomMode) {
+        console.log('\n📋 Group 2: Toolkit and Configuration\n')
+    }
 
-    console.log(`\n📦 Toolkit location: ${toolkitPath}`)
-    if (!simpleMode && !autoMode) {
+    // Determine toolkit path - auto-detect first, then allow override
+    let toolkitPath = detectToolkitPath(projectDir)
+
+    // Fallback to default if auto-detection failed
+    if (!toolkitPath) {
+        const toolkitDirName = basename(TOOLKIT_ROOT)
+        toolkitPath = `./${toolkitDirName}`
+    }
+
+    if (toolkitPath && toolkitPath !== './ai-toolkit-shared') {
+        console.log(`📦 Toolkit location (auto-detected): ${toolkitPath}`)
+    } else {
+        console.log(`📦 Toolkit location: ${toolkitPath}`)
+    }
+
+    if (isCustomMode) {
         const changeLocation = await confirm('Use different location?', false)
         if (changeLocation) {
             toolkitPath = await prompt('Toolkit path', toolkitPath)
         }
     }
 
-    // Select modules and agents
+    // Resolve absolute toolkit path and check dependencies
+    const resolvedToolkitPath = resolveToolkitPath(toolkitPath, projectDir, TOOLKIT_ROOT)
+    try {
+        await checkAndInstallDependencies(resolvedToolkitPath)
+    } catch (error) {
+        console.error(`\n❌ ${error.message}\n`)
+        process.exit(1)
+    }
+
+    // Group 3: Modules and Agents (combined in custom mode)
+    if (isCustomMode) {
+        console.log('\n📋 Group 3: Modules and Agents\n')
+        console.log('Select which modules and agents to use.\n')
+    }
+
     let selectedModules, selectedAgents
-    
+
     if (autoMode) {
         selectedModules = getRecommendedModules(detected)
         selectedAgents = getRecommendedAgents(detected)
@@ -250,17 +288,26 @@ async function init() {
         selectedAgents = await selectAgents(simpleMode)
     }
 
-    // Select framework configuration
+    // Group 4: Advanced Options (only shown in custom mode, with progressive disclosure)
     let frameworkConfig
-    
+    let contextPath = null
+
     if (presetMode && selectedPreset) {
         frameworkConfig = selectedPreset.framework
+    } else if (isCustomMode) {
+        console.log('\n📋 Group 4: Advanced Options (Optional)\n')
+        const showAdvanced = await confirm('Configure advanced options (framework, context directory)?', false)
+
+        if (showAdvanced) {
+            frameworkConfig = await selectFramework(false)
+            contextPath = await selectContextDirectory(false)
+        } else {
+            frameworkConfig = { enabled: false }
+        }
     } else {
         frameworkConfig = await selectFramework(simpleMode || autoMode)
+        contextPath = await selectContextDirectory(simpleMode || autoMode)
     }
-
-    // Select context directory (custom mode only)
-    const contextPath = await selectContextDirectory(simpleMode || autoMode)
 
     // Generate standards.md file
     await generateStandardsFile({

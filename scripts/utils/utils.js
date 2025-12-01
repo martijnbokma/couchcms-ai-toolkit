@@ -50,24 +50,34 @@ export function handleError(error, context) {
 /**
  * Find configuration file (standards.md)
  *
- * Detection priority:
- * 1. .project/standards.md (recommended - project configuration directory)
- * 2. docs/standards.md (documentation location)
- * 3. standards.md (root directory)
+ * Only checks .project/standards.md (standardized location)
+ * Shows migration message if found in old locations
  *
  * @param {string} projectDir - Project root directory
  * @returns {string|null} - Path to config file or null if not found
  */
 export function findConfigFile(projectDir) {
-    const candidates = [
-        join(projectDir, '.project', 'standards.md'), // Recommended - project config directory
-        join(projectDir, 'docs', 'standards.md'), // Documentation location
-        join(projectDir, 'standards.md'), // Root directory
+    // Standard location: .project/standards.md
+    const standardPath = join(projectDir, '.project', 'standards.md')
+    if (existsSync(standardPath)) {
+        return standardPath
+    }
+
+    // Check old locations and show migration message if found
+    const oldLocations = [
+        { path: join(projectDir, 'docs', 'standards.md'), name: 'docs/standards.md' },
+        { path: join(projectDir, 'standards.md'), name: 'standards.md' }
     ]
 
-    for (const path of candidates) {
-        if (existsSync(path)) {
-            return path
+    for (const oldLoc of oldLocations) {
+        if (existsSync(oldLoc.path)) {
+            console.warn(`\n⚠️  Found configuration in old location: ${oldLoc.name}`)
+            console.warn(`   The toolkit now uses .project/standards.md as the standard location.`)
+            console.warn(`   Please move your configuration file:`)
+            console.warn(`   \n   mv ${oldLoc.name} .project/standards.md\n`)
+            // Still return the old path for now to maintain compatibility
+            // But warn user to migrate
+            return oldLoc.path
         }
     }
 

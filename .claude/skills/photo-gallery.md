@@ -22,32 +22,32 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 | Tag                    | Purpose                          |
 | ---------------------- | -------------------------------- |
-| &#x60;&lt;cms:template gallery&#x3D;&#x27;1&#x27;&gt;&#x60; | Enable gallery mode              |
-| &#x60;&lt;cms:editable type&#x3D;&#x27;image&#x27;&gt;&#x60; | Main gallery image               |
-| &#x60;&lt;cms:editable type&#x3D;&#x27;thumbnail&#x27;&gt;&#x60; | Gallery thumbnail                |
-| &#x60;&lt;cms:exif&gt;&#x60;           | Display EXIF data                |
+| `<cms:template gallery='1'>` | Enable gallery mode              |
+| `<cms:editable type='image'>` | Main gallery image               |
+| `<cms:editable type='thumbnail'>` | Gallery thumbnail                |
+| `<cms:exif>`           | Display EXIF data                |
 
 ### Required Editable Regions
 
 | Name      | Type      | Purpose                    |
 | --------- | --------- | -------------------------- |
-| &#x60;gg_image&#x60;| &#x60;image&#x60;   | Main gallery image (required) |
-| &#x60;gg_thumb&#x60;| &#x60;thumbnail&#x60;| Gallery thumbnail (required) |
+| `gg_image`| `image`   | Main gallery image (required) |
+| `gg_thumb`| `thumbnail`| Gallery thumbnail (required) |
 
 ### Gallery Variables
 
 | Variable        | Purpose                          |
 | --------------- | -------------------------------- |
-| &#x60;k_file_name&#x60;   | Original filename                 |
-| &#x60;k_file_ext&#x60;    | File extension                    |
-| &#x60;k_file_size&#x60;   | File size                         |
-| &#x60;exif_*&#x60;        | EXIF data variables (if enabled) |
+| `k_file_name`   | Original filename                 |
+| `k_file_ext`    | File extension                    |
+| `k_file_size`   | File size                         |
+| `exif_*`        | EXIF data variables (if enabled) |
 
 ### Your Approach
 
-- Always use &#x60;gallery&#x3D;&#x27;1&#x27;&#x60; in template tag
-- Use &#x60;dynamic_folders&#x3D;&#x27;1&#x27;&#x60; for album organization
-- Name image region &#x60;gg_image&#x60; and thumbnail &#x60;gg_thumb&#x60;
+- Always use `gallery='1'` in template tag
+- Use `dynamic_folders='1'` for album organization
+- Name image region `gg_image` and thumbnail `gg_thumb`
 - Enable EXIF extraction in config if needed
 - Use batch upload for multiple images
 - Organize galleries with folders for albums
@@ -59,257 +59,257 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Basic Gallery Template Setup
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Gallery&#x27; clonable&#x3D;&#x27;1&#x27; dynamic_folders&#x3D;&#x27;1&#x27; gallery&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:editable
-        name&#x3D;&#x27;gg_image&#x27;
-        label&#x3D;&#x27;Image&#x27;
-        desc&#x3D;&#x27;Upload your main image here&#x27;
-        width&#x3D;&#x27;500&#x27;
-        show_preview&#x3D;&#x27;1&#x27;
-        preview_height&#x3D;&#x27;200&#x27;
-        type&#x3D;&#x27;image&#x27;
-    /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Gallery' clonable='1' dynamic_folders='1' gallery='1'>
+    <cms:editable
+        name='gg_image'
+        label='Image'
+        desc='Upload your main image here'
+        width='500'
+        show_preview='1'
+        preview_height='200'
+        type='image'
+    />
 
-    &lt;cms:editable
-        name&#x3D;&#x27;gg_thumb&#x27;
-        assoc_field&#x3D;&#x27;gg_image&#x27;
-        label&#x3D;&#x27;Image Thumbnail&#x27;
-        desc&#x3D;&#x27;Thumbnail of image above&#x27;
-        width&#x3D;&#x27;115&#x27;
-        height&#x3D;&#x27;115&#x27;
-        enforce_max&#x3D;&#x27;1&#x27;
-        type&#x3D;&#x27;thumbnail&#x27;
-    /&gt;
+    <cms:editable
+        name='gg_thumb'
+        assoc_field='gg_image'
+        label='Image Thumbnail'
+        desc='Thumbnail of image above'
+        width='115'
+        height='115'
+        enforce_max='1'
+        type='thumbnail'
+    />
 
-    &lt;cms:editable
-        name&#x3D;&#x27;image_desc&#x27;
-        label&#x3D;&#x27;Description&#x27;
-        type&#x3D;&#x27;textarea&#x27;
-    /&gt;
-&lt;/cms:template&gt;
+    <cms:editable
+        name='image_desc'
+        label='Description'
+        type='textarea'
+    />
+</cms:template>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:if k_is_page&gt;
-        &lt;!-- Single image view --&gt;
-        &lt;div class&#x3D;&quot;container mx-auto p-4&quot;&gt;
-            &lt;img src&#x3D;&quot;&lt;cms:show gg_image /&gt;&quot; alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot; class&#x3D;&quot;w-full max-w-4xl mx-auto mb-4&quot; /&gt;
-            &lt;h1 class&#x3D;&quot;text-3xl font-bold mb-2&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-            &lt;cms:if image_desc&gt;
-                &lt;p&gt;&lt;cms:show image_desc /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
-    &lt;cms:else /&gt;
-        &lt;!-- Gallery grid --&gt;
-        &lt;div class&#x3D;&quot;grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4&quot;&gt;
-            &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; include_subfolders&#x3D;&#x27;0&#x27;&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;block&quot;&gt;
-                    &lt;img
-                        src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot;
-                        alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                        title&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                        class&#x3D;&quot;w-full h-48 object-cover rounded-lg hover:opacity-80 transition&quot;
-                    /&gt;
-                &lt;/a&gt;
-            &lt;/cms:pages&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+<cms:block 'content'>
+    <cms:if k_is_page>
+        <!-- Single image view -->
+        <div class="container mx-auto p-4">
+            <img src="<cms:show gg_image />" alt="<cms:show k_page_title />" class="w-full max-w-4xl mx-auto mb-4" />
+            <h1 class="text-3xl font-bold mb-2"><cms:show k_page_title /></h1>
+            <cms:if image_desc>
+                <p><cms:show image_desc /></p>
+            </cms:if>
+        </div>
+    <cms:else />
+        <!-- Gallery grid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <cms:pages masterpage='gallery.php' include_subfolders='0'>
+                <a href="<cms:show k_page_link />" class="block">
+                    <img
+                        src="<cms:show gg_thumb />"
+                        alt="<cms:show k_page_title />"
+                        title="<cms:show k_page_title />"
+                        class="w-full h-48 object-cover rounded-lg hover:opacity-80 transition"
+                    />
+                </a>
+            </cms:pages>
+        </div>
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Gallery with Albums (Folders)
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Gallery&#x27; clonable&#x3D;&#x27;1&#x27; dynamic_folders&#x3D;&#x27;1&#x27; gallery&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:editable name&#x3D;&#x27;gg_image&#x27; label&#x3D;&#x27;Image&#x27; type&#x3D;&#x27;image&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;gg_thumb&#x27; assoc_field&#x3D;&#x27;gg_image&#x27; label&#x3D;&#x27;Thumbnail&#x27; type&#x3D;&#x27;thumbnail&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;image_desc&#x27; label&#x3D;&#x27;Description&#x27; type&#x3D;&#x27;textarea&#x27; /&gt;
-&lt;/cms:template&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Gallery' clonable='1' dynamic_folders='1' gallery='1'>
+    <cms:editable name='gg_image' label='Image' type='image' />
+    <cms:editable name='gg_thumb' assoc_field='gg_image' label='Thumbnail' type='thumbnail' />
+    <cms:editable name='image_desc' label='Description' type='textarea' />
+</cms:template>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:if k_is_folder&gt;
-        &lt;!-- Album view --&gt;
-        &lt;h1 class&#x3D;&quot;text-3xl font-bold mb-6&quot;&gt;&lt;cms:show k_folder_title /&gt;&lt;/h1&gt;
-        &lt;cms:if k_folder_desc&gt;
-            &lt;p class&#x3D;&quot;mb-6&quot;&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-        &lt;/cms:if&gt;
+<cms:block 'content'>
+    <cms:if k_is_folder>
+        <!-- Album view -->
+        <h1 class="text-3xl font-bold mb-6"><cms:show k_folder_title /></h1>
+        <cms:if k_folder_desc>
+            <p class="mb-6"><cms:show k_folder_desc /></p>
+        </cms:if>
 
-        &lt;div class&#x3D;&quot;grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4&quot;&gt;
-            &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; folder&#x3D;k_folder_name&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;block group&quot;&gt;
-                    &lt;img
-                        src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot;
-                        alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                        class&#x3D;&quot;w-full h-48 object-cover rounded-lg group-hover:scale-105 transition&quot;
-                    /&gt;
-                &lt;/a&gt;
-            &lt;/cms:pages&gt;
-        &lt;/div&gt;
-    &lt;cms:else /&gt;
-        &lt;cms:if k_is_page&gt;
-            &lt;!-- Single image --&gt;
-            &lt;img src&#x3D;&quot;&lt;cms:show gg_image /&gt;&quot; alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot; /&gt;
-        &lt;cms:else /&gt;
-            &lt;!-- Album list --&gt;
-            &lt;div class&#x3D;&quot;grid grid-cols-1 md:grid-cols-3 gap-6&quot;&gt;
-                &lt;cms:folders masterpage&#x3D;&#x27;gallery.php&#x27;&gt;
-                    &lt;div class&#x3D;&quot;card bg-base-100 shadow-md&quot;&gt;
-                        &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                            &lt;h3 class&#x3D;&quot;card-title&quot;&gt;
-                                &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot;&gt;&lt;cms:show k_folder_title /&gt;&lt;/a&gt;
-                            &lt;/h3&gt;
-                            &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;View Album&lt;/a&gt;
-                        &lt;/div&gt;
-                    &lt;/div&gt;
-                &lt;/cms:folders&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <cms:pages masterpage='gallery.php' folder=k_folder_name>
+                <a href="<cms:show k_page_link />" class="block group">
+                    <img
+                        src="<cms:show gg_thumb />"
+                        alt="<cms:show k_page_title />"
+                        class="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition"
+                    />
+                </a>
+            </cms:pages>
+        </div>
+    <cms:else />
+        <cms:if k_is_page>
+            <!-- Single image -->
+            <img src="<cms:show gg_image />" alt="<cms:show k_page_title />" />
+        <cms:else />
+            <!-- Album list -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <cms:folders masterpage='gallery.php'>
+                    <div class="card bg-base-100 shadow-md">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <a href="<cms:show k_folder_link />"><cms:show k_folder_title /></a>
+                            </h3>
+                            <a href="<cms:show k_folder_link />" class="btn btn-sm btn-primary">View Album</a>
+                        </div>
+                    </div>
+                </cms:folders>
+            </div>
+        </cms:if>
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Gallery with Lightbox
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;gallery.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;div class&#x3D;&quot;grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4&quot;&gt;
-        &lt;a
-            href&#x3D;&quot;&lt;cms:show gg_image /&gt;&quot;
-            data-lightbox&#x3D;&quot;gallery&quot;
-            data-title&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-            class&#x3D;&quot;block&quot;
-        &gt;
-            &lt;img
-                src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot;
-                alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                class&#x3D;&quot;w-full h-48 object-cover rounded-lg hover:opacity-80 transition&quot;
-            /&gt;
-        &lt;/a&gt;
-    &lt;/div&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+```php title="gallery.php"
+<cms:pages masterpage='gallery.php' limit='20' paginate='1'>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <a
+            href="<cms:show gg_image />"
+            data-lightbox="gallery"
+            data-title="<cms:show k_page_title />"
+            class="block"
+        >
+            <img
+                src="<cms:show gg_thumb />"
+                alt="<cms:show k_page_title />"
+                class="w-full h-48 object-cover rounded-lg hover:opacity-80 transition"
+            />
+        </a>
+    </div>
+</cms:pages>
+```
 
 ### Gallery with EXIF Data
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;config.php&quot;
-&lt;!-- Enable EXIF in config.php --&gt;
-&lt;!-- define( &#x27;K_EXTRACT_EXIF_DATA&#x27;, 1 ); --&gt;
+```php title="config.php"
+<!-- Enable EXIF in config.php -->
+<!-- define( 'K_EXTRACT_EXIF_DATA', 1 ); -->
 
-&lt;cms:if k_is_page&gt;
-    &lt;div class&#x3D;&quot;container mx-auto p-4&quot;&gt;
-        &lt;img src&#x3D;&quot;&lt;cms:show gg_image /&gt;&quot; alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot; class&#x3D;&quot;w-full max-w-4xl mx-auto mb-6&quot; /&gt;
+<cms:if k_is_page>
+    <div class="container mx-auto p-4">
+        <img src="<cms:show gg_image />" alt="<cms:show k_page_title />" class="w-full max-w-4xl mx-auto mb-6" />
 
-        &lt;div class&#x3D;&quot;grid grid-cols-1 md:grid-cols-2 gap-6&quot;&gt;
-            &lt;div&gt;
-                &lt;h1 class&#x3D;&quot;text-3xl font-bold mb-4&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-                &lt;cms:if image_desc&gt;
-                    &lt;p&gt;&lt;cms:show image_desc /&gt;&lt;/p&gt;
-                &lt;/cms:if&gt;
-            &lt;/div&gt;
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h1 class="text-3xl font-bold mb-4"><cms:show k_page_title /></h1>
+                <cms:if image_desc>
+                    <p><cms:show image_desc /></p>
+                </cms:if>
+            </div>
 
-            &lt;div class&#x3D;&quot;card bg-base-100 shadow-md&quot;&gt;
-                &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                    &lt;h2 class&#x3D;&quot;card-title&quot;&gt;Image Details&lt;/h2&gt;
-                    &lt;cms:exif&gt;
-                        &lt;dl class&#x3D;&quot;grid grid-cols-2 gap-2&quot;&gt;
-                            &lt;cms:if exif_datetime&gt;
-                                &lt;dt class&#x3D;&quot;font-semibold&quot;&gt;Date Taken:&lt;/dt&gt;
-                                &lt;dd&gt;&lt;cms:show exif_datetime /&gt;&lt;/dd&gt;
-                            &lt;/cms:if&gt;
+            <div class="card bg-base-100 shadow-md">
+                <div class="card-body">
+                    <h2 class="card-title">Image Details</h2>
+                    <cms:exif>
+                        <dl class="grid grid-cols-2 gap-2">
+                            <cms:if exif_datetime>
+                                <dt class="font-semibold">Date Taken:</dt>
+                                <dd><cms:show exif_datetime /></dd>
+                            </cms:if>
 
-                            &lt;cms:if exif_make&gt;
-                                &lt;dt class&#x3D;&quot;font-semibold&quot;&gt;Camera:&lt;/dt&gt;
-                                &lt;dd&gt;&lt;cms:show exif_make /&gt; &lt;cms:show exif_model /&gt;&lt;/dd&gt;
-                            &lt;/cms:if&gt;
+                            <cms:if exif_make>
+                                <dt class="font-semibold">Camera:</dt>
+                                <dd><cms:show exif_make /> <cms:show exif_model /></dd>
+                            </cms:if>
 
-                            &lt;cms:if exif_exposuretime&gt;
-                                &lt;dt class&#x3D;&quot;font-semibold&quot;&gt;Shutter Speed:&lt;/dt&gt;
-                                &lt;dd&gt;&lt;cms:show exif_exposuretime /&gt;&lt;/dd&gt;
-                            &lt;/cms:if&gt;
+                            <cms:if exif_exposuretime>
+                                <dt class="font-semibold">Shutter Speed:</dt>
+                                <dd><cms:show exif_exposuretime /></dd>
+                            </cms:if>
 
-                            &lt;cms:if exif_aperture&gt;
-                                &lt;dt class&#x3D;&quot;font-semibold&quot;&gt;Aperture:&lt;/dt&gt;
-                                &lt;dd&gt;f/&lt;cms:show exif_aperture /&gt;&lt;/dd&gt;
-                            &lt;/cms:if&gt;
+                            <cms:if exif_aperture>
+                                <dt class="font-semibold">Aperture:</dt>
+                                <dd>f/<cms:show exif_aperture /></dd>
+                            </cms:if>
 
-                            &lt;cms:if exif_focallength&gt;
-                                &lt;dt class&#x3D;&quot;font-semibold&quot;&gt;Focal Length:&lt;/dt&gt;
-                                &lt;dd&gt;&lt;cms:show exif_focallength /&gt;mm&lt;/dd&gt;
-                            &lt;/cms:if&gt;
+                            <cms:if exif_focallength>
+                                <dt class="font-semibold">Focal Length:</dt>
+                                <dd><cms:show exif_focallength />mm</dd>
+                            </cms:if>
 
-                            &lt;cms:if exif_isoequiv&gt;
-                                &lt;dt class&#x3D;&quot;font-semibold&quot;&gt;ISO:&lt;/dt&gt;
-                                &lt;dd&gt;&lt;cms:show exif_isoequiv /&gt;&lt;/dd&gt;
-                            &lt;/cms:if&gt;
+                            <cms:if exif_isoequiv>
+                                <dt class="font-semibold">ISO:</dt>
+                                <dd><cms:show exif_isoequiv /></dd>
+                            </cms:if>
 
-                            &lt;cms:if exif_resolution&gt;
-                                &lt;dt class&#x3D;&quot;font-semibold&quot;&gt;Resolution:&lt;/dt&gt;
-                                &lt;dd&gt;&lt;cms:show exif_resolution /&gt;&lt;/dd&gt;
-                            &lt;/cms:if&gt;
-                        &lt;/dl&gt;
-                    &lt;/cms:exif&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+                            <cms:if exif_resolution>
+                                <dt class="font-semibold">Resolution:</dt>
+                                <dd><cms:show exif_resolution /></dd>
+                            </cms:if>
+                        </dl>
+                    </cms:exif>
+                </div>
+            </div>
+        </div>
+    </div>
+</cms:if>
+```
 
 ### Gallery with File Metadata
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_is_page&gt;
-    &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-        &lt;img src&#x3D;&quot;&lt;cms:show gg_image /&gt;&quot; alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot; /&gt;
+```php title="template.php"
+<cms:if k_is_page>
+    <div class="mb-4">
+        <img src="<cms:show gg_image />" alt="<cms:show k_page_title />" />
 
-        &lt;div class&#x3D;&quot;mt-4 text-sm text-base-content/70&quot;&gt;
-            &lt;p&gt;Filename: &lt;cms:show k_file_name /&gt;&lt;/p&gt;
-            &lt;p&gt;Size: &lt;cms:show k_file_size /&gt; bytes&lt;/p&gt;
-            &lt;p&gt;Type: &lt;cms:show k_file_ext /&gt;&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+        <div class="mt-4 text-sm text-base-content/70">
+            <p>Filename: <cms:show k_file_name /></p>
+            <p>Size: <cms:show k_file_size /> bytes</p>
+            <p>Type: <cms:show k_file_ext /></p>
+        </div>
+    </div>
+</cms:if>
+```
 
 ### Gallery Ordered by File Name
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;gallery.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; orderby&#x3D;&#x27;file_name&#x27; order_dir&#x3D;&#x27;asc&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;
-            &lt;img src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot; alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot; /&gt;
-        &lt;/a&gt;
-    &lt;/div&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+```php title="gallery.php"
+<cms:pages masterpage='gallery.php' orderby='file_name' order_dir='asc'>
+    <div class="mb-4">
+        <a href="<cms:show k_page_link />">
+            <img src="<cms:show gg_thumb />" alt="<cms:show k_page_title />" />
+        </a>
+    </div>
+</cms:pages>
+```
 
 ### Gallery with Pagination
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;gallery.php&quot;
-&lt;div class&#x3D;&quot;grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4&quot;&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;block&quot;&gt;
-            &lt;img
-                src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot;
-                alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                class&#x3D;&quot;w-full h-48 object-cover rounded-lg&quot;
-            /&gt;
-        &lt;/a&gt;
+```php title="gallery.php"
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <cms:pages masterpage='gallery.php' limit='20' paginate='1'>
+        <a href="<cms:show k_page_link />" class="block">
+            <img
+                src="<cms:show gg_thumb />"
+                alt="<cms:show k_page_title />"
+                class="w-full h-48 object-cover rounded-lg"
+            />
+        </a>
 
-        &lt;cms:if k_paginated_bottom&gt;
-            &lt;div class&#x3D;&quot;col-span-full mt-6&quot;&gt;
-                &lt;cms:paginator /&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:pages&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+        <cms:if k_paginated_bottom>
+            <div class="col-span-full mt-6">
+                <cms:paginator />
+            </div>
+        </cms:if>
+    </cms:pages>
+</div>
+```
 
 ---
 
@@ -317,74 +317,74 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ### Gallery Carousel
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;gallery.php&quot;
-&lt;div class&#x3D;&quot;carousel carousel-center space-x-4&quot;&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; limit&#x3D;&#x27;10&#x27;&gt;
-        &lt;div class&#x3D;&quot;carousel-item&quot;&gt;
-            &lt;img
-                src&#x3D;&quot;&lt;cms:show gg_image /&gt;&quot;
-                alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                class&#x3D;&quot;rounded-box w-96 h-64 object-cover&quot;
-            /&gt;
-        &lt;/div&gt;
-    &lt;/cms:pages&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="gallery.php"
+<div class="carousel carousel-center space-x-4">
+    <cms:pages masterpage='gallery.php' limit='10'>
+        <div class="carousel-item">
+            <img
+                src="<cms:show gg_image />"
+                alt="<cms:show k_page_title />"
+                class="rounded-box w-96 h-64 object-cover"
+            />
+        </div>
+    </cms:pages>
+</div>
+```
 
 ### Gallery with Masonry Layout
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;gallery.php&quot;
-&lt;div class&#x3D;&quot;columns-2 md:columns-3 lg:columns-4 gap-4&quot;&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27;&gt;
-        &lt;div class&#x3D;&quot;mb-4 break-inside-avoid&quot;&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;
-                &lt;img
-                    src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot;
-                    alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                    class&#x3D;&quot;w-full rounded-lg&quot;
-                /&gt;
-            &lt;/a&gt;
-        &lt;/div&gt;
-    &lt;/cms:pages&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="gallery.php"
+<div class="columns-2 md:columns-3 lg:columns-4 gap-4">
+    <cms:pages masterpage='gallery.php'>
+        <div class="mb-4 break-inside-avoid">
+            <a href="<cms:show k_page_link />">
+                <img
+                    src="<cms:show gg_thumb />"
+                    alt="<cms:show k_page_title />"
+                    class="w-full rounded-lg"
+                />
+            </a>
+        </div>
+    </cms:pages>
+</div>
+```
 
 ### Gallery Filter by Album
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;gallery.php&quot;
-&lt;!-- Album selector --&gt;
-&lt;div class&#x3D;&quot;mb-6&quot;&gt;
-    &lt;select class&#x3D;&quot;select select-bordered&quot; onchange&#x3D;&quot;window.location.href&#x3D;this.value&quot;&gt;
-        &lt;option value&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;All Albums&lt;/option&gt;
-        &lt;cms:folders masterpage&#x3D;&#x27;gallery.php&#x27;&gt;
-            &lt;option value&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot;&gt;&lt;cms:show k_folder_title /&gt;&lt;/option&gt;
-        &lt;/cms:folders&gt;
-    &lt;/select&gt;
-&lt;/div&gt;
+```php title="gallery.php"
+<!-- Album selector -->
+<div class="mb-6">
+    <select class="select select-bordered" onchange="window.location.href=this.value">
+        <option value="<cms:show k_template_link />">All Albums</option>
+        <cms:folders masterpage='gallery.php'>
+            <option value="<cms:show k_folder_link />"><cms:show k_folder_title /></option>
+        </cms:folders>
+    </select>
+</div>
 
-&lt;!-- Gallery images --&gt;
-&lt;div class&#x3D;&quot;grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4&quot;&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; folder&#x3D;k_folder_name&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;
-            &lt;img src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot; alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot; /&gt;
-        &lt;/a&gt;
-    &lt;/cms:pages&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+<!-- Gallery images -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <cms:pages masterpage='gallery.php' folder=k_folder_name>
+        <a href="<cms:show k_page_link />">
+            <img src="<cms:show gg_thumb />" alt="<cms:show k_page_title />" />
+        </a>
+    </cms:pages>
+</div>
+```
 
 ---
 
 ## Best Practices
 
-1. **Always Use Required Names**: Use &#x60;gg_image&#x60; and &#x60;gg_thumb&#x60; as region names (mandatory)
+1. **Always Use Required Names**: Use `gg_image` and `gg_thumb` as region names (mandatory)
 
-2. **Enable Gallery Mode**: Always set &#x60;gallery&#x3D;&#x27;1&#x27;&#x60; in template tag
+2. **Enable Gallery Mode**: Always set `gallery='1'` in template tag
 
-3. **Use Dynamic Folders**: Set &#x60;dynamic_folders&#x3D;&#x27;1&#x27;&#x60; for album organization
+3. **Use Dynamic Folders**: Set `dynamic_folders='1'` for album organization
 
 4. **Batch Upload**: Use the Upload button in admin for multiple images
 
-5. **Thumbnail Dimensions**: Keep &#x60;gg_thumb&#x60; at 115x115 for admin display
+5. **Thumbnail Dimensions**: Keep `gg_thumb` at 115x115 for admin display
 
 6. **EXIF Data**: Enable only if needed (prevents image resizing)
 
@@ -400,44 +400,44 @@ You are a CouchCMS photo gallery expert specializing in batch image upload, EXIF
 
 ## Quick Fixes
 
-### &quot;Gallery upload not working&quot;
+### "Gallery upload not working"
 
-**Problem**: Upload button doesn&#x27;t appear or upload fails
+**Problem**: Upload button doesn't appear or upload fails
 
-**Solution**: Ensure template has &#x60;gallery&#x3D;&#x27;1&#x27;&#x60; and required region names:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:template title&#x3D;&#x27;Gallery&#x27; clonable&#x3D;&#x27;1&#x27; dynamic_folders&#x3D;&#x27;1&#x27; gallery&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:editable name&#x3D;&#x27;gg_image&#x27; type&#x3D;&#x27;image&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;gg_thumb&#x27; assoc_field&#x3D;&#x27;gg_image&#x27; type&#x3D;&#x27;thumbnail&#x27; /&gt;
-&lt;/cms:template&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Ensure template has `gallery='1'` and required region names:
+```php title="template.php"
+<cms:template title='Gallery' clonable='1' dynamic_folders='1' gallery='1'>
+    <cms:editable name='gg_image' type='image' />
+    <cms:editable name='gg_thumb' assoc_field='gg_image' type='thumbnail' />
+</cms:template>
+```
 
-### &quot;Wrong region names&quot;
+### "Wrong region names"
 
-**Problem**: Gallery features don&#x27;t work
+**Problem**: Gallery features don't work
 
-**Solution**: Use exact names &#x60;gg_image&#x60; and &#x60;gg_thumb&#x60;:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- ❌ Wrong --&gt;
-&lt;cms:editable name&#x3D;&#x27;gallery_image&#x27; type&#x3D;&#x27;image&#x27; /&gt;
+**Solution**: Use exact names `gg_image` and `gg_thumb`:
+```php title="template.php"
+<!-- ❌ Wrong -->
+<cms:editable name='gallery_image' type='image' />
 
-&lt;!-- ✅ Correct --&gt;
-&lt;cms:editable name&#x3D;&#x27;gg_image&#x27; type&#x3D;&#x27;image&#x27; /&gt;
-&#x60;&#x60;&#x60;
+<!-- ✅ Correct -->
+<cms:editable name='gg_image' type='image' />
+```
 
-### &quot;EXIF data not showing&quot;
+### "EXIF data not showing"
 
 **Problem**: EXIF variables are empty
 
 **Solution**: Enable EXIF extraction in config.php:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;config.php&quot;
+```php title="config.php"
 // In config.php
-define( &#x27;K_EXTRACT_EXIF_DATA&#x27;, 1 );
-&#x60;&#x60;&#x60;
+define( 'K_EXTRACT_EXIF_DATA', 1 );
+```
 
 Note: This prevents image resizing to preserve EXIF data.
 
-### &quot;Images too large&quot;
+### "Images too large"
 
 **Problem**: Upload fails with size error
 
@@ -453,149 +453,149 @@ Note: This prevents image resizing to preserve EXIF data.
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Gallery&#x27; clonable&#x3D;&#x27;1&#x27; dynamic_folders&#x3D;&#x27;1&#x27; gallery&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:editable
-        name&#x3D;&#x27;gg_image&#x27;
-        label&#x3D;&#x27;Image&#x27;
-        desc&#x3D;&#x27;Upload your main image here&#x27;
-        width&#x3D;&#x27;500&#x27;
-        show_preview&#x3D;&#x27;1&#x27;
-        preview_height&#x3D;&#x27;200&#x27;
-        type&#x3D;&#x27;image&#x27;
-    /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Gallery' clonable='1' dynamic_folders='1' gallery='1'>
+    <cms:editable
+        name='gg_image'
+        label='Image'
+        desc='Upload your main image here'
+        width='500'
+        show_preview='1'
+        preview_height='200'
+        type='image'
+    />
 
-    &lt;cms:editable
-        name&#x3D;&#x27;gg_thumb&#x27;
-        assoc_field&#x3D;&#x27;gg_image&#x27;
-        label&#x3D;&#x27;Image Thumbnail&#x27;
-        desc&#x3D;&#x27;Thumbnail of image above&#x27;
-        width&#x3D;&#x27;115&#x27;
-        height&#x3D;&#x27;115&#x27;
-        enforce_max&#x3D;&#x27;1&#x27;
-        type&#x3D;&#x27;thumbnail&#x27;
-    /&gt;
+    <cms:editable
+        name='gg_thumb'
+        assoc_field='gg_image'
+        label='Image Thumbnail'
+        desc='Thumbnail of image above'
+        width='115'
+        height='115'
+        enforce_max='1'
+        type='thumbnail'
+    />
 
-    &lt;cms:editable
-        name&#x3D;&#x27;image_desc&#x27;
-        label&#x3D;&#x27;Description&#x27;
-        type&#x3D;&#x27;textarea&#x27;
-    /&gt;
-&lt;/cms:template&gt;
+    <cms:editable
+        name='image_desc'
+        label='Description'
+        type='textarea'
+    />
+</cms:template>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;div class&#x3D;&quot;container mx-auto p-4&quot;&gt;
-        &lt;cms:if k_is_folder&gt;
-            &lt;!-- Album View --&gt;
-            &lt;nav class&#x3D;&quot;breadcrumbs mb-6&quot;&gt;
-                &lt;ul&gt;
-                    &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-                    &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;Gallery&lt;/a&gt;&lt;/li&gt;
-                    &lt;li&gt;&lt;cms:show k_folder_title /&gt;&lt;/li&gt;
-                &lt;/ul&gt;
-            &lt;/nav&gt;
+<cms:block 'content'>
+    <div class="container mx-auto p-4">
+        <cms:if k_is_folder>
+            <!-- Album View -->
+            <nav class="breadcrumbs mb-6">
+                <ul>
+                    <li><a href="<cms:show k_site_link />">Home</a></li>
+                    <li><a href="<cms:show k_template_link />">Gallery</a></li>
+                    <li><cms:show k_folder_title /></li>
+                </ul>
+            </nav>
 
-            &lt;h1 class&#x3D;&quot;text-4xl font-bold mb-6&quot;&gt;&lt;cms:show k_folder_title /&gt;&lt;/h1&gt;
-            &lt;cms:if k_folder_desc&gt;
-                &lt;p class&#x3D;&quot;mb-6 text-base-content/70&quot;&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-            &lt;/cms:if&gt;
+            <h1 class="text-4xl font-bold mb-6"><cms:show k_folder_title /></h1>
+            <cms:if k_folder_desc>
+                <p class="mb-6 text-base-content/70"><cms:show k_folder_desc /></p>
+            </cms:if>
 
-            &lt;div class&#x3D;&quot;grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4&quot;&gt;
-                &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; folder&#x3D;k_folder_name limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;block group&quot;&gt;
-                        &lt;img
-                            src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot;
-                            alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                            title&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                            class&#x3D;&quot;w-full h-48 object-cover rounded-lg group-hover:scale-105 transition&quot;
-                        /&gt;
-                    &lt;/a&gt;
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <cms:pages masterpage='gallery.php' folder=k_folder_name limit='20' paginate='1'>
+                    <a href="<cms:show k_page_link />" class="block group">
+                        <img
+                            src="<cms:show gg_thumb />"
+                            alt="<cms:show k_page_title />"
+                            title="<cms:show k_page_title />"
+                            class="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition"
+                        />
+                    </a>
 
-                    &lt;cms:if k_paginated_bottom&gt;
-                        &lt;div class&#x3D;&quot;col-span-full mt-6&quot;&gt;
-                            &lt;cms:paginator /&gt;
-                        &lt;/div&gt;
-                    &lt;/cms:if&gt;
-                &lt;/cms:pages&gt;
-            &lt;/div&gt;
-        &lt;cms:else /&gt;
-            &lt;cms:if k_is_page&gt;
-                &lt;!-- Single Image View --&gt;
-                &lt;nav class&#x3D;&quot;breadcrumbs mb-6&quot;&gt;
-                    &lt;ul&gt;
-                        &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-                        &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_template_link /&gt;&quot;&gt;Gallery&lt;/a&gt;&lt;/li&gt;
-                        &lt;cms:if k_page_foldername&gt;
-                            &lt;li&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot;&gt;&lt;cms:show k_folder_title /&gt;&lt;/a&gt;&lt;/li&gt;
-                        &lt;/cms:if&gt;
-                        &lt;li&gt;&lt;cms:show k_page_title /&gt;&lt;/li&gt;
-                    &lt;/ul&gt;
-                &lt;/nav&gt;
+                    <cms:if k_paginated_bottom>
+                        <div class="col-span-full mt-6">
+                            <cms:paginator />
+                        </div>
+                    </cms:if>
+                </cms:pages>
+            </div>
+        <cms:else />
+            <cms:if k_is_page>
+                <!-- Single Image View -->
+                <nav class="breadcrumbs mb-6">
+                    <ul>
+                        <li><a href="<cms:show k_site_link />">Home</a></li>
+                        <li><a href="<cms:show k_template_link />">Gallery</a></li>
+                        <cms:if k_page_foldername>
+                            <li><a href="<cms:show k_folder_link />"><cms:show k_folder_title /></a></li>
+                        </cms:if>
+                        <li><cms:show k_page_title /></li>
+                    </ul>
+                </nav>
 
-                &lt;div class&#x3D;&quot;max-w-4xl mx-auto&quot;&gt;
-                    &lt;img
-                        src&#x3D;&quot;&lt;cms:show gg_image /&gt;&quot;
-                        alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                        class&#x3D;&quot;w-full rounded-lg mb-6&quot;
-                    /&gt;
+                <div class="max-w-4xl mx-auto">
+                    <img
+                        src="<cms:show gg_image />"
+                        alt="<cms:show k_page_title />"
+                        class="w-full rounded-lg mb-6"
+                    />
 
-                    &lt;h1 class&#x3D;&quot;text-3xl font-bold mb-4&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/h1&gt;
-                    &lt;cms:if image_desc&gt;
-                        &lt;p class&#x3D;&quot;text-base-content/80&quot;&gt;&lt;cms:show image_desc /&gt;&lt;/p&gt;
-                    &lt;/cms:if&gt;
-                &lt;/div&gt;
-            &lt;cms:else /&gt;
-                &lt;!-- Album List --&gt;
-                &lt;h1 class&#x3D;&quot;text-4xl font-bold mb-6&quot;&gt;Photo Gallery&lt;/h1&gt;
+                    <h1 class="text-3xl font-bold mb-4"><cms:show k_page_title /></h1>
+                    <cms:if image_desc>
+                        <p class="text-base-content/80"><cms:show image_desc /></p>
+                    </cms:if>
+                </div>
+            <cms:else />
+                <!-- Album List -->
+                <h1 class="text-4xl font-bold mb-6">Photo Gallery</h1>
 
-                &lt;div class&#x3D;&quot;grid grid-cols-1 md:grid-cols-3 gap-6 mb-6&quot;&gt;
-                    &lt;cms:folders masterpage&#x3D;&#x27;gallery.php&#x27;&gt;
-                        &lt;div class&#x3D;&quot;card bg-base-100 shadow-md&quot;&gt;
-                            &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                                &lt;h3 class&#x3D;&quot;card-title&quot;&gt;
-                                    &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                                        &lt;cms:show k_folder_title /&gt;
-                                    &lt;/a&gt;
-                                &lt;/h3&gt;
-                                &lt;cms:if k_folder_desc&gt;
-                                    &lt;p class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;&lt;cms:show k_folder_desc /&gt;&lt;/p&gt;
-                                &lt;/cms:if&gt;
-                                &lt;div class&#x3D;&quot;card-actions&quot;&gt;
-                                    &lt;a href&#x3D;&quot;&lt;cms:show k_folder_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;View Album&lt;/a&gt;
-                                &lt;/div&gt;
-                            &lt;/div&gt;
-                        &lt;/div&gt;
-                    &lt;/cms:folders&gt;
-                &lt;/div&gt;
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <cms:folders masterpage='gallery.php'>
+                        <div class="card bg-base-100 shadow-md">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    <a href="<cms:show k_folder_link />" class="link link-primary">
+                                        <cms:show k_folder_title />
+                                    </a>
+                                </h3>
+                                <cms:if k_folder_desc>
+                                    <p class="text-sm text-base-content/70"><cms:show k_folder_desc /></p>
+                                </cms:if>
+                                <div class="card-actions">
+                                    <a href="<cms:show k_folder_link />" class="btn btn-sm btn-primary">View Album</a>
+                                </div>
+                            </div>
+                        </div>
+                    </cms:folders>
+                </div>
 
-                &lt;!-- Recent Images --&gt;
-                &lt;h2 class&#x3D;&quot;text-2xl font-bold mb-4&quot;&gt;Recent Images&lt;/h2&gt;
-                &lt;div class&#x3D;&quot;grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4&quot;&gt;
-                    &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; limit&#x3D;&#x27;12&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-                        &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;block&quot;&gt;
-                            &lt;img
-                                src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot;
-                                alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot;
-                                class&#x3D;&quot;w-full h-48 object-cover rounded-lg&quot;
-                            /&gt;
-                        &lt;/a&gt;
-                    &lt;/cms:pages&gt;
-                &lt;/div&gt;
-            &lt;/cms:if&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
-&lt;/cms:block&gt;
+                <!-- Recent Images -->
+                <h2 class="text-2xl font-bold mb-4">Recent Images</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <cms:pages masterpage='gallery.php' limit='12' orderby='publish_date' order_dir='desc'>
+                        <a href="<cms:show k_page_link />" class="block">
+                            <img
+                                src="<cms:show gg_thumb />"
+                                alt="<cms:show k_page_title />"
+                                class="w-full h-48 object-cover rounded-lg"
+                            />
+                        </a>
+                    </cms:pages>
+                </div>
+            </cms:if>
+        </cms:if>
+    </div>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
 ## Success Indicators
 
-- ✅ Gallery mode enabled (&#x60;gallery&#x3D;&#x27;1&#x27;&#x60;)
-- ✅ Required region names used (&#x60;gg_image&#x60;, &#x60;gg_thumb&#x60;)
+- ✅ Gallery mode enabled (`gallery='1'`)
+- ✅ Required region names used (`gg_image`, `gg_thumb`)
 - ✅ Batch upload works in admin
 - ✅ Images display correctly
 - ✅ Thumbnails generated automatically
@@ -606,10 +606,10 @@ Note: This prevents image resizing to preserve EXIF data.
 
 ## Warning Signs
 
-- ⚠️ Missing &#x60;gallery&#x3D;&#x27;1&#x27;&#x60; in template tag
-- ⚠️ Wrong region names (not &#x60;gg_image&#x60;/&#x60;gg_thumb&#x60;)
+- ⚠️ Missing `gallery='1'` in template tag
+- ⚠️ Wrong region names (not `gg_image`/`gg_thumb`)
 - ⚠️ EXIF enabled but images not showing (resizing disabled)
-- ⚠️ Images too large (&gt;2MB)
+- ⚠️ Images too large (>2MB)
 - ⚠️ Not using dynamic folders for albums
 - ⚠️ Missing thumbnail region
 
@@ -626,8 +626,8 @@ Note: This prevents image resizing to preserve EXIF data.
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;concepts/photo-gallery.mdx&#x60;
-- Tag Reference: &#x60;tags-reference/core/exif/&#x60;
+- CouchCMS Documentation: `concepts/photo-gallery.mdx`
+- Tag Reference: `tags-reference/core/exif/`
 
 
 

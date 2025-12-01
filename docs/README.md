@@ -53,6 +53,7 @@ Welcome to the comprehensive documentation for the CouchCMS AI Toolkit. This gui
 | **[Config Files Guide](CONFIG-FILES.md)** | Understanding `standards.md` | ⭐⭐ Intermediate |
 | **[Commands Reference](COMMANDS.md)** | Using toolkit commands | ⭐ Beginner |
 | **[Quick Reference](QUICK-REFERENCE.md)** | Quick command lookup | ⭐ Beginner |
+| **[Quick Reference Card](QUICK-REFERENCE-CARD.md)** | One-page printable reference | ⭐ Beginner |
 | **[Standards Guide](STANDARDS-GUIDE.md)** | Detailed configuration options | ⭐⭐⭐ Advanced |
 
 ### Editor Integration
@@ -135,6 +136,12 @@ cd ai-toolkit-shared && bun run update
 | **`.cursorrules`** | Cursor AI config | Auto-generated (don't edit) |
 | **`CLAUDE.md`** | Claude memory file | Auto-generated (don't edit) |
 | **`AGENTS.md`** | Agent documentation | Auto-generated (don't edit) |
+
+## 📖 Reference
+
+| Guide | Purpose |
+|-------|---------|
+| **[Glossary](GLOSSARY.md)** | Definitions of technical terms |
 
 ## 🆘 Need Help?
 

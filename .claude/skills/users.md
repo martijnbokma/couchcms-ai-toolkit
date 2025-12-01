@@ -32,23 +32,23 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 | Variable              | Purpose                          |
 | --------------------- | -------------------------------- |
-| &#x60;k_logged_in&#x60;         | User is logged in                |
-| &#x60;k_logged_out&#x60;        | User is not logged in            |
-| &#x60;k_user_id&#x60;           | User ID                          |
-| &#x60;k_user_name&#x60;         | Username                         |
-| &#x60;k_user_title&#x60;        | User display name                |
-| &#x60;k_user_email&#x60;        | User email                       |
-| &#x60;k_user_access_level&#x60; | Access level (0, 2, 4, 7, 10)   |
-| &#x60;k_user_disabled&#x60;     | User account disabled            |
-| &#x60;k_login_link&#x60;        | Link to login page               |
-| &#x60;k_logout_link&#x60;       | Link to logout                   |
+| `k_logged_in`         | User is logged in                |
+| `k_logged_out`        | User is not logged in            |
+| `k_user_id`           | User ID                          |
+| `k_user_name`         | Username                         |
+| `k_user_title`        | User display name                |
+| `k_user_email`        | User email                       |
+| `k_user_access_level` | Access level (0, 2, 4, 7, 10)   |
+| `k_user_disabled`     | User account disabled            |
+| `k_login_link`        | Link to login page               |
+| `k_logout_link`       | Link to logout                   |
 
 ### Your Approach
 
 - Use access levels for permission checks
-- Check &#x60;k_logged_in&#x60; / &#x60;k_logged_out&#x60; for authentication
-- Use &#x60;k_user_access_level&#x60; for authorization
-- Set &#x60;access_level&#x60; in template tag for template-level access
+- Check `k_logged_in` / `k_logged_out` for authentication
+- Use `k_user_access_level` for authorization
+- Set `access_level` in template tag for template-level access
 - Use element-level access for fine-grained control
 - Always provide login/logout links for user feedback
 
@@ -58,138 +58,138 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Check if User is Logged In
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_logged_in&gt;
-    &lt;p&gt;Welcome, &lt;cms:show k_user_title /&gt;!&lt;/p&gt;
-    &lt;a href&#x3D;&quot;&lt;cms:show k_logout_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;Logout&lt;/a&gt;
-&lt;cms:else /&gt;
-    &lt;a href&#x3D;&quot;&lt;cms:show k_login_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Login&lt;/a&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_logged_in>
+    <p>Welcome, <cms:show k_user_title />!</p>
+    <a href="<cms:show k_logout_link />" class="btn btn-sm btn-ghost">Logout</a>
+<cms:else />
+    <a href="<cms:show k_login_link />" class="btn btn-sm btn-primary">Login</a>
+</cms:if>
+```
 
 ### Template-Level Access Control
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;News&#x27; clonable&#x3D;&#x27;1&#x27; access_level&#x3D;&#x27;2&#x27;&gt;
-    &lt;!-- Only Authenticated Users (level 2+) can access --&gt;
-&lt;/cms:template&gt;
-&#x60;&#x60;&#x60;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='News' clonable='1' access_level='2'>
+    <!-- Only Authenticated Users (level 2+) can access -->
+</cms:template>
+```
 
 ### Element-Level Access Control
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- Show content only to Authenticated User (Special) or higher --&gt;
-&lt;cms:if k_user_access_level ge &#x27;4&#x27;&gt;
-    &lt;div class&#x3D;&quot;card bg-base-100 shadow-md&quot;&gt;
-        &lt;div class&#x3D;&quot;card-body&quot;&gt;
-            &lt;h3 class&#x3D;&quot;card-title&quot;&gt;Premium Content&lt;/h3&gt;
-            &lt;p&gt;This content is only visible to special users.&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;cms:else /&gt;
-    &lt;cms:if k_logged_out&gt;
-        &lt;div class&#x3D;&quot;alert alert-info&quot;&gt;
-            &lt;p&gt;You need to be logged in as an Authenticated User (Special) or higher to access this content.&lt;/p&gt;
-            &lt;p&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_login_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Login&lt;/a&gt;&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;cms:else /&gt;
-        &lt;div class&#x3D;&quot;alert alert-warning&quot;&gt;
-            &lt;p&gt;You do not have sufficient privileges to access this content.&lt;/p&gt;
-            &lt;p&gt;You need to be logged in as an Authenticated User (Special) or higher.&lt;/p&gt;
-            &lt;p&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_logout_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;Logout&lt;/a&gt; and login again with the right credentials.&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<!-- Show content only to Authenticated User (Special) or higher -->
+<cms:if k_user_access_level ge '4'>
+    <div class="card bg-base-100 shadow-md">
+        <div class="card-body">
+            <h3 class="card-title">Premium Content</h3>
+            <p>This content is only visible to special users.</p>
+        </div>
+    </div>
+<cms:else />
+    <cms:if k_logged_out>
+        <div class="alert alert-info">
+            <p>You need to be logged in as an Authenticated User (Special) or higher to access this content.</p>
+            <p><a href="<cms:show k_login_link />" class="btn btn-sm btn-primary">Login</a></p>
+        </div>
+    <cms:else />
+        <div class="alert alert-warning">
+            <p>You do not have sufficient privileges to access this content.</p>
+            <p>You need to be logged in as an Authenticated User (Special) or higher.</p>
+            <p><a href="<cms:show k_logout_link />" class="btn btn-sm btn-ghost">Logout</a> and login again with the right credentials.</p>
+        </div>
+    </cms:if>
+</cms:if>
+```
 
 ### Check for Super Admin
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_user_access_level ge &#x27;10&#x27;&gt;
-    &lt;div class&#x3D;&quot;admin-panel&quot;&gt;
-        &lt;h3&gt;Admin Panel&lt;/h3&gt;
-        &lt;!-- Admin-only content --&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_user_access_level ge '10'>
+    <div class="admin-panel">
+        <h3>Admin Panel</h3>
+        <!-- Admin-only content -->
+    </div>
+</cms:if>
+```
 
 ### Check for Administrator or Higher
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-    &lt;div class&#x3D;&quot;management-panel&quot;&gt;
-        &lt;h3&gt;Content Management&lt;/h3&gt;
-        &lt;!-- Admin/Manager content --&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_user_access_level ge '7'>
+    <div class="management-panel">
+        <h3>Content Management</h3>
+        <!-- Admin/Manager content -->
+    </div>
+</cms:if>
+```
 
 ### User Profile Display
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_logged_in&gt;
-    &lt;div class&#x3D;&quot;user-profile&quot;&gt;
-        &lt;div class&#x3D;&quot;avatar placeholder&quot;&gt;
-            &lt;div class&#x3D;&quot;bg-primary text-primary-content rounded-full w-16&quot;&gt;
-                &lt;span&gt;&lt;cms:show k_user_title_initial /&gt;&lt;/span&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div&gt;
-            &lt;h3&gt;&lt;cms:show k_user_title /&gt;&lt;/h3&gt;
-            &lt;p class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;&lt;cms:show k_user_email /&gt;&lt;/p&gt;
-            &lt;p class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;
-                &lt;cms:if k_user_access_level ge &#x27;10&#x27;&gt;Super Admin&lt;/cms:if&gt;
-                &lt;cms:if k_user_access_level eq &#x27;7&#x27;&gt;Administrator&lt;/cms:if&gt;
-                &lt;cms:if k_user_access_level eq &#x27;4&#x27;&gt;Special User&lt;/cms:if&gt;
-                &lt;cms:if k_user_access_level eq &#x27;2&#x27;&gt;Registered User&lt;/cms:if&gt;
-            &lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_logged_in>
+    <div class="user-profile">
+        <div class="avatar placeholder">
+            <div class="bg-primary text-primary-content rounded-full w-16">
+                <span><cms:show k_user_title_initial /></span>
+            </div>
+        </div>
+        <div>
+            <h3><cms:show k_user_title /></h3>
+            <p class="text-sm text-base-content/70"><cms:show k_user_email /></p>
+            <p class="text-sm text-base-content/70">
+                <cms:if k_user_access_level ge '10'>Super Admin</cms:if>
+                <cms:if k_user_access_level eq '7'>Administrator</cms:if>
+                <cms:if k_user_access_level eq '4'>Special User</cms:if>
+                <cms:if k_user_access_level eq '2'>Registered User</cms:if>
+            </p>
+        </div>
+    </div>
+</cms:if>
+```
 
 ### Conditional Navigation
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;&gt;blog.php&quot;
-&lt;nav class&#x3D;&quot;navbar&quot;&gt;
-    &lt;div class&#x3D;&quot;navbar-start&quot;&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot; class&#x3D;&quot;btn btn-ghost&quot;&gt;Home&lt;/a&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;blog.php&quot; class&#x3D;&quot;btn btn-ghost&quot;&gt;Blog&lt;/a&gt;
+```php title=">blog.php"
+<nav class="navbar">
+    <div class="navbar-start">
+        <a href="<cms:show k_site_link />" class="btn btn-ghost">Home</a>
+        <a href="<cms:show k_site_link />blog.php" class="btn btn-ghost">Blog</a>
 
-        &lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;admin/&quot; class&#x3D;&quot;btn btn-ghost&quot;&gt;Admin&lt;/a&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
+        <cms:if k_user_access_level ge '7'>
+            <a href="<cms:show k_site_link />admin/" class="btn btn-ghost">Admin</a>
+        </cms:if>
+    </div>
 
-    &lt;div class&#x3D;&quot;navbar-end&quot;&gt;
-        &lt;cms:if k_logged_in&gt;
-            &lt;span class&#x3D;&quot;text-sm mr-4&quot;&gt;Welcome, &lt;cms:show k_user_title /&gt;&lt;/span&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_logout_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;Logout&lt;/a&gt;
-        &lt;cms:else /&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_login_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Login&lt;/a&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
-&lt;/nav&gt;
-&#x60;&#x60;&#x60;
+    <div class="navbar-end">
+        <cms:if k_logged_in>
+            <span class="text-sm mr-4">Welcome, <cms:show k_user_title /></span>
+            <a href="<cms:show k_logout_link />" class="btn btn-sm btn-ghost">Logout</a>
+        <cms:else />
+            <a href="<cms:show k_login_link />" class="btn btn-sm btn-primary">Login</a>
+        </cms:if>
+    </div>
+</nav>
+```
 
 ### Protected Content with Login Prompt
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_user_access_level ge &#x27;2&#x27;&gt;
-    &lt;div class&#x3D;&quot;protected-content&quot;&gt;
-        &lt;h2&gt;Members Only Content&lt;/h2&gt;
-        &lt;p&gt;This content is only available to registered users.&lt;/p&gt;
-        &lt;!-- Protected content here --&gt;
-    &lt;/div&gt;
-&lt;cms:else /&gt;
-    &lt;div class&#x3D;&quot;alert alert-info&quot;&gt;
-        &lt;h3&gt;Members Only&lt;/h3&gt;
-        &lt;p&gt;This content is only available to registered users.&lt;/p&gt;
-        &lt;p&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_login_link /&gt;&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;Login to Access&lt;/a&gt;&lt;/p&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_user_access_level ge '2'>
+    <div class="protected-content">
+        <h2>Members Only Content</h2>
+        <p>This content is only available to registered users.</p>
+        <!-- Protected content here -->
+    </div>
+<cms:else />
+    <div class="alert alert-info">
+        <h3>Members Only</h3>
+        <p>This content is only available to registered users.</p>
+        <p><a href="<cms:show k_login_link />" class="btn btn-primary">Login to Access</a></p>
+    </div>
+</cms:if>
+```
 
 ---
 
@@ -197,95 +197,95 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ### Multiple Access Level Checks
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_user_access_level ge &#x27;10&#x27;&gt;
-    &lt;!-- Super Admin only --&gt;
-    &lt;div class&#x3D;&quot;super-admin-panel&quot;&gt;
-        &lt;h3&gt;Super Admin Panel&lt;/h3&gt;
-    &lt;/div&gt;
-&lt;cms:else /&gt;
-    &lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-        &lt;!-- Administrator --&gt;
-        &lt;div class&#x3D;&quot;admin-panel&quot;&gt;
-            &lt;h3&gt;Admin Panel&lt;/h3&gt;
-        &lt;/div&gt;
-    &lt;cms:else /&gt;
-        &lt;cms:if k_user_access_level ge &#x27;4&#x27;&gt;
-            &lt;!-- Special User --&gt;
-            &lt;div class&#x3D;&quot;special-user-panel&quot;&gt;
-                &lt;h3&gt;Special User Panel&lt;/h3&gt;
-            &lt;/div&gt;
-        &lt;cms:else /&gt;
-            &lt;cms:if k_user_access_level ge &#x27;2&#x27;&gt;
-                &lt;!-- Regular User --&gt;
-                &lt;div class&#x3D;&quot;user-panel&quot;&gt;
-                    &lt;h3&gt;User Panel&lt;/h3&gt;
-                &lt;/div&gt;
-            &lt;/cms:if&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_user_access_level ge '10'>
+    <!-- Super Admin only -->
+    <div class="super-admin-panel">
+        <h3>Super Admin Panel</h3>
+    </div>
+<cms:else />
+    <cms:if k_user_access_level ge '7'>
+        <!-- Administrator -->
+        <div class="admin-panel">
+            <h3>Admin Panel</h3>
+        </div>
+    <cms:else />
+        <cms:if k_user_access_level ge '4'>
+            <!-- Special User -->
+            <div class="special-user-panel">
+                <h3>Special User Panel</h3>
+            </div>
+        <cms:else />
+            <cms:if k_user_access_level ge '2'>
+                <!-- Regular User -->
+                <div class="user-panel">
+                    <h3>User Panel</h3>
+                </div>
+            </cms:if>
+        </cms:if>
+    </cms:if>
+</cms:if>
+```
 
 ### Access Control for File Downloads
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- Using cloaked URLs for protected files --&gt;
-&lt;cms:if k_user_access_level ge &#x27;2&#x27;&gt;
-    &lt;a href&#x3D;&quot;&lt;cms:cloak_url &#x27;downloads/premium-file.pdf&#x27; /&gt;&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;Download&lt;/a&gt;
-&lt;cms:else /&gt;
-    &lt;div class&#x3D;&quot;alert alert-warning&quot;&gt;
-        &lt;p&gt;You must be logged in to download this file.&lt;/p&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_login_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Login&lt;/a&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<!-- Using cloaked URLs for protected files -->
+<cms:if k_user_access_level ge '2'>
+    <a href="<cms:cloak_url 'downloads/premium-file.pdf' />" class="btn btn-primary">Download</a>
+<cms:else />
+    <div class="alert alert-warning">
+        <p>You must be logged in to download this file.</p>
+        <a href="<cms:show k_login_link />" class="btn btn-sm btn-primary">Login</a>
+    </div>
+</cms:if>
+```
 
 ### User-Specific Content
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;user-content.php&quot;
-&lt;cms:if k_logged_in&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;user-content.php&#x27; folder&#x3D;k_user_name limit&#x3D;&#x27;10&#x27;&gt;
-        &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-        &lt;/div&gt;
-    &lt;/cms:pages&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="user-content.php"
+<cms:if k_logged_in>
+    <cms:pages masterpage='user-content.php' folder=k_user_name limit='10'>
+        <div class="mb-4">
+            <h3><a href="<cms:show k_page_link />"><cms:show k_page_title /></a></h3>
+        </div>
+    </cms:pages>
+</cms:if>
+```
 
 ### Conditional Form Display
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;content.php&quot;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-    &lt;!-- Admin can create/edit/delete --&gt;
-    &lt;cms:form masterpage&#x3D;&#x27;content.php&#x27; mode&#x3D;&#x27;create&#x27;&gt;
-        &lt;!-- Create form --&gt;
-    &lt;/cms:form&gt;
-&lt;cms:else /&gt;
-    &lt;cms:if k_user_access_level ge &#x27;2&#x27;&gt;
-        &lt;!-- Regular users can only create --&gt;
-        &lt;cms:form masterpage&#x3D;&#x27;content.php&#x27; mode&#x3D;&#x27;create&#x27;&gt;
-            &lt;!-- Create form (limited fields) --&gt;
-        &lt;/cms:form&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="content.php"
+<cms:if k_user_access_level ge '7'>
+    <!-- Admin can create/edit/delete -->
+    <cms:form masterpage='content.php' mode='create'>
+        <!-- Create form -->
+    </cms:form>
+<cms:else />
+    <cms:if k_user_access_level ge '2'>
+        <!-- Regular users can only create -->
+        <cms:form masterpage='content.php' mode='create'>
+            <!-- Create form (limited fields) -->
+        </cms:form>
+    </cms:if>
+</cms:if>
+```
 
 ---
 
 ## Best Practices
 
-1. **Always Check Access Level**: Use &#x60;k_user_access_level&#x60; for authorization, not just &#x60;k_logged_in&#x60;
+1. **Always Check Access Level**: Use `k_user_access_level` for authorization, not just `k_logged_in`
 
 2. **Provide Clear Feedback**: Always show why access is denied and how to gain access
 
-3. **Use Template-Level Access**: Set &#x60;access_level&#x60; in template tag for template-wide protection
+3. **Use Template-Level Access**: Set `access_level` in template tag for template-wide protection
 
 4. **Element-Level Control**: Use element-level checks for fine-grained permissions
 
-5. **Login/Logout Links**: Always provide &#x60;k_login_link&#x60; and &#x60;k_logout_link&#x60; for user convenience
+5. **Login/Logout Links**: Always provide `k_login_link` and `k_logout_link` for user convenience
 
-6. **Access Level Hierarchy**: Remember the hierarchy: 10 &gt; 7 &gt; 4 &gt; 2 &gt; 0
+6. **Access Level Hierarchy**: Remember the hierarchy: 10 > 7 > 4 > 2 > 0
 
 7. **User Feedback**: Show appropriate messages for different access levels
 
@@ -293,58 +293,58 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 9. **User Experience**: Make it clear what level of access is needed
 
-10. **Error Handling**: Handle cases where users don&#x27;t have sufficient access gracefully
+10. **Error Handling**: Handle cases where users don't have sufficient access gracefully
 
 ---
 
 ## Quick Fixes
 
-### &quot;Access control not working&quot;
+### "Access control not working"
 
-**Problem**: Users can access content they shouldn&#x27;t
+**Problem**: Users can access content they shouldn't
 
 **Solution**: Check access level correctly:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- ❌ Wrong - only checks if logged in --&gt;
-&lt;cms:if k_logged_in&gt;
-    &lt;!-- Content --&gt;
-&lt;/cms:if&gt;
+```php title="template.php"
+<!-- ❌ Wrong - only checks if logged in -->
+<cms:if k_logged_in>
+    <!-- Content -->
+</cms:if>
 
-&lt;!-- ✅ Correct - checks access level --&gt;
-&lt;cms:if k_user_access_level ge &#x27;2&#x27;&gt;
-    &lt;!-- Content --&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+<!-- ✅ Correct - checks access level -->
+<cms:if k_user_access_level ge '2'>
+    <!-- Content -->
+</cms:if>
+```
 
-### &quot;Login link not showing&quot;
+### "Login link not showing"
 
-**Problem**: Login link doesn&#x27;t appear
+**Problem**: Login link doesn't appear
 
-**Solution**: Use &#x60;k_login_link&#x60; variable:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;a href&#x3D;&quot;&lt;cms:show k_login_link /&gt;&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;Login&lt;/a&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Use `k_login_link` variable:
+```php title="template.php"
+<a href="<cms:show k_login_link />" class="btn btn-primary">Login</a>
+```
 
-### &quot;Template access not working&quot;
+### "Template access not working"
 
 **Problem**: Template-level access control not enforced
 
-**Solution**: Set &#x60;access_level&#x60; in template tag:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:template title&#x3D;&#x27;News&#x27; clonable&#x3D;&#x27;1&#x27; access_level&#x3D;&#x27;2&#x27;&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Set `access_level` in template tag:
+```php title="template.php"
+<cms:template title='News' clonable='1' access_level='2'>
+```
 
-### &quot;Wrong access level check&quot;
+### "Wrong access level check"
 
 **Problem**: Access level comparison not working
 
-**Solution**: Use &#x60;ge&#x60; (greater or equal) for level checks:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- Check for Administrator (7) or higher --&gt;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-    &lt;!-- Admin content --&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Use `ge` (greater or equal) for level checks:
+```php title="template.php"
+<!-- Check for Administrator (7) or higher -->
+<cms:if k_user_access_level ge '7'>
+    <!-- Admin content -->
+</cms:if>
+```
 
 ---
 
@@ -356,72 +356,72 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Protected Content&#x27; clonable&#x3D;&#x27;1&#x27; access_level&#x3D;&#x27;2&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Protected Content' clonable='1' access_level='2' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;div class&#x3D;&quot;container mx-auto p-4&quot;&gt;
-        &lt;!-- Navigation --&gt;
-        &lt;nav class&#x3D;&quot;navbar mb-6&quot;&gt;
-            &lt;div class&#x3D;&quot;navbar-start&quot;&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot; class&#x3D;&quot;btn btn-ghost&quot;&gt;Home&lt;/a&gt;
-            &lt;/div&gt;
-            &lt;div class&#x3D;&quot;navbar-end&quot;&gt;
-                &lt;cms:if k_logged_in&gt;
-                    &lt;span class&#x3D;&quot;mr-4&quot;&gt;Welcome, &lt;cms:show k_user_title /&gt;&lt;/span&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_logout_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;Logout&lt;/a&gt;
-                &lt;cms:else /&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_login_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Login&lt;/a&gt;
-                &lt;/cms:if&gt;
-            &lt;/div&gt;
-        &lt;/nav&gt;
+<cms:block 'content'>
+    <div class="container mx-auto p-4">
+        <!-- Navigation -->
+        <nav class="navbar mb-6">
+            <div class="navbar-start">
+                <a href="<cms:show k_site_link />" class="btn btn-ghost">Home</a>
+            </div>
+            <div class="navbar-end">
+                <cms:if k_logged_in>
+                    <span class="mr-4">Welcome, <cms:show k_user_title /></span>
+                    <a href="<cms:show k_logout_link />" class="btn btn-sm btn-ghost">Logout</a>
+                <cms:else />
+                    <a href="<cms:show k_login_link />" class="btn btn-sm btn-primary">Login</a>
+                </cms:if>
+            </div>
+        </nav>
 
-        &lt;!-- Public Content --&gt;
-        &lt;div class&#x3D;&quot;mb-6&quot;&gt;
-            &lt;h1&gt;Public Content&lt;/h1&gt;
-            &lt;p&gt;This content is visible to everyone.&lt;/p&gt;
-        &lt;/div&gt;
+        <!-- Public Content -->
+        <div class="mb-6">
+            <h1>Public Content</h1>
+            <p>This content is visible to everyone.</p>
+        </div>
 
-        &lt;!-- Registered Users Content --&gt;
-        &lt;cms:if k_user_access_level ge &#x27;2&#x27;&gt;
-            &lt;div class&#x3D;&quot;card bg-base-100 shadow-md mb-6&quot;&gt;
-                &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                    &lt;h2 class&#x3D;&quot;card-title&quot;&gt;Members Only&lt;/h2&gt;
-                    &lt;p&gt;This content is only visible to registered users.&lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;cms:else /&gt;
-            &lt;div class&#x3D;&quot;alert alert-info&quot;&gt;
-                &lt;p&gt;You must be logged in to see this content.&lt;/p&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_login_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Login&lt;/a&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
+        <!-- Registered Users Content -->
+        <cms:if k_user_access_level ge '2'>
+            <div class="card bg-base-100 shadow-md mb-6">
+                <div class="card-body">
+                    <h2 class="card-title">Members Only</h2>
+                    <p>This content is only visible to registered users.</p>
+                </div>
+            </div>
+        <cms:else />
+            <div class="alert alert-info">
+                <p>You must be logged in to see this content.</p>
+                <a href="<cms:show k_login_link />" class="btn btn-sm btn-primary">Login</a>
+            </div>
+        </cms:if>
 
-        &lt;!-- Special Users Content --&gt;
-        &lt;cms:if k_user_access_level ge &#x27;4&#x27;&gt;
-            &lt;div class&#x3D;&quot;card bg-primary text-primary-content shadow-md mb-6&quot;&gt;
-                &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                    &lt;h2 class&#x3D;&quot;card-title&quot;&gt;Premium Content&lt;/h2&gt;
-                    &lt;p&gt;This content is only visible to special users.&lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
+        <!-- Special Users Content -->
+        <cms:if k_user_access_level ge '4'>
+            <div class="card bg-primary text-primary-content shadow-md mb-6">
+                <div class="card-body">
+                    <h2 class="card-title">Premium Content</h2>
+                    <p>This content is only visible to special users.</p>
+                </div>
+            </div>
+        </cms:if>
 
-        &lt;!-- Admin Content --&gt;
-        &lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-            &lt;div class&#x3D;&quot;card bg-secondary text-secondary-content shadow-md mb-6&quot;&gt;
-                &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                    &lt;h2 class&#x3D;&quot;card-title&quot;&gt;Admin Panel&lt;/h2&gt;
-                    &lt;p&gt;This content is only visible to administrators.&lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
-&lt;/cms:block&gt;
+        <!-- Admin Content -->
+        <cms:if k_user_access_level ge '7'>
+            <div class="card bg-secondary text-secondary-content shadow-md mb-6">
+                <div class="card-body">
+                    <h2 class="card-title">Admin Panel</h2>
+                    <p>This content is only visible to administrators.</p>
+                </div>
+            </div>
+        </cms:if>
+    </div>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
@@ -439,7 +439,7 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ## Warning Signs
 
-- ⚠️ Only checking &#x60;k_logged_in&#x60; without checking access level
+- ⚠️ Only checking `k_logged_in` without checking access level
 - ⚠️ Not providing login links for denied access
 - ⚠️ Missing template-level access control
 - ⚠️ Confusing access level numbers
@@ -460,8 +460,8 @@ You are a CouchCMS user management expert specializing in access control, user g
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;concepts/users.mdx&#x60;
-- Tag Reference: &#x60;tags-reference/core/template/&#x60; (access_level parameter)
+- CouchCMS Documentation: `concepts/users.mdx`
+- Tag Reference: `tags-reference/core/template/` (access_level parameter)
 
 
 

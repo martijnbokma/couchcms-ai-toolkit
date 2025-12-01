@@ -22,37 +22,37 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 | Tag                    | Purpose                    |
 | ---------------------- | -------------------------- |
-| &#x60;&lt;cms:search&gt;&#x60;         | Search pages by keywords   |
-| &#x60;&lt;cms:search_form&gt;&#x60;    | Generate search form        |
-| &#x60;&lt;cms:gpc&gt;&#x60;            | Get querystring parameter  |
+| `<cms:search>`         | Search pages by keywords   |
+| `<cms:search_form>`    | Generate search form        |
+| `<cms:gpc>`            | Get querystring parameter  |
 
 ### Basic Search Structure
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_search_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-    &lt;cms:show k_search_excerpt /&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:search masterpage='blog.php' limit='10' paginate='1'>
+    <h3><a href="<cms:show k_page_link />"><cms:show k_search_title /></a></h3>
+    <cms:show k_search_excerpt />
+</cms:search>
+```
 
 ### Search Variables
 
 | Variable              | Purpose                                    |
 | --------------------- | ------------------------------------------ |
-| &#x60;k_search_title&#x60;      | Title with highlighted search terms        |
-| &#x60;k_search_content&#x60;    | Complete searchable content                |
-| &#x60;k_search_excerpt&#x60;    | Snippets with highlighted search terms     |
-| &#x60;k_total_records&#x60;     | Total number of results found             |
-| &#x60;k_current_record&#x60;    | Current result number                      |
+| `k_search_title`      | Title with highlighted search terms        |
+| `k_search_content`    | Complete searchable content                |
+| `k_search_excerpt`    | Snippets with highlighted search terms     |
+| `k_total_records`     | Total number of results found             |
+| `k_current_record`    | Current result number                      |
 
 ### Your Approach
 
 - Use MySQL fulltext search for relevance ranking
-- Always use &#x60;k_search_title&#x60; and &#x60;k_search_excerpt&#x60; for highlighted results
+- Always use `k_search_title` and `k_search_excerpt` for highlighted results
 - Implement pagination for large result sets
-- Use &#x60;masterpage&#x60; to limit search scope
-- Place search forms in &#x60;{{paths.forms}}/&#x60; or inline
-- Remember: words &lt; 4 characters are ignored by fulltext search
+- Use `masterpage` to limit search scope
+- Place search forms in `{{paths.forms}}/` or inline
+- Remember: words < 4 characters are ignored by fulltext search
 
 ---
 
@@ -60,129 +60,129 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Basic Search Page
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Search&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Search' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;!-- Search Form --&gt;
-    &lt;cms:search_form msg&#x3D;&#x27;Enter keywords&#x27; /&gt;
+<cms:block 'content'>
+    <!-- Search Form -->
+    <cms:search_form msg='Enter keywords' />
 
-    &lt;!-- Search Results --&gt;
-    &lt;cms:search limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;cms:if k_paginated_top&gt;
-            &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-                &lt;cms:if k_paginator_required&gt;
-                    &lt;p&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-                &lt;/cms:if&gt;
-                &lt;p&gt;&lt;cms:show k_total_records /&gt; results found&lt;/p&gt;
-                &lt;p&gt;Showing: &lt;cms:show k_record_from /&gt;-&lt;cms:show k_record_to /&gt;&lt;/p&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
+    <!-- Search Results -->
+    <cms:search limit='10' paginate='1'>
+        <cms:if k_paginated_top>
+            <div class="mb-4">
+                <cms:if k_paginator_required>
+                    <p>Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+                </cms:if>
+                <p><cms:show k_total_records /> results found</p>
+                <p>Showing: <cms:show k_record_from />-<cms:show k_record_to /></p>
+            </div>
+        </cms:if>
 
-        &lt;div class&#x3D;&quot;card bg-base-100 shadow-md mb-4&quot;&gt;
-            &lt;div class&#x3D;&quot;card-body&quot;&gt;
-                &lt;h3 class&#x3D;&quot;card-title&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                        &lt;cms:show k_search_title /&gt;
-                    &lt;/a&gt;
-                &lt;/h3&gt;
-                &lt;p&gt;&lt;cms:show k_search_excerpt /&gt;&lt;/p&gt;
-                &lt;div class&#x3D;&quot;card-actions&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Read more&lt;/a&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
+        <div class="card bg-base-100 shadow-md mb-4">
+            <div class="card-body">
+                <h3 class="card-title">
+                    <a href="<cms:show k_page_link />" class="link link-primary">
+                        <cms:show k_search_title />
+                    </a>
+                </h3>
+                <p><cms:show k_search_excerpt /></p>
+                <div class="card-actions">
+                    <a href="<cms:show k_page_link />" class="btn btn-sm btn-primary">Read more</a>
+                </div>
+            </div>
+        </div>
 
-        &lt;cms:paginator /&gt;
-    &lt;/cms:search&gt;
+        <cms:paginator />
+    </cms:search>
 
-    &lt;!-- No Results --&gt;
-    &lt;cms:if k_total_records&#x3D;&#x27;0&#x27;&gt;
-        &lt;div class&#x3D;&quot;alert alert-info&quot;&gt;
-            &lt;p&gt;No results found for &quot;&lt;cms:show k_search_keywords /&gt;&quot;&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+    <!-- No Results -->
+    <cms:if k_total_records='0'>
+        <div class="alert alert-info">
+            <p>No results found for "<cms:show k_search_keywords />"</p>
+        </div>
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Search Form on Different Page
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;&gt;search.php&quot;
-&lt;!-- On homepage (index.php) --&gt;
-&lt;cms:search_form
-    msg&#x3D;&#x27;Search...&#x27;
-    processor&#x3D;&quot;&lt;cms:show k_site_link /&gt;search.php&quot;
-/&gt;
+```php title=">search.php"
+<!-- On homepage (index.php) -->
+<cms:search_form
+    msg='Search...'
+    processor="<cms:show k_site_link />search.php"
+/>
 
-&lt;!-- On search.php --&gt;
-&lt;cms:search limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;!-- Results here --&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+<!-- On search.php -->
+<cms:search limit='10' paginate='1'>
+    <!-- Results here -->
+</cms:search>
+```
 
 ### Custom Search Form
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;&gt;search.php&quot;
-&lt;form method&#x3D;&quot;get&quot; action&#x3D;&quot;&lt;cms:show k_site_link /&gt;search.php&quot; class&#x3D;&quot;form-control&quot;&gt;
-    &lt;div class&#x3D;&quot;input-group&quot;&gt;
-        &lt;input
-            type&#x3D;&quot;text&quot;
-            name&#x3D;&quot;s&quot;
-            placeholder&#x3D;&quot;Search...&quot;
-            class&#x3D;&quot;input input-bordered w-full&quot;
-            value&#x3D;&quot;&lt;cms:gpc &#x27;s&#x27; /&gt;&quot;
-        /&gt;
-        &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;Search&lt;/button&gt;
-    &lt;/div&gt;
-&lt;/form&gt;
-&#x60;&#x60;&#x60;
+```html title=">search.php"
+<form method="get" action="<cms:show k_site_link />search.php" class="form-control">
+    <div class="input-group">
+        <input
+            type="text"
+            name="s"
+            placeholder="Search..."
+            class="input input-bordered w-full"
+            value="<cms:gpc 's' />"
+        />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+```
 
 ### Search with Keywords Parameter
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:search
-    masterpage&#x3D;&#x27;blog.php&#x27;
-    limit&#x3D;&#x27;10&#x27;
-    keywords&#x3D;&quot;&lt;cms:gpc &#x27;s&#x27; /&gt;&quot;
-&gt;
-    &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_search_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-    &lt;cms:show k_search_excerpt /&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:search
+    masterpage='blog.php'
+    limit='10'
+    keywords="<cms:gpc 's' />"
+>
+    <h3><a href="<cms:show k_page_link />"><cms:show k_search_title /></a></h3>
+    <cms:show k_search_excerpt />
+</cms:search>
+```
 
 ### Multi-Template Search
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php,portfolio.php&quot;
-&lt;!-- Search multiple templates --&gt;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php,portfolio.php&#x27; limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-        &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_search_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-        &lt;p&gt;&lt;cms:show k_search_excerpt /&gt;&lt;/p&gt;
-        &lt;span class&#x3D;&quot;badge badge-ghost&quot;&gt;&lt;cms:show k_template_name /&gt;&lt;/span&gt;
-    &lt;/div&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php,portfolio.php"
+<!-- Search multiple templates -->
+<cms:search masterpage='blog.php,portfolio.php' limit='20' paginate='1'>
+    <div class="mb-4">
+        <h3><a href="<cms:show k_page_link />"><cms:show k_search_title /></a></h3>
+        <p><cms:show k_search_excerpt /></p>
+        <span class="badge badge-ghost"><cms:show k_template_name /></span>
+    </div>
+</cms:search>
+```
 
 ### Exclude Templates from Search
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;!admin.php,!drafts.php&quot;
-&lt;!-- Search all templates except specific ones --&gt;
-&lt;cms:search masterpage&#x3D;&#x27;!admin.php,!drafts.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;!-- Results here --&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="!admin.php,!drafts.php"
+<!-- Search all templates except specific ones -->
+<cms:search masterpage='!admin.php,!drafts.php' limit='10' paginate='1'>
+    <!-- Results here -->
+</cms:search>
+```
 
 ### Search with Folder Filter
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;!-- Search only in specific folder --&gt;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php&#x27; folder&#x3D;&#x27;news&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;!-- Results here --&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<!-- Search only in specific folder -->
+<cms:search masterpage='blog.php' folder='news' limit='10' paginate='1'>
+    <!-- Results here -->
+</cms:search>
+```
 
 ---
 
@@ -190,74 +190,74 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ### Search with Date Range
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_page_date gte&#x3D;&#x27;2024-01-01&#x27; AND k_page_date lte&#x3D;&#x27;2024-12-31&#x27;&gt;
-        &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_search_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-            &lt;p&gt;&lt;cms:show k_search_excerpt /&gt;&lt;/p&gt;
-            &lt;p class&#x3D;&quot;text-sm text-base-content/70&quot;&gt;&lt;cms:date k_page_date format&#x3D;&#x27;F j, Y&#x27; /&gt;&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:search masterpage='blog.php' limit='10' paginate='1'>
+    <cms:if k_page_date gte='2024-01-01' AND k_page_date lte='2024-12-31'>
+        <div class="mb-4">
+            <h3><a href="<cms:show k_page_link />"><cms:show k_search_title /></a></h3>
+            <p><cms:show k_search_excerpt /></p>
+            <p class="text-sm text-base-content/70"><cms:date k_page_date format='F j, Y' /></p>
+        </div>
+    </cms:if>
+</cms:search>
+```
 
 ### Search Results with Categories
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;div class&#x3D;&quot;card bg-base-100 shadow-md mb-4&quot;&gt;
-        &lt;div class&#x3D;&quot;card-body&quot;&gt;
-            &lt;div class&#x3D;&quot;flex items-center gap-2 mb-2&quot;&gt;
-                &lt;cms:show k_search_title /&gt;
-                &lt;cms:if k_folder_name&gt;
-                    &lt;span class&#x3D;&quot;badge badge-primary&quot;&gt;&lt;cms:show k_folder_name /&gt;&lt;/span&gt;
-                &lt;/cms:if&gt;
-            &lt;/div&gt;
-            &lt;p&gt;&lt;cms:show k_search_excerpt /&gt;&lt;/p&gt;
-            &lt;div class&#x3D;&quot;card-actions&quot;&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Read more&lt;/a&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:search masterpage='blog.php' limit='10' paginate='1'>
+    <div class="card bg-base-100 shadow-md mb-4">
+        <div class="card-body">
+            <div class="flex items-center gap-2 mb-2">
+                <cms:show k_search_title />
+                <cms:if k_folder_name>
+                    <span class="badge badge-primary"><cms:show k_folder_name /></span>
+                </cms:if>
+            </div>
+            <p><cms:show k_search_excerpt /></p>
+            <div class="card-actions">
+                <a href="<cms:show k_page_link />" class="btn btn-sm btn-primary">Read more</a>
+            </div>
+        </div>
+    </div>
+</cms:search>
+```
 
 ### Search Form with Autocomplete
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;&gt;search.php&quot;
-&lt;div class&#x3D;&quot;form-control&quot; x-data&#x3D;&quot;{ query: &#x27;&#x27; }&quot;&gt;
-    &lt;form method&#x3D;&quot;get&quot; action&#x3D;&quot;&lt;cms:show k_site_link /&gt;search.php&quot; class&#x3D;&quot;input-group&quot;&gt;
-        &lt;input
-            type&#x3D;&quot;text&quot;
-            name&#x3D;&quot;s&quot;
-            placeholder&#x3D;&quot;Search...&quot;
-            class&#x3D;&quot;input input-bordered w-full&quot;
-            x-model&#x3D;&quot;query&quot;
-            x-on:input.debounce.300ms&#x3D;&quot;// Autocomplete logic here&quot;
-        /&gt;
-        &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;Search&lt;/button&gt;
-    &lt;/form&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title=">search.php"
+<div class="form-control" x-data="{ query: '' }">
+    <form method="get" action="<cms:show k_site_link />search.php" class="input-group">
+        <input
+            type="text"
+            name="s"
+            placeholder="Search..."
+            class="input input-bordered w-full"
+            x-model="query"
+            x-on:input.debounce.300ms="// Autocomplete logic here"
+        />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+```
 
 ---
 
 ## Best Practices
 
-1. **Always Use Highlighted Variables**: Use &#x60;k_search_title&#x60; and &#x60;k_search_excerpt&#x60; instead of regular title/content variables to show highlighted search terms
+1. **Always Use Highlighted Variables**: Use `k_search_title` and `k_search_excerpt` instead of regular title/content variables to show highlighted search terms
 
-2. **Implement Pagination**: For large result sets, always use &#x60;paginate&#x3D;&#x27;1&#x27;&#x60; and display pagination controls
+2. **Implement Pagination**: For large result sets, always use `paginate='1'` and display pagination controls
 
-3. **Limit Search Scope**: Use &#x60;masterpage&#x60; parameter to limit search to specific templates or exclude templates
+3. **Limit Search Scope**: Use `masterpage` parameter to limit search to specific templates or exclude templates
 
-4. **Handle Empty Results**: Always check for &#x60;k_total_records&#x3D;&#x27;0&#x27;&#x60; and display a helpful message
+4. **Handle Empty Results**: Always check for `k_total_records='0'` and display a helpful message
 
 5. **Search Form Placement**: Place search forms in navigation, headers, or dedicated search pages
 
-6. **Custom Forms**: You can create custom search forms, just ensure the input field is named &#x60;s&#x60;
+6. **Custom Forms**: You can create custom search forms, just ensure the input field is named `s`
 
-7. **Keywords Parameter**: Use &#x60;keywords&#x60; parameter when you need to pass search terms programmatically
+7. **Keywords Parameter**: Use `keywords` parameter when you need to pass search terms programmatically
 
 8. **Fulltext Limitations**: Remember that MySQL fulltext search:
    - Ignores words less than 4 characters
@@ -272,61 +272,61 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ## Quick Fixes
 
-### &quot;Search returns no results&quot;
+### "Search returns no results"
 
 **Problem**: Search form submits but shows no results
 
 **Solution**:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- Check if search terms exist --&gt;
-&lt;cms:if k_search_keywords&gt;
-    &lt;cms:search limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;!-- Results --&gt;
-    &lt;/cms:search&gt;
-&lt;cms:else /&gt;
-    &lt;p&gt;Please enter search keywords&lt;/p&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<!-- Check if search terms exist -->
+<cms:if k_search_keywords>
+    <cms:search limit='10' paginate='1'>
+        <!-- Results -->
+    </cms:search>
+<cms:else />
+    <p>Please enter search keywords</p>
+</cms:if>
+```
 
-### &quot;Search highlights not showing&quot;
+### "Search highlights not showing"
 
-**Problem**: Search results don&#x27;t show highlighted terms
+**Problem**: Search results don't show highlighted terms
 
-**Solution**: Use &#x60;k_search_title&#x60; and &#x60;k_search_excerpt&#x60; instead of &#x60;k_page_title&#x60; and regular content:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- ❌ Wrong --&gt;
-&lt;h3&gt;&lt;cms:show k_page_title /&gt;&lt;/h3&gt;
+**Solution**: Use `k_search_title` and `k_search_excerpt` instead of `k_page_title` and regular content:
+```php title="template.php"
+<!-- ❌ Wrong -->
+<h3><cms:show k_page_title /></h3>
 
-&lt;!-- ✅ Correct --&gt;
-&lt;h3&gt;&lt;cms:show k_search_title /&gt;&lt;/h3&gt;
-&#x60;&#x60;&#x60;
+<!-- ✅ Correct -->
+<h3><cms:show k_search_title /></h3>
+```
 
-### &quot;Search too slow&quot;
+### "Search too slow"
 
 **Problem**: Search takes too long on large sites
 
 **Solution**: Limit search scope and add pagination:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php,news.php&quot;
-&lt;!-- Limit to specific templates --&gt;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php,news.php&#x27; limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;!-- Results --&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php,news.php"
+<!-- Limit to specific templates -->
+<cms:search masterpage='blog.php,news.php' limit='20' paginate='1'>
+    <!-- Results -->
+</cms:search>
+```
 
-### &quot;Short words not found&quot;
+### "Short words not found"
 
-**Problem**: Words like &quot;the&quot;, &quot;and&quot;, &quot;it&quot; are not found
+**Problem**: Words like "the", "and", "it" are not found
 
 **Solution**: This is a MySQL fulltext limitation. Inform users that words must be at least 4 characters, or implement custom search logic for short words.
 
-### &quot;Search form submits to wrong page&quot;
+### "Search form submits to wrong page"
 
-**Problem**: Search form doesn&#x27;t go to search results page
+**Problem**: Search form doesn't go to search results page
 
-**Solution**: Use &#x60;processor&#x60; parameter:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;&gt;search.php&quot;
-&lt;cms:search_form processor&#x3D;&quot;&lt;cms:show k_site_link /&gt;search.php&quot; /&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Use `processor` parameter:
+```php title=">search.php"
+<cms:search_form processor="<cms:show k_site_link />search.php" />
+```
 
 ---
 
@@ -338,50 +338,50 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Search&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Search' />
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;div class&#x3D;&quot;container mx-auto p-4&quot;&gt;
-        &lt;h1 class&#x3D;&quot;text-3xl font-bold mb-6&quot;&gt;Search&lt;/h1&gt;
+<cms:block 'content'>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-6">Search</h1>
 
-        &lt;cms:search_form msg&#x3D;&#x27;Enter keywords...&#x27; class&#x3D;&quot;mb-6&quot; /&gt;
+        <cms:search_form msg='Enter keywords...' class="mb-6" />
 
-        &lt;cms:search masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;10&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-            &lt;cms:if k_paginated_top&gt;
-                &lt;div class&#x3D;&quot;mb-4 text-base-content/70&quot;&gt;
-                    &lt;cms:if k_paginator_required&gt;
-                        &lt;p&gt;Page &lt;cms:show k_current_page /&gt; of &lt;cms:show k_total_pages /&gt;&lt;/p&gt;
-                    &lt;/cms:if&gt;
-                    &lt;p&gt;&lt;cms:show k_total_records /&gt; results found&lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/cms:if&gt;
+        <cms:search masterpage='blog.php' limit='10' paginate='1'>
+            <cms:if k_paginated_top>
+                <div class="mb-4 text-base-content/70">
+                    <cms:if k_paginator_required>
+                        <p>Page <cms:show k_current_page /> of <cms:show k_total_pages /></p>
+                    </cms:if>
+                    <p><cms:show k_total_records /> results found</p>
+                </div>
+            </cms:if>
 
-            &lt;article class&#x3D;&quot;mb-6 pb-6 border-b border-base-300&quot;&gt;
-                &lt;h2 class&#x3D;&quot;text-2xl font-semibold mb-2&quot;&gt;
-                    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;link link-primary&quot;&gt;
-                        &lt;cms:show k_search_title /&gt;
-                    &lt;/a&gt;
-                &lt;/h2&gt;
-                &lt;p class&#x3D;&quot;text-base-content/80 mb-2&quot;&gt;&lt;cms:show k_search_excerpt /&gt;&lt;/p&gt;
-                &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Read more&lt;/a&gt;
-            &lt;/article&gt;
+            <article class="mb-6 pb-6 border-b border-base-300">
+                <h2 class="text-2xl font-semibold mb-2">
+                    <a href="<cms:show k_page_link />" class="link link-primary">
+                        <cms:show k_search_title />
+                    </a>
+                </h2>
+                <p class="text-base-content/80 mb-2"><cms:show k_search_excerpt /></p>
+                <a href="<cms:show k_page_link />" class="btn btn-sm btn-primary">Read more</a>
+            </article>
 
-            &lt;cms:paginator /&gt;
-        &lt;/cms:search&gt;
+            <cms:paginator />
+        </cms:search>
 
-        &lt;cms:if k_total_records&#x3D;&#x27;0&#x27;&gt;
-            &lt;div class&#x3D;&quot;alert alert-info&quot;&gt;
-                &lt;p&gt;No results found for &quot;&lt;cms:show k_search_keywords /&gt;&quot;&lt;/p&gt;
-                &lt;p class&#x3D;&quot;text-sm mt-2&quot;&gt;Try different keywords or check your spelling.&lt;/p&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
-    &lt;/div&gt;
-&lt;/cms:block&gt;
+        <cms:if k_total_records='0'>
+            <div class="alert alert-info">
+                <p>No results found for "<cms:show k_search_keywords />"</p>
+                <p class="text-sm mt-2">Try different keywords or check your spelling.</p>
+            </div>
+        </cms:if>
+    </div>
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Solution: Global Search Form in Navigation
 
@@ -389,23 +389,23 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 **Solution**:
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;&gt;search.php&quot;
-&lt;!-- In snippets/layouts/header.html --&gt;
-&lt;div class&#x3D;&quot;navbar-end&quot;&gt;
-    &lt;form method&#x3D;&quot;get&quot; action&#x3D;&quot;&lt;cms:show k_site_link /&gt;search.php&quot; class&#x3D;&quot;form-control&quot;&gt;
-        &lt;div class&#x3D;&quot;input-group&quot;&gt;
-            &lt;input
-                type&#x3D;&quot;text&quot;
-                name&#x3D;&quot;s&quot;
-                placeholder&#x3D;&quot;Search...&quot;
-                class&#x3D;&quot;input input-bordered input-sm&quot;
-                value&#x3D;&quot;&lt;cms:gpc &#x27;s&#x27; /&gt;&quot;
-            /&gt;
-            &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Search&lt;/button&gt;
-        &lt;/div&gt;
-    &lt;/form&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title=">search.php"
+<!-- In snippets/layouts/header.html -->
+<div class="navbar-end">
+    <form method="get" action="<cms:show k_site_link />search.php" class="form-control">
+        <div class="input-group">
+            <input
+                type="text"
+                name="s"
+                placeholder="Search..."
+                class="input input-bordered input-sm"
+                value="<cms:gpc 's' />"
+            />
+            <button type="submit" class="btn btn-sm btn-primary">Search</button>
+        </div>
+    </form>
+</div>
+```
 
 ### Solution: Search with Filters
 
@@ -413,19 +413,19 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:search masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:if k_folder_name&#x3D;&#x27;&lt;cms:gpc &#x27;category&#x27; /&gt;&#x27; OR k_gpc_category&#x3D;&#x27;&#x27;&gt;
-        &lt;div class&#x3D;&quot;mb-4&quot;&gt;
-            &lt;h3&gt;&lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_search_title /&gt;&lt;/a&gt;&lt;/h3&gt;
-            &lt;p&gt;&lt;cms:show k_search_excerpt /&gt;&lt;/p&gt;
-            &lt;cms:if k_folder_name&gt;
-                &lt;span class&#x3D;&quot;badge badge-primary&quot;&gt;&lt;cms:show k_folder_name /&gt;&lt;/span&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:search&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:search masterpage='blog.php' limit='20' paginate='1'>
+    <cms:if k_folder_name='<cms:gpc 'category' />' OR k_gpc_category=''>
+        <div class="mb-4">
+            <h3><a href="<cms:show k_page_link />"><cms:show k_search_title /></a></h3>
+            <p><cms:show k_search_excerpt /></p>
+            <cms:if k_folder_name>
+                <span class="badge badge-primary"><cms:show k_folder_name /></span>
+            </cms:if>
+        </div>
+    </cms:if>
+</cms:search>
+```
 
 ---
 
@@ -443,13 +443,13 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ## Warning Signs
 
-- ⚠️ Using &#x60;k_page_title&#x60; instead of &#x60;k_search_title&#x60; (no highlighting)
+- ⚠️ Using `k_page_title` instead of `k_search_title` (no highlighting)
 - ⚠️ Not implementing pagination for large result sets
 - ⚠️ Searching all templates when only specific ones are needed
 - ⚠️ Not handling empty search results
-- ⚠️ Forgetting that words &lt; 4 characters are ignored
-- ⚠️ Not using &#x60;k_search_excerpt&#x60; for result snippets
-- ⚠️ Search form not properly configured with &#x60;processor&#x60; parameter
+- ⚠️ Forgetting that words < 4 characters are ignored
+- ⚠️ Not using `k_search_excerpt` for result snippets
+- ⚠️ Search form not properly configured with `processor` parameter
 
 ---
 
@@ -464,8 +464,8 @@ You are a CouchCMS search expert specializing in MySQL fulltext search implement
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;concepts/search.mdx&#x60;
-- Tag Reference: &#x60;tags-reference/core/search/&#x60;
-- Tag Reference: &#x60;tags-reference/core/search_form/&#x60;
+- CouchCMS Documentation: `concepts/search.mdx`
+- Tag Reference: `tags-reference/core/search/`
+- Tag Reference: `tags-reference/core/search_form/`
 
 
