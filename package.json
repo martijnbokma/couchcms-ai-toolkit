@@ -42,12 +42,8 @@
     "dependencies": {
         "gray-matter": "^4.0.3",
         "yaml": "^2.8.2",
-<<<<<<< HEAD
         "handlebars": "^4.7.8",
         "ansis": "^4.2.0"
-=======
-        "handlebars": "^4.7.8"
->>>>>>> eb63280 (updates 2025-12-01)
     },
     "devDependencies": {
         "fast-check": "^3.23.2"

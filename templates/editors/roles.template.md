@@ -45,7 +45,7 @@ Each team member may work across multiple roles but should:
 
 ## Quality Standards
 
-All roles must adhere to the universal standards defined in `{{config_file_path}}`:
+All roles must adhere to the universal standards defined in `/docs/standards.md`:
 
 - **English only**: All code, comments, and documentation
 - **{{standards.indentation}}-space indentation**: Consistent across all file types
@@ -55,4 +55,4 @@ All roles must adhere to the universal standards defined in `{{config_file_path}
 
 ---
 
-**This file is auto-generated from `{{config_file_path}}`. All changes should be made there.**
+**This file is auto-generated from `/docs/standards.md`. All changes should be made there.**

@@ -233,7 +233,4 @@ export function formatSolution(solution) {
 
     return output
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> eb63280 (updates 2025-12-01)
