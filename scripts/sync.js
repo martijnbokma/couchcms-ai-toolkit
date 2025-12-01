@@ -448,16 +448,23 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
         agent: { template: 'agent.template.md', output: 'AGENT.md', dir: projectDir },
     }
 
-    // Get selected editors from config (default to all if not specified)
+    // Get selected editors from config
     const editors = config.editors || {}
     const selectedEditors = Object.entries(editors)
         .filter(([_, enabled]) => enabled === true)
         .map(([editorId]) => editorId)
 
-    // If no editors are selected, default to all (backward compatibility)
+    // Only generate templates for explicitly selected editors
+    // If no editors are selected, skip template generation (user chose "none")
     const editorsToGenerate = selectedEditors.length > 0
         ? selectedEditors
-        : Object.keys(editorMap)
+        : []
+
+    if (editorsToGenerate.length === 0) {
+        console.log('ℹ️  No editor templates selected - skipping template generation')
+        console.log('   To generate templates, edit .project/standards.md and set editors to true, then run sync again')
+        return 0
+    }
 
     // Build templateMap from selected editors only
     const templateMap = {}
