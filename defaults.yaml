@@ -1,0 +1,25 @@
+# CouchCMS AI Toolkit - Default Configuration
+#
+# Default paths, standards, and naming conventions
+# These defaults are used when not overridden in .project/standards.md
+
+paths:
+  css: 'assets/css'
+  typescript: 'assets/ts'
+  javascript: 'assets/js'
+  components: 'snippets/components'
+  views: 'snippets/views'
+  layouts: 'snippets/layouts'
+  filters: 'snippets/filters'
+  forms: 'snippets/forms'
+  public: 'public'
+
+standards:
+  indentation: 4
+  language: 'english'
+  lineLength: 120
+
+naming:
+  php_variables: 'snake_case'
+  ts_variables: 'camelCase'
+  css_classes: 'kebab-case'
