@@ -416,14 +416,33 @@ async function quickRelease(version, options) {
 
     // Step 5: Create and push tag
     console.log('🏷️  Step 5: Creating tag...');
-    await $`git tag -a v${version} -m "Release v${version}"`.quiet();
-    console.log(`   ✅ Tag v${version} created\n`);
+    const tagName = `v${version}`;
+    
+    // Check if tag already exists
+    try {
+        await $`git rev-parse ${tagName}`;
+        console.log(`   ⚠️  Tag ${tagName} already exists, skipping creation\n`);
+    } catch {
+        // Tag doesn't exist, create it
+        await $`git tag -a ${tagName} -m "Release v${version}"`;
+        console.log(`   ✅ Tag ${tagName} created\n`);
+    }
 
     // Step 6: Push master and tag
     console.log('📤 Step 6: Pushing to remote...');
     await $`git push origin ${mainBranch}`.quiet();
-    await $`git push origin v${version}`.quiet();
-    console.log(`   ✅ Pushed ${mainBranch} and tag\n`);
+    
+    // Check if tag exists on remote before pushing
+    try {
+        await $`git ls-remote --tags origin ${tagName}`;
+        console.log(`   ⚠️  Tag ${tagName} already exists on remote, skipping push\n`);
+    } catch {
+        // Tag doesn't exist on remote, push it
+        await $`git push origin ${tagName}`;
+        console.log(`   ✅ Pushed tag ${tagName}\n`);
+    }
+    
+    console.log(`   ✅ Pushed ${mainBranch}\n`);
 
     // Step 7: Merge back to develop
     console.log('🔀 Step 7: Merging back to develop...');
