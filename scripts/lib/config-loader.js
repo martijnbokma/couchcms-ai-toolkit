@@ -9,7 +9,7 @@
  * Uses standards.md format with YAML frontmatter for configuration.
  */
 
-import { existsSync, readFileSync } from 'fs'
+import { existsSync, readFileSync, mkdirSync, copyFileSync } from 'fs'
 import { join, resolve } from 'path'
 import { parse as parseYaml } from 'yaml'
 import matter from 'gray-matter'
@@ -134,6 +134,17 @@ function findStandardsMd(projectDir) {
                 console.warn(`   Please move your configuration file:`)
                 console.warn(`   \n   mv ${oldLoc.name} .project/standards.md\n`)
                 migrationWarningShown = true
+            }
+            // Auto-migrate: copy to .project/standards.md if it doesn't exist
+            const targetPath = join(projectDir, '.project', 'standards.md')
+            if (!existsSync(targetPath)) {
+                const targetDir = join(projectDir, '.project')
+                if (!existsSync(targetDir)) {
+                    mkdirSync(targetDir, { recursive: true })
+                }
+                copyFileSync(oldLoc.path, targetPath)
+                console.log(`✅ Auto-migrated: ${oldLoc.name} → .project/standards.md`)
+                return targetPath
             }
             // Still return the old path for now to maintain compatibility
             // But warn user to migrate
