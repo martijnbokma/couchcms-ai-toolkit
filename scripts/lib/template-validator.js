@@ -21,7 +21,7 @@ export function extractTemplateVariables(templateContent) {
 
     // List of Handlebars built-in helpers that should be ignored
     const builtInHelpers = ['if', 'unless', 'each', 'with', 'lookup', 'log', 'join', 'add', 'subtract', 'multiply', 'divide', 'mod', 'eq', 'ne', 'lt', 'gt', 'lte', 'gte', 'and', 'or', 'not', 'contains', 'in', 'block', 'partial', 'raw', 'comment', 'hash', 'else']
-    
+
     // List of Handlebars special variables that are automatically available
     const specialVariables = ['@index', '@key', '@first', '@last', '@root', '@level', '@../', '@../..']
 
