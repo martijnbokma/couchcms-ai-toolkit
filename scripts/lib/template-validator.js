@@ -14,23 +14,23 @@ import { TemplateError } from './errors.js'
  */
 function extractEachContexts(templateContent) {
     const contexts = []
-    
+
     // Match {{#each arrayName}} ... {{/each}} blocks
     const eachPattern = /\{\{#each\s+([^}]+)\}\}([\s\S]*?)\{\{\/each\}\}/g
     let match
-    
+
     while ((match = eachPattern.exec(templateContent)) !== null) {
         const arrayName = match[1].trim()
         const blockContent = match[2]
         const variables = []
-        
+
         // Extract variables used within this each block
         const variablePattern = /\{\{([^}]+)\}\}/g
         let varMatch
-        
+
         while ((varMatch = variablePattern.exec(blockContent)) !== null) {
             const variable = varMatch[1].trim()
-            
+
             // Remove helpers and get clean variable name
             const cleanVariable = variable
                 .replace(/^(if|unless|each|with|join|add|subtract|multiply|divide|mod|eq|ne|lt|gt|lte|gte|and|or|not|contains|in|block|partial|raw|comment|hash|else)\s+/, '')
@@ -38,21 +38,21 @@ function extractEachContexts(templateContent) {
                 .split('.')[0]
                 .split(' ')[0]
                 .trim()
-            
+
             // Skip special variables and built-in helpers
-            if (cleanVariable && !cleanVariable.startsWith('@') && 
+            if (cleanVariable && !cleanVariable.startsWith('@') &&
                 !['if', 'unless', 'each', 'with', 'join', 'add', 'else'].includes(cleanVariable)) {
                 if (!variables.includes(cleanVariable)) {
                     variables.push(cleanVariable)
                 }
             }
         }
-        
+
         if (variables.length > 0) {
             contexts.push({ arrayName, variables })
         }
     }
-    
+
     return contexts
 }
 
@@ -123,7 +123,7 @@ export function validateTemplateVariables(templateContent, templateData, templat
         if (!(variable in flattened) && !(variable in templateData)) {
             // Check if this variable is used within an each block
             const eachContext = eachContexts.find(ctx => ctx.variables.includes(variable))
-            
+
             if (eachContext) {
                 // Variable is used within an each block, check if it exists in the array items
                 const arrayName = eachContext.arrayName
