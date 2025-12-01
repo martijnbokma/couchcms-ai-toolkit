@@ -12,7 +12,6 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve, dirname, basename, join } from 'path'
 import { findConfigFile, getConfigFileName, handleError } from './utils/utils.js'
 import { prompt, confirm, selectModules, selectAgents, selectFramework, selectEditors } from './lib/prompts.js'
-import { printConfigSummary } from './lib/index.js'
 import {
     determineConfigPath,
     generateStandardsFile,
@@ -29,11 +28,8 @@ import {
 import { checkAndInstallDependencies } from './lib/dependency-checker.js'
 import { detectToolkitPath } from './lib/toolkit-detector.js'
 import { resolveToolkitPath } from './utils/utils.js'
-<<<<<<< HEAD
-import { getToolkitRootCached, loadPresets } from './lib/index.js'
-=======
+import { getToolkitRootCached } from './lib/index.js'
 import yaml from 'yaml'
->>>>>>> 5881bba (updates 2025-12-01)
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 
@@ -61,8 +57,6 @@ function determineProjectDirectory(currentDir) {
 }
 
 /**
-<<<<<<< HEAD
-=======
  * Load available presets
  * @returns {Object} Presets configuration
  */
@@ -83,7 +77,6 @@ function loadPresets() {
 }
 
 /**
->>>>>>> 5881bba (updates 2025-12-01)
  * Display and select preset
  * @returns {Promise<Object|null>} Selected preset or null
  */
@@ -149,11 +142,7 @@ async function checkExistingConfig(projectDir) {
  * @returns {Promise<void>}
  */
 async function init() {
-    // Import terminal utilities for better output
-    const { printBanner, printSection, printStep, printSuccess, printInfo, printProgress, printBox, printList, printWarning } = await import('./lib/terminal.js')
-
-    // Display welcome banner
-    printBanner('CouchCMS AI Toolkit', 'Interactive Setup Wizard', '🚀')
+    console.log('🚀 CouchCMS AI Toolkit - Interactive Setup\n')
 
     // Determine project directory
     const { projectDir } = determineProjectDirectory(process.cwd())
@@ -164,137 +153,62 @@ async function init() {
         process.exit(0)
     }
 
-    printSection('Getting Started', '📋')
-    printInfo('This wizard will guide you through setting up your project configuration.', 2)
-    printInfo('Each step is clearly marked and you can always go back or cancel.', 2)
-    console.log()
+    console.log("Let's set up your project configuration...\n")
 
     // Auto-detect project information
-    printStep(1, 5, 'Detecting project information...')
-    printProgress('Analyzing your project structure...', 2)
-
+    console.log('🔍 Detecting project...')
     const detected = detectProject(projectDir)
-
-    printBox(
-        `Project Type: ${detected.type}\n` +
-        `Frameworks: ${detected.frameworks.join(', ') || 'none detected'}\n` +
-        `Languages: ${detected.languages.join(', ')}`,
-        { title: 'Project Detection Results', icon: '🔍', color: 'cyan' },
-        2
-    )
+    console.log(`   Type: ${detected.type}`)
+    console.log(`   Frameworks: ${detected.frameworks.join(', ') || 'none detected'}`)
+    console.log(`   Languages: ${detected.languages.join(', ')}`)
+    console.log()
 
     // Ask for setup mode (unless auto mode from installer)
     let autoMode, presetMode, simpleMode
 
-<<<<<<< HEAD
-    printStep(2, 5, 'Selecting setup mode...')
-
-=======
->>>>>>> 5881bba (updates 2025-12-01)
     if (process.env.TOOLKIT_AUTO_MODE === 'true') {
-        printInfo('Setup mode: Auto (from installer)', 2)
+        console.log('🎯 Setup mode: Auto (from installer)')
         autoMode = true
         presetMode = false
         simpleMode = false
     } else {
-        printBox(
-            '1. Auto (recommended) - Use detected settings\n' +
-            '   ✓ Fastest option\n' +
-            '   ✓ Automatically configures everything\n' +
-            '   ✓ Perfect for 95% of projects\n\n' +
-            '2. Preset - Choose from common project types\n' +
-            '   ✓ Blog, E-commerce, Web App, etc.\n' +
-            '   ✓ Pre-configured modules and agents\n\n' +
-            '3. Simple - Quick setup with defaults\n' +
-            '   ✓ All CouchCMS modules included\n' +
-            '   ✓ Minimal questions\n\n' +
-            '4. Custom - Full control over all options\n' +
-            '   ✓ Choose every module and agent\n' +
-            '   ✓ Advanced configuration',
-            { title: 'Setup Mode Options', icon: '🎯', color: 'cyan' },
-            2
-        )
-
-        const modeChoice = await prompt('\nChoice [1-4]', '1')
+        console.log('🎯 Setup mode:')
+        console.log('  1. Auto (recommended) - Use detected settings')
+        console.log('  2. Preset - Choose from common project types')
+        console.log('  3. Simple - Quick setup with defaults')
+        console.log('  4. Custom - Full control over all options')
+        const modeChoice = await prompt('Choice [1-4]', '1')
         autoMode = modeChoice === '1'
         presetMode = modeChoice === '2'
         simpleMode = modeChoice === '3'
-
-        if (autoMode) {
-            printSuccess('Selected: Auto mode (recommended)', 2)
-        } else if (presetMode) {
-            printSuccess('Selected: Preset mode', 2)
-        } else if (simpleMode) {
-            printSuccess('Selected: Simple mode', 2)
-        } else {
-            printSuccess('Selected: Custom mode', 2)
-        }
     }
-<<<<<<< HEAD
-    console.log()
-=======
->>>>>>> 5881bba (updates 2025-12-01)
 
     // Select preset if in preset mode
     let selectedPreset = null
     if (presetMode) {
-        printStep(2, 5, 'Selecting project preset...')
         selectedPreset = await selectPreset()
         if (!selectedPreset) {
-            printInfo('No preset selected, falling back to simple mode', 2)
-            simpleMode = true
-            autoMode = false
-            presetMode = false
-        } else {
-            printSuccess(`Selected preset: ${selectedPreset.name}`, 2)
+            console.log('\n⚠️  No preset selected, falling back to simple mode')
         }
-        console.log()
     }
 
     // Determine config path (always .project/standards.md now)
     const { configPath, configDir } = await determineConfigPath(projectDir, true)
 
     const isCustomMode = !simpleMode && !autoMode && !presetMode
-<<<<<<< HEAD
-
-    printStep(3, 5, 'Reviewing configuration summary...')
-=======
->>>>>>> 5881bba (updates 2025-12-01)
 
     if (autoMode) {
-        const { printConfigSummary } = await import('./lib/index.js')
-        printConfigSummary({
-            title: 'Auto mode: Using detected settings',
-            project: detected.name,
-            type: detected.type,
-            modules: getRecommendedModules(detected),
-            agents: getRecommendedAgents(detected)
-        })
+        console.log('\n✨ Auto mode: Using detected settings')
+        console.log(`   - Project: ${detected.name}`)
+        console.log(`   - Type: ${detected.type}`)
+        console.log(`   - Modules: ${getRecommendedModules(detected).join(', ')}`)
+        console.log(`   - Agents: ${getRecommendedAgents(detected).join(', ')}`)
     } else if (presetMode && selectedPreset) {
-        printBox(
-            `Description: ${selectedPreset.description}\n\n` +
-            `Modules: ${selectedPreset.modules.join(', ')}\n\n` +
-            `Agents: ${selectedPreset.agents.join(', ')}`,
-            { title: `Preset: ${selectedPreset.name}`, icon: '✨', color: 'cyan' },
-            2
-        )
+        console.log(`\n✨ Preset: ${selectedPreset.name}`)
+        console.log(`   - ${selectedPreset.description}`)
+        console.log(`   - Modules: ${selectedPreset.modules.join(', ')}`)
+        console.log(`   - Agents: ${selectedPreset.agents.join(', ')}`)
     } else if (simpleMode) {
-<<<<<<< HEAD
-        printBox(
-            'Configuration: .project/standards.md\n\n' +
-            'Modules: ALL CouchCMS modules + TailwindCSS + Alpine.js\n\n' +
-            'Agents: ALL CouchCMS agents + TailwindCSS + Alpine.js\n\n' +
-            'Framework: Disabled (can be enabled later in standards.md)',
-            { title: 'Simple Mode: CouchCMS Complete', icon: '✨', color: 'cyan' },
-            2
-        )
-        printInfo('💡 This gives you full CouchCMS support out of the box!', 2)
-        console.log()
-    } else if (isCustomMode) {
-        printInfo('Custom mode: Full control', 2)
-        printInfo('We\'ll ask you a few grouped questions...', 2)
-        console.log()
-=======
         console.log('\n✨ Simple mode: Using CouchCMS Complete preset')
         console.log('   - Configuration: .project/standards.md')
         console.log('   - Modules: ALL CouchCMS modules + TailwindCSS + Alpine.js')
@@ -304,47 +218,24 @@ async function init() {
     } else if (isCustomMode) {
         console.log('\n✨ Custom mode: Full control')
         console.log('   We\'ll ask you a few grouped questions...\n')
->>>>>>> 5881bba (updates 2025-12-01)
     }
 
     // Group 1: Project Information
     if (isCustomMode) {
-<<<<<<< HEAD
-        printSection('Project Information', '📋')
-    }
-
-    printStep(4, 5, 'Gathering project information...')
-
-=======
         console.log('📋 Group 1: Project Information\n')
     }
 
->>>>>>> 5881bba (updates 2025-12-01)
     // Gather project information
     const projectName = process.env.TOOLKIT_PROJECT_NAME ||
         (autoMode ? detected.name : await prompt(isCustomMode ? 'Project name' : '\n📝 Project name', detected.name))
     const projectDescription = process.env.TOOLKIT_PROJECT_DESC ||
         (autoMode ? detected.description : await prompt('Project description', detected.description))
 
-<<<<<<< HEAD
-    if (projectName && projectDescription) {
-        printSuccess(`Project: ${projectName}`, 2)
-        printInfo(`Description: ${projectDescription}`, 2)
-        console.log()
-    }
-
     // Group 2: Toolkit and Configuration (only in custom mode)
     if (isCustomMode) {
         console.log('\n📋 Group 2: Toolkit and Configuration\n')
     }
 
-=======
-    // Group 2: Toolkit and Configuration (only in custom mode)
-    if (isCustomMode) {
-        console.log('\n📋 Group 2: Toolkit and Configuration\n')
-    }
-
->>>>>>> 5881bba (updates 2025-12-01)
     // Determine toolkit path - auto-detect first, then allow override
     let toolkitPath = detectToolkitPath(projectDir)
 
@@ -369,30 +260,17 @@ async function init() {
 
     // Resolve absolute toolkit path and check dependencies
     const resolvedToolkitPath = resolveToolkitPath(toolkitPath, projectDir, TOOLKIT_ROOT)
-<<<<<<< HEAD
-
-    printProgress('Checking dependencies...', 2)
     if (typeof checkAndInstallDependencies === 'function') {
         try {
             await checkAndInstallDependencies(resolvedToolkitPath)
-            printSuccess('Dependencies are installed', 2)
         } catch (error) {
-            printWarning(`Dependency check failed: ${error.message}`, 2)
-            printWarning('Continuing with setup, but some features may not work correctly', 2)
-            printInfo('💡 Tip: Run "bun install" in the toolkit directory to fix this', 2)
+            console.warn(`\n⚠️  Dependency check failed: ${error.message}`)
+            console.warn('⚠️  Continuing with setup, but some features may not work correctly')
+            console.warn('⚠️  Run "bun install" in the toolkit directory to fix this\n')
         }
     } else {
-        printWarning('Dependency checker not available, skipping dependency check', 2)
+        console.warn('⚠️  Dependency checker not available, skipping dependency check\n')
     }
-    console.log()
-=======
-    try {
-        await checkAndInstallDependencies(resolvedToolkitPath)
-    } catch (error) {
-        console.error(`\n❌ ${error.message}\n`)
-        process.exit(1)
-    }
->>>>>>> 5881bba (updates 2025-12-01)
 
     // Group 3: Modules and Agents (combined in custom mode)
     if (isCustomMode) {
@@ -413,24 +291,17 @@ async function init() {
         selectedAgents = await selectAgents(simpleMode)
     }
 
-<<<<<<< HEAD
-    // Group 4: Editor/Tool Selection (always optional)
+    // Group 4: Editor/Tool Selection
     let selectedEditors
     if (autoMode) {
-        // Auto mode: Ask user which editors they want (default to none)
-        console.log('\n🛠️  Editor/Tool Selection (optional)')
-        console.log('   Templates will only be generated for the editors you select.')
-        console.log('   You can skip this and add templates later by editing .project/standards.md')
-        selectedEditors = await selectEditors(false) // Use full selection in auto mode
+        // Auto mode: Default to Cursor, Windsurf, and Claude
+        selectedEditors = ['cursor', 'windsurf', 'claude']
+        console.log('\n🛠️  Editor selection (auto):')
+        console.log('   ✓ Cursor - Cursor IDE')
+        console.log('   ✓ Windsurf - Windsurf IDE')
+        console.log('   ✓ Claude Code - Claude Code')
     } else {
         selectedEditors = await selectEditors(simpleMode)
-    }
-
-    if (selectedEditors.length === 0) {
-        console.log('\nℹ️  No editors selected - templates will not be generated')
-        console.log('   You can add templates later by editing .project/standards.md and running sync')
-    } else {
-        console.log(`\n✓ Selected ${selectedEditors.length} editor(s): ${selectedEditors.join(', ')}`)
     }
 
     // Group 5: Advanced Options (only shown in custom mode, with progressive disclosure)
@@ -454,29 +325,6 @@ async function init() {
         contextPath = await selectContextDirectory(simpleMode || autoMode)
     }
 
-=======
-    // Group 4: Advanced Options (only shown in custom mode, with progressive disclosure)
-    let frameworkConfig
-    let contextPath = null
-
-    if (presetMode && selectedPreset) {
-        frameworkConfig = selectedPreset.framework
-    } else if (isCustomMode) {
-        console.log('\n📋 Group 4: Advanced Options (Optional)\n')
-        const showAdvanced = await confirm('Configure advanced options (framework, context directory)?', false)
-
-        if (showAdvanced) {
-            frameworkConfig = await selectFramework(false)
-            contextPath = await selectContextDirectory(false)
-        } else {
-            frameworkConfig = { enabled: false }
-        }
-    } else {
-        frameworkConfig = await selectFramework(simpleMode || autoMode)
-        contextPath = await selectContextDirectory(simpleMode || autoMode)
-    }
-
->>>>>>> 5881bba (updates 2025-12-01)
     // Generate standards.md file
     await generateStandardsFile({
         projectDir,
@@ -496,19 +344,14 @@ async function init() {
     await setupContextDirectory(projectDir, projectName, contextPath)
 
     // Ask for confirmation before cleaning (Question 5 in simple mode)
-    printStep(5, 5, 'Finalizing setup...')
-    printInfo('Clean existing generated files before sync?', 2)
+    console.log('\n🧹 Clean existing generated files before sync?')
     const confirmed = await confirm('This will remove all existing AI config files', true)
 
     if (confirmed) {
-        printProgress('Cleaning existing files...', 2)
         cleanGeneratedFiles(projectDir, true)
-        printSuccess('Cleaned existing files', 2)
     }
-    console.log()
 
     // Run initial sync
-    printProgress('Generating AI configurations...', 0)
     await runInitialSync(projectDir, TOOLKIT_ROOT)
 
     // Display success message

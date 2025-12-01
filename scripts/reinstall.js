@@ -17,10 +17,22 @@ import { existsSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { execSync } from 'child_process'
 import { findConfigFile } from './utils/utils.js'
-import { getToolkitRootCached, print, printSuccess, printError, printWarning, printInfo, printProgress, printBanner, printStep, printBox, printSummary, printList, colors } from './lib/index.js'
-import ansis, { red, yellow, green, blue } from 'ansis'
+import { getToolkitRootCached } from './lib/index.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
+
+// Colors
+const colors = {
+    reset: '\x1b[0m',
+    green: '\x1b[32m',
+    blue: '\x1b[34m',
+    yellow: '\x1b[33m',
+    red: '\x1b[31m',
+}
+
+function print(message, color = 'reset') {
+    console.log(`${colors[color]}${message}${colors.reset}`)
+}
 
 function exec(command, options = {}) {
     try {
@@ -39,182 +51,64 @@ function exec(command, options = {}) {
 }
 
 async function askConfirmation(message) {
-    printBox(message, { color: yellow })
-    process.stdout.write(yellow.bold('Continue? [y/N] '))
-
-    // Ensure stdin is readable for this prompt
-    if (process.stdin.isPaused()) {
-        process.stdin.resume()
-    }
+    print(`\n${message}`, 'yellow')
+    process.stdout.write('Continue? [y/N] ')
 
     return new Promise((resolve) => {
-        const handler = (data) => {
-            process.stdin.removeListener('data', handler)
-            // Pause stdin after reading to allow process to exit cleanly
-            process.stdin.pause()
+        process.stdin.once('data', (data) => {
             const answer = data.toString().trim().toLowerCase()
             resolve(answer === 'y' || answer === 'yes')
-        }
-        process.stdin.once('data', handler)
+        })
     })
-}
-
-/**
- * Check if there are unstaged changes in git repository
- * @param {string} cwd - Working directory
- * @returns {boolean} - True if there are unstaged changes
- */
-function hasUnstagedChanges(cwd) {
-    try {
-        const status = execSync('git status --porcelain', {
-            encoding: 'utf8',
-            cwd,
-            stdio: 'pipe'
-        })
-        // git status --porcelain format:
-        // First char: staged changes (space if unstaged)
-        // Second char: unstaged changes (M, A, D, etc.)
-        // Lines starting with '??' are untracked files (ignore)
-        return status.split('\n').some(line => {
-            const trimmed = line.trim()
-            if (!trimmed || trimmed.startsWith('??')) return false
-            // If first char is space, there are unstaged changes
-            // If second char is not space, there are unstaged changes
-            return line[0] === ' ' || (line[1] && line[1] !== ' ')
-        })
-    } catch {
-        return false
-    }
-}
-
-/**
- * Check if git repository is clean (no changes at all)
- * @param {string} cwd - Working directory
- * @returns {boolean} - True if repository is clean
- */
-function isGitClean(cwd) {
-    try {
-        const status = execSync('git status --porcelain', {
-            encoding: 'utf8',
-            cwd,
-            stdio: 'pipe'
-        })
-        return status.trim().length === 0
-    } catch {
-        return true
-    }
 }
 
 async function reinstall() {
     const args = process.argv.slice(2)
     const force = args.includes('--force')
 
-    // Print banner
-    printBanner('CouchCMS AI Toolkit', 'Reinstall & Update Configuration', '')
+    print('\n🔄 CouchCMS AI Toolkit - Reinstall\n', 'blue')
 
     // Check if toolkit is installed
     if (!existsSync('ai-toolkit-shared')) {
-        printBox(
-            'Toolkit not found in ai-toolkit-shared/\n\nRun the installer first:\ncurl -fsSL https://raw.githubusercontent.com/.../install.sh | bash',
-            { color: red, title: 'Error' }
-        )
+        print('❌ Toolkit not found in ai-toolkit-shared/', 'red')
+        print('   Run the installer first:', 'yellow')
+        print('   curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash\n')
         process.exit(1)
     }
 
-    const totalSteps = 4
-    const steps = []
-
     // Step 1: Update toolkit
-    printStep(1, totalSteps, 'Updating toolkit...')
-    try {
-        const toolkitPath = 'ai-toolkit-shared'
-
-        // Check if there are unstaged changes
-        if (hasUnstagedChanges(toolkitPath)) {
-            printWarning('Found unstaged changes in toolkit directory', 2)
-            printInfo('Git pull requires a clean working directory', 2)
-
-            const confirmed = await askConfirmation(
-                'You have local changes in ai-toolkit-shared/.\n\n' +
-                'Options:\n' +
-                '1. Stash changes, pull updates, then restore changes\n' +
-                '2. Skip update (keep your local changes)\n\n' +
-                'Stash and pull?'
-            )
-
-            if (confirmed) {
-                printProgress('Stashing local changes...', 2)
-                exec('git stash push -m "Auto-stash before reinstall"', { cwd: toolkitPath })
-                printSuccess('Changes stashed', 2)
-
-                printProgress('Pulling latest updates...', 2)
-                exec('git pull', { cwd: toolkitPath })
-                printSuccess('Updates pulled', 2)
-
-                printProgress('Restoring stashed changes...', 2)
-                exec('git stash pop', { cwd: toolkitPath, ignoreError: true })
-                printSuccess('Changes restored', 2)
-
-                steps.push({ name: 'Toolkit update', status: 'success' })
-            } else {
-                printWarning('Skipping toolkit update (keeping local changes)', 2)
-                steps.push({ name: 'Toolkit update', status: 'skipped' })
-            }
-        } else {
-            // No changes, safe to pull
-            exec('git pull', { cwd: toolkitPath })
-            printSuccess('Toolkit updated', 2)
-            steps.push({ name: 'Toolkit update', status: 'success' })
-        }
-    } catch (error) {
-        const errorMsg = error.message || String(error)
-        if (errorMsg.includes('unstaged changes') || errorMsg.includes('cannot pull')) {
-            printWarning('Git pull failed: Unstaged changes detected', 2)
-            printInfo('Tip: Commit or stash your changes first, then run reinstall again', 2)
-        } else if (errorMsg.includes('already up to date')) {
-            printSuccess('Toolkit already up to date', 2)
-            steps.push({ name: 'Toolkit update', status: 'success' })
-        } else {
-            printWarning(`Git pull failed: ${errorMsg}`, 2)
-        }
-        if (!steps.find(s => s.name === 'Toolkit update')) {
-            steps.push({ name: 'Toolkit update', status: 'warning' })
-        }
-    }
-    console.log()
+    print('📦 Step 1: Updating toolkit...', 'blue')
+    exec('git pull', { cwd: 'ai-toolkit-shared' })
+    print('  ✅ Toolkit updated\n', 'green')
 
     // Step 2: Update dependencies
-    printStep(2, totalSteps, 'Updating dependencies...')
+    print('📚 Step 2: Updating dependencies...', 'blue')
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
     if (hasBun) {
         exec('bun install', { cwd: 'ai-toolkit-shared' })
     } else {
         exec('npm install', { cwd: 'ai-toolkit-shared' })
     }
-    printSuccess('Dependencies updated', 2)
-    steps.push({ name: 'Dependencies', status: 'success' })
-    console.log()
+    print('  ✅ Dependencies updated\n', 'green')
 
     // Step 3: Check existing config
-    const hasConfig = existsSync('.project/standards.md') || existsSync('standards.md') || existsSync('config.yaml')
+    const hasConfig = existsSync('.project/standards.md') || existsSync('config.yaml')
 
     if (hasConfig && !force) {
         const confirmed = await askConfirmation(
-            'Existing configuration found.\n\n' +
-            'This will regenerate all AI configs from your standards.md.\n' +
-            'Your standards.md will NOT be modified.'
+            '⚠️  Existing configuration found.\n' +
+            '   This will regenerate all AI configs from your standards.md.\n' +
+            '   Your standards.md will NOT be modified.'
         )
 
         if (!confirmed) {
-            printBox('Reinstall cancelled', { color: yellow })
-            // Pause stdin before exiting
-            process.stdin.pause()
+            print('\n❌ Reinstall cancelled\n', 'red')
             process.exit(0)
         }
     }
 
     // Step 4: Regenerate configs
-    printStep(3, totalSteps, 'Regenerating AI configs...')
+    print('🔄 Step 3: Regenerating AI configs...', 'blue')
 
     if (hasConfig) {
         // Just sync existing config
@@ -223,59 +117,38 @@ async function reinstall() {
         } else {
             exec('node scripts/sync.js', { cwd: 'ai-toolkit-shared' })
         }
-        steps.push({ name: 'Config regeneration', status: 'success' })
     } else {
         // No config, run init
-        printWarning('No configuration found, running setup wizard...', 2)
+        print('   No configuration found, running setup wizard...\n', 'yellow')
         if (hasBun) {
             exec('bun scripts/init.js', { cwd: 'ai-toolkit-shared' })
         } else {
             exec('node scripts/init.js', { cwd: 'ai-toolkit-shared' })
         }
-        steps.push({ name: 'Initial setup', status: 'success' })
     }
-    printSuccess('Configs regenerated', 2)
-    console.log()
+
+    print('  ✅ Configs regenerated\n', 'green')
 
     // Step 5: Verify
-    printStep(4, totalSteps, 'Verifying installation...')
+    print('✅ Step 4: Verifying installation...', 'blue')
     if (hasBun) {
         exec('bun scripts/health.js', { cwd: 'ai-toolkit-shared' })
     } else {
         exec('node scripts/health.js', { cwd: 'ai-toolkit-shared' })
     }
-    steps.push({ name: 'Verification', status: 'success' })
-    console.log()
 
-    // Success summary
-    printBox(
-        'Reinstall complete!',
-        { color: green, title: 'Success' }
-    )
+    // Success
+    print('\n🎉 Reinstall complete!\n', 'green')
+    print('Summary:', 'blue')
+    print('  ✅ Toolkit updated to latest version')
+    print('  ✅ Dependencies updated')
+    print('  ✅ AI configs regenerated')
+    print('  ✅ Installation verified\n')
 
-    const toolkitStep = steps.find(s => s.name === 'Toolkit update')
-    const toolkitStatus = toolkitStep?.status === 'success' ? '✅ Updated' :
-                          toolkitStep?.status === 'skipped' ? '⚠️ Skipped' :
-                          '⚠️ Warning'
-
-    printSummary('Summary', {
-        'Toolkit': toolkitStatus,
-        'Dependencies': steps.find(s => s.name === 'Dependencies')?.status === 'success' ? '✅ Updated' : '❌ Failed',
-        'Configuration': steps.find(s => s.name === 'Config regeneration' || s.name === 'Initial setup')?.status === 'success' ? '✅ Regenerated' : '❌ Failed',
-        'Verification': steps.find(s => s.name === 'Verification')?.status === 'success' ? '✅ Passed' : '❌ Failed',
-    })
-
-    printBox(
-        'Next Steps:\n\n' +
-        '1. Check your AI assistant (Cursor, Claude, etc.)\n' +
-        '2. Verify configs are working\n' +
-        '3. Edit .project/standards.md if needed',
-        { color: blue, title: 'Next Steps' }
-    )
-
-    // Close stdin and exit to ensure script terminates
-    // Force exit immediately - stdin cleanup happens in askConfirmation
-    process.exit(0)
+    print('Next steps:', 'blue')
+    print('  1. Check your AI assistant (Cursor, Claude, etc.)')
+    print('  2. Verify configs are working')
+    print('  3. Edit .project/standards.md if needed\n')
 }
 
 // Setup stdin
@@ -283,14 +156,9 @@ process.stdin.setEncoding('utf8')
 if (typeof process.stdin.setRawMode === 'function') {
     process.stdin.setRawMode(false)
 }
-// Resume stdin only when needed (for prompts)
-// Don't resume here - let it be resumed by the prompt functions
 
 // Run
 reinstall().catch(error => {
-    printBox(
-        `Reinstall failed: ${error.message}`,
-        { color: red, title: 'Error' }
-    )
+    print(`\n❌ Reinstall failed: ${error.message}`, 'red')
     process.exit(1)
 })

@@ -12,15 +12,33 @@ import { existsSync, statSync, readFileSync } from 'fs'
 import { resolve, join, dirname } from 'path'
 import { execSync } from 'child_process'
 import { findConfigFile } from './utils/utils.js'
-import { getToolkitRootCached, printWithIcon, printSuccess, printError, printWarning, printInfo, colors } from './lib/index.js'
+import { getToolkitRootCached } from './lib/index.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
+
+// ANSI colors
+const colors = {
+    reset: '\x1b[0m',
+    green: '\x1b[32m',
+    yellow: '\x1b[33m',
+    red: '\x1b[31m',
+    blue: '\x1b[34m',
+    gray: '\x1b[90m',
+}
 
 const icons = {
     success: '✅',
     warning: '⚠️',
     error: '❌',
     info: '💡',
+}
+
+/**
+ * Print colored message
+ */
+function print(icon, message, color = 'reset', indent = 0) {
+    const spaces = ' '.repeat(indent)
+    console.log(`${spaces}${icon} ${colors[color]}${message}${colors.reset}`)
 }
 
 /**
@@ -126,38 +144,10 @@ function checkGeneratedFiles(projectDir) {
     let outdatedFiles = []
 
     const configFile = findConfigFile(projectDir)
-    if (!configFile) {
-        checks.push({
-            status: 'error',
-            message: 'No configuration file found',
-            fix: 'Run: bun ai-toolkit-shared/scripts/init.js'
-        })
-        return checks
-    }
-
-    // Determine actual project root (may be parent if config is in toolkit directory)
-    let actualProjectDir = projectDir
-    const normalizedConfigPath = configFile.replace(/\\/g, '/')
-
-    // If config is in .project/ or docs/, use parent as project root
-    if (normalizedConfigPath.includes('/.project/') || normalizedConfigPath.includes('/docs/')) {
-        actualProjectDir = dirname(dirname(configFile))
-    }
-
-    // Check if config is inside toolkit directory itself
-    const hasToolkitStructure = existsSync(join(actualProjectDir, 'modules')) &&
-                                 existsSync(join(actualProjectDir, 'templates')) &&
-                                 existsSync(join(actualProjectDir, 'scripts'))
-
-    if (hasToolkitStructure) {
-        // Config is in toolkit directory, use parent as project root
-        actualProjectDir = dirname(actualProjectDir)
-    }
-
-    const configMtime = statSync(configFile).mtimeMs
+    const configMtime = configFile ? statSync(configFile).mtimeMs : 0
 
     for (const { path, name } of expectedFiles) {
-        const filePath = join(actualProjectDir, path)
+        const filePath = join(projectDir, path)
 
         if (!existsSync(filePath)) {
             missingFiles.push(name)
@@ -253,7 +243,7 @@ function displayResults(sections) {
     let hasWarnings = false
 
     for (const { title, checks } of sections) {
-        console.log(colors.blue(title))
+        console.log(`${colors.blue}${title}${colors.reset}`)
 
         for (const check of checks) {
             const icon = icons[check.status] || icons.info
@@ -261,10 +251,10 @@ function displayResults(sections) {
                          check.status === 'warning' ? 'yellow' :
                          check.status === 'info' ? 'gray' : 'green'
 
-            printWithIcon(icon, check.message, color, 2)
+            print(icon, check.message, color, 2)
 
             if (check.fix) {
-                console.log(`${' '.repeat(4)}→ ${colors.gray(check.fix)}`)
+                print('', `→ ${check.fix}`, 'gray', 4)
             }
 
             if (check.status === 'error') hasErrors = true
@@ -276,11 +266,11 @@ function displayResults(sections) {
 
     // Summary
     if (!hasErrors && !hasWarnings) {
-        printSuccess('Everything looks good! 🎉', 0)
+        print(icons.success, 'Everything looks good! 🎉', 'green')
     } else if (hasErrors) {
-        printError('Found issues that need attention', 0)
+        print(icons.error, 'Found issues that need attention', 'red')
     } else {
-        printWarning('Found some warnings, but toolkit should work', 0)
+        print(icons.warning, 'Found some warnings, but toolkit should work', 'yellow')
     }
 
     console.log()
