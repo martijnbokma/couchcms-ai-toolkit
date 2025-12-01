@@ -28,8 +28,7 @@ import {
 import { checkAndInstallDependencies } from './lib/dependency-checker.js'
 import { detectToolkitPath } from './lib/toolkit-detector.js'
 import { resolveToolkitPath } from './utils/utils.js'
-import { getToolkitRootCached } from './lib/index.js'
-import yaml from 'yaml'
+import { getToolkitRootCached, loadPresets } from './lib/index.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 
@@ -54,26 +53,6 @@ function determineProjectDirectory(currentDir) {
     }
 
     return { projectDir: currentDir, toolkitDir: null }
-}
-
-/**
- * Load available presets
- * @returns {Object} Presets configuration
- */
-function loadPresets() {
-    const presetsPath = join(TOOLKIT_ROOT, 'presets.yaml')
-
-    if (!existsSync(presetsPath)) {
-        return {}
-    }
-
-    try {
-        const content = readFileSync(presetsPath, 'utf8')
-        const data = yaml.parse(content)
-        return data.presets || {}
-    } catch {
-        return {}
-    }
 }
 
 /**
