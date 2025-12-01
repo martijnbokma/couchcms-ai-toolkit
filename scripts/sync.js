@@ -379,6 +379,9 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
     const projectDescription = config.project?.description || config.description || 'No description'
     const projectType = config.project?.type || config.type || 'CouchCMS Web Application'
 
+    // Check if framework is enabled
+    const frameworkEnabled = config.framework !== undefined && config.framework !== false
+
     return {
         project: {
             name: projectName,
@@ -404,6 +407,8 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
         roles: roles,
         has_cms: hasCms,
         has_frontend: hasFrontend,
+        framework_enabled: frameworkEnabled,
+        template_name: 'editor-config', // Default template name, can be overridden per template
         project_context: projectContext?.content || '',
         toolkit_path: toolkitPath,
         context_path: config.context || null,
