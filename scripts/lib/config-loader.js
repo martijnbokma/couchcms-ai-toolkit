@@ -180,6 +180,11 @@ function convertLegacyConfig(frontmatter) {
         config.agents = frontmatter.agents
     }
 
+    // Editors (if defined in frontmatter)
+    if (frontmatter.editors) {
+        config.editors = frontmatter.editors
+    }
+
     // Framework
     if (frontmatter.framework !== undefined) {
         config.framework = frontmatter.framework
