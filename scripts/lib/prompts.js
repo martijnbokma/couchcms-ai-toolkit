@@ -88,17 +88,41 @@ export function getAvailableEditors() {
  * @returns {Promise<Array<string>>} - Selected editor IDs
  */
 export async function selectEditors(simpleMode) {
-    if (simpleMode) {
-        // Simple mode: Default to most popular editors
-        console.log('\n🛠️  Using default editor selection:')
-        console.log('   ✓ Cursor - Cursor IDE')
-        console.log('   ✓ Windsurf - Windsurf IDE')
-        console.log('   ✓ Claude Code - Claude Code')
-        return ['cursor', 'windsurf', 'claude']
-    }
-
     const availableEditors = getAvailableEditors()
 
+    if (simpleMode) {
+        // Simple mode: Show quick selection with default to none
+        console.log('\n🛠️  Which editors/tools do you use?')
+        console.log('Select the tools you want to configure (comma-separated numbers, or "all"):\n')
+
+        availableEditors.forEach((editor, index) => {
+            console.log(`  ${index + 1}. ${editor.name} - ${editor.description}`)
+        })
+        console.log(`  ${availableEditors.length + 1}. All - Configure all editors`)
+        console.log(`  0. None - Skip editor configuration (recommended if unsure)`)
+
+        const answer = await prompt(`\nChoice [0-${availableEditors.length + 1}, comma-separated, or "all"]`, '0')
+
+        if (answer === '0' || answer.toLowerCase() === 'none') {
+            return []
+        }
+
+        if (answer.toLowerCase() === 'all' || answer === String(availableEditors.length + 1)) {
+            return availableEditors.map(e => e.id)
+        }
+
+        // Parse comma-separated numbers
+        const selectedIndices = answer.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n) && n > 0 && n <= availableEditors.length)
+
+        if (selectedIndices.length === 0) {
+            console.log('⚠️  No valid selections, skipping editor configuration')
+            return []
+        }
+
+        return selectedIndices.map(i => availableEditors[i - 1].id)
+    }
+
+    // Custom mode: Full selection
     console.log('\n🛠️  Which editors/tools do you use?')
     console.log('Select the tools you want to configure (comma-separated numbers, or "all"):\n')
 
@@ -108,7 +132,7 @@ export async function selectEditors(simpleMode) {
     console.log(`  ${availableEditors.length + 1}. All - Configure all editors`)
     console.log(`  0. None - Skip editor configuration`)
 
-    const answer = await prompt(`\nChoice [1-${availableEditors.length + 1}, comma-separated, or 0]`, '1,2,4')
+    const answer = await prompt(`\nChoice [0-${availableEditors.length + 1}, comma-separated, or "all"]`, '0')
 
     if (answer === '0' || answer.toLowerCase() === 'none') {
         return []
@@ -122,8 +146,8 @@ export async function selectEditors(simpleMode) {
     const selectedIndices = answer.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n) && n > 0 && n <= availableEditors.length)
 
     if (selectedIndices.length === 0) {
-        console.log('⚠️  No valid selections, using defaults (Cursor, Windsurf, Claude)')
-        return ['cursor', 'windsurf', 'claude']
+        console.log('⚠️  No valid selections, skipping editor configuration')
+        return []
     }
 
     return selectedIndices.map(i => availableEditors[i - 1].id)
