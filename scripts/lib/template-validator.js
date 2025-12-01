@@ -19,18 +19,31 @@ export function extractTemplateVariables(templateContent) {
     const variablePattern = /\{\{([^}]+)\}\}/g
     let match
 
+    // List of Handlebars built-in helpers that should be ignored
+    const builtInHelpers = ['if', 'unless', 'each', 'with', 'lookup', 'log', 'join', 'add', 'subtract', 'multiply', 'divide', 'mod', 'eq', 'ne', 'lt', 'gt', 'lte', 'gte', 'and', 'or', 'not', 'contains', 'in', 'block', 'partial', 'raw', 'comment', 'hash', 'else']
+    
+    // List of Handlebars special variables that are automatically available
+    const specialVariables = ['@index', '@key', '@first', '@last', '@root', '@level', '@../', '@../..']
+
     while ((match = variablePattern.exec(templateContent)) !== null) {
         const variable = match[1].trim()
 
+        // Skip special Handlebars variables
+        if (variable.startsWith('@') || specialVariables.some(sv => variable.includes(sv))) {
+            continue
+        }
+
         // Remove Handlebars helpers and modifiers
-        // e.g., "if variable", "each items", "variable.property"
+        // e.g., "if variable", "each items", "variable.property", "join array"
         const cleanVariable = variable
-            .replace(/^(if|unless|each|with)\s+/, '') // Remove helpers
+            .replace(/^(if|unless|each|with|join|add|subtract|multiply|divide|mod|eq|ne|lt|gt|lte|gte|and|or|not|contains|in|block|partial|raw|comment|hash|else)\s+/, '') // Remove helpers
             .replace(/^(#|\/|>)\s*/, '') // Remove block helpers
             .split('.')[0] // Get root variable name
+            .split(' ')[0] // Get first word (in case of "join languages, ")
             .trim()
 
-        if (cleanVariable && !variables.includes(cleanVariable)) {
+        // Skip if it's a built-in helper, special variable, or empty
+        if (cleanVariable && !builtInHelpers.includes(cleanVariable) && !specialVariables.includes(cleanVariable) && !variables.includes(cleanVariable)) {
             variables.push(cleanVariable)
         }
     }
@@ -54,16 +67,31 @@ export function validateTemplateVariables(templateContent, templateData, templat
     const flattened = flattenObject(templateData)
 
     for (const variable of variables) {
-        // Check if variable exists in templateData
+        // Check if variable exists in templateData (direct or nested)
         if (!(variable in flattened) && !(variable in templateData)) {
-            // Check for nested access (e.g., project.name)
+            // Check for nested access (e.g., project.name, modules.slug)
             const parts = variable.split('.')
             let current = templateData
             let found = true
 
             for (const part of parts) {
-                if (current && typeof current === 'object' && part in current) {
-                    current = current[part]
+                if (current && typeof current === 'object') {
+                    if (Array.isArray(current)) {
+                        // For arrays, check if the property exists in array items
+                        // e.g., "modules.slug" means check if items in modules array have slug property
+                        if (current.length > 0 && typeof current[0] === 'object' && part in current[0]) {
+                            found = true
+                            break // Found in array items, that's valid
+                        } else {
+                            found = false
+                            break
+                        }
+                    } else if (part in current) {
+                        current = current[part]
+                    } else {
+                        found = false
+                        break
+                    }
                 } else {
                     found = false
                     break
@@ -105,6 +133,11 @@ function flattenObject(obj, prefix = '') {
 
         if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
             Object.assign(flattened, flattenObject(value, newKey))
+        } else if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') {
+            // For arrays of objects, flatten the first item's properties
+            // This allows validation of properties like "modules.slug"
+            Object.assign(flattened, flattenObject(value[0], newKey))
+            flattened[newKey] = value // Also keep the array itself
         } else {
             flattened[newKey] = value
         }
