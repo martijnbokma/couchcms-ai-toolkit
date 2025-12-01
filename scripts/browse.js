@@ -11,7 +11,6 @@
 import { readdirSync, readFileSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
 import matter from 'gray-matter'
-import { red, green, yellow, blue, magenta, cyan, white, gray, bold, dim } from 'ansis'
 import { findConfigFile, resolveToolkitPath } from './utils/utils.js'
 import { loadConfig } from './lib/config-loader.js'
 import { getToolkitRootCached } from './lib/index.js'
@@ -25,14 +24,14 @@ const SHOW_CURSOR = '\x1b[?25h'
 const CLEAR_LINE = '\x1b[2K'
 
 const colors = {
-    reset: (text) => text,
-    bright: bold,
-    dim: dim,
-    green: green,
-    blue: blue,
-    cyan: cyan,
-    yellow: yellow,
-    gray: gray,
+    reset: '\x1b[0m',
+    bright: '\x1b[1m',
+    dim: '\x1b[2m',
+    green: '\x1b[32m',
+    blue: '\x1b[34m',
+    cyan: '\x1b[36m',
+    yellow: '\x1b[33m',
+    gray: '\x1b[90m',
 }
 
 /**
@@ -104,8 +103,8 @@ function render(items, selected, cursor, scroll, type) {
     const categories = Object.keys(groups).sort()
 
     let output = CLEAR_SCREEN
-    output += `${bold(blue(`📦 CouchCMS AI Toolkit - ${type === 'modules' ? 'Modules' : 'Agents'} Browser`))}\n\n`
-    output += `${dim('Use ↑↓ to navigate, Space to toggle, Enter to save, Q to quit')}\n\n`
+    output += `${colors.bright}${colors.blue}📦 CouchCMS AI Toolkit - ${type === 'modules' ? 'Modules' : 'Agents'} Browser${colors.reset}\n\n`
+    output += `${colors.dim}Use ↑↓ to navigate, Space to toggle, Enter to save, Q to quit${colors.reset}\n\n`
 
     let lineIndex = 0
 
@@ -114,7 +113,7 @@ function render(items, selected, cursor, scroll, type) {
 
         // Category header
         if (lineIndex >= scroll && lineIndex < scroll + height) {
-            output += `${cyan(category.toUpperCase())}\n`
+            output += `${colors.cyan}${category.toUpperCase()}${colors.reset}\n`
         }
         lineIndex++
 
@@ -126,16 +125,16 @@ function render(items, selected, cursor, scroll, type) {
 
                 const checkbox = isSelected ? '[✓]' : '[ ]'
                 const prefix = isCursor ? '→ ' : '  '
-                const titleColor = isCursor ? bold : (text) => text
-                const checkColor = isSelected ? green : gray
+                const color = isCursor ? colors.bright : colors.reset
+                const checkColor = isSelected ? colors.green : colors.gray
 
-                output += `${prefix}${checkColor(checkbox)} ${titleColor(item.title)}\n`
+                output += `${prefix}${checkColor}${checkbox}${colors.reset} ${color}${item.title}${colors.reset}\n`
 
                 if (isCursor) {
-                    output += `    ${dim(item.description)}\n`
+                    output += `    ${colors.dim}${item.description}${colors.reset}\n`
 
                     if (item.dependencies && item.dependencies.length > 0) {
-                        output += `    ${yellow(`Requires: ${item.dependencies.join(', ')}`)}\n`
+                        output += `    ${colors.yellow}Requires: ${item.dependencies.join(', ')}${colors.reset}\n`
                     }
                 }
             }
@@ -146,7 +145,7 @@ function render(items, selected, cursor, scroll, type) {
     }
 
     // Footer
-    output += `\n${dim(`Selected: ${selected.length}/${items.length}`)}\n`
+    output += `\n${colors.dim}Selected: ${selected.length}/${items.length}${colors.reset}\n`
 
     process.stdout.write(output)
 }
