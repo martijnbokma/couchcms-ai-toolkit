@@ -19,10 +19,12 @@ const TEST_DIR = join(process.cwd(), 'tests', 'tmp')
 
 describe('File Utilities', () => {
     beforeEach(() => {
-        // Clean up test directory
+        // Clean up and recreate test directory
         if (existsSync(TEST_DIR)) {
             rmSync(TEST_DIR, { recursive: true, force: true })
         }
+        // Ensure test directory exists for tests that need it
+        mkdirSync(TEST_DIR, { recursive: true })
     })
 
     afterEach(() => {
@@ -57,7 +59,7 @@ describe('File Utilities', () => {
             const filePath = join(TEST_DIR, 'test.txt')
             mkdirSync(TEST_DIR, { recursive: true })
             writeFileSync(filePath, 'test content')
-            
+
             const content = readFileSafe(filePath)
             expect(content).toBe('test content')
         })
@@ -72,7 +74,7 @@ describe('File Utilities', () => {
         test('should write file content', () => {
             const filePath = join(TEST_DIR, 'output.txt')
             writeFileSafe(filePath, 'test content')
-            
+
             expect(existsSync(filePath)).toBe(true)
             const content = readFileSafe(filePath)
             expect(content).toBe('test content')
@@ -81,7 +83,7 @@ describe('File Utilities', () => {
         test('should create parent directories', () => {
             const filePath = join(TEST_DIR, 'nested', 'output.txt')
             writeFileSafe(filePath, 'test content')
-            
+
             expect(existsSync(filePath)).toBe(true)
         })
     })
@@ -96,7 +98,7 @@ describe('File Utilities', () => {
             const filePath = join(TEST_DIR, 'test.txt')
             mkdirSync(TEST_DIR, { recursive: true })
             writeFileSync(filePath, 'same content')
-            
+
             expect(hasChanged(filePath, 'same content')).toBe(false)
         })
 
@@ -104,7 +106,7 @@ describe('File Utilities', () => {
             const filePath = join(TEST_DIR, 'test.txt')
             mkdirSync(TEST_DIR, { recursive: true })
             writeFileSync(filePath, 'old content')
-            
+
             expect(hasChanged(filePath, 'new content')).toBe(true)
         })
     })

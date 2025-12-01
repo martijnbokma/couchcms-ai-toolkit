@@ -353,6 +353,19 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
         })
     })
 
+    // Check if framework is enabled (AAPF framework)
+    const frameworkEnabled = config.framework !== undefined && config.framework !== false
+    if (frameworkEnabled && typeof config.framework === 'object') {
+        // If framework is an object with doctrine/directives/etc, it's AAPF
+        if (config.framework.doctrine || config.framework.directives || config.framework.playbooks) {
+            if (!frameworks.includes('AAPF')) {
+                frameworks.push('AAPF')
+            }
+        }
+    }
+
+    // frameworkEnabled variable is already declared above, don't redeclare
+
     // Check for CMS and frontend
     const hasCms = modules.some(m => m.name.includes('couchcms') || m.name.includes('cms'))
     const hasFrontend = modules.some(
@@ -379,8 +392,7 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
     const projectDescription = config.project?.description || config.description || 'No description'
     const projectType = config.project?.type || config.type || 'CouchCMS Web Application'
 
-    // Check if framework is enabled
-    const frameworkEnabled = config.framework !== undefined && config.framework !== false
+    // frameworkEnabled is already declared above when checking for AAPF
 
     return {
         project: {
@@ -439,7 +451,7 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
         copilot: { template: 'copilot.template.md', output: 'copilot-instructions.md', dir: join(projectDir, '.github') },
         claude: { template: 'claude.template.md', output: 'CLAUDE.md', dir: projectDir },
         codewhisperer: { template: 'codewhisperer.template.md', output: '.codewhisperer/settings.json', dir: projectDir },
-        kiro: { template: 'kiro.template.md', output: '.kiro/rules.md', dir: projectDir },
+        kiro: { template: 'kiro.template.md', output: '.kiro/steering/coding-standards.md', dir: projectDir },
         antigravity: { template: 'antigravity.template.md', output: '.antigravity/rules.md', dir: projectDir },
         jules: { template: 'jules.template.md', output: '.jules/rules.md', dir: projectDir },
         roocode: { template: 'roocode.template.md', output: '.roocode/rules.md', dir: projectDir },
@@ -449,10 +461,20 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
     }
 
     // Get selected editors from config
+    // Support both array format: editors: [cursor, claude]
+    // and object format: editors: { cursor: true, claude: true }
     const editors = config.editors || {}
-    const selectedEditors = Object.entries(editors)
-        .filter(([_, enabled]) => enabled === true)
-        .map(([editorId]) => editorId)
+    let selectedEditors = []
+
+    if (Array.isArray(editors)) {
+        // Array format: [cursor, claude]
+        selectedEditors = editors
+    } else if (typeof editors === 'object') {
+        // Object format: { cursor: true, claude: true }
+        selectedEditors = Object.entries(editors)
+            .filter(([_, enabled]) => enabled === true)
+            .map(([editorId]) => editorId)
+    }
 
     // Only generate templates for explicitly selected editors
     // If no editors are selected, skip template generation (user chose "none")

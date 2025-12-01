@@ -1,6 +1,6 @@
 ---
 description: Auto-load refactoring rules for TypeScript files
-globs: ['{{paths.typescript}}/**/*.ts']
+globs: ['assets/ts/**/*.ts']
 alwaysApply: false
 ---
 

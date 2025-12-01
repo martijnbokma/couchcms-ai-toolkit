@@ -37,7 +37,7 @@ When refactoring this file, apply these rules:
 
 - Extract repeated patterns into reusable snippets
 - Use `<cms:embed>` for shared components
-- Use authentication filters: `<cms:embed '{{paths.filters}}/authenticated.html' />`
+- Use authentication filters: `<cms:embed 'snippets/filters/authenticated.html' />`
 - Use ownership filters for edit/delete operations
 - Keep Alpine.js components < 50 lines (move complex logic to TypeScript)
 
@@ -92,7 +92,7 @@ When refactoring this file, apply these rules:
 - ✅ Use `<cms:block 'content'>` for page content
 - ✅ Always include `content_owner` and `is_published` system fields
 - ✅ Use `<cms:embed>` for reusable components
-- ✅ Place views in `{{paths.views}}/`, components in `{{paths.components}}/`
+- ✅ Place views in `snippets/views/`, components in `snippets/components/`
 
 ## Caching & Performance
 

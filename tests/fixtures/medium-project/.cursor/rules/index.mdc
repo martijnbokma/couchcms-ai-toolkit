@@ -110,14 +110,14 @@ bun ai-toolkit-shared/scripts/init.js
 
 The toolkit uses these standard paths (configurable in `project.md`):
 
-- **CSS**: `{{paths.css}}` (default: `assets/css`)
-- **TypeScript**: `{{paths.typescript}}` (default: `assets/ts`)
-- **JavaScript**: `{{paths.javascript}}` (default: `assets/js`)
-- **Components**: `{{paths.components}}` (default: `snippets/components`)
-- **Views**: `{{paths.views}}` (default: `snippets/views`)
-- **Layouts**: `{{paths.layouts}}` (default: `snippets/layouts`)
-- **Filters**: `{{paths.filters}}` (default: `snippets/filters`)
-- **Forms**: `{{paths.forms}}` (default: `snippets/forms`)
+- **CSS**: `assets/css` (default: `assets/css`)
+- **TypeScript**: `assets/ts` (default: `assets/ts`)
+- **JavaScript**: `assets/js` (default: `assets/js`)
+- **Components**: `snippets/components` (default: `snippets/components`)
+- **Views**: `snippets/views` (default: `snippets/views`)
+- **Layouts**: `snippets/layouts` (default: `snippets/layouts`)
+- **Filters**: `snippets/filters` (default: `snippets/filters`)
+- **Forms**: `snippets/forms` (default: `snippets/forms`)
 
 ## For Cursor AI
 
@@ -131,7 +131,7 @@ This file serves as a bridge between Cursor AI rules and the comprehensive Unive
 
 **Workflow:**
 
-1. **Start with project configuration** - Read the project configuration file (detected automatically: `.project/standards.md`, `docs/standards.md`, `standards.md`, or `project.md`) for project context
+1. **Start with project configuration** - Read `project.md` or `docs/standards.md` for project context
 2. **Check active modules** - See which knowledge modules are enabled
 3. **Use appropriate agents** - Select the right agent for your task
 4. **Apply workflows** - Use specialized prompts for debugging, refactoring, etc.
