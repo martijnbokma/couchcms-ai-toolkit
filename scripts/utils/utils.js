@@ -9,6 +9,9 @@ import { existsSync, readFileSync } from 'fs'
 import { join, dirname, resolve } from 'path'
 import matter from 'gray-matter'
 
+// Track if migration warning has been shown to avoid duplicate messages
+let migrationWarningShown = false
+
 /**
  * Toolkit-specific error class for better error handling
  * @extends Error
@@ -71,10 +74,14 @@ export function findConfigFile(projectDir) {
 
     for (const oldLoc of oldLocations) {
         if (existsSync(oldLoc.path)) {
-            console.warn(`\n⚠️  Found configuration in old location: ${oldLoc.name}`)
-            console.warn(`   The toolkit now uses .project/standards.md as the standard location.`)
-            console.warn(`   Please move your configuration file:`)
-            console.warn(`   \n   mv ${oldLoc.name} .project/standards.md\n`)
+            // Only show warning once per process to avoid duplicate messages
+            if (!migrationWarningShown) {
+                console.warn(`\n⚠️  Found configuration in old location: ${oldLoc.name}`)
+                console.warn(`   The toolkit now uses .project/standards.md as the standard location.`)
+                console.warn(`   Please move your configuration file:`)
+                console.warn(`   \n   mv ${oldLoc.name} .project/standards.md\n`)
+                migrationWarningShown = true
+            }
             // Still return the old path for now to maintain compatibility
             // But warn user to migrate
             return oldLoc.path
