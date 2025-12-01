@@ -4,16 +4,19 @@
     "": {
       "name": "couchcms-ai-toolkit",
       "dependencies": {
+        "ansis": "^4.2.0",
         "gray-matter": "^4.0.3",
         "handlebars": "^4.7.8",
-        "yaml": "^2.3.4",
+        "yaml": "^2.8.2",
       },
       "devDependencies": {
-        "fast-check": "^3.15.0",
+        "fast-check": "^3.23.2",
       },
     },
   },
   "packages": {
+    "ansis": ["ansis@4.2.0", "", {}, "sha512-HqZ5rWlFjGiV0tDm3UxxgNRqsOTniqoKZu0pIAfh7TZQMGuZK+hH0drySty0si0QXj1ieop4+SkSfPZBPPkHig=="],
+
     "argparse": ["argparse@1.0.10", "", { "dependencies": { "sprintf-js": "~1.0.2" } }, "sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg=="],
 
     "esprima": ["esprima@4.0.1", "", { "bin": { "esparse": "./bin/esparse.js", "esvalidate": "./bin/esvalidate.js" } }, "sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A=="],

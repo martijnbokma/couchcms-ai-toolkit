@@ -225,7 +225,7 @@ function displayResults(sections) {
     let hasWarnings = false
 
     for (const { title, checks } of sections) {
-        console.log(`${colors.blue}${title}${colors.reset}`)
+        console.log(colors.blue(title))
 
         for (const check of checks) {
             const icon = icons[check.status] || icons.info
@@ -236,7 +236,7 @@ function displayResults(sections) {
             printWithIcon(icon, check.message, color, 2)
 
             if (check.fix) {
-                console.log(`${' '.repeat(4)}→ ${colors.gray}${check.fix}${colors.reset}`)
+                console.log(`${' '.repeat(4)}→ ${colors.gray(check.fix)}`)
             }
 
             if (check.status === 'error') hasErrors = true
