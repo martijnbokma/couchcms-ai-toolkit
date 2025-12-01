@@ -22,7 +22,7 @@ bun ai-toolkit-shared/scripts/create-standards.js
 
 # Of via npm script (als toolkit geïnstalleerd is)
 bun run create
-```
+```text
 
 ## Wat wordt er gevraagd?
 
@@ -167,7 +167,7 @@ Als een module niet gevonden wordt, controleer dan of de toolkit correct geïnst
 
 ```bash
 bun install
-```
+```text
 
 ### "Sync failed"
 

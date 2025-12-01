@@ -164,7 +164,7 @@ When writing scripts that support both Bun and Node.js:
    - Always test with both runtimes when possible
 
 3. **Best Practice:** Use feature detection, not runtime detection
-```
+```text
 
 **Rationale:** Prevents runtime errors and improves cross-runtime compatibility
 
@@ -208,7 +208,7 @@ runtime_compatibility:
       bad: "process.stdin.setRawMode(false)"
       good: "if (typeof process.stdin.setRawMode === 'function') { process.stdin.setRawMode(false) }"
     reference: "docs/standards.md#runtime-compatibility"
-```
+```text
 
 **Integration Steps:**
 1. Add check to `preflight-checks.yaml`

@@ -18,7 +18,7 @@ main (production)    ──●────────●───────�
 develop (integration)──●──●──●──●──●──●──●──●──→  New features come together here
                         ↑  ↑  ↑     ↑  ↑  ↑
 feature branches     ──●  ●  ●     ●  ●  ●        Your work (isolated)
-```
+```text
 
 **Simply put:**
 1. You create a **feature branch** for your work
@@ -52,7 +52,7 @@ bun scripts/git-flow.js feature start my-feature-name
 
 git add .
 git commit -m "Add search functionality"
-```
+```bash
 
 ### Step 3: Share your work
 
@@ -81,7 +81,7 @@ Your project
     ├── feature/login      → Developer A works here
     ├── feature/dashboard  → Developer B works here
     └── feature/api        → Developer C works here
-```
+```text
 
 **Advantage:** Everyone can work simultaneously without conflicts!
 
@@ -117,7 +117,7 @@ bun scripts/git-flow.js feature finish name
 ```bash
 bun scripts/git-flow.js release start 1.2.0
 bun scripts/git-flow.js release finish 1.2.0
-```
+```text
 
 #### 5. **hotfix/** - Quick Fixes
 - 🚨 For critical bugs in production
@@ -157,7 +157,7 @@ bun scripts/git-flow.js feature finish add-search-module
 
 # 6. Wait for review and approval
 # 7. After approval: branch is automatically cleaned up
-```
+```text
 
 **Timeline:**
 ```text
@@ -189,7 +189,7 @@ bun scripts/git-flow.js release finish 1.2.0
 # ✅ Merges to develop (for next features)
 # ✅ Creates version tag (v1.2.0)
 # ✅ Cleans up release branch
-```
+```text
 
 ### Workflow 3: Hotfix (Emergency)
 
@@ -227,7 +227,7 @@ bun scripts/git-flow.js check-stale
 
 # See what's coming in next release
 bun scripts/git-flow.js changelog
-```
+```bash
 
 ### Switching Branches
 
@@ -254,7 +254,7 @@ git log --oneline
 # What's new on develop?
 git fetch origin
 git log develop..origin/develop
-```
+```text
 
 ## ❓ Frequently Asked Questions
 
@@ -300,7 +300,7 @@ git reset --hard HEAD
 
 git add .
 git commit -m "Resolve merge conflict"
-```
+```text
 
 **Need help?** See [Troubleshooting Guide](git-workflow/troubleshooting.md)
 

@@ -72,7 +72,7 @@ gh api repos/:owner/:repo/branches/main/protection \
 gh api repos/:owner/:repo/branches/develop/protection \
   --method PUT \
   --input .github/branch-protection.json
-```
+```text
 
 ## Configuration File
 

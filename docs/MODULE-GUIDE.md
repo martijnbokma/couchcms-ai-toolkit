@@ -54,7 +54,7 @@ modules/
 ├── users.md
 ├── comments.md
 └── databound-forms.md
-```
+```text
 
 ### Category Metadata
 
@@ -117,7 +117,7 @@ This allows modules to be:
 
 ```bash
 bun scripts/analyze-modules.js
-```
+```yaml
 
 This analyzes:
 - Module metadata completeness

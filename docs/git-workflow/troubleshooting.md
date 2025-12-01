@@ -29,7 +29,7 @@ git pull origin develop
 # See which files have conflicts
 git status
 # both modified: file.js
-```
+```text
 
 ### Resolving Conflicts
 
@@ -54,7 +54,7 @@ Option A - Keep your version:
 function example() {
     return "your version";
 }
-```
+```javascript
 
 Option B - Keep their version:
 ```javascript
@@ -68,7 +68,7 @@ Option C - Combine both:
 function example() {
     return "combined version";
 }
-```
+```sql
 
 **Step 3: Remove conflict markers**
 
@@ -105,7 +105,7 @@ git rebase develop
 # 1. Resolve conflicts
 # 2. git add .
 # 3. git rebase --continue
-```
+```text
 
 ## Branch Issues
 
@@ -138,7 +138,7 @@ git stash pop
 # Now commit properly
 git add .
 git commit -m "Your message"
-```
+```bash
 
 ### "I can't switch branches - uncommitted changes"
 
@@ -166,7 +166,7 @@ git pull origin develop
 # Or rebase (cleaner history)
 git checkout feature/your-feature
 git rebase develop
-```
+```bash
 
 ### "I have a stale branch"
 
@@ -201,7 +201,7 @@ git cherry-pick abc1234
 # Go back and remove from wrong branch
 git checkout wrong-branch
 git reset --hard HEAD~1
-```
+```bash
 
 ### "My commit message is wrong"
 
@@ -224,7 +224,7 @@ git reset --hard HEAD~1  # CAREFUL!
 
 # Undo multiple commits
 git reset --soft HEAD~3  # undo last 3
-```
+```bash
 
 ### "I committed sensitive data"
 
@@ -249,7 +249,7 @@ git pull origin feature/your-branch
 # Resolve any conflicts
 # Then push
 git push origin feature/your-branch
-```
+```text
 
 ### "Push rejected - protected branch"
 
@@ -277,7 +277,7 @@ git config --global user.email "your@email.com"
 
 # For HTTPS, you may need a personal access token
 # See: https://github.com/settings/tokens
-```
+```text
 
 ### "Connection timeout"
 
@@ -305,7 +305,7 @@ bun run lint
 git add .
 git commit -m "Fix linting errors"
 git push origin feature/your-branch
-```
+```bash
 
 **Test failures:**
 ```bash
@@ -323,7 +323,7 @@ git pull origin develop
 
 # Resolve conflicts (see above)
 # Push resolved version
-```
+```text
 
 ### "Can't merge Pull Request"
 
@@ -354,7 +354,7 @@ ls scripts/git-flow.js
 
 # If missing, pull latest
 git pull origin develop
-```
+```bash
 
 ### "Bun command not found"
 
@@ -385,7 +385,7 @@ DEBUG=1 bun scripts/git-flow.js feature start name
 # - Full error message
 # - Command you ran
 # - Git status output
-```
+```text
 
 ## Emergency Procedures
 
@@ -420,7 +420,7 @@ bun scripts/git-flow.js feature start fresh-start
 
 # Restore your work if needed
 git stash pop
-```
+```bash
 
 ### "I accidentally deleted my branch"
 
@@ -477,7 +477,7 @@ git commit -m "clear message"
 
 # End of day
 git push origin feature/todays-work
-```
+```text
 
 ### Best Practices
 

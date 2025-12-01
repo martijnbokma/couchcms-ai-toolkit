@@ -65,7 +65,7 @@ your-project/
 ├── .cursorrules          ← Auto-generated (don't edit)
 ├── CLAUDE.md             ← Auto-generated (don't edit)
 └── AGENTS.md             ← Auto-generated (don't edit)
-```
+```yaml
 
 ---
 
@@ -122,7 +122,7 @@ bun ai-toolkit-shared/scripts/validate.js
 # Option 2: Manual review + fix
 # @file.php "/review"
 # Then: "/fix the issues identified"
-```
+```text
 
 ### Refactoring Existing Code
 

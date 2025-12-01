@@ -383,7 +383,7 @@ agents:
     - nested-pages
     - on-page-editing
     - admin-panel-theming
-```
+```yaml
 
 ### For Frontend-Heavy Project
 
@@ -407,7 +407,7 @@ agents:
     - alpinejs
     - typescript
     - git
-```
+```yaml
 
 ### For Content-Heavy Sites
 
@@ -457,7 +457,7 @@ agents:
     - mysql
     - bun
     - git
-```
+```yaml
 
 ---
 
