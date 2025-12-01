@@ -12,33 +12,15 @@ import { existsSync, statSync, readFileSync } from 'fs'
 import { resolve, join, dirname } from 'path'
 import { execSync } from 'child_process'
 import { findConfigFile } from './utils/utils.js'
-import { getToolkitRootCached } from './lib/index.js'
+import { getToolkitRootCached, printWithIcon, printSuccess, printError, printWarning, printInfo, colors } from './lib/index.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
-
-// ANSI colors
-const colors = {
-    reset: '\x1b[0m',
-    green: '\x1b[32m',
-    yellow: '\x1b[33m',
-    red: '\x1b[31m',
-    blue: '\x1b[34m',
-    gray: '\x1b[90m',
-}
 
 const icons = {
     success: '✅',
     warning: '⚠️',
     error: '❌',
     info: '💡',
-}
-
-/**
- * Print colored message
- */
-function print(icon, message, color = 'reset', indent = 0) {
-    const spaces = ' '.repeat(indent)
-    console.log(`${spaces}${icon} ${colors[color]}${message}${colors.reset}`)
 }
 
 /**
@@ -251,10 +233,10 @@ function displayResults(sections) {
                          check.status === 'warning' ? 'yellow' :
                          check.status === 'info' ? 'gray' : 'green'
 
-            print(icon, check.message, color, 2)
+            printWithIcon(icon, check.message, color, 2)
 
             if (check.fix) {
-                print('', `→ ${check.fix}`, 'gray', 4)
+                console.log(`${' '.repeat(4)}→ ${colors.gray}${check.fix}${colors.reset}`)
             }
 
             if (check.status === 'error') hasErrors = true
@@ -266,11 +248,11 @@ function displayResults(sections) {
 
     // Summary
     if (!hasErrors && !hasWarnings) {
-        print(icons.success, 'Everything looks good! 🎉', 'green')
+        printSuccess('Everything looks good! 🎉', 0)
     } else if (hasErrors) {
-        print(icons.error, 'Found issues that need attention', 'red')
+        printError('Found issues that need attention', 0)
     } else {
-        print(icons.warning, 'Found some warnings, but toolkit should work', 'yellow')
+        printWarning('Found some warnings, but toolkit should work', 0)
     }
 
     console.log()
