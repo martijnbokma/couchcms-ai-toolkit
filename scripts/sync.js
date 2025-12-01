@@ -759,6 +759,19 @@ Add your project-specific instructions here...
         projectDir = dirname(projectDir)
     }
 
+    // Check if config file is inside toolkit directory itself
+    // If toolkit structure detected (modules/, templates/, scripts/), use parent as project root
+    const potentialToolkitDir = projectDir
+    const hasToolkitStructure = existsSync(join(potentialToolkitDir, 'modules')) &&
+                                 existsSync(join(potentialToolkitDir, 'templates')) &&
+                                 existsSync(join(potentialToolkitDir, 'scripts'))
+    
+    if (hasToolkitStructure) {
+        // Config is in toolkit directory, use parent as project root
+        projectDir = dirname(potentialToolkitDir)
+        console.log(`📦 Detected toolkit directory, using parent as project root`)
+    }
+
     console.log(`📁 Project root: ${projectDir}`)
 
     // Parse standards.md configuration file
