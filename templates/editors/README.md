@@ -13,10 +13,16 @@ This directory contains optimized template files for configuring AI coding assis
 |----------|--------|--------------|
 | `claude.template.md` | Claude AI (Anthropic) | Full operational doctrine, detailed examples |
 | `cursor.template.md` | Cursor IDE | Auto-loading rules integration, smart operations |
+| `windsurf.template.md` | Windsurf IDE | Cascade capabilities, smart operations |
+| `zed.template.md` | Zed Editor | Agent Panel integration, collaborative editing |
 | `copilot.template.md` | GitHub Copilot | Suggestion validation, completion priorities |
 | `codewhisperer.template.md` | Amazon CodeWhisperer | Generation validation, pattern blocking |
+| `kiro.template.md` | Amazon Kiro | AI coding tool configuration |
+| `antigravity.template.md` | Google Antigravity | Gemini 3 agent-first editor |
+| `jules.template.md` | Jules (Google) | Gemini 2.5 Pro coding agent |
+| `roocode.template.md` | Roo Code | Autonomous AI coding agent, custom modes |
+| `vscode-ai.template.md` | VS Code AI Toolkit | Microsoft AI Toolkit extension |
 | `tabnine.template.md` | Tabnine AI | Completion validation, context awareness |
-| `windsurf.template.md` | Windsurf IDE | Cascade capabilities, smart operations |
 | `agent.template.md` | Universal base | Minimal core template for all agents |
 | `roles.template.md` | Project roles | Role definitions and responsibilities |
 
@@ -28,7 +34,7 @@ All optimized templates follow this consistent structure:
 ```markdown
 # [Editor] AI Instructions - {{project.name}}
 
-**Critical: Always follow `/docs/standards.md` before generating any code.**
+**Critical: Always follow `{{config_file_path}}` before generating any code.**
 ```
 
 ### 2. Operational Doctrine

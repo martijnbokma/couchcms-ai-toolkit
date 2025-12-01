@@ -7,7 +7,7 @@ alwaysApply: true
 # Universal AI Development Toolkit Bridge
 
 **Highly Critical:**
-Whenever generating code, you must ALWAYS refer to the project's configuration file (`.project/standards.md`, `docs/standards.md`, or `standards.md`) to ensure all code strictly adheres to the project's coding standards and conventions.
+Whenever generating code, you must ALWAYS refer to the project's configuration file (`project.md` or `docs/standards.md` or `.project/standards.md`) to ensure all code strictly adheres to the project's coding standards and conventions.
 
 This configuration file is the single source of truth. Do not ignore or bypass it.
 
@@ -17,9 +17,9 @@ This configuration file is the single source of truth. Do not ignore or bypass i
 
 If no configuration file exists, alert the user that this critical file is missing. The toolkit expects one of:
 
-- `.project/standards.md` (recommended location)
-- `docs/standards.md` (documentation location)
-- `standards.md` (root directory)
+- `project.md` (root directory)
+- `docs/standards.md`
+- `.project/standards.md`
 
 ---
 
@@ -30,12 +30,12 @@ This file connects Cursor AI rules with the Universal AI Development Toolkit sys
 ### 🚀 Start Here
 
 - **[Main Cursor Rules](../../.cursorrules)** - Primary AI agent guidelines (auto-generated from project config)
-- **[Project Configuration](../../.project/standards.md)** - Project-specific settings and standards
+- **[Project Configuration](../../project.md)** - Project-specific settings and standards
 - **[Toolkit Documentation](../../ai-toolkit-shared/docs/GETTING-STARTED.md)** - Complete toolkit guide
 
 ### 📚 Knowledge Modules
 
-The toolkit provides specialized knowledge modules. Check your `standards.md` to see which modules are active:
+The toolkit provides specialized knowledge modules. Check your `project.md` to see which modules are active:
 
 - **couchcms-core** - Core CouchCMS patterns (always included)
 - **tailwindcss** - TailwindCSS 4 patterns and utilities
@@ -48,7 +48,7 @@ Reference: `ai-toolkit-shared/modules/` or `ai-toolkit-shared/docs/MODULES.md`
 
 ### 🤖 AI Agents
 
-Specialized agents for different development tasks. Check your `standards.md` for active agents:
+Specialized agents for different development tasks. Check your `project.md` for active agents:
 
 - **couchcms** - Core CouchCMS development
 - **databound-forms** - Forms and CRUD operations
@@ -108,16 +108,16 @@ bun ai-toolkit-shared/scripts/init.js
 
 ### 📦 Project Structure
 
-The toolkit uses these standard paths (configurable in `standards.md`):
+The toolkit uses these standard paths (configurable in `project.md`):
 
-- **CSS**: `{{paths.css}}` (default: `assets/css`)
-- **TypeScript**: `{{paths.typescript}}` (default: `assets/ts`)
-- **JavaScript**: `{{paths.javascript}}` (default: `assets/js`)
-- **Components**: `{{paths.components}}` (default: `snippets/components`)
-- **Views**: `{{paths.views}}` (default: `snippets/views`)
-- **Layouts**: `{{paths.layouts}}` (default: `snippets/layouts`)
-- **Filters**: `{{paths.filters}}` (default: `snippets/filters`)
-- **Forms**: `{{paths.forms}}` (default: `snippets/forms`)
+- **CSS**: `assets/css` (default: `assets/css`)
+- **TypeScript**: `assets/ts` (default: `assets/ts`)
+- **JavaScript**: `assets/js` (default: `assets/js`)
+- **Components**: `snippets/components` (default: `snippets/components`)
+- **Views**: `snippets/views` (default: `snippets/views`)
+- **Layouts**: `snippets/layouts` (default: `snippets/layouts`)
+- **Filters**: `snippets/filters` (default: `snippets/filters`)
+- **Forms**: `snippets/forms` (default: `snippets/forms`)
 
 ## For Cursor AI
 
@@ -131,7 +131,7 @@ This file serves as a bridge between Cursor AI rules and the comprehensive Unive
 
 **Workflow:**
 
-1. **Start with project configuration** - Read the project configuration file (detected automatically: `.project/standards.md`, `docs/standards.md`, or `standards.md`) for project context
+1. **Start with project configuration** - Read `project.md` or `docs/standards.md` for project context
 2. **Check active modules** - See which knowledge modules are enabled
 3. **Use appropriate agents** - Select the right agent for your task
 4. **Apply workflows** - Use specialized prompts for debugging, refactoring, etc.

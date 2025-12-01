@@ -1,6 +1,6 @@
 # Cursor AI Instructions - {{project.name}}
 
-**Critical: Always follow `/docs/standards.md` before generating any code.**
+**Critical: Always follow `{{config_file_path}}` before generating any code.**
 
 ## Project Context
 
@@ -46,7 +46,7 @@ Only ask for clarification when:
 | Command | Action | Example |
 |---------|--------|---------|
 | `/fix @file` | Identify and fix issues | `/fix @films.php` |
-| `/refactor @file` | Refactor using router | `/refactor @modal.html` |
+| `/refactor @file` | Refactor with analysis & confirmation | `/refactor @modal.html` |
 | `/review @file` | Code review with suggestions | `/review @auth.ts` |
 | `/component <name>` | Create component bundle | `/component card` |
 | `/view <name>` | Create view with routing | `/view dashboard` |
@@ -60,7 +60,7 @@ Only ask for clarification when:
 |---------------|-----------------|--------|
 | `@file` only | Code review | Read file, identify issues |
 | `@file` + "fix/broken" | Bug fix | Diagnose and fix |
-| `@file` + "refactor" | Refactoring | Activate refactor router |
+| `@file` + "refactor" | Refactoring | Analyze → Propose → Confirm → Execute |
 | Error/stack trace | Debugging | Activate debug specialist |
 
 ### Communication Modes
@@ -320,4 +320,147 @@ COMMANDS:        MODES:           MODIFIERS:
 /form <n>
 ```
 
-**This file is auto-generated from `/docs/standards.md`. All changes should be made there.**
+---
+
+## 🔄 REFACTOR ROUTER WORKFLOW
+
+When `/refactor @file` is used, follow this structured workflow:
+
+### Step 1: Comprehensive Analysis (MANDATORY)
+
+**Before any refactoring, you MUST:**
+
+1. **Read and analyze all tagged files completely**:
+   - Read the entire contents of each tagged file
+   - Identify file types (`.php`, `.ts`, `.js`, `.html`, `.css`, `.md`)
+   - Detect technology indicators:
+     - CouchCMS tags (`<cms:...>`)
+     - TypeScript patterns (`interface`, `type`, `export`)
+     - Alpine.js directives (`x-data`, `x-on:click`)
+     - Inline CSS/JS in templates
+     - DataBound Forms patterns
+     - TailwindCSS/daisyUI classes
+   - Check for security issues (HTML comments with `<cms:` instead of `[cms:`)
+   - Identify refactoring concerns (code smells, architecture issues, inline styles)
+
+2. **Summarize findings in structured format**:
+   ```
+   📋 **File Analysis Results**:
+
+   Tagged Files:
+   - `path/to/file1.ts` (TypeScript)
+   - `path/to/file2.php` (CouchCMS template)
+
+   Technology Patterns Detected:
+   - TypeScript type definitions
+   - CouchCMS template tags (`<cms:pages>`, `<cms:show>`)
+   - Inline CSS in `<style>` tags
+
+   Refactoring Concerns:
+   - Type safety improvements needed
+   - CSS extraction required
+   - Template structure optimization
+   ```
+
+### Step 2: Agent Selection & Proposal (MANDATORY)
+
+**Based on analysis, determine and propose:**
+
+1. **Select appropriate refactoring resources**:
+   - Auto-loading rules (`.mdc` files): `refactor-html.mdc`, `refactor-typescript.mdc`, etc.
+   - Development agents: `couchcms`, `typescript`, `alpinejs`, `tailwindcss`, etc.
+   - Specialized prompts: `design-preserving.md`, `functionality-preserving.md`
+
+2. **Present detailed proposal**:
+   ```
+   🎯 **Proposed Refactoring Resource(s)**:
+
+   Primary: `refactor-typescript.mdc` (auto-loading rule)
+   Secondary: `refactor-css.mdc` (auto-loading rule)
+   Agent Support: `couchcms` agent (for template patterns)
+
+   **Reasoning**:
+   - TypeScript file requires type safety improvements
+   - Inline CSS needs extraction to separate file
+   - CouchCMS template needs structure optimization
+
+   **Execution Order**:
+   1. CSS extraction (refactor-css.mdc)
+   2. TypeScript refactoring (refactor-typescript.mdc)
+   3. CouchCMS template cleanup (couchcms agent guidance)
+
+   **Expected Changes**:
+   - Extract inline CSS to `assets/css/components/modal.css`
+   - Replace `any` types with proper interfaces
+   - Optimize template structure with `<cms:embed>` patterns
+   ```
+
+### Step 3: Request Confirmation (MANDATORY)
+
+**CRITICAL: NEVER proceed without explicit user confirmation.**
+
+```
+⚠️ **Confirmation Required**
+
+Before proceeding with the refactoring, please confirm by responding with:
+
+**A** or **Yes** - Proceed with the selected resource(s) as proposed above
+**B** or **Different** - I want to use a different resource (specify which)
+**C** or **Modify** - I want to modify the execution order
+**D** or **Info** - I need more information about the proposed approach
+
+Example responses: "A", "Yes", "B - use design-preserving instead", "C - do CSS first", "D"
+```
+
+**Acceptable confirmation responses:**
+- **A**, **Yes**, **Ja**, **Y** → Proceed with proposed resources
+- **B**, **Different** → User wants different resource (read their specification)
+- **C**, **Modify** → User wants to modify execution order (read their specification)
+- **D**, **Info** → User needs more information (provide additional details)
+
+### Step 4: Execute After Confirmation (ONLY AFTER CONFIRMATION)
+
+**ONLY after receiving explicit confirmation:**
+
+1. **Acknowledge confirmation**: "✅ Confirmed. Proceeding with refactoring..."
+
+2. **Handle modifications**: If user chose B or C, adjust resources/order as specified
+
+3. **Load selected resources**: Reference confirmed resource document(s)
+
+4. **Execute structured workflow**:
+   - Follow step-by-step process from selected resource
+   - Apply changes incrementally
+   - Preserve functionality
+   - Follow project standards
+
+5. **Maintain context**: Keep track of changes across multiple files/resources
+
+6. **Report progress**: Show what was done at each step
+
+### Routing Logic Reference
+
+**File Type → Resource Mapping:**
+
+| File Type | Technology Indicators | Selected Resources |
+|-----------|----------------------|-------------------|
+| `.php` with `<cms:...>` | CouchCMS tags | `refactor-html.mdc` + `couchcms` agent |
+| `.ts` files | TypeScript patterns | `refactor-typescript.mdc` + `typescript` agent |
+| `.js` files | JavaScript code | `refactor-typescript.mdc` (conversion) or toolkit |
+| `.html` with `<cms:...>` | CouchCMS + Alpine.js | `refactor-html.mdc` + `couchcms` + `alpinejs` agents |
+| `.html` with `<style>` | Inline CSS | `refactor-css.mdc` + `tailwindcss` agent |
+| `.css` files | Custom CSS | `refactor-css.mdc` + `tailwindcss` agent |
+| `snippets/forms/*.html` | DataBound Forms | `refactor-forms.mdc` + `databound-forms` agent |
+
+**For detailed routing logic, see:** `prompts/refactoring/router.md`
+
+### Best Practices
+
+1. **Always analyze first**: Read complete file contents before proposing
+2. **Be thorough**: Check all technology indicators, not just file extension
+3. **Present clearly**: Show analysis results and reasoning for selection
+4. **Wait for confirmation**: NEVER proceed without explicit user approval
+5. **Follow structured steps**: Execute refactoring in logical order
+6. **Report progress**: Show what's being done at each step
+
+**This file is auto-generated from `{{config_file_path}}`. All changes should be made there.**
