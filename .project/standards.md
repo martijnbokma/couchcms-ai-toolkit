@@ -94,6 +94,23 @@ agents:
   - mysql
   - admin-panel-theming
 
+# === EDITORS ===
+# Select which editors/tools to configure
+editors:
+  cursor: true
+  claude: true
+  copilot: true
+  windsurf: false
+  zed: false
+  codewhisperer: false
+  kiro: false
+  antigravity: false
+  jules: false
+  roocode: false
+  'vscode-ai': false
+  tabnine: false
+  agent: false
+
 # === CONTEXT ===
 # Project context directory (optional)
 # context: ".project/ai"
