@@ -65,6 +65,11 @@ bun ai-toolkit-shared/scripts/sync.js
 # bun ai-toolkit-shared/scripts/sync.js --watch
 ```text
 
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
+```text
+
 This creates `USER-RULES.md` in your project with a template you should copy to Cursor Settings.
 
 ## Example User Rules

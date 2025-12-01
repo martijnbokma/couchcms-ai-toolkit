@@ -130,6 +130,19 @@ modules:                     # ✓ Consistent indentation
 ---
 ```yaml
 
+**✅ Correct YAML example (standards.md frontmatter)**:
+
+```yaml
+---
+name: 'my-project'           # ✓ Quoted string
+description: "it's mine"     # ✓ Quoted apostrophe
+toolkit: './ai-toolkit-shared'  # ✓ Proper path
+modules:                     # ✓ Consistent indentation
+    - couchcms-core         # ✓ No trailing comma
+    - tailwindcss           # ✓ Spaces only
+---
+```yaml
+
 ---
 
 ### ⚠️ "Module 'X' not found"
@@ -780,6 +793,18 @@ Or copy key sections into your prompts.
 
     **✅ Correct GitHub Actions setup**:
     ```yaml
+    ```yaml
+    # ✗ Missing submodules
+    - uses: actions/checkout@v3
+    
+    # ✗ Wrong submodule flag
+    - uses: actions/checkout@v3
+      with:
+          submodules: true
+    ```
+
+    **✅ Correct GitHub Actions setup**:
+    ```yaml
     # ✓ Recursive submodules
     - uses: actions/checkout@v3
       with:
@@ -801,6 +826,18 @@ Or copy key sections into your prompts.
 
     **✅ Correct dependency installation**:
     ```yaml
+    ```yaml
+    # ✗ Missing cd command
+    - name: Install dependencies
+      run: bun install
+    
+    # ✗ Wrong directory
+    - name: Install dependencies  
+      run: cd toolkit && bun install
+    ```
+
+    **✅ Correct dependency installation**:
+    ```yaml
     # ✓ Correct path and cd back
     - name: Install toolkit dependencies
       run: cd ai-toolkit-shared && bun install
@@ -809,6 +846,20 @@ Or copy key sections into your prompts.
 3. **Generated files out of sync**
 
     **❌ Wrong sync check**:
+    ```yaml
+    # ✗ Missing sync step
+    - name: Check files
+      run: git diff --exit-code .cursorrules
+    
+    # ✗ Wrong file list
+    - name: Check sync
+      run: |
+          bun ai-toolkit-shared/scripts/sync.js
+          git diff --exit-code
+    ```
+
+    **✅ Correct sync check**:
+    ```yaml
     ```yaml
     # ✗ Missing sync step
     - name: Check files

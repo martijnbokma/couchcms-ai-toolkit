@@ -189,6 +189,15 @@ The migration involves changing from multiple configuration files to a single `s
 | `preflight-checks.yaml` | *(removed - built into toolkit)* |
 | `config.yaml` | *(removed - replaced by standards.md)* |
 
+
+| **Before (Configuration v1.0)** | **After (Configuration v2.0)** |
+|----------------------------------|--------------------------------|
+| `.project/standards.md` | `standards.md` (in root) |
+| `defaults.yaml` | *(removed - built into toolkit)* |
+| `smart-defaults.yaml` | *(removed - built into toolkit)* |
+| `preflight-checks.yaml` | *(removed - built into toolkit)* |
+| `config.yaml` | *(removed - replaced by standards.md)* |
+
 #### Configuration Content Comparison
 
 **Before (Multiple files):**
