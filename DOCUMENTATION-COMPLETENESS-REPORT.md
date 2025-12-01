@@ -222,4 +222,7 @@ All requested documentation areas are **comprehensively covered**:
 ---
 
 **Status:** ✅ **DOCUMENTATION COMPLETE**
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5881bba (updates 2025-12-01)

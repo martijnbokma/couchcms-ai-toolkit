@@ -11,6 +11,10 @@
 
 import { existsSync, readFileSync } from 'fs'
 import { resolve, dirname, basename, join } from 'path'
+<<<<<<< HEAD
+=======
+import { fileURLToPath } from 'url'
+>>>>>>> 5881bba (updates 2025-12-01)
 import { findConfigFile, getConfigFileName, handleError, resolveToolkitPath } from './utils/utils.js'
 import { prompt, confirm } from './lib/prompts.js'
 import {
@@ -30,9 +34,37 @@ import {
     getConceptExplanation,
     showSummary
 } from './lib/onboarding.js'
+<<<<<<< HEAD
 import { getToolkitRootCached, loadPresets } from './lib/index.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
+=======
+import yaml from 'yaml'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const TOOLKIT_ROOT = resolve(__dirname, '..')
+
+/**
+ * Load available presets
+ * @returns {Object} Presets configuration
+ */
+function loadPresets() {
+    const presetsPath = join(TOOLKIT_ROOT, 'presets.yaml')
+
+    if (!existsSync(presetsPath)) {
+        return {}
+    }
+
+    try {
+        const content = readFileSync(presetsPath, 'utf8')
+        const data = yaml.parse(content)
+        return data.presets || {}
+    } catch {
+        return {}
+    }
+}
+>>>>>>> 5881bba (updates 2025-12-01)
 
 /**
  * Ask user about their project in simple terms

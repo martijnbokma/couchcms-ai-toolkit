@@ -29,7 +29,11 @@ import {
 import { checkAndInstallDependencies } from './lib/dependency-checker.js'
 import { detectToolkitPath } from './lib/toolkit-detector.js'
 import { resolveToolkitPath } from './utils/utils.js'
+<<<<<<< HEAD
 import { getToolkitRootCached, loadPresets } from './lib/index.js'
+=======
+import yaml from 'yaml'
+>>>>>>> 5881bba (updates 2025-12-01)
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 
@@ -57,6 +61,29 @@ function determineProjectDirectory(currentDir) {
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * Load available presets
+ * @returns {Object} Presets configuration
+ */
+function loadPresets() {
+    const presetsPath = join(TOOLKIT_ROOT, 'presets.yaml')
+
+    if (!existsSync(presetsPath)) {
+        return {}
+    }
+
+    try {
+        const content = readFileSync(presetsPath, 'utf8')
+        const data = yaml.parse(content)
+        return data.presets || {}
+    } catch {
+        return {}
+    }
+}
+
+/**
+>>>>>>> 5881bba (updates 2025-12-01)
  * Display and select preset
  * @returns {Promise<Object|null>} Selected preset or null
  */
@@ -159,8 +186,11 @@ async function init() {
     // Ask for setup mode (unless auto mode from installer)
     let autoMode, presetMode, simpleMode
 
+<<<<<<< HEAD
     printStep(2, 5, 'Selecting setup mode...')
 
+=======
+>>>>>>> 5881bba (updates 2025-12-01)
     if (process.env.TOOLKIT_AUTO_MODE === 'true') {
         printInfo('Setup mode: Auto (from installer)', 2)
         autoMode = true
@@ -200,7 +230,10 @@ async function init() {
             printSuccess('Selected: Custom mode', 2)
         }
     }
+<<<<<<< HEAD
     console.log()
+=======
+>>>>>>> 5881bba (updates 2025-12-01)
 
     // Select preset if in preset mode
     let selectedPreset = null
@@ -222,8 +255,11 @@ async function init() {
     const { configPath, configDir } = await determineConfigPath(projectDir, true)
 
     const isCustomMode = !simpleMode && !autoMode && !presetMode
+<<<<<<< HEAD
 
     printStep(3, 5, 'Reviewing configuration summary...')
+=======
+>>>>>>> 5881bba (updates 2025-12-01)
 
     if (autoMode) {
         const { printConfigSummary } = await import('./lib/index.js')
@@ -243,6 +279,7 @@ async function init() {
             2
         )
     } else if (simpleMode) {
+<<<<<<< HEAD
         printBox(
             'Configuration: .project/standards.md\n\n' +
             'Modules: ALL CouchCMS modules + TailwindCSS + Alpine.js\n\n' +
@@ -257,21 +294,39 @@ async function init() {
         printInfo('Custom mode: Full control', 2)
         printInfo('We\'ll ask you a few grouped questions...', 2)
         console.log()
+=======
+        console.log('\n✨ Simple mode: Using CouchCMS Complete preset')
+        console.log('   - Configuration: .project/standards.md')
+        console.log('   - Modules: ALL CouchCMS modules + TailwindCSS + Alpine.js')
+        console.log('   - Agents: ALL CouchCMS agents + TailwindCSS + Alpine.js')
+        console.log('   - Framework: Disabled (can be enabled later in standards.md)')
+        console.log('\n   💡 This gives you full CouchCMS support out of the box!')
+    } else if (isCustomMode) {
+        console.log('\n✨ Custom mode: Full control')
+        console.log('   We\'ll ask you a few grouped questions...\n')
+>>>>>>> 5881bba (updates 2025-12-01)
     }
 
     // Group 1: Project Information
     if (isCustomMode) {
+<<<<<<< HEAD
         printSection('Project Information', '📋')
     }
 
     printStep(4, 5, 'Gathering project information...')
 
+=======
+        console.log('📋 Group 1: Project Information\n')
+    }
+
+>>>>>>> 5881bba (updates 2025-12-01)
     // Gather project information
     const projectName = process.env.TOOLKIT_PROJECT_NAME ||
         (autoMode ? detected.name : await prompt(isCustomMode ? 'Project name' : '\n📝 Project name', detected.name))
     const projectDescription = process.env.TOOLKIT_PROJECT_DESC ||
         (autoMode ? detected.description : await prompt('Project description', detected.description))
 
+<<<<<<< HEAD
     if (projectName && projectDescription) {
         printSuccess(`Project: ${projectName}`, 2)
         printInfo(`Description: ${projectDescription}`, 2)
@@ -283,6 +338,13 @@ async function init() {
         console.log('\n📋 Group 2: Toolkit and Configuration\n')
     }
 
+=======
+    // Group 2: Toolkit and Configuration (only in custom mode)
+    if (isCustomMode) {
+        console.log('\n📋 Group 2: Toolkit and Configuration\n')
+    }
+
+>>>>>>> 5881bba (updates 2025-12-01)
     // Determine toolkit path - auto-detect first, then allow override
     let toolkitPath = detectToolkitPath(projectDir)
 
@@ -307,6 +369,7 @@ async function init() {
 
     // Resolve absolute toolkit path and check dependencies
     const resolvedToolkitPath = resolveToolkitPath(toolkitPath, projectDir, TOOLKIT_ROOT)
+<<<<<<< HEAD
 
     printProgress('Checking dependencies...', 2)
     if (typeof checkAndInstallDependencies === 'function') {
@@ -322,6 +385,14 @@ async function init() {
         printWarning('Dependency checker not available, skipping dependency check', 2)
     }
     console.log()
+=======
+    try {
+        await checkAndInstallDependencies(resolvedToolkitPath)
+    } catch (error) {
+        console.error(`\n❌ ${error.message}\n`)
+        process.exit(1)
+    }
+>>>>>>> 5881bba (updates 2025-12-01)
 
     // Group 3: Modules and Agents (combined in custom mode)
     if (isCustomMode) {
@@ -342,6 +413,7 @@ async function init() {
         selectedAgents = await selectAgents(simpleMode)
     }
 
+<<<<<<< HEAD
     // Group 4: Editor/Tool Selection (always optional)
     let selectedEditors
     if (autoMode) {
@@ -382,6 +454,29 @@ async function init() {
         contextPath = await selectContextDirectory(simpleMode || autoMode)
     }
 
+=======
+    // Group 4: Advanced Options (only shown in custom mode, with progressive disclosure)
+    let frameworkConfig
+    let contextPath = null
+
+    if (presetMode && selectedPreset) {
+        frameworkConfig = selectedPreset.framework
+    } else if (isCustomMode) {
+        console.log('\n📋 Group 4: Advanced Options (Optional)\n')
+        const showAdvanced = await confirm('Configure advanced options (framework, context directory)?', false)
+
+        if (showAdvanced) {
+            frameworkConfig = await selectFramework(false)
+            contextPath = await selectContextDirectory(false)
+        } else {
+            frameworkConfig = { enabled: false }
+        }
+    } else {
+        frameworkConfig = await selectFramework(simpleMode || autoMode)
+        contextPath = await selectContextDirectory(simpleMode || autoMode)
+    }
+
+>>>>>>> 5881bba (updates 2025-12-01)
     // Generate standards.md file
     await generateStandardsFile({
         projectDir,
