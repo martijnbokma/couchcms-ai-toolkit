@@ -19,7 +19,7 @@ import { handleError } from './utils.js';
  */
 function parseArgs() {
     const args = process.argv.slice(2);
-
+    
     if (args.includes('--help') || args.includes('-h')) {
         showHelp();
         process.exit(0);
@@ -29,8 +29,8 @@ function parseArgs() {
     const skipChangelog = args.includes('--skip-changelog');
     const dryRun = args.includes('--dry-run');
     const auto = args.includes('--auto') || version === null;
-    const bumpType = args.includes('--major') ? 'major' :
-                     args.includes('--minor') ? 'minor' :
+    const bumpType = args.includes('--major') ? 'major' : 
+                     args.includes('--minor') ? 'minor' : 
                      args.includes('--patch') ? 'patch' : null;
 
     return { version, skipChangelog, dryRun, auto, bumpType };
@@ -111,10 +111,10 @@ function updatePackageVersion(version) {
     const packagePath = 'package.json';
     const packageJson = JSON.parse(readFileSync(packagePath, 'utf8'));
     const oldVersion = packageJson.version;
-
+    
     packageJson.version = version;
     writeFileSync(packagePath, JSON.stringify(packageJson, null, 4) + '\n');
-
+    
     return oldVersion;
 }
 
@@ -139,7 +139,7 @@ function parseVersion(version) {
  */
 function bumpVersion(currentVersion, bumpType) {
     const { major, minor, patch } = parseVersion(currentVersion);
-
+    
     switch (bumpType) {
         case 'major':
             return `${major + 1}.0.0`;
@@ -158,13 +158,16 @@ function bumpVersion(currentVersion, bumpType) {
 async function getCommitsSinceLastTag() {
     try {
         // Get last tag
-        const lastTag = (await $`git describe --tags --abbrev=0`.quiet()).stdout.toString().trim();
+        const lastTagResult = await $`git describe --tags --abbrev=0`;
+        const lastTag = lastTagResult.stdout.toString().trim();
         // Get commits since last tag
-        const commits = (await $`git log ${lastTag}..HEAD --pretty=format:"%s"`.quiet()).stdout.toString().trim();
+        const commitsResult = await $`git log ${lastTag}..HEAD --pretty=format:"%s"`;
+        const commits = commitsResult.stdout.toString().trim();
         return commits.split('\n').filter(c => c);
     } catch {
         // No tags yet, get all commits
-        const commits = (await $`git log --pretty=format:"%s"`.quiet()).stdout.toString().trim();
+        const commitsResult = await $`git log --pretty=format:"%s"`;
+        const commits = commitsResult.stdout.toString().trim();
         return commits.split('\n').filter(c => c);
     }
 }
@@ -179,19 +182,19 @@ function determineBumpType(commits) {
 
     commits.forEach(commit => {
         const lower = commit.toLowerCase();
-
+        
         // Check for breaking changes
-        if (lower.includes('breaking change') ||
+        if (lower.includes('breaking change') || 
             lower.includes('breaking:') ||
             commit.includes('!:')) {
             hasBreaking = true;
         }
-
+        
         // Check for features
         if (lower.startsWith('feat:') || lower.startsWith('feature:')) {
             hasFeat = true;
         }
-
+        
         // Check for fixes
         if (lower.startsWith('fix:')) {
             hasFix = true;
@@ -217,7 +220,7 @@ function determineBumpType(commits) {
 async function autoDetectVersion(forceBumpType = null) {
     const currentVersion = getCurrentVersion();
     const commits = await getCommitsSinceLastTag();
-
+    
     if (commits.length === 0) {
         console.log('⚠️  No commits since last tag. Using patch bump.');
         return bumpVersion(currentVersion, 'patch');
@@ -225,13 +228,13 @@ async function autoDetectVersion(forceBumpType = null) {
 
     const bumpType = forceBumpType || determineBumpType(commits);
     const newVersion = bumpVersion(currentVersion, bumpType);
-
+    
     console.log(`📊 Version Analysis:`);
     console.log(`   Current: ${currentVersion}`);
     console.log(`   Commits: ${commits.length}`);
     console.log(`   Bump type: ${bumpType}`);
     console.log(`   New version: ${newVersion}\n`);
-
+    
     return newVersion;
 }
 
@@ -269,7 +272,7 @@ function categorizeCommits(commits) {
 async function updateChangelog(version) {
     const changelogPath = 'CHANGELOG.md';
     const today = new Date().toISOString().split('T')[0];
-
+    
     let changelog = '';
     try {
         changelog = readFileSync(changelogPath, 'utf8');
@@ -319,7 +322,7 @@ async function updateChangelog(version) {
     }
 
     // If no categorized commits, add a generic entry
-    if (categories.added.length === 0 && categories.changed.length === 0 &&
+    if (categories.added.length === 0 && categories.changed.length === 0 && 
         categories.fixed.length === 0 && categories.other.length === 0) {
         newEntry += '### Changed\n- Version bump and improvements\n\n';
     }
@@ -331,7 +334,7 @@ async function updateChangelog(version) {
 
     lines.splice(insertIndex, 0, newEntry);
     writeFileSync(changelogPath, lines.join('\n'));
-
+    
     console.log('   ✅ CHANGELOG.md auto-generated from commits');
 }
 
@@ -346,16 +349,16 @@ async function quickRelease(version, options) {
 
     // Check if we're in a git repository
     try {
-        await $`git rev-parse --git-dir`.quiet();
+        await $`git rev-parse --git-dir`;
     } catch {
         throw new Error('Not a git repository. Run this from the project root.');
     }
 
     // Check for uncommitted changes
-    const status = await $`git status --porcelain`.quiet();
-    if (status.stdout.toString().trim()) {
+    const statusResult = await $`git status --porcelain`;
+    if (statusResult.stdout.toString().trim()) {
         console.log('⚠️  You have uncommitted changes:');
-        console.log(status.stdout.toString());
+        console.log(statusResult.stdout.toString());
         console.log('\nPlease commit or stash them first.\n');
         process.exit(1);
     }
@@ -389,35 +392,36 @@ async function quickRelease(version, options) {
 
     // Step 3: Commit changes
     console.log('💾 Step 3: Committing changes...');
-    await $`git add package.json CHANGELOG.md`.quiet();
-    await $`git commit -m "chore: Release v${version}"`.quiet();
+    await $`git add package.json CHANGELOG.md`;
+    await $`git commit -m "chore: Release v${version}"`;
     console.log('   ✅ Changes committed\n');
 
     // Step 4: Merge to master
     console.log('🔀 Step 4: Merging to master...');
-    const currentBranch = (await $`git rev-parse --abbrev-ref HEAD`.quiet()).stdout.toString().trim();
-
+    const currentBranchResult = await $`git rev-parse --abbrev-ref HEAD`;
+    const currentBranch = currentBranchResult.stdout.toString().trim();
+    
     // Check if master or main exists
     let mainBranch = 'main';
     try {
-        await $`git rev-parse --verify main`.quiet();
+        await $`git rev-parse --verify main`;
     } catch {
         try {
-            await $`git rev-parse --verify master`.quiet();
+            await $`git rev-parse --verify master`;
             mainBranch = 'master';
         } catch {
             throw new Error('Neither main nor master branch exists');
         }
     }
-
-    await $`git checkout ${mainBranch}`.quiet();
-    await $`git merge ${currentBranch} --no-ff -m "Merge release v${version}"`.quiet();
+    
+    await $`git checkout ${mainBranch}`;
+    await $`git merge ${currentBranch} --no-ff -m "Merge release v${version}"`;
     console.log(`   ✅ Merged to ${mainBranch}\n`);
 
     // Step 5: Create and push tag
     console.log('🏷️  Step 5: Creating tag...');
     const tagName = `v${version}`;
-
+    
     // Check if tag already exists
     try {
         await $`git rev-parse ${tagName}`;
@@ -430,8 +434,8 @@ async function quickRelease(version, options) {
 
     // Step 6: Push master and tag
     console.log('📤 Step 6: Pushing to remote...');
-    await $`git push origin ${mainBranch}`.quiet();
-
+    await $`git push origin ${mainBranch}`;
+    
     // Check if tag exists on remote before pushing
     try {
         await $`git ls-remote --tags origin ${tagName}`;
@@ -441,15 +445,51 @@ async function quickRelease(version, options) {
         await $`git push origin ${tagName}`;
         console.log(`   ✅ Pushed tag ${tagName}\n`);
     }
-
+    
     console.log(`   ✅ Pushed ${mainBranch}\n`);
 
     // Step 7: Merge back to develop
     console.log('🔀 Step 7: Merging back to develop...');
-    await $`git checkout develop`.quiet();
-    await $`git merge ${mainBranch} --no-ff -m "Merge release v${version} back to develop"`.quiet();
-    await $`git push origin develop`.quiet();
-    console.log('   ✅ Merged back to develop\n');
+    try {
+        await $`git checkout develop`;
+    } catch (error) {
+        throw new Error(`Failed to checkout develop branch: ${error.message}`);
+    }
+    
+    // Check if develop is already up to date
+    try {
+        await $`git merge ${mainBranch} --no-ff -m "Merge release v${version} back to develop"`;
+        console.log('   ✅ Merged back to develop\n');
+    } catch (error) {
+        // Check if it's a merge conflict
+        const statusResult = await $`git status --porcelain`;
+        const statusOutput = statusResult.stdout.toString();
+        if (statusOutput.includes('UU') || statusOutput.includes('both modified')) {
+            console.log('   ⚠️  Merge conflicts detected!\n');
+            console.log('   Please resolve conflicts manually:');
+            console.log('   1. Fix conflicts in the files listed above');
+            console.log('   2. Run: git add .');
+            console.log(`   3. Run: git commit -m "Merge release v${version} back to develop"`);
+            console.log('   4. Run: git push origin develop\n');
+            throw new Error('Merge conflicts detected. Please resolve manually.');
+        } else if (error.message.includes('Already up to date') || error.stderr?.toString().includes('Already up to date')) {
+            console.log('   ℹ️  Develop is already up to date with master\n');
+        } else {
+            throw error;
+        }
+    }
+    
+    try {
+        await $`git push origin develop`;
+        console.log('   ✅ Pushed develop to remote\n');
+    } catch (error) {
+        // If push fails, it might be because there's nothing to push
+        if (error.message.includes('Everything up-to-date') || error.stderr?.toString().includes('Everything up-to-date')) {
+            console.log('   ℹ️  Develop is already up to date on remote\n');
+        } else {
+            throw error;
+        }
+    }
 
     // Done!
     console.log('🎉 Release v' + version + ' complete!\n');
@@ -458,7 +498,7 @@ async function quickRelease(version, options) {
     console.log(`  ✅ Tag created: v${version}`);
     console.log(`  ✅ Pushed to ${mainBranch}`);
     console.log('  ✅ Merged back to develop\n');
-
+    
     console.log('Next steps:');
     console.log('  1. Check GitHub releases: https://github.com/martijnbokma/couchcms-ai-toolkit/releases');
     console.log('  2. Verify the tag: git tag -l');
@@ -471,13 +511,13 @@ async function quickRelease(version, options) {
 async function main() {
     try {
         const { version, skipChangelog, dryRun, auto, bumpType } = parseArgs();
-
+        
         // Determine version
         let finalVersion = version;
         if (auto || !version) {
             finalVersion = await autoDetectVersion(bumpType);
         }
-
+        
         await quickRelease(finalVersion, { skipChangelog, dryRun });
         process.exit(0);
     } catch (error) {
