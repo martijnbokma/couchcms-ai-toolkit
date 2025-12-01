@@ -5,7 +5,7 @@
  * Shared utilities for toolkit scripts
  */
 
-import { existsSync, readFileSync, mkdirSync, copyFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { join, dirname, resolve } from 'path'
 import matter from 'gray-matter'
 
@@ -74,7 +74,6 @@ export function findConfigFile(projectDir) {
 
     for (const oldLoc of oldLocations) {
         if (existsSync(oldLoc.path)) {
-<<<<<<< HEAD
             // Only show warning once per process to avoid duplicate messages
             if (!migrationWarningShown) {
                 console.warn(`\n⚠️  Found configuration in old location: ${oldLoc.name}`)
@@ -83,23 +82,6 @@ export function findConfigFile(projectDir) {
                 console.warn(`   \n   mv ${oldLoc.name} .project/standards.md\n`)
                 migrationWarningShown = true
             }
-            // Auto-migrate: copy to .project/standards.md if it doesn't exist
-            const targetPath = join(projectDir, '.project', 'standards.md')
-            if (!existsSync(targetPath)) {
-                const targetDir = join(projectDir, '.project')
-                if (!existsSync(targetDir)) {
-                    mkdirSync(targetDir, { recursive: true })
-                }
-                copyFileSync(oldLoc.path, targetPath)
-                console.log(`✅ Auto-migrated: ${oldLoc.name} → .project/standards.md`)
-                return targetPath
-            }
-=======
-            console.warn(`\n⚠️  Found configuration in old location: ${oldLoc.name}`)
-            console.warn(`   The toolkit now uses .project/standards.md as the standard location.`)
-            console.warn(`   Please move your configuration file:`)
-            console.warn(`   \n   mv ${oldLoc.name} .project/standards.md\n`)
->>>>>>> eb63280 (updates 2025-12-01)
             // Still return the old path for now to maintain compatibility
             // But warn user to migrate
             return oldLoc.path
