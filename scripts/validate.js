@@ -13,6 +13,7 @@ import { dirname, resolve, join } from 'path'
 import { fileURLToPath } from 'url'
 import { findConfigFile, loadConfig, getConfigFileName, findProjectFile, resolveToolkitPath } from './utils/utils.js'
 import { validateConfiguration } from './lib/config-validator.js'
+import { checkAndInstallDependencies } from './lib/dependency-checker.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -83,6 +84,14 @@ async function validate() {
     } else {
         console.log(`🛠️  Toolkit: ${toolkitPath}`)
 
+        // Check and install dependencies if needed
+        try {
+            await checkAndInstallDependencies(toolkitPath)
+        } catch (error) {
+            warnings.push(`Dependency check failed: ${error.message}`)
+            score -= 5
+        }
+
         // Check for required files
         const requiredFiles = ['modules', 'agents', 'scripts/sync.js']
         for (const file of requiredFiles) {
@@ -91,11 +100,11 @@ async function validate() {
                 score -= 10
             }
         }
-        
+
         // Run enhanced configuration validation
         console.log('🔍 Running enhanced validation...')
         const validation = validateConfiguration(config, toolkitPath, projectDir)
-        
+
         if (validation.errors.length > 0) {
             console.log('\n❌ Editor Configuration Errors:\n')
             validation.errors.forEach(err => {
@@ -104,7 +113,7 @@ async function validate() {
                 score -= 10
             })
         }
-        
+
         if (validation.warnings.length > 0) {
             console.log('\n⚠️  Editor Configuration Warnings:\n')
             validation.warnings.forEach(warn => {

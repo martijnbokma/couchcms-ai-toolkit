@@ -12,7 +12,7 @@
 import { existsSync, readFileSync } from 'fs'
 import { resolve, dirname, basename, join } from 'path'
 import { fileURLToPath } from 'url'
-import { findConfigFile, getConfigFileName, handleError } from './utils/utils.js'
+import { findConfigFile, getConfigFileName, handleError, resolveToolkitPath } from './utils/utils.js'
 import { prompt, confirm } from './lib/prompts.js'
 import {
     determineConfigPath,
@@ -21,6 +21,16 @@ import {
     cleanGeneratedFiles
 } from './lib/config-generator.js'
 import { runInitialSync, displaySuccessMessage } from './lib/sync-runner.js'
+import { checkAndInstallDependencies } from './lib/dependency-checker.js'
+import { detectToolkitPath } from './lib/toolkit-detector.js'
+import {
+    isFirstTimeUser,
+    showWelcomeMessage,
+    showConceptExplanation,
+    showProgress,
+    getConceptExplanation,
+    showSummary
+} from './lib/onboarding.js'
 import yaml from 'yaml'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -33,7 +43,7 @@ const TOOLKIT_ROOT = resolve(__dirname, '..')
  */
 function loadPresets() {
     const presetsPath = join(TOOLKIT_ROOT, 'presets.yaml')
-    
+
     if (!existsSync(presetsPath)) {
         return {}
     }
@@ -49,11 +59,16 @@ function loadPresets() {
 
 /**
  * Ask user about their project in simple terms
+ * @param {boolean} isFirstTime - Whether this is a first-time user
  * @returns {Promise<Object>} Project information
  */
-async function gatherProjectInfo() {
+async function gatherProjectInfo(isFirstTime) {
+    showProgress(1, 5, 'Project Information')
     console.log('\n📝 Tell me about your project\n')
-    console.log('Just answer a few simple questions...\n')
+
+    if (isFirstTime) {
+        console.log('Just answer a few simple questions...\n')
+    }
 
     // Question 1: Project name
     const projectName = await prompt('What is your project called?', 'my-project')
@@ -64,15 +79,22 @@ async function gatherProjectInfo() {
     const projectDescription = await prompt('Project description', 'A CouchCMS web application')
 
     // Question 3: Project type
-    console.log('\n🎯 What type of project are you building?\n')
-    console.log('  1. Landing Page - Simple website with a few pages')
+    console.log('\n🎯 What type of project are you building?')
+    if (isFirstTime) {
+        const explain = await prompt('(Type "?" for explanation, or choose 1-7)', '')
+        if (explain === '?') {
+            showConceptExplanation('project type', getConceptExplanation('project type') || '')
+            return gatherProjectInfo(isFirstTime) // Restart this question
+        }
+    }
+    console.log('\n  1. Landing Page - Simple website with a few pages')
     console.log('  2. Blog - Blog with articles and comments')
     console.log('  3. Portfolio - Showcase your work')
     console.log('  4. Web Application - Full app with user accounts')
     console.log('  5. E-commerce - Online store')
     console.log('  6. Documentation - Documentation site')
     console.log('  7. Other - I\'ll configure it myself')
-    
+
     const typeChoice = await prompt('\nChoice [1-7]', '1')
     const projectTypes = {
         '1': 'landing-page',
@@ -91,10 +113,19 @@ async function gatherProjectInfo() {
 /**
  * Ask about technologies in simple terms
  * @param {string} projectType - Selected project type
+ * @param {boolean} isFirstTime - Whether this is a first-time user
  * @returns {Promise<Object>} Technology selections
  */
-async function gatherTechnologyInfo(projectType) {
-    console.log('\n🛠️  Which technologies do you want to use?\n')
+async function gatherTechnologyInfo(projectType, isFirstTime) {
+    console.log('\n🛠️  Which technologies do you want to use?')
+    if (isFirstTime) {
+        const explain = await prompt('(Type "?" for explanation, or continue)', '')
+        if (explain === '?') {
+            showConceptExplanation('styling framework', getConceptExplanation('styling framework') || '')
+            showConceptExplanation('interactivity', getConceptExplanation('interactivity') || '')
+        }
+    }
+    console.log()
 
     // Load preset for this project type
     const presets = loadPresets()
@@ -104,9 +135,9 @@ async function gatherTechnologyInfo(projectType) {
         console.log(`Based on your project type (${preset.name}), I recommend:\n`)
         console.log(`  Modules: ${preset.modules.join(', ')}`)
         console.log(`  Agents: ${preset.agents.join(', ')}\n`)
-        
+
         const useRecommended = await confirm('Use these recommended settings?', true)
-        
+
         if (useRecommended) {
             return {
                 modules: preset.modules,
@@ -124,7 +155,7 @@ async function gatherTechnologyInfo(projectType) {
     console.log('  1. TailwindCSS only')
     console.log('  2. TailwindCSS + daisyUI (recommended)')
     console.log('  3. None - I\'ll use custom CSS')
-    
+
     const stylingChoice = await prompt('\nChoice [1-3]', '2')
     const useTailwind = stylingChoice !== '3'
     const useDaisyUI = stylingChoice === '2'
@@ -135,7 +166,7 @@ async function gatherTechnologyInfo(projectType) {
     console.log('  2. Alpine.js + TypeScript (for complex apps)')
     console.log('  3. HTMX (for server-side interactions)')
     console.log('  4. None - Static site')
-    
+
     const interactivityChoice = await prompt('\nChoice [1-4]', '1')
     const useAlpine = ['1', '2'].includes(interactivityChoice)
     const useTypeScript = interactivityChoice === '2'
@@ -158,7 +189,7 @@ async function gatherTechnologyInfo(projectType) {
         'comments',
         'users'
     ]
-    
+
     // Add frontend frameworks based on user choice
     if (useTailwind) modules.push('tailwindcss')
     if (useDaisyUI) modules.push('daisyui')
@@ -186,7 +217,7 @@ async function gatherTechnologyInfo(projectType) {
         'on-page-editing',
         'admin-panel-theming'
     ]
-    
+
     // Add frontend framework agents based on user choice
     if (useTailwind) agents.push('tailwindcss')
     if (useAlpine) agents.push('alpinejs')
@@ -234,11 +265,15 @@ async function checkExistingConfig(projectDir) {
  * @returns {Promise<void>}
  */
 async function main() {
-    console.log('✨ CouchCMS AI Toolkit - Simple Standards Creator\n')
-    console.log('This wizard will help you create a standards.md file')
-    console.log('by asking simple questions about your project.\n')
-
     const projectDir = process.cwd()
+    const isFirstTime = isFirstTimeUser(projectDir)
+
+    if (isFirstTime) {
+        showWelcomeMessage()
+    } else {
+        console.log('✨ CouchCMS AI Toolkit - Simple Standards Creator\n')
+        console.log('Updating your existing configuration...\n')
+    }
 
     // Check for existing config
     const shouldContinue = await checkExistingConfig(projectDir)
@@ -247,29 +282,50 @@ async function main() {
     }
 
     // Gather project information
-    const projectInfo = await gatherProjectInfo()
+    const projectInfo = await gatherProjectInfo(isFirstTime)
 
     // Gather technology information
-    const techInfo = await gatherTechnologyInfo(projectInfo.projectType)
+    showProgress(2, 5, 'Technology Selection')
+    const techInfo = await gatherTechnologyInfo(projectInfo.projectType, isFirstTime)
 
-    // Determine toolkit path
-    const toolkitDirName = basename(TOOLKIT_ROOT)
-    const toolkitPath = `./${toolkitDirName}`
+    // Determine toolkit path - auto-detect first
+    let toolkitPath = detectToolkitPath(projectDir)
+
+    // Fallback to default if auto-detection failed
+    if (!toolkitPath) {
+        const toolkitDirName = basename(TOOLKIT_ROOT)
+        toolkitPath = `./${toolkitDirName}`
+    }
+
+    if (toolkitPath && toolkitPath !== './ai-toolkit-shared') {
+        console.log(`\n📦 Toolkit location (auto-detected): ${toolkitPath}`)
+    }
+
+    // Resolve absolute toolkit path and check dependencies
+    const resolvedToolkitPath = resolveToolkitPath(toolkitPath, projectDir, TOOLKIT_ROOT)
+    try {
+        await checkAndInstallDependencies(resolvedToolkitPath)
+    } catch (error) {
+        console.error(`\n❌ ${error.message}\n`)
+        process.exit(1)
+    }
 
     // Use simple config path (.project/standards.md)
     const { configPath, configDir } = await determineConfigPath(projectDir, true)
 
     // Show summary
-    console.log('\n📋 Summary:\n')
-    console.log(`  Project: ${projectInfo.projectName}`)
-    console.log(`  Description: ${projectInfo.projectDescription}`)
-    console.log(`  Type: ${projectInfo.projectType}`)
-    console.log(`  Modules: ${techInfo.modules.join(', ')}`)
-    console.log(`  Agents: ${techInfo.agents.join(', ')}`)
-    console.log(`  Framework: ${techInfo.framework.enabled ? 'Enabled' : 'Disabled'}`)
-    console.log(`  Config: ${configPath}\n`)
+    showProgress(4, 5, 'Review Configuration')
+    showSummary({
+        projectName: projectInfo.projectName,
+        projectDescription: projectInfo.projectDescription,
+        projectType: projectInfo.projectType,
+        configPath: configPath,
+        modules: techInfo.modules,
+        agents: techInfo.agents,
+        framework: techInfo.framework.enabled
+    })
 
-    const confirmed = await confirm('Create standards.md with these settings?', true)
+    const confirmed = await confirm('\nCreate standards.md with these settings?', true)
 
     if (!confirmed) {
         console.log('\n❌ Cancelled\n')
@@ -277,6 +333,7 @@ async function main() {
     }
 
     // Generate standards.md file
+    showProgress(5, 5, 'Generating Configuration')
     await generateStandardsFile({
         projectDir,
         configPath,

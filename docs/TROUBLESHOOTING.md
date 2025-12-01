@@ -1,381 +1,205 @@
 # Troubleshooting Guide
 
-**Navigation:** [← Documentation Index](README.md) | [← Main README](../README.md) | [Getting Started](GETTING-STARTED.md) | [Quick Start](QUICK-START.md)
+**Navigation:** [← Documentation Index](README.md) | [← Main README](../README.md) | [Getting Started](GETTING-STARTED.md) | [Quick Start](QUICK-START.md) | [Glossary](GLOSSARY.md)
 
 Common issues and solutions for the CouchCMS AI Toolkit.
 
-> [!TIP]
-> **Most Common Issue**
-> 
-> **"Cannot find module" or "ENOENT" errors?** You likely forgot to install the toolkit's dependencies. After adding the submodule, always run:
-> 
-> ```bash
-> cd ai-toolkit-shared
-> bun install  # or: npm install
-> cd ..
-> ```
-> 
-> See [Sync Issues](#sync-issues) below for details.
+## Table of Contents
+
+- [Quick Diagnostics](#quick-diagnostics)
+- [Most Common Issues](#most-common-issues)
+  - [Dependencies Not Installed](#dependencies-not-installed)
+  - [Configuration File Missing](#configuration-file-missing)
+  - [YAML Syntax Errors](#yaml-syntax-errors)
+- [Setup & Installation](#setup--installation)
+  - [Toolkit Path Issues](#toolkit-path-issues)
+  - [Git Submodule Issues](#git-submodule-issues)
+- [Configuration Problems](#configuration-problems)
+  - [Module/Agent Not Found](#moduleagent-not-found)
+  - [Invalid Module/Agent Names](#invalid-moduleagent-names)
+- [Sync & Generation](#sync--generation)
+  - [Sync Fails](#sync-fails)
+  - [Generated Files Missing](#generated-files-missing)
+- [Editor Integration](#editor-integration)
+  - [Cursor Issues](#cursor-issues)
+  - [Claude Code Issues](#claude-code-issues)
+- [Performance](#performance)
+- [Getting More Help](#getting-more-help)
+
+---
 
 ## Quick Diagnostics
 
-Start here:
+Run these commands to quickly identify issues:
 
 ```bash
-# Run validation to identify issues
+# 1. Validate configuration
 bun ai-toolkit-shared/scripts/validate.js
 
-# Check if toolkit dependencies are installed
-cd ai-toolkit-shared && bun install --dry-run && cd ..
+# 2. Check dependencies
+cd ai-toolkit-shared && test -d node_modules && echo "✓ Dependencies installed" || echo "✗ Run: bun install" && cd ..
 
-# Verify configuration file exists and is readable
-test -f standards.md && echo "✓ standards.md found" || echo "✗ standards.md missing"
+# 3. Check configuration file
+test -f .project/standards.md && echo "✓ Config found" || echo "✗ Config missing - run: bun ai-toolkit-shared/scripts/create-standards.js"
 
-# Check if generated files exist
-ls -la .cursorrules CLAUDE.md AGENTS.md 2>/dev/null || echo "Generated files missing - run sync"
-
-# Quick syntax check for YAML frontmatter
-head -20 standards.md | grep -A 20 "^---$" | head -19 | tail -18 | bun -e "console.log(require('yaml').parse(require('fs').readFileSync(0, 'utf8')))" 2>/dev/null && echo "✓ YAML syntax valid" || echo "✗ YAML syntax error"
-```yaml
+# 4. Check generated files
+ls -la .cursorrules CLAUDE.md AGENTS.md 2>/dev/null && echo "✓ Files exist" || echo "✗ Run: bun ai-toolkit-shared/scripts/sync.js"
+```
 
 The validation output will point you to specific problems.
 
-📖 **Upgrading from old format?** See [Migration Guide](MIGRATION.md) for migration-specific troubleshooting.
-
 ---
 
-## Validation Issues
+## Most Common Issues
 
-### ❌ "No configuration file found"
+### Dependencies Not Installed
 
-**Problem**: No configuration file (`standards.md`) exists.
+**Symptoms:**
+- `Cannot find module 'gray-matter'`
+- `npm ERR! code ENOENT`
+- `Error: Cannot resolve module`
 
-**Solution**:
+**Solution:**
 
-```bash
-# Run setup wizard to create configuration
-
-
-> [!WARNING]
-> **Critical Step**
-> 
-> You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
-> 
-> ```bash
-> cd ai-toolkit-shared
-> bun install  # or: npm install
-> cd ..
-> ```
-> 
-> This installs the required packages:
-> - `gray-matter` - YAML frontmatter parsing
-> - `yaml` - YAML processing
-> - `handlebars` - Template generation
-
-bun ai-toolkit-shared/scripts/init.js
-```
-
-Or create manually following [GETTING-STARTED.md](GETTING-STARTED.md).
-
----
-
-### ❌ "Invalid YAML syntax"
-
-**Problem**: Syntax error in `standards.md` YAML frontmatter.
-
-**Common causes**:
-
-- Missing quotes around values with special characters
-- Incorrect indentation (must use spaces, not tabs)
-- Missing colons after keys
-- Trailing commas
-- Mixed tabs and spaces
-
-**Solution**:
-
-```bash
-# Check your standards.md syntax
-cat standards.md
-
-# Look for these issues:
-# - name: my-project     ✓ Good
-# - name my-project       ✗ Missing colon
-# - name: "my-project"   ✓ Good (quotes optional for simple strings)
-# - name: "it's mine"    ✓ Good (quotes required for apostrophes)
-```yaml
-
-**❌ Wrong YAML examples**:
-
-```yaml
----
-name my-project              # ✗ Missing colon
-description: it's mine       # ✗ Unquoted apostrophe
-toolkit: ai-toolkit-shared   # ✗ Missing ./
-modules:
-- couchcms-core,             # ✗ Trailing comma
-	- tailwindcss            # ✗ Mixed tabs and spaces
----
-```
-
-**✅ Correct YAML example (standards.md frontmatter)**:
-
-```yaml
----
-name: 'my-project'           # ✓ Quoted string
-description: "it's mine"     # ✓ Quoted apostrophe
-toolkit: './ai-toolkit-shared'  # ✓ Proper path
-modules:                     # ✓ Consistent indentation
-    - couchcms-core         # ✓ No trailing comma
-    - tailwindcss           # ✓ Spaces only
----
-```yaml
-
-**✅ Correct YAML example (standards.md frontmatter)**:
-
-```yaml
----
-name: 'my-project'           # ✓ Quoted string
-description: "it's mine"     # ✓ Quoted apostrophe
-toolkit: './ai-toolkit-shared'  # ✓ Proper path
-modules:                     # ✓ Consistent indentation
-    - couchcms-core         # ✓ No trailing comma
-    - tailwindcss           # ✓ Spaces only
----
-```yaml
-
----
-
-### ⚠️ "Module 'X' not found"
-
-**Problem**: Referenced module doesn't exist in toolkit.
-
-**Solution**:
-
-```bash
-# 1. Check available modules
-ls ai-toolkit-shared/modules/
-
-# Available modules:
-# - couchcms-core.md
-# - tailwindcss.md
-# - daisyui.md
-# - alpinejs.md
-# - typescript.md
-# - databound-forms.md
-
-# 2. Compare your modules list with available modules
-echo "=== Your configured modules ==="
-grep -A 20 "^modules:" standards.md | grep "^  - " | sed 's/^  - //'
-echo "=== Available modules ==="
-ls ai-toolkit-shared/modules/*.md | sed 's/.*\///' | sed 's/\.md$//'
-
-# 3. Fix typo in standards.md
-# Wrong: - tailwind
-# Right: - tailwindcss
-
-# 4. Update toolkit if module is new
-cd ai-toolkit-shared
-git pull origin master
-cd ..
-
-# 5. Verify fix worked
-bun ai-toolkit-shared/scripts/validate.js | grep -i module
-```
-
----
-
-### ⚠️ "Agent 'X' not found"
-
-**Problem**: Referenced agent doesn't exist in toolkit.
-
-**Solution**:
-
-```bash
-# 1. Check available agents
-ls ai-toolkit-shared/agents/
-
-# 2. Compare your agents list with available agents
-echo "=== Your configured agents ==="
-grep -A 20 "^agents:" standards.md | grep "^  - " | sed 's/^  - //' || echo "No agents configured"
-echo "=== Available agents ==="
-ls ai-toolkit-shared/agents/*.md | sed 's/.*\///' | sed 's/\.md$//'
-
-# 3. Fix typo in standards.md
-# Example: Change 'couchcms-core' to 'couchcms'
-
-# 4. Update toolkit if agent is new
-cd ai-toolkit-shared && git pull origin master && cd ..
-
-# 5. Verify fix worked
-bun ai-toolkit-shared/scripts/validate.js | grep -i agent
-```yaml
-
----
-
-### ⚠️ "Toolkit path not found"
-
-**Problem**: Toolkit directory doesn't exist at specified path.
-
-**Solution**:
-
-```bash
-# Check your standards.md toolkit path
-grep "toolkit:" .project/standards.md
-
-# For submodule:
-toolkit: "./ai-toolkit-shared"  # ✓ Correct
-
-# For home directory:
-toolkit: "~/couchcms-ai-toolkit"  # ✓ Correct
-
-# Common mistakes:
-toolkit: "./ai-toolkit"  # ✗ Wrong directory name
-toolkit: "ai-toolkit-shared"  # ✗ Missing ./
-
-# If submodule exists but toolkit not found:
-git submodule update --init --recursive
-```
-
----
-
-### ⚠️ "Generated files not found"
-
-**Problem**: `.cursorrules`, `CLAUDE.md`, or `AGENTS.md` missing.
-
-**Solution**:
-
-```bash
-# Simply run sync to generate them
-bun ai-toolkit-shared/scripts/sync.js
-```yaml
-
----
-
-## Migration Issues
-
-### ⚠️ "Upgrading from old version"
-
-**Problem**: You have old configuration files from pre-v2.0 versions.
-
-**Solution**:
-
-```bash
-# 1. Check for old configuration files
-ls -la config.yaml defaults.yaml smart-defaults.yaml preflight-checks.yaml 2>/dev/null && echo "Old config files found" || echo "No old config files"
-
-# 2. Backup old files before migration
-mkdir -p .backup/$(date +%Y%m%d)
-cp config.yaml defaults.yaml smart-defaults.yaml preflight-checks.yaml .backup/$(date +%Y%m%d)/ 2>/dev/null || echo "No old files to backup"
-
-# 3. Run migration helper (if available)
-test -f ai-toolkit-shared/scripts/migrate.js && bun ai-toolkit-shared/scripts/migrate.js || echo "Manual migration required"
-
-# 4. Verify migration worked
-bun ai-toolkit-shared/scripts/validate.js
-
-# 5. Clean up old files after successful migration
-# rm config.yaml defaults.yaml smart-defaults.yaml preflight-checks.yaml
-```
-
-See [Migration Guide](MIGRATION.md) for step-by-step instructions on upgrading from very old versions.
-
----
-
-## Sync Issues
-
-### ❌ "npm ERR! code ENOENT"
-
-**Problem**: Toolkit dependencies not installed.
-
-**Solution**:
+The toolkit now automatically checks and installs dependencies. If you still see this error:
 
 ```bash
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```yaml
-
----
-
-### ❌ "Cannot find module 'gray-matter'"
-
-**Problem**: Missing Node.js dependencies.
-
-**Solution**:
-
-```bash
-# Install toolkit dependencies
-cd ai-toolkit-shared
-bun install
-cd ..
-
-# Try sync again
-bun ai-toolkit-shared/scripts/sync.js
 ```
 
+**Prevention:** Dependencies are now automatically installed when you run any script.
+
+**See also:** [Sync Issues](#sync-fails)
+
 ---
 
-### ⚠️ "No modules loaded"
+### Configuration File Missing
 
-**Problem**: Empty or missing `modules:` array in `standards.md`.
+**Symptoms:**
+- `No configuration file found`
+- `standards.md not found`
 
-**Solution**:
+**Solution:**
+
+```bash
+# Run setup wizard
+bun ai-toolkit-shared/scripts/create-standards.js
+
+# Or use advanced setup
+bun ai-toolkit-shared/scripts/init.js
+```
+
+**Note:** Configuration file location is now standardized to `.project/standards.md`.
+
+**See also:** [Getting Started](GETTING-STARTED.md)
+
+---
+
+### YAML Syntax Errors
+
+**Symptoms:**
+- `Failed to parse standards.md`
+- `YAML syntax error`
+- Validation fails with YAML errors
+
+**Common Causes:**
+- Missing quotes around values with special characters
+- Incorrect indentation (must use spaces, not tabs)
+- Missing colons after keys
+- Trailing commas in lists
+- Mixed tabs and spaces
+
+**Solution:**
+
+The toolkit now provides specific YAML error messages with line numbers and fix suggestions. Check the error output for:
+- Line number where error occurred
+- Specific issue (missing colon, wrong indentation, etc.)
+- Suggested fix
+
+**Quick Fix Examples:**
 
 ```yaml
-# standards.md must have at least couchcms-core
+# ❌ Wrong
+name my-project              # Missing colon
+description: it's mine      # Unquoted apostrophe
 modules:
-    - couchcms-core # Always required
-```yaml
+- couchcms-core,            # Trailing comma
+	- tailwindcss          # Mixed tabs/spaces
 
----
-
-### ❌ "Sync completed with errors"
-
-**Problem**: Errors during file generation.
-
-**Solution**:
-
-```bash
-# 1. Validate first to find specific issues
-bun ai-toolkit-shared/scripts/validate.js
-
-# 2. Check error messages - they include hints
-# 3. Fix issues in standards.md
-# 4. Run sync again
+# ✅ Correct
+name: 'my-project'          # Quoted string
+description: "it's mine"   # Quoted apostrophe
+modules:                   # Consistent indentation
+    - couchcms-core       # No trailing comma
+    - tailwindcss         # Spaces only
 ```
 
+**See also:** [Glossary - YAML Frontmatter](GLOSSARY.md#yaml-frontmatter)
+
 ---
 
-## Submodule Issues
+## Setup & Installation
 
-### ❌ "Submodule is detached HEAD"
+### Toolkit Path Issues
 
-**Problem**: Git submodule not on a branch.
+**Symptoms:**
+- `Toolkit path not found`
+- `Toolkit directory does not exist`
 
-**Not actually a problem** - this is normal for submodules!
+**Solution:**
 
-But if you want to contribute changes:
+The toolkit now automatically detects the toolkit path. If auto-detection fails:
+
+1. **Check your configuration:**
+   ```bash
+   grep "toolkit:" .project/standards.md
+   ```
+
+2. **Common paths:**
+   ```yaml
+   # For submodule:
+   toolkit: "./ai-toolkit-shared"  # ✓ Correct
+
+   # For home directory:
+   toolkit: "~/couchcms-ai-toolkit"  # ✓ Correct
+   ```
+
+3. **Common mistakes:**
+   ```yaml
+   toolkit: "./ai-toolkit"  # ✗ Wrong directory name
+   toolkit: "ai-toolkit-shared"  # ✗ Missing ./
+   ```
+
+4. **If submodule exists but not found:**
+   ```bash
+   git submodule update --init --recursive
+   ```
+
+---
+
+### Git Submodule Issues
+
+#### Submodule Not Initialized
+
+**Symptoms:**
+- Empty `ai-toolkit-shared/` directory
+- `Toolkit path not found` error
+
+**Solution:**
 
 ```bash
-cd ai-toolkit-shared
+git submodule update --init --recursive
+```
 
-# Switch to master branch
-git checkout master
-git pull origin master
+#### Submodule Has Uncommitted Changes
 
-# Make changes, then:
-git checkout -b feature/my-changes
-```yaml
+**Symptoms:**
+- `Submodule has uncommitted changes` warning
+- Can't update submodule
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for full workflow.
-
----
-
-### ❌ "Submodule has uncommitted changes"
-
-**Problem**: Modified files in submodule.
-
-**Solution**:
+**Solution:**
 
 ```bash
 cd ai-toolkit-shared
@@ -394,13 +218,9 @@ git stash
 cd ..
 ```
 
----
+#### Submodule Update Failed
 
-### ❌ "Submodule update failed"
-
-**Problem**: Can't update submodule.
-
-**Solution**:
+**Solution:**
 
 ```bash
 # Force update
@@ -411,782 +231,250 @@ git submodule deinit -f ai-toolkit-shared
 rm -rf .git/modules/ai-toolkit-shared
 git rm -f ai-toolkit-shared
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
-```yaml
+```
 
 ---
 
-## Configuration Issues
+## Configuration Problems
 
-### ⚠️ "Context file not found"
+### Module/Agent Not Found
 
-**Problem**: Referenced context file doesn't exist.
+**Symptoms:**
+- `Module 'X' not found`
+- `Agent 'X' not found`
+- Validation errors for modules/agents
 
-**Solution**:
+**Solution:**
+
+The toolkit now provides fuzzy matching suggestions. When you see this error:
+
+1. **Check the suggestions** - The error message will show similar names
+2. **Common typos:**
+   - `tailwind` → `tailwindcss`
+   - `alpine` → `alpinejs`
+   - `couchcms-core` (for agent) → `couchcms`
+3. **List available modules/agents:**
+   ```bash
+   bun ai-toolkit-shared/scripts/browse.js
+   ```
+4. **Update standards.md** with the correct name
+5. **Re-run validation:**
+   ```bash
+   bun ai-toolkit-shared/scripts/validate.js
+   ```
+
+---
+
+### Invalid Module/Agent Names
+
+**Problem:** Typos or incorrect names in configuration.
+
+**Common Mistakes:**
+
+```yaml
+# ❌ Wrong module names
+modules:
+  - couchcms           # Should be: couchcms-core
+  - tailwind           # Should be: tailwindcss
+  - alpine             # Should be: alpinejs
+
+# ❌ Wrong agent names
+agents:
+  - couchcms-core      # Should be: couchcms
+  - tailwind           # Should be: tailwindcss
+```
+
+**Correct Names:**
+
+```yaml
+# ✅ Correct
+modules:
+  - couchcms-core
+  - tailwindcss
+  - alpinejs
+
+agents:
+  - couchcms
+  - tailwindcss
+  - alpinejs
+```
+
+**See also:** [Modules](MODULES.md) | [Agents](AGENTS.md)
+
+---
+
+## Sync & Generation
+
+### Sync Fails
+
+**Symptoms:**
+- `Sync completed with errors`
+- `Failed to generate editor configs`
+- Template validation errors
+
+**Solution:**
+
+1. **Run validation first:**
+   ```bash
+   bun ai-toolkit-shared/scripts/validate.js
+   ```
+
+2. **Check error messages** - They now include specific solutions
+
+3. **Common causes:**
+   - Missing dependencies (now auto-installed)
+   - Invalid YAML syntax (now shows line numbers)
+   - Missing template variables (now validated before rendering)
+   - Invalid module/agent names (now suggests corrections)
+
+4. **Fix issues and re-run:**
+   ```bash
+   bun ai-toolkit-shared/scripts/sync.js
+   ```
+
+---
+
+### Generated Files Missing
+
+**Symptoms:**
+- `.cursorrules`, `CLAUDE.md`, or `AGENTS.md` missing
+- Editor not using toolkit rules
+
+**Solution:**
 
 ```bash
-# 1. Check what context path is configured
-grep "^context:" standards.md || echo "No context configured"
-
-# 2. If you specified context in standards.md:
-# context: '.project/ai'
-
-# Create the directory and file:
-mkdir -p .project/ai
-touch .project/ai/context.md
-
-# 3. Add some content to context.md
-echo "# Project Context" > .project/ai/context.md
-echo "" >> .project/ai/context.md
-echo "Add project-specific rules and context here." >> .project/ai/context.md
-
-# 4. Verify the file is accessible
-test -f .project/ai/context.md && echo "✓ Context file created" || echo "✗ Failed to create context file"
-
-# 5. Test sync works with context file
+# Simply run sync to generate them
 bun ai-toolkit-shared/scripts/sync.js
 ```
 
-Or remove the `context:` line from `standards.md` if not needed:
-
-```bash
-# Remove context line from standards.md
-sed -i '/^context:/d' standards.md
-```yaml
-
-**Note:** For most projects, you don't need `context.md`. Just add all rules to the `standards.md` body.
+**Note:** Files are only written if content has changed (performance optimization).
 
 ---
 
-### ⚠️ "Custom path not found"
+## Editor Integration
 
-**Problem**: Custom path configured but directory doesn't exist.
+### Cursor Issues
 
-**Solution**:
+#### Cursor Not Using New Rules
 
-```bash
-# 1. Check your standards.md for custom paths
-grep -E "^(output|context|toolkit):" standards.md
+**Solution:**
 
-# 2. Check which paths are missing
-echo "=== Checking configured paths ==="
-for path in $(grep -E "^(output|context|toolkit):" standards.md | cut -d: -f2 | tr -d ' "'"'"''); do
-    if [ -e "$path" ]; then
-        echo "✓ $path exists"
-    else
-        echo "✗ $path missing"
-    fi
-done
+1. **Hard reload Cursor:**
+   - macOS: `Cmd+Shift+P` → "Developer: Reload Window"
+   - Windows/Linux: `Ctrl+Shift+P` → "Developer: Reload Window"
 
-# 3. Create missing directories:
-mkdir -p path/to/directory
+2. **Verify file was generated:**
+   ```bash
+   ls -la .cursorrules
+   cat .cursorrules | head -20
+   ```
 
-# 4. For common custom paths:
-# Output directory
-mkdir -p .ai-output
+3. **Regenerate if needed:**
+   ```bash
+   rm .cursorrules
+   bun ai-toolkit-shared/scripts/sync.js
+   ```
 
-# Context directory  
-mkdir -p .project/ai
+#### Cursor MDC Rules Not Activating
 
-# Custom toolkit location
-# (Don't create this - fix the path instead)
+**Solution:**
 
-# 5. Verify paths now exist
-bun ai-toolkit-shared/scripts/validate.js | grep -i path
-```
+1. **Check files exist:**
+   ```bash
+   ls -la .cursor/rules/
+   ```
+
+2. **Verify Cursor version:**
+   - MDC rules require Cursor v0.40 or later
+   - Update Cursor if needed
+
+3. **Check glob patterns:**
+   ```bash
+   head -10 .cursor/rules/refactor-alpinejs.mdc
+   ```
+
+4. **Regenerate rules:**
+   ```bash
+   rm -rf .cursor/rules/
+   bun ai-toolkit-shared/scripts/sync.js
+   ```
+
+5. **Restart Cursor completely**
 
 ---
 
-## Performance Issues
+### Claude Code Issues
 
-### 🐌 "Sync is slow"
+#### Claude Code Not Loading Skills
 
-**Problem**: Sync takes longer than expected.
+**Solution:**
+
+1. **Check files exist:**
+   ```bash
+   ls -la .claude/skills/
+   ```
+
+2. **Verify YAML frontmatter:**
+   ```bash
+   head -10 .claude/skills/couchcms-core.md
+   ```
+
+3. **Check Claude Code version:**
+   - Skills require Claude Code v0.5 or later
+
+4. **Regenerate skills:**
+   ```bash
+   rm -rf .claude/skills/
+   bun ai-toolkit-shared/scripts/sync.js
+   ```
+
+5. **Restart Claude Code**
+
+#### Claude Code Settings Not Applied
+
+**Solution:**
+
+1. **Check file exists and is valid JSON:**
+   ```bash
+   cat .claude/settings.json | jq .
+   ```
+
+2. **Verify permissions syntax:**
+   ```json
+   {
+     "permissions": {
+       "allow": ["Bash(npm run *)"],
+       "deny": ["Read(./.env)", "Bash(rm -rf *)"]
+     }
+   }
+   ```
+
+3. **Regenerate settings:**
+   ```bash
+   rm .claude/settings.json
+   bun ai-toolkit-shared/scripts/sync.js
+   ```
+
+4. **Restart Claude Code**
+
+---
+
+## Performance
+
+### Sync is Slow
 
 **Expected Performance:**
 - Small projects (<5 modules): < 1 second
 - Medium projects (5-10 modules): 1-2 seconds
 - Large projects (>10 modules): 2-3 seconds
 
-**Solutions**:
+**Solutions:**
 
-1. **Remove unused modules**
+1. **Remove unused modules** from `standards.md`
+2. **Update toolkit** - performance improvements in newer versions
+3. **Upgrade Bun** - `bun upgrade`
 
-    ```yaml
-    # standards.md - only include modules you actually use
-    modules:
-      - couchcms-core
-      - tailwindcss  # Remove if not using
-    ```
-
-2. **Clear module cache**
-
-    ```bash
-    # If cache is corrupted
-    rm -rf .cache/
-    bun ai-toolkit-shared/scripts/sync.js
-    ```
-
-3. **Update toolkit**
-
-    ```bash
-    cd ai-toolkit-shared
-    git pull origin master
-    bun install
-    cd ..
-    ```
-
-4. **Upgrade Bun**
-    ```bash
-    bun upgrade
-    ```
-
----
-
-### 🐌 "Validation is slow"
-
-**Problem**: Validation takes too long.
-
-**Solution**:
-
-```bash
-# Skip optional checks
-bun ai-toolkit-shared/scripts/validate.js --quick
-```yaml
-
----
-
-## IDE/Editor Issues
-
-### ❌ "Cursor not using new rules"
-
-**Problem**: IDE hasn't reloaded configuration.
-
-**Solution**:
-
-1. **Hard reload Cursor**
-    - macOS: `Cmd+Shift+P` → "Developer: Reload Window"
-    - Windows/Linux: `Ctrl+Shift+P` → "Developer: Reload Window"
-
-2. **Check file was generated**
-
-    ```bash
-    ls -la .cursorrules
-    cat .cursorrules | head -20
-    ```
-
-3. **Regenerate**
-    ```bash
-    rm .cursorrules
-    bun ai-toolkit-shared/scripts/sync.js
-    ```
-
----
-
-### ❌ "Cursor MDC rules not activating"
-
-**Problem**: Context-aware rules in `.cursor/rules/*.mdc` not working.
-
-**Solution**:
-
-1. **Check files exist**
-    ```bash
-    ls -la .cursor/rules/
-    ```
-
-2. **Verify Cursor version**
-    - MDC rules require Cursor v0.40 or later
-    - Update Cursor if needed
-
-3. **Check glob patterns**
-    ```bash
-    # View a rule's patterns
-    head -10 .cursor/rules/refactor-alpinejs.mdc
-    ```
-    
-    Make sure glob patterns match your file types:
-    ```yaml
-    globs:
-      - "**/*.html"  # Matches all HTML files
-      - "**/*.php"   # Matches all PHP files
-    ```
-
-4. **Regenerate rules**
-    ```bash
-    rm -rf .cursor/rules/
-    bun ai-toolkit-shared/scripts/sync.js
-    ```
-
-5. **Restart Cursor**
-    - Close and reopen Cursor completely
-
----
-
-### ❌ "Claude Code not loading skills"
-
-**Problem**: Skills in `.claude/skills/*.md` not being used.
-
-**Solution**:
-
-1. **Check files exist**
-    ```bash
-    ls -la .claude/skills/
-    ```
-
-2. **Verify YAML frontmatter**
-    ```bash
-    # Check a skill file
-    head -10 .claude/skills/couchcms-core.md
-    ```
-    
-    Should have valid frontmatter:
-    ```yaml
-    ---
-    name: couchcms-core
-    description: Core CouchCMS patterns
-    allowed-tools: Read, Write, Bash, Grep
-    ---
-    ```
-
-3. **Check Claude Code version**
-    - Skills require Claude Code v0.5 or later
-    - Update Claude Code if needed
-
-4. **Regenerate skills**
-    ```bash
-    rm -rf .claude/skills/
-    bun ai-toolkit-shared/scripts/sync.js
-    ```
-
-5. **Restart Claude Code**
-
----
-
-### ❌ "Claude Code settings not applied"
-
-**Problem**: Permissions or environment variables in `.claude/settings.json` not working.
-
-**Solution**:
-
-1. **Check file exists and is valid JSON**
-    ```bash
-    cat .claude/settings.json | jq .
-    ```
-
-2. **Verify permissions syntax**
-    
-    **❌ Wrong permissions syntax**:
-    ```json
-    {
-      "permissions": {
-        "allow": "Bash(npm run *)",     // ✗ String instead of array
-        "deny": [
-          "Read .env",                  // ✗ Missing parentheses
-          "Bash rm -rf *"               // ✗ Missing parentheses
-        ]
-      }
-    }
-    ```
-    
-    **✅ Correct permissions syntax**:
-    ```json
-    {
-      "permissions": {
-        "allow": [                      // ✓ Array format
-          "Bash(npm run *)",           // ✓ Proper syntax
-          "Read(~/.config/**)"         // ✓ Glob patterns
-        ],
-        "deny": [
-          "Read(./.env)",              // ✓ Parentheses required
-          "Bash(rm -rf *)"             // ✓ Dangerous commands blocked
-        ]
-      }
-    }
-    ```
-
-3. **Regenerate settings**
-    ```bash
-    rm .claude/settings.json
-    bun ai-toolkit-shared/scripts/sync.js
-    ```
-
-4. **Restart Claude Code**
-
----
-
-### ❌ "Claude not seeing CLAUDE.md"
-
-**Problem**: Claude Desktop doesn't auto-load project files.
-
-**Solution**:
-
-You need to explicitly add CLAUDE.md to your Claude conversation:
-
-1. Open Claude Desktop
-2. 🚀 Start a new conversation
-3. 📝 Click the paperclip icon (attach file)
-4. 📝 Select CLAUDE.md from your project
-
-Or copy key sections into your prompts.
-
-**For Claude Code CLI:**
-- CLAUDE.md is automatically loaded at startup
-- Check file exists: `ls -la CLAUDE.md`
-- Regenerate if needed: `bun ai-toolkit-shared/scripts/sync.js`
-
----
-
-### ❌ "AGENTS.md not showing agents"
-
-**Problem**: AGENTS.md is empty or missing agents.
-
-**Solution**:
-
-1. **Check agents are configured**
-    ```yaml
-    # In standards.md
-    agents:
-      - couchcms
-      - tailwindcss
-    ```
-
-2. **Regenerate**
-    ```bash
-    rm AGENTS.md
-    bun ai-toolkit-shared/scripts/sync.js
-    ```
-
-3. **Verify content**
-    ```bash
-    cat AGENTS.md | head -50
-    ```
-
----
-
-### ❌ "Copilot not respecting instructions"
-
-**Problem**: GitHub Copilot may not fully use `.github/copilot-instructions.md`.
-
-**Note**: Copilot support is experimental. For best results, use Cursor or Claude.
-
----
-
-## CI/CD Issues
-
-### ❌ "GitHub Actions failing"
-
-**Problem**: Validation or sync fails in CI.
-
-**Common causes**:
-
-1. **Submodules not initialized**
-
-    **❌ Wrong GitHub Actions setup**:
-    ```yaml
-    # ✗ Missing submodules
-    - uses: actions/checkout@v3
-    
-    # ✗ Wrong submodule flag
-    - uses: actions/checkout@v3
-      with:
-          submodules: true
-    ```
-
-    **✅ Correct GitHub Actions setup**:
-    ```yaml
-    ```yaml
-    # ✗ Missing submodules
-    - uses: actions/checkout@v3
-    
-    # ✗ Wrong submodule flag
-    - uses: actions/checkout@v3
-      with:
-          submodules: true
-    ```
-
-    **✅ Correct GitHub Actions setup**:
-    ```yaml
-    # ✓ Recursive submodules
-    - uses: actions/checkout@v3
-      with:
-          submodules: recursive # Important!
-    ```
-
-2. **Dependencies not installed**
-
-    **❌ Wrong dependency installation**:
-    ```yaml
-    # ✗ Missing cd command
-    - name: Install dependencies
-      run: bun install
-    
-    # ✗ Wrong directory
-    - name: Install dependencies  
-      run: cd toolkit && bun install
-    ```
-
-    **✅ Correct dependency installation**:
-    ```yaml
-    ```yaml
-    # ✗ Missing cd command
-    - name: Install dependencies
-      run: bun install
-    
-    # ✗ Wrong directory
-    - name: Install dependencies  
-      run: cd toolkit && bun install
-    ```
-
-    **✅ Correct dependency installation**:
-    ```yaml
-    # ✓ Correct path and cd back
-    - name: Install toolkit dependencies
-      run: cd ai-toolkit-shared && bun install
-    ```
-
-3. **Generated files out of sync**
-
-    **❌ Wrong sync check**:
-    ```yaml
-    # ✗ Missing sync step
-    - name: Check files
-      run: git diff --exit-code .cursorrules
-    
-    # ✗ Wrong file list
-    - name: Check sync
-      run: |
-          bun ai-toolkit-shared/scripts/sync.js
-          git diff --exit-code
-    ```
-
-    **✅ Correct sync check**:
-    ```yaml
-    ```yaml
-    # ✗ Missing sync step
-    - name: Check files
-      run: git diff --exit-code .cursorrules
-    
-    # ✗ Wrong file list
-    - name: Check sync
-      run: |
-          bun ai-toolkit-shared/scripts/sync.js
-          git diff --exit-code
-    ```
-
-    **✅ Correct sync check**:
-    ```yaml
-    # ✓ Sync first, then check specific files
-    - name: Check sync is current
-      run: |
-          bun ai-toolkit-shared/scripts/sync.js
-          git diff --exit-code .cursorrules CLAUDE.md AGENTS.md
-    ```
-
----
-
-## Update Issues
-
-### ⚠️ "After toolkit update, sync fails"
-
-**Problem**: Breaking changes in new toolkit version.
-
-**Solution**:
-
-```bash
-# 1. Check CHANGELOG
-cat ai-toolkit-shared/CHANGELOG.md
-
-# 2. Update standards.md if needed
-# (CHANGELOG will list required changes)
-
-# 3. Rerun sync
-bun ai-toolkit-shared/scripts/sync.js
-```
-
----
-
-### ⚠️ "Compliance score dropped after update"
-
-**Problem**: New validation rules in updated toolkit.
-
-**Solution**:
-
-```bash
-# See what failed
-bun ai-toolkit-shared/scripts/validate.js
-
-# Fix warnings/errors
-# Update standards.md as needed
-# Validate again
-```yaml
-
----
-
-## Common Mistake Patterns
-
-### ❌ Editing Generated Files
-
-**Don't do this**:
-
-```bash
-# ✗ Wrong - edits will be overwritten
-code .cursorrules
-# ... make changes ...
-# Next sync: changes lost!
-```
-
-**Do this instead**:
-
-```bash
-# ✓ Right - edit source configuration
-code .project/standards.md
-# ... or if using context.md ...
-code .project/ai/context.md
-# Then regenerate:
-bun ai-toolkit-shared/scripts/sync.js
-```yaml
-
----
-
-### ❌ Forgetting to Sync
-
-**Problem**: Changed `standards.md` but AI still uses old rules.
-
-**Remember**:
-
-```bash
-# After ANY change to standards.md:
-bun ai-toolkit-shared/scripts/sync.js
-
-# Optional but recommended:
-bun ai-toolkit-shared/scripts/validate.js  # Before sync
-```
-
----
-
-### ❌ Wrong Toolkit Path
-
-**Problem**: Path confusion between projects.
-
-**❌ Wrong toolkit paths**:
-
-```yaml
-toolkit: "ai-toolkit-shared"     # ✗ Missing ./
-toolkit: "./ai-toolkit"          # ✗ Wrong directory name  
-toolkit: "../ai-toolkit-shared"  # ✗ Wrong relative path
-toolkit: "/ai-toolkit-shared"    # ✗ Absolute path
-toolkit: "~/ai-toolkit"          # ✗ Wrong name in home
-```yaml
-
-**✅ Correct toolkit paths**:
-
-```yaml
-# For submodule in current project:
-toolkit: "./ai-toolkit-shared"   # ✓ Correct relative path
-
-# For global installation in home directory:
-toolkit: "~/couchcms-ai-toolkit" # ✓ Correct home path
-
-# For sibling project (rare):
-toolkit: "../shared-toolkit"     # ✓ Valid if actually sibling
-```
-
----
-
-### ❌ Wrong Module Names
-
-**Problem**: Typos or incorrect module names in configuration.
-
-**❌ Wrong module names**:
-
-```yaml
-modules:
-  - couchcms           # ✗ Should be couchcms-core
-  - tailwind           # ✗ Should be tailwindcss  
-  - alpine             # ✗ Should be alpinejs
-  - typescript-core    # ✗ Should be typescript
-  - databound          # ✗ Should be databound-forms
-```yaml
-
-**✅ Correct module names**:
-
-```yaml
-modules:
-  - couchcms-core      # ✓ Core CouchCMS patterns
-  - tailwindcss        # ✓ TailwindCSS styling
-  - alpinejs           # ✓ Alpine.js JavaScript
-  - typescript         # ✓ TypeScript support
-  - databound-forms    # ✓ DataBound Forms
-```
-
----
-
-### ❌ Wrong Agent Names
-
-**Problem**: Incorrect agent names that don't match available agents.
-
-**❌ Wrong agent names**:
-
-```yaml
-agents:
-  - couchcms-core      # ✗ Should be couchcms
-  - tailwind           # ✗ Should be tailwindcss
-  - alpine-js          # ✗ Should be alpinejs
-  - db-forms           # ✗ Should be databound-forms
-```yaml
-
-**✅ Correct agent names**:
-
-```yaml
-agents:
-  - couchcms           # ✓ Core CouchCMS agent
-  - tailwindcss        # ✓ TailwindCSS agent
-  - alpinejs           # ✓ Alpine.js agent
-  - databound-forms    # ✓ DataBound Forms agent
-```
-
----
-
-### ❌ Wrong Command Usage
-
-**Problem**: Using incorrect commands or missing dependencies.
-
-**❌ Wrong commands**:
-
-```bash
-# ✗ Running scripts without installing dependencies
-bun ai-toolkit-shared/scripts/sync.js
-
-# ✗ Using npm when bun is preferred
-npm run ai-toolkit-shared/scripts/sync.js
-
-# ✗ Wrong script paths
-bun scripts/sync.js
-
-# ✗ Missing cd back to project root
-cd ai-toolkit-shared && bun scripts/sync.js
-```bash
-
-**✅ Correct commands**:
-
-```bash
-# ✓ Install dependencies first
-cd ai-toolkit-shared && bun install && cd ..
-
-# ✓ Use bun with correct path
-bun ai-toolkit-shared/scripts/sync.js
-
-# ✓ Alternative with npm if bun not available
-node ai-toolkit-shared/scripts/sync.js
-
-# ✓ Always return to project root
-cd ai-toolkit-shared && git pull && cd ..
-```
-
----
-
-### ❌ Wrong File Locations
-
-**Problem**: Placing configuration files in wrong locations.
-
-**❌ Wrong file locations**:
-
-```bash
-# ✗ Configuration in wrong directory
-ai-toolkit-shared/standards.md
-
-# ✗ Context file in root
-context.md
-
-# ✗ Generated files in toolkit directory
-ai-toolkit-shared/.cursorrules
-```text
-
-**✅ Correct file locations**:
-
-```bash
-# ✓ Configuration in project root
-./standards.md
-
-# ✓ Context in project subdirectory (if used)
-./.project/ai/context.md
-
-# ✓ Generated files in project root
-./.cursorrules
-./CLAUDE.md
-./AGENTS.md
-```
-
----
-
-### ❌ Wrong YAML Indentation
-
-**Problem**: Inconsistent or incorrect YAML indentation.
-
-**❌ Wrong YAML indentation**:
-
-```yaml
----
-name: my-project
-modules:
-- couchcms-core              # ✗ No indentation
-	- tailwindcss            # ✗ Tab instead of spaces
-    - alpinejs               # ✗ Mixed indentation
-agents:
-      - couchcms             # ✗ Too much indentation
----
-```yaml
-
-**✅ Correct YAML indentation**:
-
-```yaml
----
-name: my-project
-modules:                     # ✓ Consistent spacing
-    - couchcms-core         # ✓ 4 spaces
-    - tailwindcss           # ✓ Same level
-    - alpinejs              # ✓ Consistent
-agents:                      # ✓ Same level as modules
-    - couchcms              # ✓ 4 spaces
----
-```
-
----
-
-### ❌ Wrong Git Submodule Commands
-
-**Problem**: Incorrect git commands for managing the toolkit submodule.
-
-**❌ Wrong git commands**:
-
-```bash
-# ✗ Cloning instead of adding submodule
-git clone https://github.com/martijnbokma/couchcms-ai-toolkit.git
-
-# ✗ Wrong submodule path
-git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git toolkit
-
-# ✗ Forgetting to initialize
-git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
-
-# ✗ Wrong update command
-git submodule update
-```bash
-
-**✅ Correct git commands**:
-
-```bash
-# ✓ Add submodule with correct path
-git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
-
-# ✓ Initialize and update
-git submodule update --init --recursive
-
-# ✓ Update to latest
-cd ai-toolkit-shared && git pull origin master && cd ..
-
-# ✓ Update submodule reference
-git add ai-toolkit-shared && git commit -m "Update toolkit"
-```
+**Note:** Templates and modules are now cached for better performance.
 
 ---
 
@@ -1197,7 +485,7 @@ git add ai-toolkit-shared && git commit -m "Update toolkit"
 ```bash
 # Full diagnostic
 echo "=== Configuration File ==="
-cat .project/standards.md  # or standards.md
+cat .project/standards.md
 echo ""
 echo "=== Validation ==="
 bun ai-toolkit-shared/scripts/validate.js
@@ -1212,11 +500,11 @@ ls -la .cursorrules CLAUDE.md AGENTS.md
 ### Where to Ask
 
 1. **GitHub Issues**: https://github.com/martijnbokma/couchcms-ai-toolkit/issues
-2. 📝 **Include**:
-    - Output of validation command
-    - Your `standards.md` (remove sensitive info)
-    - Error messages
-    - What you've tried
+2. **Include:**
+   - Output of validation command
+   - Your `.project/standards.md` (remove sensitive info)
+   - Error messages
+   - What you've tried
 
 ### Before Opening Issue
 
@@ -1231,6 +519,9 @@ ls -la .cursorrules CLAUDE.md AGENTS.md
 ## See Also
 
 - [Getting Started](GETTING-STARTED.md)
+- [Quick Start](QUICK-START.md)
 - [Command Reference](COMMANDS.md)
+- [Glossary](GLOSSARY.md)
+- [Migration Guide](MIGRATION.md)
 - [Contributing](../CONTRIBUTING.md)
 - [Changelog](../CHANGELOG.md)

@@ -19,47 +19,47 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Basic Route Setup
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:extends &#x27;layouts/base.html&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:extends 'layouts/base.html' />
 
-&lt;cms:block &#x27;templates&#x27;&gt;
-    &lt;cms:template title&#x3D;&#x27;Projects&#x27; clonable&#x3D;&#x27;1&#x27; routable&#x3D;&#x27;1&#x27;&gt;
-        &lt;cms:route name&#x3D;&#x27;list&#x27; pattern&#x3D;&#x27;projects&#x27; /&gt;
-        &lt;cms:route name&#x3D;&#x27;detail&#x27; pattern&#x3D;&#x27;projects/{id}&#x27; /&gt;
-        &lt;cms:route name&#x3D;&#x27;edit&#x27; pattern&#x3D;&#x27;projects/{id}/edit&#x27; /&gt;
-    &lt;/cms:template&gt;
-&lt;/cms:block&gt;
+<cms:block 'templates'>
+    <cms:template title='Projects' clonable='1' routable='1'>
+        <cms:route name='list' pattern='projects' />
+        <cms:route name='detail' pattern='projects/{id}' />
+        <cms:route name='edit' pattern='projects/{id}/edit' />
+    </cms:template>
+</cms:block>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:if k_route_name&#x3D;&#x27;list&#x27;&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/projects/list.html&#x27; /&gt;
-    &lt;cms:else_if k_route_name&#x3D;&#x27;detail&#x27;&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/projects/detail.html&#x27; /&gt;
-    &lt;cms:else_if k_route_name&#x3D;&#x27;edit&#x27;&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/projects/edit.html&#x27; /&gt;
-    &lt;cms:else /&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/errors/404.html&#x27; /&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+<cms:block 'content'>
+    <cms:if k_route_name='list'>
+        <cms:embed '{{paths.views}}/projects/list.html' />
+    <cms:else_if k_route_name='detail'>
+        <cms:embed '{{paths.views}}/projects/detail.html' />
+    <cms:else_if k_route_name='edit'>
+        <cms:embed '{{paths.views}}/projects/edit.html' />
+    <cms:else />
+        <cms:embed '{{paths.views}}/errors/404.html' />
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(K_IGNORE_CONTEXT); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(K_IGNORE_CONTEXT); ?>
+```
 
 ### Route Variables
 
 | Variable           | Description                                |
 | ------------------ | ------------------------------------------ |
-| &#x60;k_route_name&#x60;     | Current route name                         |
-| &#x60;k_route_param_*&#x60;  | Route parameter (e.g., &#x60;k_route_param_id&#x60;) |
-| &#x60;K_IGNORE_CONTEXT&#x60; | Required for custom routes                 |
+| `k_route_name`     | Current route name                         |
+| `k_route_param_*`  | Route parameter (e.g., `k_route_param_id`) |
+| `K_IGNORE_CONTEXT` | Required for custom routes                 |
 
 ### Your Approach
 
-- Use meaningful route names (&#x60;project_list&#x60;, &#x60;user_profile&#x60;)
+- Use meaningful route names (`project_list`, `user_profile`)
 - Add parameter constraints for validation
 - Implement authentication filters for protected routes
-- Use &#x60;K_IGNORE_CONTEXT&#x60; in &#x60;COUCH::invoke()&#x60;
+- Use `K_IGNORE_CONTEXT` in `COUCH::invoke()`
 
 ---
 
@@ -67,78 +67,78 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Route with Constraints
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;cms:route
-  name&#x3D;&quot;user_profile&quot;
-  pattern&#x3D;&quot;users/{username}&quot;
-  constraints&#x3D;&quot;username&#x3D;[a-zA-Z0-9_-]+&quot;
-/&gt;
+```html title="template.html"
+<cms:route
+  name="user_profile"
+  pattern="users/{username}"
+  constraints="username=[a-zA-Z0-9_-]+"
+/>
 
-&lt;cms:route name&#x3D;&quot;project_detail&quot; pattern&#x3D;&quot;projects/{id}&quot; constraints&#x3D;&quot;id&#x3D;\d+&quot; /&gt;
+<cms:route name="project_detail" pattern="projects/{id}" constraints="id=\d+" />
 
-&lt;cms:route
-  name&#x3D;&quot;paginated_list&quot;
-  pattern&#x3D;&quot;projects/page/{page}&quot;
-  constraints&#x3D;&quot;page&#x3D;\d+&quot;
-/&gt;
-&#x60;&#x60;&#x60;
+<cms:route
+  name="paginated_list"
+  pattern="projects/page/{page}"
+  constraints="page=\d+"
+/>
+```
 
 ### Multi-Parameter Routes
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;cms:route
-  name&#x3D;&quot;category_filter&quot;
-  pattern&#x3D;&quot;projects/category/{category}/page/{page}&quot;
-  constraints&#x3D;&quot;category&#x3D;[a-zA-Z0-9_-]+|page&#x3D;\d+&quot;
-/&gt;
+```html title="template.html"
+<cms:route
+  name="category_filter"
+  pattern="projects/category/{category}/page/{page}"
+  constraints="category=[a-zA-Z0-9_-]+|page=\d+"
+/>
 
-&lt;!-- Access parameters --&gt;
-&lt;cms:if k_route_name&#x3D;&quot;category_filter&quot;&gt;
-  Category: &lt;cms:show k_route_param_category /&gt; Page:
-  &lt;cms:show k_route_param_page /&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+<!-- Access parameters -->
+<cms:if k_route_name="category_filter">
+  Category: <cms:show k_route_param_category /> Page:
+  <cms:show k_route_param_page />
+</cms:if>
+```
 
 ### Protected Routes
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;authenticated.html&quot;
-&lt;cms:template title&#x3D;&#x27;Dashboard&#x27; routable&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:route name&#x3D;&#x27;dashboard&#x27; pattern&#x3D;&#x27;dashboard&#x27; /&gt;
-    &lt;cms:route name&#x3D;&#x27;my_projects&#x27; pattern&#x3D;&#x27;my-projects&#x27; /&gt;
-    &lt;cms:route name&#x3D;&#x27;edit_project&#x27; pattern&#x3D;&#x27;projects/{id}/edit&#x27; constraints&#x3D;&#x27;id&#x3D;\d+&#x27; /&gt;
-&lt;/cms:template&gt;
+```html title="authenticated.html"
+<cms:template title='Dashboard' routable='1'>
+    <cms:route name='dashboard' pattern='dashboard' />
+    <cms:route name='my_projects' pattern='my-projects' />
+    <cms:route name='edit_project' pattern='projects/{id}/edit' constraints='id=\d+' />
+</cms:template>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;!-- All routes require authentication --&gt;
-    &lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt;
+<cms:block 'content'>
+    <!-- All routes require authentication -->
+    <cms:embed '{{paths.filters}}/authenticated.html' />
 
-    &lt;cms:if k_route_name&#x3D;&#x27;dashboard&#x27;&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/dashboard/index.html&#x27; /&gt;
-    &lt;cms:else_if k_route_name&#x3D;&#x27;my_projects&#x27;&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/my/projects.html&#x27; /&gt;
-    &lt;cms:else_if k_route_name&#x3D;&#x27;edit_project&#x27;&gt;
-        &lt;!-- Additional ownership check --&gt;
-        &lt;cms:embed &#x27;{{paths.filters}}/owns_content.html&#x27; /&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/projects/edit.html&#x27; /&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
-&#x60;&#x60;&#x60;
+    <cms:if k_route_name='dashboard'>
+        <cms:embed '{{paths.views}}/dashboard/index.html' />
+    <cms:else_if k_route_name='my_projects'>
+        <cms:embed '{{paths.views}}/my/projects.html' />
+    <cms:else_if k_route_name='edit_project'>
+        <!-- Additional ownership check -->
+        <cms:embed '{{paths.filters}}/owns_content.html' />
+        <cms:embed '{{paths.views}}/projects/edit.html' />
+    </cms:if>
+</cms:block>
+```
 
 ### URL Generation
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;!-- Generate route URL --&gt;
-&lt;a href&#x3D;&quot;&lt;cms:link masterpage&#x3D;&#x27;projects.php&#x27; route&#x3D;&#x27;detail&#x27; id&#x3D;&#x27;123&#x27; /&gt;&quot;&gt;
+```html title="projects.php"
+<!-- Generate route URL -->
+<a href="<cms:link masterpage='projects.php' route='detail' id='123' />">
   View Project
-&lt;/a&gt;
+</a>
 
-&lt;!-- Dynamic URL generation --&gt;
-&lt;cms:pages masterpage&#x3D;&quot;projects.php&quot; limit&#x3D;&quot;10&quot;&gt;
-  &lt;a href&#x3D;&quot;&lt;cms:link masterpage&#x3D;&#x27;projects.php&#x27; route&#x3D;&#x27;detail&#x27; id&#x3D;k_page_id /&gt;&quot;&gt;
-    &lt;cms:show k_page_title /&gt;
-  &lt;/a&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+<!-- Dynamic URL generation -->
+<cms:pages masterpage="projects.php" limit="10">
+  <a href="<cms:link masterpage='projects.php' route='detail' id=k_page_id />">
+    <cms:show k_page_title />
+  </a>
+</cms:pages>
+```
 
 ---
 
@@ -146,124 +146,124 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 ### Route Validation Filter
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;!-- Validate route parameter points to existing page --&gt;
-&lt;cms:if k_route_name&#x3D;&#x27;detail&#x27;&gt;
-    &lt;cms:set valid_page &#x3D; &#x27;0&#x27; /&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;projects.php&#x27;
-               custom_field&#x3D;&#x27;k_page_id&#x3D;&lt;cms:show k_route_param_id /&gt;&#x27;
-               limit&#x3D;&#x27;1&#x27;&gt;
-        &lt;cms:set valid_page &#x3D; &#x27;1&#x27; scope&#x3D;&#x27;parent&#x27; /&gt;
-    &lt;/cms:pages&gt;
+```html title="projects.php"
+<!-- Validate route parameter points to existing page -->
+<cms:if k_route_name='detail'>
+    <cms:set valid_page = '0' />
+    <cms:pages masterpage='projects.php'
+               custom_field='k_page_id=<cms:show k_route_param_id />'
+               limit='1'>
+        <cms:set valid_page = '1' scope='parent' />
+    </cms:pages>
 
-    &lt;cms:if valid_page ne &#x27;1&#x27;&gt;
-        &lt;cms:redirect &quot;&lt;cms:link masterpage&#x3D;&#x27;404.php&#x27; /&gt;&quot; /&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+    <cms:if valid_page ne '1'>
+        <cms:redirect "<cms:link masterpage='404.php' />" />
+    </cms:if>
+</cms:if>
+```
 
 ### API Routes
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;cms:template title&#x3D;&#x27;API&#x27; routable&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:route name&#x3D;&#x27;api_projects&#x27; pattern&#x3D;&#x27;api/v1/projects&#x27; /&gt;
-    &lt;cms:route name&#x3D;&#x27;api_project&#x27; pattern&#x3D;&#x27;api/v1/projects/{id}&#x27; constraints&#x3D;&#x27;id&#x3D;\d+&#x27; /&gt;
-&lt;/cms:template&gt;
+```html title="projects.php"
+<cms:template title='API' routable='1'>
+    <cms:route name='api_projects' pattern='api/v1/projects' />
+    <cms:route name='api_project' pattern='api/v1/projects/{id}' constraints='id=\d+' />
+</cms:template>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:content_type &#x27;application/json&#x27; /&gt;
+<cms:block 'content'>
+    <cms:content_type 'application/json' />
 
-    &lt;cms:if k_route_name&#x3D;&#x27;api_projects&#x27;&gt;
+    <cms:if k_route_name='api_projects'>
         [
-        &lt;cms:pages masterpage&#x3D;&#x27;projects.php&#x27; custom_field&#x3D;&#x27;is_published&#x3D;1&#x27; limit&#x3D;&#x27;20&#x27;&gt;
+        <cms:pages masterpage='projects.php' custom_field='is_published=1' limit='20'>
         {
-            &quot;id&quot;: &quot;&lt;cms:show k_page_id /&gt;&quot;,
-            &quot;title&quot;: &quot;&lt;cms:escape_json&gt;&lt;cms:show k_page_title /&gt;&lt;/cms:escape_json&gt;&quot;,
-            &quot;url&quot;: &quot;&lt;cms:show k_page_link /&gt;&quot;
-        }&lt;cms:if &quot;&lt;cms:not k_paginated_bottom /&gt;&quot;&gt;,&lt;/cms:if&gt;
-        &lt;/cms:pages&gt;
+            "id": "<cms:show k_page_id />",
+            "title": "<cms:escape_json><cms:show k_page_title /></cms:escape_json>",
+            "url": "<cms:show k_page_link />"
+        }<cms:if "<cms:not k_paginated_bottom />">,</cms:if>
+        </cms:pages>
         ]
-    &lt;cms:else_if k_route_name&#x3D;&#x27;api_project&#x27;&gt;
-        &lt;cms:pages masterpage&#x3D;&#x27;projects.php&#x27;
-                   custom_field&#x3D;&#x27;k_page_id&#x3D;&lt;cms:show k_route_param_id /&gt;&#x27;
-                   limit&#x3D;&#x27;1&#x27;&gt;
+    <cms:else_if k_route_name='api_project'>
+        <cms:pages masterpage='projects.php'
+                   custom_field='k_page_id=<cms:show k_route_param_id />'
+                   limit='1'>
         {
-            &quot;id&quot;: &quot;&lt;cms:show k_page_id /&gt;&quot;,
-            &quot;title&quot;: &quot;&lt;cms:escape_json&gt;&lt;cms:show k_page_title /&gt;&lt;/cms:escape_json&gt;&quot;,
-            &quot;description&quot;: &quot;&lt;cms:escape_json&gt;&lt;cms:show description /&gt;&lt;/cms:escape_json&gt;&quot;,
-            &quot;type&quot;: &quot;&lt;cms:show k_sub_template_name /&gt;&quot;
+            "id": "<cms:show k_page_id />",
+            "title": "<cms:escape_json><cms:show k_page_title /></cms:escape_json>",
+            "description": "<cms:escape_json><cms:show description /></cms:escape_json>",
+            "type": "<cms:show k_sub_template_name />"
         }
-        &lt;cms:no_results&gt;
-        {&quot;error&quot;: &quot;Project not found&quot;}
-        &lt;/cms:no_results&gt;
-        &lt;/cms:pages&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
-&#x60;&#x60;&#x60;
+        <cms:no_results>
+        {"error": "Project not found"}
+        </cms:no_results>
+        </cms:pages>
+    </cms:if>
+</cms:block>
+```
 
 ### Nested Route Handling
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;authenticated.html&quot;
-&lt;!-- Admin routes with sub-sections --&gt;
-&lt;cms:template title&#x3D;&#x27;Admin&#x27; routable&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:route name&#x3D;&#x27;admin_dashboard&#x27; pattern&#x3D;&#x27;admin&#x27; /&gt;
-    &lt;cms:route name&#x3D;&#x27;admin_users&#x27; pattern&#x3D;&#x27;admin/users&#x27; /&gt;
-    &lt;cms:route name&#x3D;&#x27;admin_user_edit&#x27; pattern&#x3D;&#x27;admin/users/{id}/edit&#x27; constraints&#x3D;&#x27;id&#x3D;\d+&#x27; /&gt;
-    &lt;cms:route name&#x3D;&#x27;admin_projects&#x27; pattern&#x3D;&#x27;admin/projects&#x27; /&gt;
-    &lt;cms:route name&#x3D;&#x27;admin_settings&#x27; pattern&#x3D;&#x27;admin/settings&#x27; /&gt;
-&lt;/cms:template&gt;
+```html title="authenticated.html"
+<!-- Admin routes with sub-sections -->
+<cms:template title='Admin' routable='1'>
+    <cms:route name='admin_dashboard' pattern='admin' />
+    <cms:route name='admin_users' pattern='admin/users' />
+    <cms:route name='admin_user_edit' pattern='admin/users/{id}/edit' constraints='id=\d+' />
+    <cms:route name='admin_projects' pattern='admin/projects' />
+    <cms:route name='admin_settings' pattern='admin/settings' />
+</cms:template>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;!-- Admin-only access --&gt;
-    &lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt;
-    &lt;cms:if k_user_access_level lt &#x27;7&#x27;&gt;
-        &lt;cms:abort is_404&#x3D;&#x27;1&#x27; /&gt;
-    &lt;/cms:if&gt;
+<cms:block 'content'>
+    <!-- Admin-only access -->
+    <cms:embed '{{paths.filters}}/authenticated.html' />
+    <cms:if k_user_access_level lt '7'>
+        <cms:abort is_404='1' />
+    </cms:if>
 
-    &lt;!-- Admin layout wrapper --&gt;
-    &lt;div class&#x3D;&quot;drawer lg:drawer-open&quot;&gt;
-        &lt;cms:embed &#x27;{{paths.components}}/admin/sidebar.html&#x27; /&gt;
+    <!-- Admin layout wrapper -->
+    <div class="drawer lg:drawer-open">
+        <cms:embed '{{paths.components}}/admin/sidebar.html' />
 
-        &lt;div class&#x3D;&quot;drawer-content p-6&quot;&gt;
-            &lt;cms:if k_route_name&#x3D;&#x27;admin_dashboard&#x27;&gt;
-                &lt;cms:embed &#x27;{{paths.views}}/admin/dashboard.html&#x27; /&gt;
-            &lt;cms:else_if k_route_name&#x3D;&#x27;admin_users&#x27;&gt;
-                &lt;cms:embed &#x27;{{paths.views}}/admin/users/list.html&#x27; /&gt;
-            &lt;cms:else_if k_route_name&#x3D;&#x27;admin_user_edit&#x27;&gt;
-                &lt;cms:embed &#x27;{{paths.views}}/admin/users/edit.html&#x27; /&gt;
-            &lt;cms:else_if k_route_name&#x3D;&#x27;admin_projects&#x27;&gt;
-                &lt;cms:embed &#x27;{{paths.views}}/admin/projects.html&#x27; /&gt;
-            &lt;cms:else_if k_route_name&#x3D;&#x27;admin_settings&#x27;&gt;
-                &lt;cms:embed &#x27;{{paths.views}}/admin/settings.html&#x27; /&gt;
-            &lt;/cms:if&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/cms:block&gt;
-&#x60;&#x60;&#x60;
+        <div class="drawer-content p-6">
+            <cms:if k_route_name='admin_dashboard'>
+                <cms:embed '{{paths.views}}/admin/dashboard.html' />
+            <cms:else_if k_route_name='admin_users'>
+                <cms:embed '{{paths.views}}/admin/users/list.html' />
+            <cms:else_if k_route_name='admin_user_edit'>
+                <cms:embed '{{paths.views}}/admin/users/edit.html' />
+            <cms:else_if k_route_name='admin_projects'>
+                <cms:embed '{{paths.views}}/admin/projects.html' />
+            <cms:else_if k_route_name='admin_settings'>
+                <cms:embed '{{paths.views}}/admin/settings.html' />
+            </cms:if>
+        </div>
+    </div>
+</cms:block>
+```
 
 ### Redirect Patterns
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;!-- Redirect old URLs to new routes --&gt;
-&lt;cms:if k_route_name&#x3D;&quot;old_project_url&quot;&gt;
-  &lt;cms:redirect
-    url&#x3D;&quot;&lt;cms:link masterpage&#x3D;&#x27;projects.php&#x27;
-                       route&#x3D;&#x27;detail&#x27;
-                       id&#x3D;k_route_param_id /&gt;&quot;
-    permanent&#x3D;&quot;1&quot;
-  /&gt;
-&lt;/cms:if&gt;
+```html title="projects.php"
+<!-- Redirect old URLs to new routes -->
+<cms:if k_route_name="old_project_url">
+  <cms:redirect
+    url="<cms:link masterpage='projects.php'
+                       route='detail'
+                       id=k_route_param_id />"
+    permanent="1"
+  />
+</cms:if>
 
-&lt;!-- Redirect after action --&gt;
-&lt;cms:if k_success&gt;
-  &lt;cms:db_persist_form /&gt;
-  &lt;cms:redirect &quot;&lt;cms:link
-    masterpage&#x3D;&quot;projects.php&quot;
-    route&#x3D;&quot;detail&quot;
-    id&#x3D;&quot;k_page_id&quot;
-  /&gt;&quot; /&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+<!-- Redirect after action -->
+<cms:if k_success>
+  <cms:db_persist_form />
+  <cms:redirect "<cms:link
+    masterpage="projects.php"
+    route="detail"
+    id="k_page_id"
+  />" />
+</cms:if>
+```
 
 ---
 
@@ -271,20 +271,20 @@ You are a CouchCMS routing expert specializing in clean URLs, custom routes, and
 
 | Problem            | Cause                      | Solution                                          |
 | ------------------ | -------------------------- | ------------------------------------------------- |
-| 404 on all routes  | Missing &#x60;K_IGNORE_CONTEXT&#x60; | Add to &#x60;COUCH::invoke(K_IGNORE_CONTEXT)&#x60;          |
+| 404 on all routes  | Missing `K_IGNORE_CONTEXT` | Add to `COUCH::invoke(K_IGNORE_CONTEXT)`          |
 | Route not matching | Wrong pattern              | Check constraints, test with simple pattern first |
-| Parameter empty    | Typo in variable name      | Use &#x60;k_route_param_&#x60; + exact param name           |
-| URL not generating | Wrong route name           | Match &#x60;name&#x60; in &#x60;&lt;cms:route&gt;&#x60; exactly             |
+| Parameter empty    | Typo in variable name      | Use `k_route_param_` + exact param name           |
+| URL not generating | Wrong route name           | Match `name` in `<cms:route>` exactly             |
 
 ### Debug Routes
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Show current route info --&gt;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-    &lt;div class&#x3D;&quot;bg-base-200 p-4 text-sm&quot;&gt;
-        &lt;p&gt;Route: &lt;cms:show k_route_name /&gt;&lt;/p&gt;
-        &lt;p&gt;Params: &lt;cms:dump k_route_params /&gt;&lt;/p&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<!-- Show current route info -->
+<cms:if k_user_access_level ge '7'>
+    <div class="bg-base-200 p-4 text-sm">
+        <p>Route: <cms:show k_route_name /></p>
+        <p>Params: <cms:dump k_route_params /></p>
+    </div>
+</cms:if>
+```
 

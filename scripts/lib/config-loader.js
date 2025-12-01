@@ -13,6 +13,7 @@ import { existsSync, readFileSync } from 'fs'
 import { join, resolve } from 'path'
 import { parse as parseYaml } from 'yaml'
 import matter from 'gray-matter'
+import { validateYAMLFile, formatYAMLErrors } from './yaml-validator.js'
 
 /**
  * Load configuration from all sources and merge
@@ -42,60 +43,46 @@ export function loadConfig(projectDir, toolkitPath) {
 }
 
 /**
- * Load toolkit configuration from config.yaml (DEPRECATED - no longer used)
- * All configuration is now in project's standards.md
+ * Load project configuration from standards.md
  *
- * @param {string} toolkitPath - Toolkit root directory
- * @returns {object} - Toolkit configuration
- * @throws {Error} - If config.yaml not found or invalid
- */
-function loadToolkitConfig(toolkitPath) {
-    // DEPRECATED: This function is no longer used
-    // All configuration is now in the project's standards.md file
-    return {}
-}
-
-/**
- * Load project configuration from config.yaml or standards.md
- *
- * Tries in order:
- * 1. config.yaml (new format)
- * 2. standards.md (legacy format with YAML frontmatter)
+ * Only supports .project/standards.md format (standardized location)
+ * Shows deprecation warning if config.yaml is found
  *
  * @param {string} projectDir - Project root directory
  * @returns {object} - { config, format, path }
  */
 function loadProjectConfig(projectDir) {
-    // Try new config.yaml format first
+    // Check for deprecated config.yaml and show migration message
     const configYamlPath = join(projectDir, 'config.yaml')
     if (existsSync(configYamlPath)) {
-        try {
-            const content = readFileSync(configYamlPath, 'utf8')
-            const config = parseYaml(content)
-
-            return {
-                config: config || {},
-                format: 'config.yaml',
-                path: configYamlPath,
-            }
-        } catch (error) {
-            console.warn(`⚠️  Failed to parse config.yaml: ${error.message}`)
-            console.warn('   Falling back to standards.md')
-        }
+        console.warn(`\n⚠️  Found deprecated config.yaml file`)
+        console.warn(`   The toolkit now uses .project/standards.md as the standard configuration file.`)
+        console.warn(`   Please migrate your configuration:`)
+        console.warn(`   \n   bun ai-toolkit-shared/scripts/migrate.js\n`)
+        console.warn(`   Or manually move your configuration to .project/standards.md\n`)
     }
 
-    // Load from standards.md format
+    // Load from standards.md format (only supported format)
     const standardsMdPath = findStandardsMd(projectDir)
     if (standardsMdPath) {
         try {
+            // Validate YAML syntax before parsing
+            const yamlValidation = validateYAMLFile(standardsMdPath)
+            if (!yamlValidation.isValid) {
+                console.error(formatYAMLErrors(yamlValidation.errors.map((msg, idx) => ({
+                    message: msg,
+                    line: null,
+                    suggestion: yamlValidation.suggestions[idx] || null
+                }))))
+                throw new Error('YAML syntax errors found. See errors above.')
+            }
+
             const content = readFileSync(standardsMdPath, 'utf8')
             const { data: frontmatter } = matter(content)
 
-            // Convert legacy format to new format
-            const config = convertLegacyConfig(frontmatter)
-
+            // Frontmatter is already in the correct format, use directly
             return {
-                config,
+                config: frontmatter || {},
                 format: 'standards.md',
                 path: standardsMdPath,
             }
@@ -115,24 +102,34 @@ function loadProjectConfig(projectDir) {
 /**
  * Find standards.md in project directory
  *
- * Searches in order:
- * 1. .project/standards.md
- * 2. docs/standards.md
- * 3. standards.md
+ * Only checks .project/standards.md (standardized location)
+ * If found in old locations, shows migration message
  *
  * @param {string} projectDir - Project root directory
  * @returns {string|null} - Path to standards.md or null
  */
 function findStandardsMd(projectDir) {
-    const candidates = [
-        join(projectDir, '.project', 'standards.md'),
-        join(projectDir, 'docs', 'standards.md'),
-        join(projectDir, 'standards.md'),
+    // Standard location: .project/standards.md
+    const standardPath = join(projectDir, '.project', 'standards.md')
+    if (existsSync(standardPath)) {
+        return standardPath
+    }
+
+    // Check old locations and show migration message if found
+    const oldLocations = [
+        { path: join(projectDir, 'docs', 'standards.md'), name: 'docs/standards.md' },
+        { path: join(projectDir, 'standards.md'), name: 'standards.md' }
     ]
 
-    for (const path of candidates) {
-        if (existsSync(path)) {
-            return path
+    for (const oldLoc of oldLocations) {
+        if (existsSync(oldLoc.path)) {
+            console.warn(`\n⚠️  Found configuration in old location: ${oldLoc.name}`)
+            console.warn(`   The toolkit now uses .project/standards.md as the standard location.`)
+            console.warn(`   Please move your configuration file:`)
+            console.warn(`   \n   mv ${oldLoc.name} .project/standards.md\n`)
+            // Still return the old path for now to maintain compatibility
+            // But warn user to migrate
+            return oldLoc.path
         }
     }
 
@@ -140,79 +137,32 @@ function findStandardsMd(projectDir) {
 }
 
 /**
- * Convert standards.md frontmatter to internal config format
+ * Convert legacy frontmatter format to current format
+ * DEPRECATED: Only used by migrate.js for migration purposes
  *
  * @param {object} frontmatter - YAML frontmatter from standards.md
  * @returns {object} - Converted configuration
  */
-function convertLegacyConfig(frontmatter) {
-    const config = {}
+export function convertLegacyConfig(frontmatter) {
+    // This function is only used by migrate.js
+    // For normal operation, frontmatter is used directly
+    const config = { ...frontmatter }
 
-    // Project settings - support both old and new format
-    if (frontmatter.project) {
-        // New format: project is already an object
-        config.project = frontmatter.project
-    } else if (frontmatter.name || frontmatter.description) {
-        // Old format: name/description at root level
+    // Normalize project structure if needed
+    if (!config.project && (config.name || config.description)) {
         config.project = {
-            name: frontmatter.name || 'my-project',
-            description: frontmatter.description || '',
-            type: frontmatter.type || 'CouchCMS Web Application',
+            name: config.name || 'my-project',
+            description: config.description || '',
+            type: config.type || 'CouchCMS Web Application',
         }
+        delete config.name
+        delete config.description
+        delete config.type
     }
 
-    // Toolkit path - support both string and object format
-    if (frontmatter.toolkit) {
-        if (typeof frontmatter.toolkit === 'string') {
-            config.toolkit = {
-                path: frontmatter.toolkit,
-            }
-        } else {
-            config.toolkit = frontmatter.toolkit
-        }
-    }
-
-    // Modules and agents
-    if (frontmatter.modules) {
-        config.modules = frontmatter.modules
-    }
-    if (frontmatter.agents) {
-        config.agents = frontmatter.agents
-    }
-
-    // Editors (if defined in frontmatter)
-    if (frontmatter.editors) {
-        config.editors = frontmatter.editors
-    }
-
-    // Framework
-    if (frontmatter.framework !== undefined) {
-        config.framework = frontmatter.framework
-    }
-
-    // Paths (if defined in frontmatter)
-    if (frontmatter.paths) {
-        config.paths = frontmatter.paths
-    }
-
-    // Standards (if defined in frontmatter)
-    if (frontmatter.standards) {
-        config.standards = frontmatter.standards
-    }
-
-    // Naming conventions (if defined in frontmatter)
-    if (frontmatter.naming) {
-        config.naming = frontmatter.naming
-    }
-
-    // Gitflow (if defined in frontmatter)
-    if (frontmatter.gitflow) {
-        config.gitflow = frontmatter.gitflow
-    }
-
-    // Editors (if defined in frontmatter)
-    if (frontmatter.editors) {
-        config.editors = frontmatter.editors
+    // Normalize toolkit path if needed
+    if (config.toolkit && typeof config.toolkit === 'string') {
+        // Keep as string (current format supports both)
     }
 
     return config

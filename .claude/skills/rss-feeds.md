@@ -22,39 +22,39 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 | Tag                    | Purpose                          |
 | ---------------------- | -------------------------------- |
-| &#x60;&lt;cms:content_type&gt;&#x60;   | Set XML mime type                |
-| &#x60;&lt;cms:concat&gt;&#x60;         | Build XML declaration            |
-| &#x60;&lt;cms:excerptHTML&gt;&#x60;    | Generate feed descriptions       |
-| &#x60;&lt;cms:html_encode&gt;&#x60;    | Encode HTML for XML              |
-| &#x60;&lt;cms:date&gt;&#x60;           | Format dates for RSS             |
+| `<cms:content_type>`   | Set XML mime type                |
+| `<cms:concat>`         | Build XML declaration            |
+| `<cms:excerptHTML>`    | Generate feed descriptions       |
+| `<cms:html_encode>`    | Encode HTML for XML              |
+| `<cms:date>`           | Format dates for RSS             |
 
 ### RSS Structure
 
-&#x60;&#x60;&#x60;xml title&#x3D;&quot;rss-structure.txt&quot;
-&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;utf-8&quot;?&gt;
-&lt;rss version&#x3D;&quot;2.0&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;Channel Title&lt;/title&gt;
-    &lt;link&gt;Channel URL&lt;/link&gt;
-    &lt;description&gt;Channel Description&lt;/description&gt;
-    &lt;item&gt;
-      &lt;title&gt;Item Title&lt;/title&gt;
-      &lt;link&gt;Item URL&lt;/link&gt;
-      &lt;description&gt;Item Description&lt;/description&gt;
-      &lt;pubDate&gt;Item Date&lt;/pubDate&gt;
-    &lt;/item&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&#x60;&#x60;&#x60;
+```xml title="rss-structure.txt"
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Channel Title</title>
+    <link>Channel URL</link>
+    <description>Channel Description</description>
+    <item>
+      <title>Item Title</title>
+      <link>Item URL</link>
+      <description>Item Description</description>
+      <pubDate>Item Date</pubDate>
+    </item>
+  </channel>
+</rss>
+```
 
 ### Your Approach
 
-- Use &#x60;.php&#x60; extension for RSS templates
-- Set content type to &#x60;text/xml&#x60;
-- Use &#x60;concat&#x60; for XML declaration
+- Use `.php` extension for RSS templates
+- Set content type to `text/xml`
+- Use `concat` for XML declaration
 - Encode HTML content properly
 - Format dates in RFC 822 format
-- Use &#x60;excerptHTML&#x60; for descriptions
+- Use `excerptHTML` for descriptions
 - Validate feed structure
 
 ---
@@ -63,200 +63,200 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### Basic RSS Feed
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&lt;rss version&#x3D;&quot;2.0&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;My News Channel&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_site_link /&gt;&lt;/link&gt;
-    &lt;description&gt;News and articles from my site&lt;/description&gt;
-    &lt;language&gt;en-us&lt;/language&gt;
-    &lt;pubDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-    &lt;generator&gt;CouchCMS&lt;/generator&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+<rss version="2.0">
+  <channel>
+    <title>My News Channel</title>
+    <link><cms:show k_site_link /></link>
+    <description>News and articles from my site</description>
+    <language>en-us</language>
+    <pubDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+    <generator>CouchCMS</generator>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-      &lt;item&gt;
-        &lt;title&gt;&lt;cms:show k_page_title /&gt;&lt;/title&gt;
-        &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-        &lt;description&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/description&gt;
-        &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-        &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-      &lt;/item&gt;
-    &lt;/cms:pages&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='blog.php' limit='20' orderby='publish_date' order_dir='desc'>
+      <item>
+        <title><cms:show k_page_title /></title>
+        <link><cms:show k_page_link /></link>
+        <description>
+          <cms:html_encode>
+            <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+          </cms:html_encode>
+        </description>
+        <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+        <guid isPermaLink="true"><cms:show k_page_link /></guid>
+      </item>
+    </cms:pages>
+  </channel>
+</rss>
+<?php COUCH::invoke(); ?>
+```
 
 ### RSS Feed with Categories
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&lt;rss version&#x3D;&quot;2.0&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;My Blog RSS Feed&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_site_link /&gt;&lt;/link&gt;
-    &lt;description&gt;Latest blog posts&lt;/description&gt;
-    &lt;language&gt;en-us&lt;/language&gt;
-    &lt;pubDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+<rss version="2.0">
+  <channel>
+    <title>My Blog RSS Feed</title>
+    <link><cms:show k_site_link /></link>
+    <description>Latest blog posts</description>
+    <language>en-us</language>
+    <pubDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-      &lt;item&gt;
-        &lt;title&gt;&lt;cms:show k_page_title /&gt;&lt;/title&gt;
-        &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-        &lt;description&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/description&gt;
-        &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-        &lt;cms:if k_folder_name&gt;
-          &lt;category&gt;&lt;cms:show k_folder_name /&gt;&lt;/category&gt;
-        &lt;/cms:if&gt;
-        &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-      &lt;/item&gt;
-    &lt;/cms:pages&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='blog.php' limit='20' orderby='publish_date' order_dir='desc'>
+      <item>
+        <title><cms:show k_page_title /></title>
+        <link><cms:show k_page_link /></link>
+        <description>
+          <cms:html_encode>
+            <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+          </cms:html_encode>
+        </description>
+        <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+        <cms:if k_folder_name>
+          <category><cms:show k_folder_name /></category>
+        </cms:if>
+        <guid isPermaLink="true"><cms:show k_page_link /></guid>
+      </item>
+    </cms:pages>
+  </channel>
+</rss>
+<?php COUCH::invoke(); ?>
+```
 
 ### RSS Feed with Author
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&lt;rss version&#x3D;&quot;2.0&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;My News Feed&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_site_link /&gt;&lt;/link&gt;
-    &lt;description&gt;Latest news and updates&lt;/description&gt;
-    &lt;language&gt;en-us&lt;/language&gt;
-    &lt;pubDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+<rss version="2.0">
+  <channel>
+    <title>My News Feed</title>
+    <link><cms:show k_site_link /></link>
+    <description>Latest news and updates</description>
+    <language>en-us</language>
+    <pubDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;news.php&#x27; limit&#x3D;&#x27;20&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-      &lt;item&gt;
-        &lt;title&gt;&lt;cms:show k_page_title /&gt;&lt;/title&gt;
-        &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-        &lt;description&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/description&gt;
-        &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-        &lt;cms:if k_page_author&gt;
-          &lt;author&gt;&lt;cms:show k_page_author_email /&gt; (&lt;cms:show k_page_author /&gt;)&lt;/author&gt;
-        &lt;/cms:if&gt;
-        &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-      &lt;/item&gt;
-    &lt;/cms:pages&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='news.php' limit='20' orderby='publish_date' order_dir='desc'>
+      <item>
+        <title><cms:show k_page_title /></title>
+        <link><cms:show k_page_link /></link>
+        <description>
+          <cms:html_encode>
+            <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+          </cms:html_encode>
+        </description>
+        <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+        <cms:if k_page_author>
+          <author><cms:show k_page_author_email /> (<cms:show k_page_author />)</author>
+        </cms:if>
+        <guid isPermaLink="true"><cms:show k_page_link /></guid>
+      </item>
+    </cms:pages>
+  </channel>
+</rss>
+<?php COUCH::invoke(); ?>
+```
 
 ### Multi-Template RSS Feed
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&lt;rss version&#x3D;&quot;2.0&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;All Content RSS Feed&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_site_link /&gt;&lt;/link&gt;
-    &lt;description&gt;All content from the site&lt;/description&gt;
-    &lt;language&gt;en-us&lt;/language&gt;
-    &lt;pubDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+<rss version="2.0">
+  <channel>
+    <title>All Content RSS Feed</title>
+    <link><cms:show k_site_link /></link>
+    <description>All content from the site</description>
+    <language>en-us</language>
+    <pubDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php,news.php,portfolio.php&#x27; limit&#x3D;&#x27;30&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-      &lt;item&gt;
-        &lt;title&gt;&lt;cms:show k_page_title /&gt; [&lt;cms:show k_template_title /&gt;]&lt;/title&gt;
-        &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-        &lt;description&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/description&gt;
-        &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-        &lt;category&gt;&lt;cms:show k_template_title /&gt;&lt;/category&gt;
-        &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-      &lt;/item&gt;
-    &lt;/cms:pages&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='blog.php,news.php,portfolio.php' limit='30' orderby='publish_date' order_dir='desc'>
+      <item>
+        <title><cms:show k_page_title /> [<cms:show k_template_title />]</title>
+        <link><cms:show k_page_link /></link>
+        <description>
+          <cms:html_encode>
+            <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+          </cms:html_encode>
+        </description>
+        <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+        <category><cms:show k_template_title /></category>
+        <guid isPermaLink="true"><cms:show k_page_link /></guid>
+      </item>
+    </cms:pages>
+  </channel>
+</rss>
+<?php COUCH::invoke(); ?>
+```
 
 ### RSS Feed with Images
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&lt;rss version&#x3D;&quot;2.0&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;Blog with Images RSS Feed&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_site_link /&gt;&lt;/link&gt;
-    &lt;description&gt;Blog posts with featured images&lt;/description&gt;
-    &lt;language&gt;en-us&lt;/language&gt;
-    &lt;pubDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+<rss version="2.0">
+  <channel>
+    <title>Blog with Images RSS Feed</title>
+    <link><cms:show k_site_link /></link>
+    <description>Blog posts with featured images</description>
+    <language>en-us</language>
+    <pubDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-      &lt;item&gt;
-        &lt;title&gt;&lt;cms:show k_page_title /&gt;&lt;/title&gt;
-        &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-        &lt;description&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:if featured_image&gt;
-              &lt;img src&#x3D;&quot;&lt;cms:show featured_image /&gt;&quot; alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot; /&gt;
-            &lt;/cms:if&gt;
-            &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/description&gt;
-        &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-        &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-      &lt;/item&gt;
-    &lt;/cms:pages&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='blog.php' limit='20' orderby='publish_date' order_dir='desc'>
+      <item>
+        <title><cms:show k_page_title /></title>
+        <link><cms:show k_page_link /></link>
+        <description>
+          <cms:html_encode>
+            <cms:if featured_image>
+              <img src="<cms:show featured_image />" alt="<cms:show k_page_title />" />
+            </cms:if>
+            <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+          </cms:html_encode>
+        </description>
+        <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+        <guid isPermaLink="true"><cms:show k_page_link /></guid>
+      </item>
+    </cms:pages>
+  </channel>
+</rss>
+<?php COUCH::invoke(); ?>
+```
 
 ### RSS Feed for Specific Folder
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&lt;rss version&#x3D;&quot;2.0&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;Technology News RSS Feed&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_site_link /&gt;&lt;/link&gt;
-    &lt;description&gt;Latest technology news&lt;/description&gt;
-    &lt;language&gt;en-us&lt;/language&gt;
-    &lt;pubDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+<rss version="2.0">
+  <channel>
+    <title>Technology News RSS Feed</title>
+    <link><cms:show k_site_link /></link>
+    <description>Latest technology news</description>
+    <language>en-us</language>
+    <pubDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;news.php&#x27; folder&#x3D;&#x27;technology&#x27; limit&#x3D;&#x27;20&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-      &lt;item&gt;
-        &lt;title&gt;&lt;cms:show k_page_title /&gt;&lt;/title&gt;
-        &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-        &lt;description&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/description&gt;
-        &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-        &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-      &lt;/item&gt;
-    &lt;/cms:pages&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='news.php' folder='technology' limit='20' orderby='publish_date' order_dir='desc'>
+      <item>
+        <title><cms:show k_page_title /></title>
+        <link><cms:show k_page_link /></link>
+        <description>
+          <cms:html_encode>
+            <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+          </cms:html_encode>
+        </description>
+        <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+        <guid isPermaLink="true"><cms:show k_page_link /></guid>
+      </item>
+    </cms:pages>
+  </channel>
+</rss>
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
@@ -264,102 +264,102 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ### RSS Feed with Custom Excerpt
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27;&gt;
-  &lt;item&gt;
-    &lt;title&gt;&lt;cms:show k_page_title /&gt;&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-    &lt;description&gt;
-      &lt;cms:html_encode&gt;
-        &lt;cms:if k_page_excerpt&gt;
-          &lt;cms:show k_page_excerpt /&gt;
-        &lt;cms:else /&gt;
-          &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-        &lt;/cms:if&gt;
-      &lt;/cms:html_encode&gt;
-    &lt;/description&gt;
-    &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-    &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-  &lt;/item&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='20'>
+  <item>
+    <title><cms:show k_page_title /></title>
+    <link><cms:show k_page_link /></link>
+    <description>
+      <cms:html_encode>
+        <cms:if k_page_excerpt>
+          <cms:show k_page_excerpt />
+        <cms:else />
+          <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+        </cms:if>
+      </cms:html_encode>
+    </description>
+    <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+    <guid isPermaLink="true"><cms:show k_page_link /></guid>
+  </item>
+</cms:pages>
+```
 
 ### RSS Feed with Comments Count
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27;&gt;
-  &lt;item&gt;
-    &lt;title&gt;&lt;cms:show k_page_title /&gt;&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-    &lt;description&gt;
-      &lt;cms:html_encode&gt;
-        &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-        &lt;cms:if k_comment_count&gt;
-          &lt;p&gt;Comments: &lt;cms:show k_comment_count /&gt;&lt;/p&gt;
-        &lt;/cms:if&gt;
-      &lt;/cms:html_encode&gt;
-    &lt;/description&gt;
-    &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-    &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-  &lt;/item&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='20'>
+  <item>
+    <title><cms:show k_page_title /></title>
+    <link><cms:show k_page_link /></link>
+    <description>
+      <cms:html_encode>
+        <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+        <cms:if k_comment_count>
+          <p>Comments: <cms:show k_comment_count /></p>
+        </cms:if>
+      </cms:html_encode>
+    </description>
+    <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+    <guid isPermaLink="true"><cms:show k_page_link /></guid>
+  </item>
+</cms:pages>
+```
 
 ### RSS Feed Validation
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&lt;rss version&#x3D;&quot;2.0&quot; xmlns:content&#x3D;&quot;http://purl.org/rss/1.0/modules/content/&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;&lt;cms:html_encode&gt;&lt;cms:show k_site_name /&gt;&lt;/cms:html_encode&gt;&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_site_link /&gt;&lt;/link&gt;
-    &lt;description&gt;&lt;cms:html_encode&gt;Latest content from &lt;cms:show k_site_name /&gt;&lt;/cms:html_encode&gt;&lt;/description&gt;
-    &lt;language&gt;en-us&lt;/language&gt;
-    &lt;pubDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-    &lt;lastBuildDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/lastBuildDate&gt;
-    &lt;generator&gt;CouchCMS&lt;/generator&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title><cms:html_encode><cms:show k_site_name /></cms:html_encode></title>
+    <link><cms:show k_site_link /></link>
+    <description><cms:html_encode>Latest content from <cms:show k_site_name /></cms:html_encode></description>
+    <language>en-us</language>
+    <pubDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+    <lastBuildDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</lastBuildDate>
+    <generator>CouchCMS</generator>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-      &lt;item&gt;
-        &lt;title&gt;&lt;cms:html_encode&gt;&lt;cms:show k_page_title /&gt;&lt;/cms:html_encode&gt;&lt;/title&gt;
-        &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-        &lt;description&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/description&gt;
-        &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-        &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-        &lt;content:encoded&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:show k_page_content /&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/content:encoded&gt;
-      &lt;/item&gt;
-    &lt;/cms:pages&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='blog.php' limit='20' orderby='publish_date' order_dir='desc'>
+      <item>
+        <title><cms:html_encode><cms:show k_page_title /></cms:html_encode></title>
+        <link><cms:show k_page_link /></link>
+        <description>
+          <cms:html_encode>
+            <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+          </cms:html_encode>
+        </description>
+        <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+        <guid isPermaLink="true"><cms:show k_page_link /></guid>
+        <content:encoded>
+          <cms:html_encode>
+            <cms:show k_page_content />
+          </cms:html_encode>
+        </content:encoded>
+      </item>
+    </cms:pages>
+  </channel>
+</rss>
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
 ## Best Practices
 
-1. **XML Declaration**: Always use &#x60;concat&#x60; tag for XML declaration to avoid PHP parsing errors
+1. **XML Declaration**: Always use `concat` tag for XML declaration to avoid PHP parsing errors
 
-2. **Content Type**: Always set content type to &#x60;text/xml&#x60; before XML declaration
+2. **Content Type**: Always set content type to `text/xml` before XML declaration
 
-3. **Date Format**: Use RFC 822 format for dates: &#x60;D, d M Y H:i:s GMT&#x60;
+3. **Date Format**: Use RFC 822 format for dates: `D, d M Y H:i:s GMT`
 
-4. **HTML Encoding**: Always encode HTML content using &#x60;html_encode&#x60; tag
+4. **HTML Encoding**: Always encode HTML content using `html_encode` tag
 
-5. **Excerpts**: Use &#x60;excerptHTML&#x60; for feed descriptions (keeps them concise)
+5. **Excerpts**: Use `excerptHTML` for feed descriptions (keeps them concise)
 
-6. **GUID**: Always include &#x60;&lt;guid&gt;&#x60; with &#x60;isPermaLink&#x3D;&quot;true&quot;&#x60; for proper feed validation
+6. **GUID**: Always include `<guid>` with `isPermaLink="true"` for proper feed validation
 
-7. **Language**: Set appropriate language code (e.g., &#x60;en-us&#x60;)
+7. **Language**: Set appropriate language code (e.g., `en-us`)
 
 8. **Limit Items**: Use reasonable limit (10-30 items) for feed performance
 
@@ -371,55 +371,55 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ## Quick Fixes
 
-### &quot;RSS feed shows PHP code&quot;
+### "RSS feed shows PHP code"
 
 **Problem**: PHP code appears in feed output
 
 **Solution**: Ensure content type is set before XML declaration on same line:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+```
 
-### &quot;Invalid XML feed&quot;
+### "Invalid XML feed"
 
-**Problem**: Feed doesn&#x27;t validate
+**Problem**: Feed doesn't validate
 
 **Solution**: Check for proper encoding and structure:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- Ensure proper encoding --&gt;
-&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
+```php title="template.php"
+<!-- Ensure proper encoding -->
+<cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
 
-&lt;!-- Ensure proper date format --&gt;
-&lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-&#x60;&#x60;&#x60;
+<!-- Ensure proper date format -->
+<pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+```
 
-### &quot;HTML in feed not displaying&quot;
+### "HTML in feed not displaying"
 
 **Problem**: HTML tags show as text
 
-**Solution**: Use &#x60;html_encode&#x60; properly:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;description&gt;
-  &lt;cms:html_encode&gt;
-    &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-  &lt;/cms:html_encode&gt;
-&lt;/description&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Use `html_encode` properly:
+```php title="template.php"
+<description>
+  <cms:html_encode>
+    <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+  </cms:html_encode>
+</description>
+```
 
-### &quot;Feed shows empty items&quot;
+### "Feed shows empty items"
 
 **Problem**: Items have no content
 
 **Solution**: Check if pages exist and are published:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-  &lt;cms:if k_page_title&gt;
-    &lt;item&gt;
-      &lt;!-- Item content --&gt;
-    &lt;/item&gt;
-  &lt;/cms:if&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<cms:pages masterpage='blog.php' limit='20' orderby='publish_date' order_dir='desc'>
+  <cms:if k_page_title>
+    <item>
+      <!-- Item content -->
+    </item>
+  </cms:if>
+</cms:pages>
+```
 
 ---
 
@@ -431,52 +431,52 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:content_type &#x27;text/xml&#x27; /&gt;&lt;cms:concat &#x27;&lt;&#x27; &#x27;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;&#x27; k_site_charset &#x27;&quot;?&#x27; &#x27;&gt;&#x27; /&gt;
-&lt;rss version&#x3D;&quot;2.0&quot; xmlns:content&#x3D;&quot;http://purl.org/rss/1.0/modules/content/&quot;&gt;
-  &lt;channel&gt;
-    &lt;title&gt;&lt;cms:html_encode&gt;&lt;cms:show k_site_name /&gt; - Latest News&lt;/cms:html_encode&gt;&lt;/title&gt;
-    &lt;link&gt;&lt;cms:show k_site_link /&gt;&lt;/link&gt;
-    &lt;description&gt;&lt;cms:html_encode&gt;Latest news and updates from &lt;cms:show k_site_name /&gt;&lt;/cms:html_encode&gt;&lt;/description&gt;
-    &lt;language&gt;en-us&lt;/language&gt;
-    &lt;pubDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-    &lt;lastBuildDate&gt;&lt;cms:date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/lastBuildDate&gt;
-    &lt;generator&gt;CouchCMS&lt;/generator&gt;
-    &lt;webMaster&gt;&lt;cms:show k_admin_email /&gt; (&lt;cms:show k_site_name /&gt;)&lt;/webMaster&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:content_type 'text/xml' /><cms:concat '<' '?xml version="1.0" encoding="' k_site_charset '"?' '>' />
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title><cms:html_encode><cms:show k_site_name /> - Latest News</cms:html_encode></title>
+    <link><cms:show k_site_link /></link>
+    <description><cms:html_encode>Latest news and updates from <cms:show k_site_name /></cms:html_encode></description>
+    <language>en-us</language>
+    <pubDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+    <lastBuildDate><cms:date format='D, d M Y H:i:s' gmt='1'/> GMT</lastBuildDate>
+    <generator>CouchCMS</generator>
+    <webMaster><cms:show k_admin_email /> (<cms:show k_site_name />)</webMaster>
 
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; limit&#x3D;&#x27;20&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-      &lt;item&gt;
-        &lt;title&gt;&lt;cms:html_encode&gt;&lt;cms:show k_page_title /&gt;&lt;/cms:html_encode&gt;&lt;/title&gt;
-        &lt;link&gt;&lt;cms:show k_page_link /&gt;&lt;/link&gt;
-        &lt;description&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:if k_page_excerpt&gt;
-              &lt;cms:show k_page_excerpt /&gt;
-            &lt;cms:else /&gt;
-              &lt;cms:excerptHTML&gt;&lt;cms:show k_page_content /&gt;&lt;/cms:excerptHTML&gt;
-            &lt;/cms:if&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/description&gt;
-        &lt;pubDate&gt;&lt;cms:date k_page_date format&#x3D;&#x27;D, d M Y H:i:s&#x27; gmt&#x3D;&#x27;1&#x27;/&gt; GMT&lt;/pubDate&gt;
-        &lt;guid isPermaLink&#x3D;&quot;true&quot;&gt;&lt;cms:show k_page_link /&gt;&lt;/guid&gt;
-        &lt;cms:if k_folder_name&gt;
-          &lt;category&gt;&lt;cms:show k_folder_name /&gt;&lt;/category&gt;
-        &lt;/cms:if&gt;
-        &lt;cms:if k_page_author&gt;
-          &lt;author&gt;&lt;cms:show k_page_author_email /&gt; (&lt;cms:show k_page_author /&gt;)&lt;/author&gt;
-        &lt;/cms:if&gt;
-        &lt;content:encoded&gt;
-          &lt;cms:html_encode&gt;
-            &lt;cms:show k_page_content /&gt;
-          &lt;/cms:html_encode&gt;
-        &lt;/content:encoded&gt;
-      &lt;/item&gt;
-    &lt;/cms:pages&gt;
-  &lt;/channel&gt;
-&lt;/rss&gt;
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+    <cms:pages masterpage='blog.php' limit='20' orderby='publish_date' order_dir='desc'>
+      <item>
+        <title><cms:html_encode><cms:show k_page_title /></cms:html_encode></title>
+        <link><cms:show k_page_link /></link>
+        <description>
+          <cms:html_encode>
+            <cms:if k_page_excerpt>
+              <cms:show k_page_excerpt />
+            <cms:else />
+              <cms:excerptHTML><cms:show k_page_content /></cms:excerptHTML>
+            </cms:if>
+          </cms:html_encode>
+        </description>
+        <pubDate><cms:date k_page_date format='D, d M Y H:i:s' gmt='1'/> GMT</pubDate>
+        <guid isPermaLink="true"><cms:show k_page_link /></guid>
+        <cms:if k_folder_name>
+          <category><cms:show k_folder_name /></category>
+        </cms:if>
+        <cms:if k_page_author>
+          <author><cms:show k_page_author_email /> (<cms:show k_page_author />)</author>
+        </cms:if>
+        <content:encoded>
+          <cms:html_encode>
+            <cms:show k_page_content />
+          </cms:html_encode>
+        </content:encoded>
+      </item>
+    </cms:pages>
+  </channel>
+</rss>
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
@@ -515,10 +515,10 @@ You are a CouchCMS RSS feed expert specializing in XML feed generation, content 
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;concepts/rss-feeds.mdx&#x60;
-- Tag Reference: &#x60;tags-reference/core/content_type/&#x60;
-- Tag Reference: &#x60;tags-reference/core/concat/&#x60;
-- Tag Reference: &#x60;tags-reference/core/excerptHTML/&#x60;
+- CouchCMS Documentation: `concepts/rss-feeds.mdx`
+- Tag Reference: `tags-reference/core/content_type/`
+- Tag Reference: `tags-reference/core/concat/`
+- Tag Reference: `tags-reference/core/excerptHTML/`
 
 
 

@@ -2,6 +2,27 @@
 
 Thank you for your interest in contributing! This guide explains **how to contribute from your project** using the submodule workflow.
 
+## ⚡ 30-Second Quick Start
+
+```bash
+# 1. Go to toolkit directory
+cd ai-toolkit-shared
+
+# 2. Start a feature branch
+bun scripts/git-flow.js feature start your-feature-name
+
+# 3. Make changes, test, commit
+git add .
+git commit -m "feat: your change"
+
+# 4. Finish and create PR
+bun scripts/git-flow.js feature finish your-feature-name
+```
+
+**That's it!** Read below for detailed explanations.
+
+---
+
 ## 🎯 Quick Overview
 
 You can contribute to this toolkit **directly from your project** without cloning the toolkit separately. The submodule setup makes this easy!

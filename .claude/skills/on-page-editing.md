@@ -22,23 +22,23 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 | Tag                    | Purpose                          |
 | ---------------------- | -------------------------------- |
-| &#x60;&lt;cms:load_edit /&gt;&#x60;    | Load editing libraries           |
-| &#x60;&lt;cms:inline_edit&gt;&#x60;   | Enable inline text editing       |
-| &#x60;&lt;cms:popup_edit&gt;&#x60;     | Enable popup editing             |
-| &#x60;&lt;cms:no_edit /&gt;&#x60;      | Disable editing temporarily      |
+| `<cms:load_edit />`    | Load editing libraries           |
+| `<cms:inline_edit>`   | Enable inline text editing       |
+| `<cms:popup_edit>`     | Enable popup editing             |
+| `<cms:no_edit />`      | Disable editing temporarily      |
 
 ### Editing Types
 
 | Type          | Use For                          | Tag                |
 | ------------- | -------------------------------- | ------------------ |
-| Inline        | Text content (h1, p, div, etc.) | &#x60;inline_edit&#x60;      |
-| Popup         | Images, links, complex content   | &#x60;popup_edit&#x60;       |
+| Inline        | Text content (h1, p, div, etc.) | `inline_edit`      |
+| Popup         | Images, links, complex content   | `popup_edit`       |
 
 ### Your Approach
 
-- Add &#x60;&lt;cms:load_edit /&gt;&#x60; in &#x60;&lt;head&gt;&#x60; section
-- Use &#x60;inline_edit&#x60; for text elements (as HTML attribute)
-- Use &#x60;popup_edit&#x60; for non-text elements (as separate tag)
+- Add `<cms:load_edit />` in `<head>` section
+- Use `inline_edit` for text elements (as HTML attribute)
+- Use `popup_edit` for non-text elements (as separate tag)
 - Only visible to admins (level 7+)
 - Can be toggled on/off with session variables
 - Works with all editable region types
@@ -49,144 +49,144 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Enable On-Page Editing
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;My Site&lt;/title&gt;
-    &lt;!-- Other head content --&gt;
-    &lt;cms:load_edit /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;!-- Page content --&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Site</title>
+    <!-- Other head content -->
+    <cms:load_edit />
+</head>
+<body>
+    <!-- Page content -->
+</body>
+</html>
+```
 
 ### Inline Text Editing
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- For headings --&gt;
-&lt;h1 &lt;cms:inline_edit &#x27;page_title&#x27; /&gt;&gt;&lt;cms:show page_title /&gt;&lt;/h1&gt;
+```php title="template.php"
+<!-- For headings -->
+<h1 <cms:inline_edit 'page_title' />><cms:show page_title /></h1>
 
-&lt;!-- For paragraphs --&gt;
-&lt;p &lt;cms:inline_edit &#x27;page_content&#x27; /&gt;&gt;&lt;cms:show page_content /&gt;&lt;/p&gt;
+<!-- For paragraphs -->
+<p <cms:inline_edit 'page_content' />><cms:show page_content /></p>
 
-&lt;!-- For divs --&gt;
-&lt;div &lt;cms:inline_edit &#x27;intro_text&#x27; /&gt;&gt;
-    &lt;cms:show intro_text /&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+<!-- For divs -->
+<div <cms:inline_edit 'intro_text' />>
+    <cms:show intro_text />
+</div>
+```
 
 ### Popup Image Editing
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;div class&#x3D;&quot;image-container&quot;&gt;
-    &lt;img src&#x3D;&quot;&lt;cms:show hero_image /&gt;&quot; alt&#x3D;&quot;Hero image&quot; /&gt;
-    &lt;cms:popup_edit &#x27;hero_image&#x27; /&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<div class="image-container">
+    <img src="<cms:show hero_image />" alt="Hero image" />
+    <cms:popup_edit 'hero_image' />
+</div>
+```
 
 ### Popup with Custom Link Text
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;div class&#x3D;&quot;content&quot;&gt;
-    &lt;cms:show intro_text /&gt;
-    &lt;cms:popup_edit &#x27;intro_text&#x27; link_text&#x3D;&#x27;Edit content&#x27; class&#x3D;&#x27;btn btn-sm btn-ghost&#x27; /&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<div class="content">
+    <cms:show intro_text />
+    <cms:popup_edit 'intro_text' link_text='Edit content' class='btn btn-sm btn-ghost' />
+</div>
+```
 
 ### Multiple Regions in Popup
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;div class&#x3D;&quot;hero-section&quot;&gt;
-    &lt;img src&#x3D;&quot;&lt;cms:show hero_image /&gt;&quot; alt&#x3D;&quot;Hero&quot; /&gt;
-    &lt;h1&gt;&lt;cms:show hero_title /&gt;&lt;/h1&gt;
-    &lt;p&gt;&lt;cms:show hero_text /&gt;&lt;/p&gt;
-    &lt;cms:popup_edit &#x27;hero_image|hero_title|hero_text&#x27; link_text&#x3D;&#x27;Edit Hero Section&#x27; /&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<div class="hero-section">
+    <img src="<cms:show hero_image />" alt="Hero" />
+    <h1><cms:show hero_title /></h1>
+    <p><cms:show hero_text /></p>
+    <cms:popup_edit 'hero_image|hero_title|hero_text' link_text='Edit Hero Section' />
+</div>
+```
 
 ### Complete On-Page Editing Template
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Home&#x27; clonable&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:editable name&#x3D;&#x27;hero_image&#x27; label&#x3D;&#x27;Hero Image&#x27; type&#x3D;&#x27;image&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;hero_title&#x27; label&#x3D;&#x27;Hero Title&#x27; type&#x3D;&#x27;nicedit&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;hero_text&#x27; label&#x3D;&#x27;Hero Text&#x27; type&#x3D;&#x27;richtext&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;cta_button&#x27; label&#x3D;&#x27;CTA Button Text&#x27; type&#x3D;&#x27;text&#x27; /&gt;
-&lt;/cms:template&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Home' clonable='1'>
+    <cms:editable name='hero_image' label='Hero Image' type='image' />
+    <cms:editable name='hero_title' label='Hero Title' type='nicedit' />
+    <cms:editable name='hero_text' label='Hero Text' type='richtext' />
+    <cms:editable name='cta_button' label='CTA Button Text' type='text' />
+</cms:template>
 
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;&lt;cms:show k_site_name /&gt;&lt;/title&gt;
-    &lt;meta charset&#x3D;&quot;utf-8&quot; /&gt;
-    &lt;meta name&#x3D;&quot;viewport&quot; content&#x3D;&quot;width&#x3D;device-width, initial-scale&#x3D;1&quot; /&gt;
-    &lt;cms:load_edit /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;section class&#x3D;&quot;hero&quot;&gt;
-        &lt;div class&#x3D;&quot;container&quot;&gt;
-            &lt;div class&#x3D;&quot;hero-image&quot;&gt;
-                &lt;img src&#x3D;&quot;&lt;cms:show hero_image /&gt;&quot; alt&#x3D;&quot;Hero&quot; /&gt;
-                &lt;cms:popup_edit &#x27;hero_image&#x27; link_text&#x3D;&#x27;Edit Image&#x27; /&gt;
-            &lt;/div&gt;
-            &lt;div class&#x3D;&quot;hero-content&quot;&gt;
-                &lt;h1 &lt;cms:inline_edit &#x27;hero_title&#x27; /&gt;&gt;&lt;cms:show hero_title /&gt;&lt;/h1&gt;
-                &lt;div &lt;cms:inline_edit &#x27;hero_text&#x27; /&gt;&gt;
-                    &lt;cms:show hero_text /&gt;
-                &lt;/div&gt;
-                &lt;a href&#x3D;&quot;#contact&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;
-                    &lt;cms:show cta_button /&gt;
-                    &lt;cms:popup_edit &#x27;cta_button&#x27; link_text&#x3D;&#x27;Edit&#x27; /&gt;
-                &lt;/a&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/section&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+<!DOCTYPE html>
+<html>
+<head>
+    <title><cms:show k_site_name /></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <cms:load_edit />
+</head>
+<body>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-image">
+                <img src="<cms:show hero_image />" alt="Hero" />
+                <cms:popup_edit 'hero_image' link_text='Edit Image' />
+            </div>
+            <div class="hero-content">
+                <h1 <cms:inline_edit 'hero_title' />><cms:show hero_title /></h1>
+                <div <cms:inline_edit 'hero_text' />>
+                    <cms:show hero_text />
+                </div>
+                <a href="#contact" class="btn btn-primary">
+                    <cms:show cta_button />
+                    <cms:popup_edit 'cta_button' link_text='Edit' />
+                </a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Disable Editing Border
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;head&gt;
-    &lt;cms:load_edit no_border&#x3D;&#x27;1&#x27; /&gt;
-&lt;/head&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<head>
+    <cms:load_edit no_border='1' />
+</head>
+```
 
 ### Toggle Editing On/Off
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- At top of template --&gt;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27; &amp;&amp; &quot;&lt;cms:not &quot;&lt;cms:get_session &#x27;inline_edit_on&#x27; /&gt;&quot; /&gt;&quot;&gt;
-    &lt;cms:no_edit /&gt;
-&lt;/cms:if&gt;
+```php title="template.php"
+<!-- At top of template -->
+<cms:if k_user_access_level ge '7' && "<cms:not "<cms:get_session 'inline_edit_on' />" />">
+    <cms:no_edit />
+</cms:if>
 
-&lt;!-- Toggle form (admin only) --&gt;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-    &lt;cms:form method&#x3D;&quot;post&quot; anchor&#x3D;&quot;0&quot;&gt;
-        &lt;cms:if k_success&gt;
-            &lt;cms:if &quot;&lt;cms:get_session &#x27;inline_edit_on&#x27; /&gt;&quot;&gt;
-                &lt;cms:delete_session &#x27;inline_edit_on&#x27; /&gt;
-            &lt;cms:else /&gt;
-                &lt;cms:set_session &#x27;inline_edit_on&#x27; value&#x3D;&#x27;1&#x27; /&gt;
-            &lt;/cms:if&gt;
-            &lt;cms:redirect k_page_link /&gt;
-        &lt;/cms:if&gt;
+<!-- Toggle form (admin only) -->
+<cms:if k_user_access_level ge '7'>
+    <cms:form method="post" anchor="0">
+        <cms:if k_success>
+            <cms:if "<cms:get_session 'inline_edit_on' />">
+                <cms:delete_session 'inline_edit_on' />
+            <cms:else />
+                <cms:set_session 'inline_edit_on' value='1' />
+            </cms:if>
+            <cms:redirect k_page_link />
+        </cms:if>
 
-        &lt;cms:if &quot;&lt;cms:get_session &#x27;inline_edit_on&#x27; /&gt;&quot;&gt;
-            &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-sm&quot;&gt;Turn Edit Off&lt;/button&gt;
-        &lt;cms:else /&gt;
-            &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-sm&quot;&gt;Turn Edit On&lt;/button&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:form&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+        <cms:if "<cms:get_session 'inline_edit_on' />">
+            <button type="submit" class="btn btn-sm">Turn Edit Off</button>
+        <cms:else />
+            <button type="submit" class="btn btn-sm">Turn Edit On</button>
+        </cms:if>
+    </cms:form>
+</cms:if>
+```
 
 ---
 
@@ -194,54 +194,54 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ### Inline Edit with Custom Styling
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;h1
-    &lt;cms:inline_edit &#x27;page_title&#x27; /&gt;
-    class&#x3D;&quot;text-4xl font-bold&quot;
-&gt;
-    &lt;cms:show page_title /&gt;
-&lt;/h1&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<h1
+    <cms:inline_edit 'page_title' />
+    class="text-4xl font-bold"
+>
+    <cms:show page_title />
+</h1>
+```
 
 ### Popup Edit with Icon
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;div class&#x3D;&quot;relative&quot;&gt;
-    &lt;img src&#x3D;&quot;&lt;cms:show gallery_image /&gt;&quot; alt&#x3D;&quot;Gallery&quot; /&gt;
-    &lt;cms:popup_edit &#x27;gallery_image&#x27; link_text&#x3D;&#x27;✏️&#x27; class&#x3D;&#x27;absolute top-2 right-2 btn btn-circle btn-sm&#x27; /&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<div class="relative">
+    <img src="<cms:show gallery_image />" alt="Gallery" />
+    <cms:popup_edit 'gallery_image' link_text='✏️' class='absolute top-2 right-2 btn btn-circle btn-sm' />
+</div>
+```
 
 ### Conditional Editing
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-    &lt;div class&#x3D;&quot;content&quot;&gt;
-        &lt;h1 &lt;cms:inline_edit &#x27;page_title&#x27; /&gt;&gt;&lt;cms:show page_title /&gt;&lt;/h1&gt;
-        &lt;div &lt;cms:inline_edit &#x27;page_content&#x27; /&gt;&gt;
-            &lt;cms:show page_content /&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;cms:else /&gt;
-    &lt;!-- Regular display for non-admins --&gt;
-    &lt;div class&#x3D;&quot;content&quot;&gt;
-        &lt;h1&gt;&lt;cms:show page_title /&gt;&lt;/h1&gt;
-        &lt;div&gt;&lt;cms:show page_content /&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<cms:if k_user_access_level ge '7'>
+    <div class="content">
+        <h1 <cms:inline_edit 'page_title' />><cms:show page_title /></h1>
+        <div <cms:inline_edit 'page_content' />>
+            <cms:show page_content />
+        </div>
+    </div>
+<cms:else />
+    <!-- Regular display for non-admins -->
+    <div class="content">
+        <h1><cms:show page_title /></h1>
+        <div><cms:show page_content /></div>
+    </div>
+</cms:if>
+```
 
 ---
 
 ## Best Practices
 
-1. **Load Edit Tag**: Always add &#x60;&lt;cms:load_edit /&gt;&#x60; in &#x60;&lt;head&gt;&#x60; section
+1. **Load Edit Tag**: Always add `<cms:load_edit />` in `<head>` section
 
-2. **Inline for Text**: Use &#x60;inline_edit&#x60; for text content (h1, p, div, span, etc.)
+2. **Inline for Text**: Use `inline_edit` for text content (h1, p, div, span, etc.)
 
-3. **Popup for Complex**: Use &#x60;popup_edit&#x60; for images, links, and complex content
+3. **Popup for Complex**: Use `popup_edit` for images, links, and complex content
 
-4. **Block Elements**: &#x60;inline_edit&#x60; must be added as attribute to block-level HTML elements
+4. **Block Elements**: `inline_edit` must be added as attribute to block-level HTML elements
 
 5. **Admin Only**: Editing only appears for admins (level 7+) automatically
 
@@ -249,9 +249,9 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 7. **Custom Styling**: Style edit links to match your design
 
-8. **Multiple Regions**: Use pipe separator (&#x60;|&#x60;) for multiple regions in popup
+8. **Multiple Regions**: Use pipe separator (`|`) for multiple regions in popup
 
-9. **No Border**: Use &#x60;no_border&#x3D;&#x27;1&#x27;&#x60; if yellow outline is unwanted
+9. **No Border**: Use `no_border='1'` if yellow outline is unwanted
 
 10. **User Experience**: Make edit links clearly visible but not intrusive
 
@@ -259,52 +259,52 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ## Quick Fixes
 
-### &quot;Editing not showing&quot;
+### "Editing not showing"
 
-**Problem**: Edit links don&#x27;t appear
+**Problem**: Edit links don't appear
 
-**Solution**: Ensure &#x60;load_edit&#x60; is in head and user is admin:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;head&gt;
-    &lt;cms:load_edit /&gt;
-&lt;/head&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Ensure `load_edit` is in head and user is admin:
+```php title="template.php"
+<head>
+    <cms:load_edit />
+</head>
+```
 
-### &quot;Inline edit not working&quot;
+### "Inline edit not working"
 
-**Problem**: Inline editing doesn&#x27;t activate
+**Problem**: Inline editing doesn't activate
 
-**Solution**: Ensure &#x60;inline_edit&#x60; is on block-level element:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- ❌ Wrong - inline element --&gt;
-&lt;span &lt;cms:inline_edit &#x27;title&#x27; /&gt;&gt;&lt;cms:show title /&gt;&lt;/span&gt;
+**Solution**: Ensure `inline_edit` is on block-level element:
+```php title="template.php"
+<!-- ❌ Wrong - inline element -->
+<span <cms:inline_edit 'title' />><cms:show title /></span>
 
-&lt;!-- ✅ Correct - block element --&gt;
-&lt;h1 &lt;cms:inline_edit &#x27;title&#x27; /&gt;&gt;&lt;cms:show title /&gt;&lt;/h1&gt;
-&#x60;&#x60;&#x60;
+<!-- ✅ Correct - block element -->
+<h1 <cms:inline_edit 'title' />><cms:show title /></h1>
+```
 
-### &quot;Popup edit link not visible&quot;
+### "Popup edit link not visible"
 
-**Problem**: Popup edit link doesn&#x27;t appear
+**Problem**: Popup edit link doesn't appear
 
 **Solution**: Check tag placement and region name:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;div&gt;
-    &lt;img src&#x3D;&quot;&lt;cms:show my_image /&gt;&quot; alt&#x3D;&quot;Image&quot; /&gt;
-    &lt;cms:popup_edit &#x27;my_image&#x27; /&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<div>
+    <img src="<cms:show my_image />" alt="Image" />
+    <cms:popup_edit 'my_image' />
+</div>
+```
 
-### &quot;Editing shows for non-admins&quot;
+### "Editing shows for non-admins"
 
 **Problem**: Edit links visible to regular users
 
-**Solution**: This shouldn&#x27;t happen - editing is admin-only. Check user access level or add conditional:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-    &lt;cms:popup_edit &#x27;my_image&#x27; /&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+**Solution**: This shouldn't happen - editing is admin-only. Check user access level or add conditional:
+```php title="template.php"
+<cms:if k_user_access_level ge '7'>
+    <cms:popup_edit 'my_image' />
+</cms:if>
+```
 
 ---
 
@@ -316,88 +316,88 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 **Solution**:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:template title&#x3D;&#x27;Home&#x27; clonable&#x3D;&#x27;1&#x27;&gt;
-    &lt;cms:editable name&#x3D;&#x27;hero_image&#x27; label&#x3D;&#x27;Hero Image&#x27; type&#x3D;&#x27;image&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;hero_title&#x27; label&#x3D;&#x27;Hero Title&#x27; type&#x3D;&#x27;nicedit&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;hero_text&#x27; label&#x3D;&#x27;Hero Text&#x27; type&#x3D;&#x27;richtext&#x27; /&gt;
-    &lt;cms:editable name&#x3D;&#x27;cta_text&#x27; label&#x3D;&#x27;CTA Button&#x27; type&#x3D;&#x27;text&#x27; /&gt;
-&lt;/cms:template&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:template title='Home' clonable='1'>
+    <cms:editable name='hero_image' label='Hero Image' type='image' />
+    <cms:editable name='hero_title' label='Hero Title' type='nicedit' />
+    <cms:editable name='hero_text' label='Hero Text' type='richtext' />
+    <cms:editable name='cta_text' label='CTA Button' type='text' />
+</cms:template>
 
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;&lt;cms:show k_site_name /&gt;&lt;/title&gt;
-    &lt;meta charset&#x3D;&quot;utf-8&quot; /&gt;
-    &lt;cms:load_edit no_border&#x3D;&#x27;1&#x27; /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;section class&#x3D;&quot;hero bg-base-200&quot;&gt;
-        &lt;div class&#x3D;&quot;container mx-auto p-8&quot;&gt;
-            &lt;div class&#x3D;&quot;grid grid-cols-1 md:grid-cols-2 gap-8&quot;&gt;
-                &lt;div class&#x3D;&quot;relative&quot;&gt;
-                    &lt;img
-                        src&#x3D;&quot;&lt;cms:show hero_image /&gt;&quot;
-                        alt&#x3D;&quot;Hero&quot;
-                        class&#x3D;&quot;w-full rounded-lg&quot;
-                    /&gt;
-                    &lt;cms:popup_edit &#x27;hero_image&#x27; link_text&#x3D;&#x27;✏️ Edit&#x27; class&#x3D;&#x27;absolute top-2 right-2 btn btn-sm btn-primary&#x27; /&gt;
-                &lt;/div&gt;
-                &lt;div&gt;
-                    &lt;h1
-                        &lt;cms:inline_edit &#x27;hero_title&#x27; /&gt;
-                        class&#x3D;&quot;text-4xl font-bold mb-4&quot;
-                    &gt;
-                        &lt;cms:show hero_title /&gt;
-                    &lt;/h1&gt;
-                    &lt;div
-                        &lt;cms:inline_edit &#x27;hero_text&#x27; /&gt;
-                        class&#x3D;&quot;prose mb-6&quot;
-                    &gt;
-                        &lt;cms:show hero_text /&gt;
-                    &lt;/div&gt;
-                    &lt;a href&#x3D;&quot;#contact&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;
-                        &lt;cms:show cta_text /&gt;
-                        &lt;cms:popup_edit &#x27;cta_text&#x27; link_text&#x3D;&#x27;✏️&#x27; class&#x3D;&#x27;ml-2&#x27; /&gt;
-                    &lt;/a&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/section&gt;
+<!DOCTYPE html>
+<html>
+<head>
+    <title><cms:show k_site_name /></title>
+    <meta charset="utf-8" />
+    <cms:load_edit no_border='1' />
+</head>
+<body>
+    <section class="hero bg-base-200">
+        <div class="container mx-auto p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="relative">
+                    <img
+                        src="<cms:show hero_image />"
+                        alt="Hero"
+                        class="w-full rounded-lg"
+                    />
+                    <cms:popup_edit 'hero_image' link_text='✏️ Edit' class='absolute top-2 right-2 btn btn-sm btn-primary' />
+                </div>
+                <div>
+                    <h1
+                        <cms:inline_edit 'hero_title' />
+                        class="text-4xl font-bold mb-4"
+                    >
+                        <cms:show hero_title />
+                    </h1>
+                    <div
+                        <cms:inline_edit 'hero_text' />
+                        class="prose mb-6"
+                    >
+                        <cms:show hero_text />
+                    </div>
+                    <a href="#contact" class="btn btn-primary">
+                        <cms:show cta_text />
+                        <cms:popup_edit 'cta_text' link_text='✏️' class='ml-2' />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    &lt;!-- Toggle Edit (Admin Only) --&gt;
-    &lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-        &lt;div class&#x3D;&quot;fixed bottom-4 right-4&quot;&gt;
-            &lt;cms:form method&#x3D;&quot;post&quot; anchor&#x3D;&quot;0&quot;&gt;
-                &lt;cms:if k_success&gt;
-                    &lt;cms:if &quot;&lt;cms:get_session &#x27;inline_edit_on&#x27; /&gt;&quot;&gt;
-                        &lt;cms:delete_session &#x27;inline_edit_on&#x27; /&gt;
-                    &lt;cms:else /&gt;
-                        &lt;cms:set_session &#x27;inline_edit_on&#x27; value&#x3D;&#x27;1&#x27; /&gt;
-                    &lt;/cms:if&gt;
-                    &lt;cms:redirect k_page_link /&gt;
-                &lt;/cms:if&gt;
+    <!-- Toggle Edit (Admin Only) -->
+    <cms:if k_user_access_level ge '7'>
+        <div class="fixed bottom-4 right-4">
+            <cms:form method="post" anchor="0">
+                <cms:if k_success>
+                    <cms:if "<cms:get_session 'inline_edit_on' />">
+                        <cms:delete_session 'inline_edit_on' />
+                    <cms:else />
+                        <cms:set_session 'inline_edit_on' value='1' />
+                    </cms:if>
+                    <cms:redirect k_page_link />
+                </cms:if>
 
-                &lt;cms:if &quot;&lt;cms:get_session &#x27;inline_edit_on&#x27; /&gt;&quot;&gt;
-                    &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-sm btn-ghost&quot;&gt;Turn Edit Off&lt;/button&gt;
-                &lt;cms:else /&gt;
-                    &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn btn-sm btn-primary&quot;&gt;Turn Edit On&lt;/button&gt;
-                &lt;/cms:if&gt;
-            &lt;/cms:form&gt;
-        &lt;/div&gt;
-    &lt;/cms:if&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+                <cms:if "<cms:get_session 'inline_edit_on' />">
+                    <button type="submit" class="btn btn-sm btn-ghost">Turn Edit Off</button>
+                <cms:else />
+                    <button type="submit" class="btn btn-sm btn-primary">Turn Edit On</button>
+                </cms:if>
+            </cms:form>
+        </div>
+    </cms:if>
+</body>
+</html>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
 ## Success Indicators
 
-- ✅ &#x60;load_edit&#x60; tag in head section
+- ✅ `load_edit` tag in head section
 - ✅ Inline editing works for text elements
 - ✅ Popup editing works for images/links
 - ✅ Edit links only visible to admins
@@ -409,8 +409,8 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ## Warning Signs
 
-- ⚠️ Missing &#x60;load_edit&#x60; tag in head
-- ⚠️ &#x60;inline_edit&#x60; on inline elements (won&#x27;t work)
+- ⚠️ Missing `load_edit` tag in head
+- ⚠️ `inline_edit` on inline elements (won't work)
 - ⚠️ Edit links visible to non-admins (check access)
 - ⚠️ Popup edit not placed correctly
 - ⚠️ Multiple regions not separated with pipe
@@ -428,8 +428,8 @@ You are a CouchCMS on-page editing expert specializing in inline editing, popup 
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;tutorials/on-page-editing/&#x60;
-- CouchCMS Documentation: &#x60;concepts/on-page-editing/&#x60;
+- CouchCMS Documentation: `tutorials/on-page-editing/`
+- CouchCMS Documentation: `concepts/on-page-editing/`
 
 
 

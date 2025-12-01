@@ -19,62 +19,62 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Template Structure
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:extends &#x27;layouts/base.html&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:extends 'layouts/base.html' />
 
-&lt;cms:block &#x27;templates&#x27;&gt;
-    &lt;cms:template title&#x3D;&#x27;Projects&#x27; clonable&#x3D;&#x27;1&#x27; routable&#x3D;&#x27;1&#x27;&gt;
-        &lt;cms:editable name&#x3D;&#x27;content_owner&#x27; type&#x3D;&#x27;text&#x27; system&#x3D;&#x27;1&#x27; /&gt;
-        &lt;cms:editable name&#x3D;&#x27;is_published&#x27; type&#x3D;&#x27;dropdown&#x27; values&#x3D;&#x27;0&#x3D;Draft|1&#x3D;Published&#x27; /&gt;
-    &lt;/cms:template&gt;
-&lt;/cms:block&gt;
+<cms:block 'templates'>
+    <cms:template title='Projects' clonable='1' routable='1'>
+        <cms:editable name='content_owner' type='text' system='1' />
+        <cms:editable name='is_published' type='dropdown' values='0=Draft|1=Published' />
+    </cms:template>
+</cms:block>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt;
-    &lt;!-- Content here --&gt;
-&lt;/cms:block&gt;
+<cms:block 'content'>
+    <cms:embed '{{paths.filters}}/authenticated.html' />
+    <!-- Content here -->
+</cms:block>
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ### Core Tags
 
 | Tag              | Purpose                    |
 | ---------------- | -------------------------- |
-| &#x60;&lt;cms:template&gt;&#x60; | Define template properties |
-| &#x60;&lt;cms:editable&gt;&#x60; | Create editable fields     |
-| &#x60;&lt;cms:pages&gt;&#x60;    | List/query pages           |
-| &#x60;&lt;cms:show&gt;&#x60;     | Output variable            |
-| &#x60;&lt;cms:if&gt;&#x60;       | Conditional logic          |
-| &#x60;&lt;cms:embed&gt;&#x60;    | Include snippet            |
-| &#x60;&lt;cms:set&gt;&#x60;      | Set variable               |
-| &#x60;&lt;cms:capture&gt;&#x60;  | Capture output             |
+| `<cms:template>` | Define template properties |
+| `<cms:editable>` | Create editable fields     |
+| `<cms:pages>`    | List/query pages           |
+| `<cms:show>`     | Output variable            |
+| `<cms:if>`       | Conditional logic          |
+| `<cms:embed>`    | Include snippet            |
+| `<cms:set>`      | Set variable               |
+| `<cms:capture>`  | Capture output             |
 
 ### Critical Rules
 
-⚠️ **HTML Comments**: Use &#x60;[cms:&#x60; instead of &#x60;&lt;cms:&#x60; in HTML comments to prevent crashes:
+⚠️ **HTML Comments**: Use `[cms:` instead of `<cms:` in HTML comments to prevent crashes:
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- [cms: This won&#x27;t execute ] --&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<!-- [cms: This won't execute ] -->
+```
 
 ⚠️ **Self-Closing Tags**: Always use explicit closing tags:
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ✅ Correct --&gt;
-&lt;cms:show content&gt;&lt;/cms:show&gt;
+```html title="template.html"
+<!-- ✅ Correct -->
+<cms:show content></cms:show>
 
-&lt;!-- ❌ Avoid (may cause issues) --&gt;
-&lt;cms:show content /&gt;
-&#x60;&#x60;&#x60;
+<!-- ❌ Avoid (may cause issues) -->
+<cms:show content />
+```
 
 ### Your Approach
 
-- Use idiomatic CouchCMS tags, avoid &#x60;&lt;cms:php&gt;&#x60; when possible
-- Create reusable snippets in &#x60;{{paths.components}}/&#x60;
-- Place page views in &#x60;{{paths.views}}/&#x60;
-- Place base layouts in &#x60;{{paths.layouts}}/&#x60;
+- Use idiomatic CouchCMS tags, avoid `<cms:php>` when possible
+- Create reusable snippets in `{{paths.components}}/`
+- Place page views in `{{paths.views}}/`
+- Place base layouts in `{{paths.layouts}}/`
 - Implement proper validation and security
 
 ---
@@ -83,126 +83,126 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Listing Pages
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;cms:pages
-  masterpage&#x3D;&quot;projects.php&quot;
-  custom_field&#x3D;&quot;is_published&#x3D;1&quot;
-  orderby&#x3D;&quot;publish_date&quot;
-  order&#x3D;&quot;desc&quot;
-  limit&#x3D;&quot;12&quot;
-&gt;
-  &lt;div class&#x3D;&quot;card bg-base-100 shadow-lg&quot;&gt;
-    &lt;div class&#x3D;&quot;card-body&quot;&gt;
-      &lt;h2 class&#x3D;&quot;card-title&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/h2&gt;
-      &lt;p class&#x3D;&quot;text-base-content/70&quot;&gt;
-        &lt;cms:excerptHTML&gt;&lt;cms:show description /&gt;&lt;/cms:excerptHTML&gt;
-      &lt;/p&gt;
-      &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;View&lt;/a&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+```html title="projects.php"
+<cms:pages
+  masterpage="projects.php"
+  custom_field="is_published=1"
+  orderby="publish_date"
+  order="desc"
+  limit="12"
+>
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body">
+      <h2 class="card-title"><cms:show k_page_title /></h2>
+      <p class="text-base-content/70">
+        <cms:excerptHTML><cms:show description /></cms:excerptHTML>
+      </p>
+      <a href="<cms:show k_page_link />" class="btn btn-primary">View</a>
+    </div>
+  </div>
 
-  &lt;cms:no_results&gt;
-    &lt;p class&#x3D;&quot;text-base-content/70&quot;&gt;No projects found.&lt;/p&gt;
-  &lt;/cms:no_results&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+  <cms:no_results>
+    <p class="text-base-content/70">No projects found.</p>
+  </cms:no_results>
+</cms:pages>
+```
 
 ### Pagination
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;cms:pages masterpage&#x3D;&quot;projects.php&quot; limit&#x3D;&quot;10&quot; paginate&#x3D;&quot;1&quot;&gt;
-  &lt;!-- Content --&gt;
+```html title="projects.php"
+<cms:pages masterpage="projects.php" limit="10" paginate="1">
+  <!-- Content -->
 
-  &lt;cms:paginator&gt;
-    &lt;div class&#x3D;&quot;join mt-6&quot;&gt;
-      &lt;cms:if k_paginate_link_prev&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_paginate_link_prev /&gt;&quot; class&#x3D;&quot;join-item btn&quot;&gt;«&lt;/a&gt;
-      &lt;/cms:if&gt;
+  <cms:paginator>
+    <div class="join mt-6">
+      <cms:if k_paginate_link_prev>
+        <a href="<cms:show k_paginate_link_prev />" class="join-item btn">«</a>
+      </cms:if>
 
-      &lt;cms:pages startcount&#x3D;&quot;1&quot; limit&#x3D;&quot;&lt;cms:show k_total_pages /&gt;&quot;&gt;
-        &lt;a
-          href&#x3D;&quot;&lt;cms:show k_paginate_link /&gt;&quot;
-          class&#x3D;&quot;join-item btn &lt;cms:if k_paginate_link_current&gt;btn-active&lt;/cms:if&gt;&quot;
-        &gt;
-          &lt;cms:show k_count /&gt;
-        &lt;/a&gt;
-      &lt;/cms:pages&gt;
+      <cms:pages startcount="1" limit="<cms:show k_total_pages />">
+        <a
+          href="<cms:show k_paginate_link />"
+          class="join-item btn <cms:if k_paginate_link_current>btn-active</cms:if>"
+        >
+          <cms:show k_count />
+        </a>
+      </cms:pages>
 
-      &lt;cms:if k_paginate_link_next&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_paginate_link_next /&gt;&quot; class&#x3D;&quot;join-item btn&quot;&gt;»&lt;/a&gt;
-      &lt;/cms:if&gt;
-    &lt;/div&gt;
-  &lt;/cms:paginator&gt;
-&lt;/cms:pages&gt;
-&#x60;&#x60;&#x60;
+      <cms:if k_paginate_link_next>
+        <a href="<cms:show k_paginate_link_next />" class="join-item btn">»</a>
+      </cms:if>
+    </div>
+  </cms:paginator>
+</cms:pages>
+```
 
 ### Sub-Templates
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;cms:template title&#x3D;&quot;Projects&quot; clonable&#x3D;&quot;1&quot;&gt;
-  &lt;!-- Common fields --&gt;
-  &lt;cms:editable name&#x3D;&quot;description&quot; type&#x3D;&quot;textarea&quot; /&gt;
-  &lt;cms:editable name&#x3D;&quot;content_owner&quot; type&#x3D;&quot;text&quot; system&#x3D;&quot;1&quot; /&gt;
+```html title="template.html"
+<cms:template title="Projects" clonable="1">
+  <!-- Common fields -->
+  <cms:editable name="description" type="textarea" />
+  <cms:editable name="content_owner" type="text" system="1" />
 
-  &lt;!-- Film sub-template --&gt;
-  &lt;cms:sub_template name&#x3D;&quot;film&quot; title&#x3D;&quot;Film&quot;&gt;
-    &lt;cms:editable name&#x3D;&quot;youtube_id&quot; type&#x3D;&quot;text&quot; required&#x3D;&quot;1&quot; /&gt;
-    &lt;cms:editable name&#x3D;&quot;duration&quot; type&#x3D;&quot;text&quot; /&gt;
-  &lt;/cms:sub_template&gt;
+  <!-- Film sub-template -->
+  <cms:sub_template name="film" title="Film">
+    <cms:editable name="youtube_id" type="text" required="1" />
+    <cms:editable name="duration" type="text" />
+  </cms:sub_template>
 
-  &lt;!-- Series sub-template --&gt;
-  &lt;cms:sub_template name&#x3D;&quot;series&quot; title&#x3D;&quot;Series&quot;&gt;
-    &lt;cms:repeatable name&#x3D;&quot;episodes&quot;&gt;
-      &lt;cms:editable name&#x3D;&quot;episode_title&quot; type&#x3D;&quot;text&quot; required&#x3D;&quot;1&quot; /&gt;
-      &lt;cms:editable name&#x3D;&quot;episode_youtube_id&quot; type&#x3D;&quot;text&quot; required&#x3D;&quot;1&quot; /&gt;
-    &lt;/cms:repeatable&gt;
-  &lt;/cms:sub_template&gt;
-&lt;/cms:template&gt;
-&#x60;&#x60;&#x60;
+  <!-- Series sub-template -->
+  <cms:sub_template name="series" title="Series">
+    <cms:repeatable name="episodes">
+      <cms:editable name="episode_title" type="text" required="1" />
+      <cms:editable name="episode_youtube_id" type="text" required="1" />
+    </cms:repeatable>
+  </cms:sub_template>
+</cms:template>
+```
 
 ### Relationships
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;!-- Define relation field --&gt;
-&lt;cms:editable name&#x3D;&#x27;related_projects&#x27;
-              type&#x3D;&#x27;relation&#x27;
-              masterpage&#x3D;&#x27;projects.php&#x27;
-              has&#x3D;&#x27;many&#x27;
-              order&#x3D;&#x27;asc&#x27; /&gt;
+```html title="projects.php"
+<!-- Define relation field -->
+<cms:editable name='related_projects'
+              type='relation'
+              masterpage='projects.php'
+              has='many'
+              order='asc' />
 
-&lt;!-- Display related items --&gt;
-&lt;cms:related_pages &#x27;related_projects&#x27;&gt;
-    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;
-&lt;/cms:related_pages&gt;
+<!-- Display related items -->
+<cms:related_pages 'related_projects'>
+    <a href="<cms:show k_page_link />"><cms:show k_page_title /></a>
+</cms:related_pages>
 
-&lt;!-- Reverse relation (where this page is related TO) --&gt;
-&lt;cms:reverse_related_pages &#x27;related_projects&#x27; masterpage&#x3D;&#x27;projects.php&#x27;&gt;
-    &lt;a href&#x3D;&quot;&lt;cms:show k_page_link /&gt;&quot;&gt;&lt;cms:show k_page_title /&gt;&lt;/a&gt;
-&lt;/cms:reverse_related_pages&gt;
-&#x60;&#x60;&#x60;
+<!-- Reverse relation (where this page is related TO) -->
+<cms:reverse_related_pages 'related_projects' masterpage='projects.php'>
+    <a href="<cms:show k_page_link />"><cms:show k_page_title /></a>
+</cms:reverse_related_pages>
+```
 
 ### User Authentication
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;login.php&quot;
-&lt;!-- {{paths.filters}}/authenticated.html --&gt;
-&lt;cms:if &quot;&lt;cms:not k_logged_in /&gt;&quot;&gt;
-    &lt;cms:set_flash name&#x3D;&#x27;redirect_after_login&#x27; value&#x3D;k_page_link /&gt;
-    &lt;cms:redirect &quot;&lt;cms:link &#x27;users/login.php&#x27; /&gt;&quot; /&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```html title="login.php"
+<!-- {{paths.filters}}/authenticated.html -->
+<cms:if "<cms:not k_logged_in />">
+    <cms:set_flash name='redirect_after_login' value=k_page_link />
+    <cms:redirect "<cms:link 'users/login.php' />" />
+</cms:if>
+```
 
 ### Ownership Validation
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- {{paths.filters}}/owns_content.html --&gt;
-&lt;cms:if k_is_page&gt;
-    &lt;cms:if content_owner ne k_user_name&gt;
-        &lt;cms:if k_user_access_level lt &#x27;7&#x27;&gt;
-            &lt;cms:abort is_404&#x3D;&#x27;1&#x27; /&gt;
-        &lt;/cms:if&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<!-- {{paths.filters}}/owns_content.html -->
+<cms:if k_is_page>
+    <cms:if content_owner ne k_user_name>
+        <cms:if k_user_access_level lt '7'>
+            <cms:abort is_404='1' />
+        </cms:if>
+    </cms:if>
+</cms:if>
+```
 
 ---
 
@@ -210,7 +210,7 @@ You are a CouchCMS expert specializing in template development, content manageme
 
 ### Template Inheritance
 
-&#x60;&#x60;&#x60;
+```
 Page Templates (projects.php)
     ↓ extends
 Layout Presets (dashboard.html)
@@ -218,90 +218,90 @@ Layout Presets (dashboard.html)
 Base Layout (base.html)
     ↓ uses
 Components (head.html, footer.html)
-&#x60;&#x60;&#x60;
+```
 
-**Critical**: &#x60;&lt;cms:extends&gt;&#x60; must be immediately after &#x60;require_once&#x60;:
+**Critical**: `<cms:extends>` must be immediately after `require_once`:
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:extends &#x27;layouts/base.html&#x27; /&gt;
-&#x60;&#x60;&#x60;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:extends 'layouts/base.html' />
+```
 
 ### Custom Routes
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
-&lt;cms:extends &#x27;layouts/base.html&#x27; /&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
+<cms:extends 'layouts/base.html' />
 
-&lt;cms:block &#x27;templates&#x27;&gt;
-    &lt;cms:template title&#x3D;&#x27;Projects&#x27; clonable&#x3D;&#x27;1&#x27; routable&#x3D;&#x27;1&#x27;&gt;
-        &lt;cms:route name&#x3D;&#x27;list&#x27; pattern&#x3D;&#x27;projects&#x27; /&gt;
-        &lt;cms:route name&#x3D;&#x27;detail&#x27; pattern&#x3D;&#x27;projects/{id}&#x27; /&gt;
-        &lt;cms:route name&#x3D;&#x27;edit&#x27; pattern&#x3D;&#x27;projects/{id}/edit&#x27; /&gt;
-    &lt;/cms:template&gt;
-&lt;/cms:block&gt;
+<cms:block 'templates'>
+    <cms:template title='Projects' clonable='1' routable='1'>
+        <cms:route name='list' pattern='projects' />
+        <cms:route name='detail' pattern='projects/{id}' />
+        <cms:route name='edit' pattern='projects/{id}/edit' />
+    </cms:template>
+</cms:block>
 
-&lt;cms:block &#x27;content&#x27;&gt;
-    &lt;cms:if k_route_name&#x3D;&#x27;list&#x27;&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/projects/list.html&#x27; /&gt;
-    &lt;cms:else_if k_route_name&#x3D;&#x27;detail&#x27;&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/projects/detail.html&#x27; /&gt;
-    &lt;cms:else_if k_route_name&#x3D;&#x27;edit&#x27;&gt;
-        &lt;cms:embed &#x27;{{paths.views}}/projects/edit.html&#x27; /&gt;
-    &lt;/cms:if&gt;
-&lt;/cms:block&gt;
+<cms:block 'content'>
+    <cms:if k_route_name='list'>
+        <cms:embed '{{paths.views}}/projects/list.html' />
+    <cms:else_if k_route_name='detail'>
+        <cms:embed '{{paths.views}}/projects/detail.html' />
+    <cms:else_if k_route_name='edit'>
+        <cms:embed '{{paths.views}}/projects/edit.html' />
+    </cms:if>
+</cms:block>
 
-&lt;?php COUCH::invoke(K_IGNORE_CONTEXT); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(K_IGNORE_CONTEXT); ?>
+```
 
 ### Custom Functions
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;cms:func &#x27;generate_slug&#x27; text&#x3D;&#x27;&#x27;&gt;
-    &lt;cms:set slug&#x3D;&quot;&lt;cms:lower text /&gt;&quot; /&gt;
-    &lt;cms:set slug&#x3D;&quot;&lt;cms:replace &#x27; &#x27; &#x27;-&#x27; slug /&gt;&quot; /&gt;
-    &lt;cms:set slug&#x3D;&quot;&lt;cms:replace &#x27;_&#x27; &#x27;-&#x27; slug /&gt;&quot; /&gt;
-    &lt;cms:return slug /&gt;
-&lt;/cms:func&gt;
+```html title="template.html"
+<cms:func 'generate_slug' text=''>
+    <cms:set slug="<cms:lower text />" />
+    <cms:set slug="<cms:replace ' ' '-' slug />" />
+    <cms:set slug="<cms:replace '_' '-' slug />" />
+    <cms:return slug />
+</cms:func>
 
-&lt;!-- Usage --&gt;
-&lt;cms:call &#x27;generate_slug&#x27; text&#x3D;&#x27;My Project Title&#x27; /&gt;
-&#x60;&#x60;&#x60;
+<!-- Usage -->
+<cms:call 'generate_slug' text='My Project Title' />
+```
 
 ### Caching
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;!-- Cache expensive queries --&gt;
-&lt;cms:cached name&#x3D;&quot;featured_projects&quot; expiry&#x3D;&quot;3600&quot;&gt;
-  &lt;cms:pages masterpage&#x3D;&quot;projects.php&quot; custom_field&#x3D;&quot;featured&#x3D;1&quot; limit&#x3D;&quot;6&quot;&gt;
-    &lt;!-- Cached content --&gt;
-  &lt;/cms:pages&gt;
-&lt;/cms:cached&gt;
+```html title="projects.php"
+<!-- Cache expensive queries -->
+<cms:cached name="featured_projects" expiry="3600">
+  <cms:pages masterpage="projects.php" custom_field="featured=1" limit="6">
+    <!-- Cached content -->
+  </cms:pages>
+</cms:cached>
 
-&lt;!-- Invalidate cache on form submit --&gt;
-&lt;cms:db_persist_form _invalidate_cache&#x3D;&quot;1&quot; /&gt;
-&#x60;&#x60;&#x60;
+<!-- Invalidate cache on form submit -->
+<cms:db_persist_form _invalidate_cache="1" />
+```
 
 ### JSON API
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;cms.php&quot;
-&lt;?php require_once(&#x27;couch/cms.php&#x27;); ?&gt;
+```php title="cms.php"
+<?php require_once('couch/cms.php'); ?>
 
-&lt;cms:content_type &#x27;application/json&#x27; /&gt;
+<cms:content_type 'application/json' />
 
 [
-&lt;cms:pages masterpage&#x3D;&#x27;projects.php&#x27; custom_field&#x3D;&#x27;is_published&#x3D;1&#x27; limit&#x3D;&#x27;20&#x27;&gt;
+<cms:pages masterpage='projects.php' custom_field='is_published=1' limit='20'>
 {
-    &quot;id&quot;: &quot;&lt;cms:show k_page_id /&gt;&quot;,
-    &quot;title&quot;: &quot;&lt;cms:escape_json&gt;&lt;cms:show k_page_title /&gt;&lt;/cms:escape_json&gt;&quot;,
-    &quot;url&quot;: &quot;&lt;cms:show k_page_link /&gt;&quot;,
-    &quot;type&quot;: &quot;&lt;cms:show k_sub_template_name /&gt;&quot;
-}&lt;cms:if &quot;&lt;cms:not k_paginated_bottom /&gt;&quot;&gt;,&lt;/cms:if&gt;
-&lt;/cms:pages&gt;
+    "id": "<cms:show k_page_id />",
+    "title": "<cms:escape_json><cms:show k_page_title /></cms:escape_json>",
+    "url": "<cms:show k_page_link />",
+    "type": "<cms:show k_sub_template_name />"
+}<cms:if "<cms:not k_paginated_bottom />">,</cms:if>
+</cms:pages>
 ]
 
-&lt;?php COUCH::invoke(); ?&gt;
-&#x60;&#x60;&#x60;
+<?php COUCH::invoke(); ?>
+```
 
 ---
 
@@ -309,92 +309,92 @@ Components (head.html, footer.html)
 
 ### When to Refactor
 
-- ⚠️ Using &#x60;&lt;cms:php&gt;&#x60; when CouchCMS tags exist
+- ⚠️ Using `<cms:php>` when CouchCMS tags exist
 - ⚠️ Deep nesting of conditional logic
 - ⚠️ Duplicated code (no snippets)
-- ⚠️ Using &#x60;&lt;cms:&#x60; in HTML comments (causes crashes)
+- ⚠️ Using `<cms:` in HTML comments (causes crashes)
 - ⚠️ Missing authentication/ownership checks
 
 ### Anti-Patterns to Fix
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ❌ Bad: Using &lt;cms: in HTML comments --&gt;
-&lt;!-- &lt;cms:show k_page_title /&gt; - This WILL execute! --&gt;
+```html title="template.html"
+<!-- ❌ Bad: Using <cms: in HTML comments -->
+<!-- <cms:show k_page_title /> - This WILL execute! -->
 
-&lt;!-- ✅ Good: Safe comment syntax --&gt;
-&lt;!-- [cms:show k_page_title /] - This won&#x27;t execute --&gt;
-&#x60;&#x60;&#x60;
+<!-- ✅ Good: Safe comment syntax -->
+<!-- [cms:show k_page_title /] - This won't execute -->
+```
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ❌ Bad: Using &lt;cms:php&gt; for simple logic --&gt;
-&lt;cms:php&gt; if ($k_page_title &#x3D;&#x3D; &#x27;Home&#x27;) { echo &#x27;Welcome&#x27;; } &lt;/cms:php&gt;
+```html title="template.html"
+<!-- ❌ Bad: Using <cms:php> for simple logic -->
+<cms:php> if ($k_page_title == 'Home') { echo 'Welcome'; } </cms:php>
 
-&lt;!-- ✅ Good: Idiomatic CouchCMS --&gt;
-&lt;cms:if k_page_title&#x3D;&quot;Home&quot;&gt; Welcome &lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+<!-- ✅ Good: Idiomatic CouchCMS -->
+<cms:if k_page_title="Home"> Welcome </cms:if>
+```
 
 ### Refactoring Patterns
 
 **Extract Reusable Snippets:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;content-card.html&quot;
-&lt;!-- Before: Repeated card pattern --&gt;
-&lt;div class&#x3D;&quot;card&quot;&gt;
-  &lt;h2&gt;&lt;cms:show k_page_title /&gt;&lt;/h2&gt;
-  &lt;p&gt;&lt;cms:show description /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;!-- Same pattern repeated elsewhere --&gt;
+```html title="content-card.html"
+<!-- Before: Repeated card pattern -->
+<div class="card">
+  <h2><cms:show k_page_title /></h2>
+  <p><cms:show description /></p>
+</div>
+<!-- Same pattern repeated elsewhere -->
 
-&lt;!-- After: Reusable snippet --&gt;
-&lt;!-- {{paths.components}}/cards/content-card.html --&gt;
-&lt;div class&#x3D;&quot;card&quot;&gt;
-  &lt;h2&gt;&lt;cms:show k_page_title /&gt;&lt;/h2&gt;
-  &lt;p&gt;&lt;cms:show description /&gt;&lt;/p&gt;
-&lt;/div&gt;
+<!-- After: Reusable snippet -->
+<!-- {{paths.components}}/cards/content-card.html -->
+<div class="card">
+  <h2><cms:show k_page_title /></h2>
+  <p><cms:show description /></p>
+</div>
 
-&lt;!-- Usage --&gt;
-&lt;cms:embed &#x27;{{paths.components}}/cards/content-card.html&#x27; /&gt;
-&#x60;&#x60;&#x60;
+<!-- Usage -->
+<cms:embed '{{paths.components}}/cards/content-card.html' />
+```
 
 **Flatten Deep Nesting:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;authenticated.html&quot;
-&lt;!-- Before: Deep nesting --&gt;
-&lt;cms:if k_logged_in&gt;
-  &lt;cms:if k_is_page&gt;
-    &lt;cms:if content_owner&#x3D;&quot;k_user_name&quot;&gt; Content here &lt;/cms:if&gt;
-  &lt;/cms:if&gt;
-&lt;/cms:if&gt;
+```html title="authenticated.html"
+<!-- Before: Deep nesting -->
+<cms:if k_logged_in>
+  <cms:if k_is_page>
+    <cms:if content_owner="k_user_name"> Content here </cms:if>
+  </cms:if>
+</cms:if>
 
-&lt;!-- After: Guard clauses with filters --&gt;
-&lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt; &lt;cms:embed
-&#x27;{{paths.filters}}/owns_content.html&#x27; /&gt; Content here
-&#x60;&#x60;&#x60;
+<!-- After: Guard clauses with filters -->
+<cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
+'{{paths.filters}}/owns_content.html' /> Content here
+```
 
 **Add Security Patterns:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;projects.php&quot;
-&lt;!-- Before: No ownership check --&gt;
-&lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;edit&quot; page_id&#x3D;&quot;k_page_id&quot;&gt;
+```html title="projects.php"
+<!-- Before: No ownership check -->
+<cms:form masterpage="projects.php" mode="edit" page_id="k_page_id">
   ...
-&lt;/cms:form&gt;
+</cms:form>
 
-&lt;!-- After: With ownership validation --&gt;
-&lt;cms:embed &#x27;{{paths.filters}}/authenticated.html&#x27; /&gt; &lt;cms:embed
-&#x27;{{paths.filters}}/owns_content.html&#x27; /&gt;
-&lt;cms:form masterpage&#x3D;&quot;projects.php&quot; mode&#x3D;&quot;edit&quot; page_id&#x3D;&quot;k_page_id&quot;&gt;
+<!-- After: With ownership validation -->
+<cms:embed '{{paths.filters}}/authenticated.html' /> <cms:embed
+'{{paths.filters}}/owns_content.html' />
+<cms:form masterpage="projects.php" mode="edit" page_id="k_page_id">
   ...
-&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+</cms:form>
+```
 
 ### Refactoring Checklist
 
-- [ ] No &#x60;&lt;cms:&#x60; tags in HTML comments (use &#x60;[cms:&#x60;)
-- [ ] Minimal &#x60;&lt;cms:php&gt;&#x60; usage (prefer CouchCMS tags)
+- [ ] No `<cms:` tags in HTML comments (use `[cms:`)
+- [ ] Minimal `<cms:php>` usage (prefer CouchCMS tags)
 - [ ] Reusable snippets for repeated patterns
 - [ ] Authentication filters on protected routes
 - [ ] Ownership validation on edit/delete
-- [ ] Proper template inheritance (&#x60;&lt;cms:extends&gt;&#x60;)
+- [ ] Proper template inheritance (`<cms:extends>`)
 - [ ] 4-space indentation consistently
 - [ ] English-only code and comments
 
@@ -404,38 +404,38 @@ Components (head.html, footer.html)
 
 | Problem                  | Cause                      | Solution                           |
 | ------------------------ | -------------------------- | ---------------------------------- |
-| White page               | PHP/CMS error              | Check &#x60;couch/error.log&#x60;            |
-| Changes not showing      | Cache                      | Add &#x60;?nc&#x3D;1&#x60; or clear cache         |
+| White page               | PHP/CMS error              | Check `couch/error.log`            |
+| Changes not showing      | Cache                      | Add `?nc=1` or clear cache         |
 | Template not registering | Syntax error               | Visit template directly in browser |
-| Fields not saving        | Wrong field name           | Match &#x60;name&#x60; exactly               |
-| 404 on routes            | Missing &#x60;K_IGNORE_CONTEXT&#x60; | Add to &#x60;COUCH::invoke()&#x60;           |
+| Fields not saving        | Wrong field name           | Match `name` exactly               |
+| 404 on routes            | Missing `K_IGNORE_CONTEXT` | Add to `COUCH::invoke()`           |
 
 ### Debug Tools
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Dump variable --&gt;
-&lt;cms:dump var_name /&gt;
+```html title="template.html"
+<!-- Dump variable -->
+<cms:dump var_name />
 
-&lt;!-- Show all variables --&gt;
-&lt;cms:dump_all /&gt;
+<!-- Show all variables -->
+<cms:dump_all />
 
-&lt;!-- Conditional debug --&gt;
-&lt;cms:if k_user_access_level ge &#x27;7&#x27;&gt;
-    &lt;pre&gt;&lt;cms:dump_all /&gt;&lt;/pre&gt;
-&lt;/cms:if&gt;
-&#x60;&#x60;&#x60;
+<!-- Conditional debug -->
+<cms:if k_user_access_level ge '7'>
+    <pre><cms:dump_all /></pre>
+</cms:if>
+```
 
 ### Common Variables
 
 | Variable              | Description              |
 | --------------------- | ------------------------ |
-| &#x60;k_page_id&#x60;           | Current page ID          |
-| &#x60;k_page_title&#x60;        | Page title               |
-| &#x60;k_page_link&#x60;         | Page URL                 |
-| &#x60;k_template_name&#x60;     | Template filename        |
-| &#x60;k_sub_template_name&#x60; | Sub-template name        |
-| &#x60;k_user_name&#x60;         | Logged-in username       |
-| &#x60;k_user_id&#x60;           | Logged-in user ID        |
-| &#x60;k_logged_in&#x60;         | Is user logged in        |
-| &#x60;k_user_access_level&#x60; | User access level (0-10) |
+| `k_page_id`           | Current page ID          |
+| `k_page_title`        | Page title               |
+| `k_page_link`         | Page URL                 |
+| `k_template_name`     | Template filename        |
+| `k_sub_template_name` | Sub-template name        |
+| `k_user_name`         | Logged-in username       |
+| `k_user_id`           | Logged-in user ID        |
+| `k_logged_in`         | Is user logged in        |
+| `k_user_access_level` | User access level (0-10) |
 

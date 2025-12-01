@@ -1,6 +1,6 @@
 /**
  * Template Engine Module
- * 
+ *
  * Handles template data preparation and rendering for multiple editors.
  * Supports parallel template rendering for improved performance.
  */
@@ -8,6 +8,7 @@
 import Handlebars from 'handlebars'
 import { readFileSync, existsSync } from 'fs'
 import { join } from 'path'
+import { validateTemplate } from './template-validator.js'
 
 /**
  * Register Handlebars helpers
@@ -29,7 +30,7 @@ registerHandlebarsHelpers()
 /**
  * Editor configuration schema
  * Supports both single files and directory structures
- * 
+ *
  * Schema:
  * - template: string - Template file name
  * - output: string - Output file path
@@ -112,7 +113,7 @@ const EDITOR_TEMPLATES = EDITOR_CONFIGS
 
 /**
  * Prepare template data from config and loaded modules
- * 
+ *
  * @param {object} config - Configuration object
  * @param {object} mergedConfig - Merged default and project configuration
  * @param {Array<object>} modules - Loaded modules with {name, meta, content}
@@ -256,7 +257,7 @@ export function prepareTemplateData(config, mergedConfig, modules, agents, frame
 
 /**
  * Render a single template with data
- * 
+ *
  * @param {string} templatePath - Path to template file
  * @param {object} templateData - Data to render template with
  * @param {string} outputFormat - Output format: 'markdown' or 'json' (default: 'markdown')
@@ -266,9 +267,17 @@ export function prepareTemplateData(config, mergedConfig, modules, agents, frame
 function renderTemplate(templatePath, templateData, outputFormat = 'markdown') {
     try {
         const templateContent = readFileSync(templatePath, 'utf8')
+
+        // Validate template variables before rendering
+        try {
+            validateTemplate(templateContent, templateData, templatePath)
+        } catch (error) {
+            throw new Error(`Template validation failed: ${error.message}`)
+        }
+
         const template = Handlebars.compile(templateContent)
         const rendered = template(templateData)
-        
+
         // For JSON format, parse and re-stringify to ensure valid JSON
         if (outputFormat === 'json') {
             try {
@@ -282,7 +291,7 @@ function renderTemplate(templatePath, templateData, outputFormat = 'markdown') {
                 throw new Error(`Template rendered invalid JSON: ${jsonError.message}`)
             }
         }
-        
+
         return rendered
     } catch (error) {
         throw new Error(`Failed to render template ${templatePath}: ${error.message}`)
@@ -291,7 +300,7 @@ function renderTemplate(templatePath, templateData, outputFormat = 'markdown') {
 
 /**
  * Validate Claude settings JSON structure
- * 
+ *
  * @param {object} settings - Parsed Claude settings object
  * @throws {Error} If settings structure is invalid
  */
@@ -300,41 +309,41 @@ function validateClaudeSettings(settings) {
     if (!settings.permissions) {
         throw new Error('Missing required field: permissions')
     }
-    
+
     if (!settings.permissions.allow || !Array.isArray(settings.permissions.allow)) {
         throw new Error('permissions.allow must be an array')
     }
-    
+
     if (!settings.permissions.deny || !Array.isArray(settings.permissions.deny)) {
         throw new Error('permissions.deny must be an array')
     }
-    
+
     // Validate permission patterns
     const validPatternRegex = /^(Read|Write|Bash)\(.+\)$/
-    
+
     for (const permission of settings.permissions.allow) {
         if (!validPatternRegex.test(permission)) {
             throw new Error(`Invalid permission pattern in allow: ${permission}`)
         }
     }
-    
+
     for (const permission of settings.permissions.deny) {
         if (!validPatternRegex.test(permission)) {
             throw new Error(`Invalid permission pattern in deny: ${permission}`)
         }
     }
-    
+
     // Validate env if present
     if (settings.env && typeof settings.env !== 'object') {
         throw new Error('env must be an object')
     }
-    
+
     // Validate slashCommands if present
     if (settings.slashCommands) {
         if (typeof settings.slashCommands !== 'object') {
             throw new Error('slashCommands must be an object')
         }
-        
+
         for (const [name, cmd] of Object.entries(settings.slashCommands)) {
             if (!cmd.description || !cmd.command) {
                 throw new Error(`slashCommand "${name}" must have description and command`)
@@ -345,7 +354,7 @@ function validateClaudeSettings(settings) {
 
 /**
  * Render a single editor template
- * 
+ *
  * @param {string} editor - Editor name
  * @param {object} templateData - Data for template rendering
  * @param {string} toolkitPath - Toolkit root directory
@@ -353,7 +362,7 @@ function validateClaudeSettings(settings) {
  */
 function renderEditorTemplate(editor, templateData, toolkitPath) {
     const editorConfig = EDITOR_CONFIGS[editor]
-    
+
     if (!editorConfig) {
         console.warn(`⚠️  Unknown editor: ${editor}`)
         return null
@@ -371,7 +380,7 @@ function renderEditorTemplate(editor, templateData, toolkitPath) {
 
     const templatePath = join(toolkitPath, 'templates', 'editors', editorConfig.template)
     const outputFormat = editorConfig.format || 'markdown'
-    
+
     try {
         const content = renderTemplate(templatePath, templateData, outputFormat)
         return {
@@ -388,24 +397,24 @@ function renderEditorTemplate(editor, templateData, toolkitPath) {
 
 /**
  * Generate Claude Code Skills from modules and agents
- * 
+ *
  * @param {object} templateData - Template data containing modules and agents
  * @param {string} toolkitPath - Toolkit root directory
  * @returns {Map<string, string>} - Map of skill file path → skill content
  */
 export function generateClaudeSkills(templateData, toolkitPath) {
     const skills = new Map()
-    
+
     // Check if we have the skill templates
     const moduleSkillTemplatePath = join(toolkitPath, 'templates', 'editors', 'claude-skill-module.template.md')
     const agentSkillTemplatePath = join(toolkitPath, 'templates', 'editors', 'claude-skill-agent.template.md')
-    
+
     // Generate skills for modules
     if (templateData.modules && Array.isArray(templateData.modules)) {
         for (const module of templateData.modules) {
             try {
                 let skillContent
-                
+
                 // Try to use template if it exists, otherwise generate directly
                 if (existsSync(moduleSkillTemplatePath)) {
                     skillContent = renderTemplate(moduleSkillTemplatePath, { module }, 'markdown')
@@ -413,7 +422,7 @@ export function generateClaudeSkills(templateData, toolkitPath) {
                     // Generate skill content directly
                     skillContent = generateSkillContent(module, 'module')
                 }
-                
+
                 const skillPath = `.claude/skills/${module.slug}.md`
                 skills.set(skillPath, skillContent)
             } catch (error) {
@@ -421,13 +430,13 @@ export function generateClaudeSkills(templateData, toolkitPath) {
             }
         }
     }
-    
+
     // Generate skills for agents
     if (templateData.agents && Array.isArray(templateData.agents)) {
         for (const agent of templateData.agents) {
             try {
                 let skillContent
-                
+
                 // Try to use template if it exists, otherwise generate directly
                 if (existsSync(agentSkillTemplatePath)) {
                     skillContent = renderTemplate(agentSkillTemplatePath, { agent }, 'markdown')
@@ -435,7 +444,7 @@ export function generateClaudeSkills(templateData, toolkitPath) {
                     // Generate skill content directly
                     skillContent = generateSkillContent(agent, 'agent')
                 }
-                
+
                 const skillPath = `.claude/skills/${agent.slug}.md`
                 skills.set(skillPath, skillContent)
             } catch (error) {
@@ -443,22 +452,22 @@ export function generateClaudeSkills(templateData, toolkitPath) {
             }
         }
     }
-    
+
     return skills
 }
 
 /**
  * Generate skill content for a module or agent
- * 
+ *
  * @param {object} item - Module or agent object
  * @param {string} type - 'module' or 'agent'
  * @returns {string} - Skill file content with YAML frontmatter
  */
 function generateSkillContent(item, type) {
-    const allowedTools = Array.isArray(item.allowedTools) 
+    const allowedTools = Array.isArray(item.allowedTools)
         ? item.allowedTools.join(', ')
         : 'Read, Write, Bash, Grep'
-    
+
     const frontmatter = `---
 name: ${item.name}
 description: ${item.description}
@@ -467,13 +476,13 @@ type: ${type}
 ---
 
 `
-    
+
     return frontmatter + (item.content || '')
 }
 
 /**
  * Render templates for specified editors (with parallel rendering support)
- * 
+ *
  * @param {object} templateData - Data for template rendering
  * @param {Array<string>} editors - Editor names to generate for
  * @param {string} toolkitPath - Toolkit root directory
@@ -481,7 +490,7 @@ type: ${type}
  */
 export async function renderTemplates(templateData, editors, toolkitPath) {
     // Render all templates in parallel
-    const renderPromises = editors.map(editor => 
+    const renderPromises = editors.map(editor =>
         Promise.resolve(renderEditorTemplate(editor, templateData, toolkitPath))
     )
 
@@ -489,7 +498,7 @@ export async function renderTemplates(templateData, editors, toolkitPath) {
 
     // Build map of output path → content
     const configMap = new Map()
-    
+
     for (const result of results) {
         if (result) {
             configMap.set(result.output, result.content)
@@ -501,7 +510,7 @@ export async function renderTemplates(templateData, editors, toolkitPath) {
 
 /**
  * Get list of supported editors
- * 
+ *
  * @returns {Array<string>} - Array of supported editor names
  */
 export function getSupportedEditors() {
@@ -510,7 +519,7 @@ export function getSupportedEditors() {
 
 /**
  * Check if an editor is supported
- * 
+ *
  * @param {string} editor - Editor name to check
  * @returns {boolean} - True if editor is supported
  */
@@ -520,7 +529,7 @@ export function isEditorSupported(editor) {
 
 /**
  * Get editor configuration
- * 
+ *
  * @param {string} editor - Editor name
  * @returns {object|null} - Editor configuration or null if not found
  */

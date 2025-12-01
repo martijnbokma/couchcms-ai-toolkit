@@ -1,9 +1,11 @@
 #!/usr/bin/env bun
 /**
  * CouchCMS AI Toolkit - Error Handling
- * 
+ *
  * Centralized error handling utilities
  */
+
+import { getSolutionForError, formatSolution } from './error-solutions.js'
 
 /**
  * Toolkit-specific error class for better error handling
@@ -70,7 +72,16 @@ export class FileSystemError extends ToolkitError {
  */
 export function handleError(error, context) {
     const prefix = context ? `${context}: ` : ''
-    
+
+    // Get solution for error
+    let solution = null
+    try {
+        solution = getSolutionForError(error, context)
+    } catch {
+        // If error-solutions not available, continue without solution
+    }
+
+    // Display error message
     if (error instanceof ToolkitError) {
         console.error(`❌ ${prefix}${error.message}`)
         if (error.cause) {
@@ -79,7 +90,20 @@ export function handleError(error, context) {
     } else {
         console.error(`❌ ${prefix}${error.message}`)
     }
-    
+
+    // Display solution if available
+    if (solution) {
+        try {
+            console.log(formatSolution(solution))
+        } catch {
+            // Fallback if formatSolution fails
+            if (solution.solution) {
+                console.log(`\n💡 Solution: ${solution.solution}`)
+            }
+        }
+    }
+
+    // Display stack trace in debug mode
     if (error.stack && process.env.DEBUG) {
         console.error('\nStack trace:')
         console.error(error.stack)
@@ -95,6 +119,6 @@ export function formatValidationErrors(errors) {
     if (errors.length === 0) {
         return ''
     }
-    
+
     return `Configuration validation failed:\n${errors.map(e => `  • ${e}`).join('\n')}`
 }

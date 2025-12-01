@@ -21,37 +21,37 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 | Directive      | Purpose               | Example                         |
 | -------------- | --------------------- | ------------------------------- |
-| &#x60;x-data&#x60;       | Define reactive state | &#x60;x-data&#x3D;&quot;{ open: false }&quot;&#x60;      |
-| &#x60;x-show&#x60;       | Toggle visibility     | &#x60;x-show&#x3D;&quot;open&quot;&#x60;                 |
-| &#x60;x-if&#x60;         | Conditional render    | &#x60;x-if&#x3D;&quot;items.length &gt; 0&quot;&#x60;       |
-| &#x60;x-for&#x60;        | Loop items            | &#x60;x-for&#x3D;&quot;item in items&quot;&#x60;         |
-| &#x60;x-on&#x60; / &#x60;@&#x60;   | Event handling        | &#x60;@click&#x3D;&quot;open &#x3D; !open&quot;&#x60;         |
-| &#x60;x-model&#x60;      | Two-way binding       | &#x60;x-model&#x3D;&quot;search&quot;&#x60;              |
-| &#x60;x-bind&#x60; / &#x60;:&#x60; | Attribute binding     | &#x60;:class&#x3D;&quot;{ active: isActive }&quot;&#x60; |
-| &#x60;x-text&#x60;       | Text content          | &#x60;x-text&#x3D;&quot;message&quot;&#x60;              |
-| &#x60;x-html&#x60;       | HTML content          | &#x60;x-html&#x3D;&quot;richContent&quot;&#x60;          |
-| &#x60;x-init&#x60;       | On init               | &#x60;x-init&#x3D;&quot;fetchData()&quot;&#x60;          |
-| &#x60;x-effect&#x60;     | Reactive side effects | &#x60;x-effect&#x3D;&quot;console.log(count)&quot;&#x60; |
-| &#x60;x-cloak&#x60;      | Hide until loaded     | &#x60;x-cloak&#x60;                       |
+| `x-data`       | Define reactive state | `x-data="{ open: false }"`      |
+| `x-show`       | Toggle visibility     | `x-show="open"`                 |
+| `x-if`         | Conditional render    | `x-if="items.length > 0"`       |
+| `x-for`        | Loop items            | `x-for="item in items"`         |
+| `x-on` / `@`   | Event handling        | `@click="open = !open"`         |
+| `x-model`      | Two-way binding       | `x-model="search"`              |
+| `x-bind` / `:` | Attribute binding     | `:class="{ active: isActive }"` |
+| `x-text`       | Text content          | `x-text="message"`              |
+| `x-html`       | HTML content          | `x-html="richContent"`          |
+| `x-init`       | On init               | `x-init="fetchData()"`          |
+| `x-effect`     | Reactive side effects | `x-effect="console.log(count)"` |
+| `x-cloak`      | Hide until loaded     | `x-cloak`                       |
 
 ### CouchCMS Syntax Rule
 
-**⚠️ CRITICAL**: Use &#x60;x-on:&#x60; instead of &#x60;@&#x60; in CouchCMS templates (colon conflicts with CMS tags):
+**⚠️ CRITICAL**: Use `x-on:` instead of `@` in CouchCMS templates (colon conflicts with CMS tags):
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ✅ Correct in CouchCMS --&gt;
-&lt;button x-on:click&#x3D;&quot;open &#x3D; true&quot;&gt;Open&lt;/button&gt;
+```html title="template.html"
+<!-- ✅ Correct in CouchCMS -->
+<button x-on:click="open = true">Open</button>
 
-&lt;!-- ❌ Avoid in CouchCMS (colon issues) --&gt;
-&lt;button @click&#x3D;&quot;open &#x3D; true&quot;&gt;Open&lt;/button&gt;
-&#x60;&#x60;&#x60;
+<!-- ❌ Avoid in CouchCMS (colon issues) -->
+<button @click="open = true">Open</button>
+```
 
 ### Your Approach
 
 - Keep components focused and lightweight
 - Use efficient reactive patterns
 - Integrate cleanly with CouchCMS template data
-- Place Alpine components in &#x60;{{paths.components}}/&#x60;
+- Place Alpine components in `{{paths.components}}/`
 - Delegate complex logic to TypeScript modules
 
 ---
@@ -60,147 +60,147 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 ### Basic Toggle
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;div x-data&#x3D;&quot;{ open: false }&quot;&gt;
-  &lt;button x-on:click&#x3D;&quot;open &#x3D; !open&quot; class&#x3D;&quot;btn btn-primary&quot;&gt;
-    &lt;span x-text&#x3D;&quot;open ? &#x27;Close&#x27; : &#x27;Open&#x27;&quot;&gt;&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;div x-show&#x3D;&quot;open&quot; x-cloak class&#x3D;&quot;mt-4&quot;&gt;Content here&lt;/div&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<div x-data="{ open: false }">
+  <button x-on:click="open = !open" class="btn btn-primary">
+    <span x-text="open ? 'Close' : 'Open'"></span>
+  </button>
+  <div x-show="open" x-cloak class="mt-4">Content here</div>
+</div>
+```
 
 ### Modal Component
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;div x-data&#x3D;&quot;{ showModal: false }&quot;&gt;
-  &lt;button x-on:click&#x3D;&quot;showModal &#x3D; true&quot; class&#x3D;&quot;btn&quot;&gt;Open Modal&lt;/button&gt;
+```html title="template.html"
+<div x-data="{ showModal: false }">
+  <button x-on:click="showModal = true" class="btn">Open Modal</button>
 
-  &lt;div
-    x-show&#x3D;&quot;showModal&quot;
-    x-on:keydown.escape.window&#x3D;&quot;showModal &#x3D; false&quot;
-    class&#x3D;&quot;modal&quot;
-    x-bind:class&#x3D;&quot;{ &#x27;modal-open&#x27;: showModal }&quot;
-  &gt;
-    &lt;div class&#x3D;&quot;modal-box&quot; x-on:click.outside&#x3D;&quot;showModal &#x3D; false&quot;&gt;
-      &lt;h3 class&#x3D;&quot;font-bold text-lg&quot;&gt;Modal Title&lt;/h3&gt;
-      &lt;p&gt;Modal content&lt;/p&gt;
-      &lt;div class&#x3D;&quot;modal-action&quot;&gt;
-        &lt;button x-on:click&#x3D;&quot;showModal &#x3D; false&quot; class&#x3D;&quot;btn&quot;&gt;Close&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+  <div
+    x-show="showModal"
+    x-on:keydown.escape.window="showModal = false"
+    class="modal"
+    x-bind:class="{ 'modal-open': showModal }"
+  >
+    <div class="modal-box" x-on:click.outside="showModal = false">
+      <h3 class="font-bold text-lg">Modal Title</h3>
+      <p>Modal content</p>
+      <div class="modal-action">
+        <button x-on:click="showModal = false" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+```
 
 ### Dropdown with CouchCMS Data
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;categories.php&quot;
-&lt;div x-data&#x3D;&quot;{ open: false, selected: &#x27;&#x27; }&quot; class&#x3D;&quot;dropdown&quot;&gt;
-  &lt;button x-on:click&#x3D;&quot;open &#x3D; !open&quot; class&#x3D;&quot;btn&quot;&gt;
-    &lt;span x-text&#x3D;&quot;selected || &#x27;Select...&#x27;&quot;&gt;&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;ul
-    x-show&#x3D;&quot;open&quot;
-    x-on:click.outside&#x3D;&quot;open &#x3D; false&quot;
-    class&#x3D;&quot;dropdown-content menu&quot;
-  &gt;
-    &lt;cms:pages masterpage&#x3D;&quot;categories.php&quot; limit&#x3D;&quot;10&quot;&gt;
-      &lt;li&gt;
-        &lt;button
-          x-on:click&#x3D;&quot;selected &#x3D; &#x27;&lt;cms:show k_page_title /&gt;&#x27;; open &#x3D; false&quot;
-        &gt;
-          &lt;cms:show k_page_title /&gt;
-        &lt;/button&gt;
-      &lt;/li&gt;
-    &lt;/cms:pages&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title="categories.php"
+<div x-data="{ open: false, selected: '' }" class="dropdown">
+  <button x-on:click="open = !open" class="btn">
+    <span x-text="selected || 'Select...'"></span>
+  </button>
+  <ul
+    x-show="open"
+    x-on:click.outside="open = false"
+    class="dropdown-content menu"
+  >
+    <cms:pages masterpage="categories.php" limit="10">
+      <li>
+        <button
+          x-on:click="selected = '<cms:show k_page_title />'; open = false"
+        >
+          <cms:show k_page_title />
+        </button>
+      </li>
+    </cms:pages>
+  </ul>
+</div>
+```
 
 ### Form with Validation
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;form
-  x-data&#x3D;&quot;{
-    title: &#x27;&#x27;,
+```html title="template.html"
+<form
+  x-data="{
+    title: '',
     errors: [],
     submitting: false,
 
     validate() {
-        this.errors &#x3D; []
-        if (!this.title.trim()) this.errors.push(&#x27;Title is required&#x27;)
-        if (this.title.length &lt; 3) this.errors.push(&#x27;Title must be at least 3 characters&#x27;)
-        return this.errors.length &#x3D;&#x3D;&#x3D; 0
+        this.errors = []
+        if (!this.title.trim()) this.errors.push('Title is required')
+        if (this.title.length < 3) this.errors.push('Title must be at least 3 characters')
+        return this.errors.length === 0
     },
 
     submit() {
         if (!this.validate()) return
-        this.submitting &#x3D; true
+        this.submitting = true
         this.$el.submit()
     }
-}&quot;
-  x-on:submit.prevent&#x3D;&quot;submit&quot;
-&gt;
-  &lt;div class&#x3D;&quot;form-control&quot;&gt;
-    &lt;label class&#x3D;&quot;label&quot;&gt;Title&lt;/label&gt;
-    &lt;input
-      type&#x3D;&quot;text&quot;
-      name&#x3D;&quot;title&quot;
-      x-model&#x3D;&quot;title&quot;
-      x-on:input&#x3D;&quot;validate()&quot;
-      class&#x3D;&quot;input input-bordered&quot;
-      x-bind:class&#x3D;&quot;{ &#x27;input-error&#x27;: errors.length &gt; 0 }&quot;
-    /&gt;
-  &lt;/div&gt;
+}"
+  x-on:submit.prevent="submit"
+>
+  <div class="form-control">
+    <label class="label">Title</label>
+    <input
+      type="text"
+      name="title"
+      x-model="title"
+      x-on:input="validate()"
+      class="input input-bordered"
+      x-bind:class="{ 'input-error': errors.length > 0 }"
+    />
+  </div>
 
-  &lt;template x-if&#x3D;&quot;errors.length &gt; 0&quot;&gt;
-    &lt;div class&#x3D;&quot;alert alert-error mt-2&quot;&gt;
-      &lt;ul&gt;
-        &lt;template x-for&#x3D;&quot;error in errors&quot;&gt;
-          &lt;li x-text&#x3D;&quot;error&quot;&gt;&lt;/li&gt;
-        &lt;/template&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/template&gt;
+  <template x-if="errors.length > 0">
+    <div class="alert alert-error mt-2">
+      <ul>
+        <template x-for="error in errors">
+          <li x-text="error"></li>
+        </template>
+      </ul>
+    </div>
+  </template>
 
-  &lt;button
-    type&#x3D;&quot;submit&quot;
-    class&#x3D;&quot;btn btn-primary mt-4&quot;
-    x-bind:disabled&#x3D;&quot;submitting&quot;
-  &gt;
-    &lt;span x-show&#x3D;&quot;!submitting&quot;&gt;Submit&lt;/span&gt;
-    &lt;span x-show&#x3D;&quot;submitting&quot; class&#x3D;&quot;loading loading-spinner&quot;&gt;&lt;/span&gt;
-  &lt;/button&gt;
-&lt;/form&gt;
-&#x60;&#x60;&#x60;
+  <button
+    type="submit"
+    class="btn btn-primary mt-4"
+    x-bind:disabled="submitting"
+  >
+    <span x-show="!submitting">Submit</span>
+    <span x-show="submitting" class="loading loading-spinner"></span>
+  </button>
+</form>
+```
 
 ### Tabs Component
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;div x-data&#x3D;&quot;{ activeTab: &#x27;tab1&#x27; }&quot;&gt;
-  &lt;div role&#x3D;&quot;tablist&quot; class&#x3D;&quot;tabs tabs-boxed&quot;&gt;
-    &lt;button
-      role&#x3D;&quot;tab&quot;
-      class&#x3D;&quot;tab&quot;
-      x-bind:class&#x3D;&quot;{ &#x27;tab-active&#x27;: activeTab &#x3D;&#x3D;&#x3D; &#x27;tab1&#x27; }&quot;
-      x-on:click&#x3D;&quot;activeTab &#x3D; &#x27;tab1&#x27;&quot;
-    &gt;
+```html title="template.html"
+<div x-data="{ activeTab: 'tab1' }">
+  <div role="tablist" class="tabs tabs-boxed">
+    <button
+      role="tab"
+      class="tab"
+      x-bind:class="{ 'tab-active': activeTab === 'tab1' }"
+      x-on:click="activeTab = 'tab1'"
+    >
       Tab 1
-    &lt;/button&gt;
-    &lt;button
-      role&#x3D;&quot;tab&quot;
-      class&#x3D;&quot;tab&quot;
-      x-bind:class&#x3D;&quot;{ &#x27;tab-active&#x27;: activeTab &#x3D;&#x3D;&#x3D; &#x27;tab2&#x27; }&quot;
-      x-on:click&#x3D;&quot;activeTab &#x3D; &#x27;tab2&#x27;&quot;
-    &gt;
+    </button>
+    <button
+      role="tab"
+      class="tab"
+      x-bind:class="{ 'tab-active': activeTab === 'tab2' }"
+      x-on:click="activeTab = 'tab2'"
+    >
       Tab 2
-    &lt;/button&gt;
-  &lt;/div&gt;
+    </button>
+  </div>
 
-  &lt;div x-show&#x3D;&quot;activeTab &#x3D;&#x3D;&#x3D; &#x27;tab1&#x27;&quot; class&#x3D;&quot;p-4&quot;&gt;Tab 1 content&lt;/div&gt;
-  &lt;div x-show&#x3D;&quot;activeTab &#x3D;&#x3D;&#x3D; &#x27;tab2&#x27;&quot; class&#x3D;&quot;p-4&quot;&gt;Tab 2 content&lt;/div&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+  <div x-show="activeTab === 'tab1'" class="p-4">Tab 1 content</div>
+  <div x-show="activeTab === 'tab2'" class="p-4">Tab 2 content</div>
+</div>
+```
 
 ---
 
@@ -208,101 +208,101 @@ You are an Alpine.js expert specializing in lightweight, reactive JavaScript for
 
 ### Global State with Stores
 
-&#x60;&#x60;&#x60;javascript title&#x3D;&quot;example.js&quot;
+```javascript title="example.js"
 // {{paths.typescript}}/stores/app-store.ts
-document.addEventListener(&quot;alpine:init&quot;, () &#x3D;&gt; {
-  Alpine.store(&quot;notifications&quot;, {
+document.addEventListener("alpine:init", () => {
+  Alpine.store("notifications", {
     items: [],
 
-    add(message, type &#x3D; &quot;info&quot;) {
-      const id &#x3D; Date.now();
+    add(message, type = "info") {
+      const id = Date.now();
       this.items.push({ id, message, type });
-      setTimeout(() &#x3D;&gt; this.remove(id), 5000);
+      setTimeout(() => this.remove(id), 5000);
     },
 
     remove(id) {
-      this.items &#x3D; this.items.filter((item) &#x3D;&gt; item.id !&#x3D;&#x3D; id);
+      this.items = this.items.filter((item) => item.id !== id);
     },
   });
 });
-&#x60;&#x60;&#x60;
+```
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Usage anywhere --&gt;
-&lt;button x-on:click&#x3D;&quot;$store.notifications.add(&#x27;Saved!&#x27;, &#x27;success&#x27;)&quot;&gt;Save&lt;/button&gt;
+```html title="template.html"
+<!-- Usage anywhere -->
+<button x-on:click="$store.notifications.add('Saved!', 'success')">Save</button>
 
-&lt;!-- Notification display --&gt;
-&lt;div class&#x3D;&quot;toast toast-end&quot;&gt;
-  &lt;template
-    x-for&#x3D;&quot;notification in $store.notifications.items&quot;
-    x-bind:key&#x3D;&quot;notification.id&quot;
-  &gt;
-    &lt;div class&#x3D;&quot;alert&quot; x-bind:class&#x3D;&quot;&#x60;alert-${notification.type}&#x60;&quot;&gt;
-      &lt;span x-text&#x3D;&quot;notification.message&quot;&gt;&lt;/span&gt;
-    &lt;/div&gt;
-  &lt;/template&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+<!-- Notification display -->
+<div class="toast toast-end">
+  <template
+    x-for="notification in $store.notifications.items"
+    x-bind:key="notification.id"
+  >
+    <div class="alert" x-bind:class="`alert-${notification.type}`">
+      <span x-text="notification.message"></span>
+    </div>
+  </template>
+</div>
+```
 
 ### Reusable Component Pattern
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Component definition --&gt;
-&lt;script&gt;
-  document.addEventListener(&quot;alpine:init&quot;, () &#x3D;&gt; {
-    Alpine.data(&quot;searchFilter&quot;, (config &#x3D; {}) &#x3D;&gt; ({
-      query: &quot;&quot;,
+```html title="template.html"
+<!-- Component definition -->
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("searchFilter", (config = {}) => ({
+      query: "",
       results: [],
       loading: false,
       debounceTimer: null,
 
       init() {
-        this.$watch(&quot;query&quot;, () &#x3D;&gt; this.search());
+        this.$watch("query", () => this.search());
       },
 
       search() {
         clearTimeout(this.debounceTimer);
-        this.debounceTimer &#x3D; setTimeout(async () &#x3D;&gt; {
-          if (this.query.length &lt; 2) {
-            this.results &#x3D; [];
+        this.debounceTimer = setTimeout(async () => {
+          if (this.query.length < 2) {
+            this.results = [];
             return;
           }
 
-          this.loading &#x3D; true;
+          this.loading = true;
           try {
-            const response &#x3D; await fetch(
-              &#x60;/api/search.php?q&#x3D;${encodeURIComponent(this.query)}&#x60;
+            const response = await fetch(
+              `/api/search.php?q=${encodeURIComponent(this.query)}`
             );
-            this.results &#x3D; await response.json();
+            this.results = await response.json();
           } finally {
-            this.loading &#x3D; false;
+            this.loading = false;
           }
         }, 300);
       },
     }));
   });
-&lt;/script&gt;
+</script>
 
-&lt;!-- Usage --&gt;
-&lt;div x-data&#x3D;&quot;searchFilter()&quot;&gt;
-  &lt;input
-    type&#x3D;&quot;text&quot;
-    x-model&#x3D;&quot;query&quot;
-    placeholder&#x3D;&quot;Search...&quot;
-    class&#x3D;&quot;input input-bordered&quot;
-  /&gt;
-  &lt;span x-show&#x3D;&quot;loading&quot; class&#x3D;&quot;loading loading-spinner&quot;&gt;&lt;/span&gt;
-  &lt;ul x-show&#x3D;&quot;results.length &gt; 0&quot;&gt;
-    &lt;template x-for&#x3D;&quot;result in results&quot;&gt;
-      &lt;li x-text&#x3D;&quot;result.title&quot;&gt;&lt;/li&gt;
-    &lt;/template&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+<!-- Usage -->
+<div x-data="searchFilter()">
+  <input
+    type="text"
+    x-model="query"
+    placeholder="Search..."
+    class="input input-bordered"
+  />
+  <span x-show="loading" class="loading loading-spinner"></span>
+  <ul x-show="results.length > 0">
+    <template x-for="result in results">
+      <li x-text="result.title"></li>
+    </template>
+  </ul>
+</div>
+```
 
 ### TypeScript Integration
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // {{paths.typescript}}/components/episode-selector.ts
 export interface Episode {
   id: string;
@@ -311,27 +311,27 @@ export interface Episode {
   number: number;
 }
 
-export function createEpisodeSelector(episodes: Episode[] &#x3D; []) {
+export function createEpisodeSelector(episodes: Episode[] = []) {
   return {
     episodes,
     selectedId: null as string | null,
-    filter: &quot;&quot;,
+    filter: "",
 
     get filteredEpisodes() {
       if (!this.filter) return this.episodes;
-      const query &#x3D; this.filter.toLowerCase();
-      return this.episodes.filter((ep) &#x3D;&gt;
+      const query = this.filter.toLowerCase();
+      return this.episodes.filter((ep) =>
         ep.title.toLowerCase().includes(query)
       );
     },
 
     select(id: string) {
-      this.selectedId &#x3D; id;
-      this.$dispatch(&quot;episode-selected&quot;, { id });
+      this.selectedId = id;
+      this.$dispatch("episode-selected", { id });
     },
 
     get selectedEpisode() {
-      return this.episodes.find((ep) &#x3D;&gt; ep.id &#x3D;&#x3D;&#x3D; this.selectedId);
+      return this.episodes.find((ep) => ep.id === this.selectedId);
     },
   };
 }
@@ -342,53 +342,53 @@ declare global {
     createEpisodeSelector: typeof createEpisodeSelector;
   }
 }
-window.createEpisodeSelector &#x3D; createEpisodeSelector;
-&#x60;&#x60;&#x60;
+window.createEpisodeSelector = createEpisodeSelector;
+```
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Usage in CouchCMS --&gt;
-&lt;div x-data&#x3D;&quot;createEpisodeSelector(&lt;cms:show_json episodes /&gt;)&quot;&gt;
-  &lt;input type&#x3D;&quot;text&quot; x-model&#x3D;&quot;filter&quot; placeholder&#x3D;&quot;Filter episodes...&quot; /&gt;
-  &lt;template x-for&#x3D;&quot;episode in filteredEpisodes&quot;&gt;
-    &lt;div
-      x-on:click&#x3D;&quot;select(episode.id)&quot;
-      x-bind:class&#x3D;&quot;{ &#x27;bg-primary&#x27;: selectedId &#x3D;&#x3D;&#x3D; episode.id }&quot;
-    &gt;
-      &lt;span
-        x-text&#x3D;&quot;&#x60;S${episode.season}E${episode.number}: ${episode.title}&#x60;&quot;
-      &gt;&lt;/span&gt;
-    &lt;/div&gt;
-  &lt;/template&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<!-- Usage in CouchCMS -->
+<div x-data="createEpisodeSelector(<cms:show_json episodes />)">
+  <input type="text" x-model="filter" placeholder="Filter episodes..." />
+  <template x-for="episode in filteredEpisodes">
+    <div
+      x-on:click="select(episode.id)"
+      x-bind:class="{ 'bg-primary': selectedId === episode.id }"
+    >
+      <span
+        x-text="`S${episode.season}E${episode.number}: ${episode.title}`"
+      ></span>
+    </div>
+  </template>
+</div>
+```
 
 ### Intersection Observer (Lazy Loading)
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;div
-  x-data&#x3D;&quot;{ loaded: false }&quot;
-  x-intersect:enter&#x3D;&quot;loaded &#x3D; true&quot;
-  x-intersect:leave&#x3D;&quot;loaded &#x3D; false&quot;
-&gt;
-  &lt;template x-if&#x3D;&quot;loaded&quot;&gt;
-    &lt;img src&#x3D;&quot;&lt;cms:show image /&gt;&quot; alt&#x3D;&quot;&lt;cms:show title /&gt;&quot; /&gt;
-  &lt;/template&gt;
-  &lt;template x-if&#x3D;&quot;!loaded&quot;&gt;
-    &lt;div class&#x3D;&quot;skeleton h-48 w-full&quot;&gt;&lt;/div&gt;
-  &lt;/template&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<div
+  x-data="{ loaded: false }"
+  x-intersect:enter="loaded = true"
+  x-intersect:leave="loaded = false"
+>
+  <template x-if="loaded">
+    <img src="<cms:show image />" alt="<cms:show title />" />
+  </template>
+  <template x-if="!loaded">
+    <div class="skeleton h-48 w-full"></div>
+  </template>
+</div>
+```
 
 ### Persist State to LocalStorage
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;div x-data&#x3D;&quot;{ theme: &#x27;light&#x27; }&quot; x-init&#x3D;&quot;$persist(theme)&quot;&gt;
-  &lt;select x-model&#x3D;&quot;theme&quot;&gt;
-    &lt;option value&#x3D;&quot;light&quot;&gt;Light&lt;/option&gt;
-    &lt;option value&#x3D;&quot;dark&quot;&gt;Dark&lt;/option&gt;
-  &lt;/select&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```html title="template.html"
+<div x-data="{ theme: 'light' }" x-init="$persist(theme)">
+  <select x-model="theme">
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+  </select>
+</div>
+```
 
 ---
 
@@ -396,120 +396,120 @@ window.createEpisodeSelector &#x3D; createEpisodeSelector;
 
 ### When to Refactor
 
-- ⚠️ Using &#x60;@&#x60; shorthand syntax in CouchCMS templates
-- ⚠️ Too much logic in &#x60;x-data&#x60; (&gt; 50 lines)
+- ⚠️ Using `@` shorthand syntax in CouchCMS templates
+- ⚠️ Too much logic in `x-data` (> 50 lines)
 - ⚠️ Missing ARIA attributes for accessibility
 - ⚠️ No debouncing on expensive operations
 - ⚠️ Complex logic that belongs in TypeScript
 
 ### Anti-Patterns to Fix
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ❌ Bad: Too much logic in Alpine --&gt;
-&lt;div
-  x-data&#x3D;&quot;{
+```html title="template.html"
+<!-- ❌ Bad: Too much logic in Alpine -->
+<div
+  x-data="{
     users: [],
     loading: false,
     async fetchUsers() {
-        this.loading &#x3D; true
+        this.loading = true
         try {
-            const response &#x3D; await fetch(&#x27;/api/users&#x27;)
-            this.users &#x3D; await response.json()
+            const response = await fetch('/api/users')
+            this.users = await response.json()
         } finally {
-            this.loading &#x3D; false
+            this.loading = false
         }
     }
-}&quot;
-  x-init&#x3D;&quot;fetchUsers()&quot;
-&gt;&lt;/div&gt;
-&#x60;&#x60;&#x60;
+}"
+  x-init="fetchUsers()"
+></div>
+```
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- ✅ Good: Logic moved to TypeScript --&gt;
-&lt;div
-  x-data&#x3D;&quot;{
+```html title="template.html"
+<!-- ✅ Good: Logic moved to TypeScript -->
+<div
+  x-data="{
     users: [],
     loading: false,
     async init() {
-        this.loading &#x3D; true
-        this.users &#x3D; await window.loadUsers()
-        this.loading &#x3D; false
+        this.loading = true
+        this.users = await window.loadUsers()
+        this.loading = false
     }
-}&quot;
-&gt;&lt;/div&gt;
-&#x60;&#x60;&#x60;
+}"
+></div>
+```
 
 ### Refactoring Patterns
 
 **Extract Reusable Components:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Before: Repeated modal pattern --&gt;
-&lt;div x-data&#x3D;&quot;{ open: false }&quot;&gt;
-  &lt;button x-on:click&#x3D;&quot;open &#x3D; true&quot;&gt;Open&lt;/button&gt;
-  &lt;div x-show&#x3D;&quot;open&quot;&gt;Modal 1&lt;/div&gt;
-&lt;/div&gt;
-&lt;div x-data&#x3D;&quot;{ open: false }&quot;&gt;
-  &lt;button x-on:click&#x3D;&quot;open &#x3D; true&quot;&gt;Open&lt;/button&gt;
-  &lt;div x-show&#x3D;&quot;open&quot;&gt;Modal 2&lt;/div&gt;
-&lt;/div&gt;
+```html title="template.html"
+<!-- Before: Repeated modal pattern -->
+<div x-data="{ open: false }">
+  <button x-on:click="open = true">Open</button>
+  <div x-show="open">Modal 1</div>
+</div>
+<div x-data="{ open: false }">
+  <button x-on:click="open = true">Open</button>
+  <div x-show="open">Modal 2</div>
+</div>
 
-&lt;!-- After: Reusable Alpine component --&gt;
-&lt;script&gt;
-  Alpine.data(&quot;modal&quot;, () &#x3D;&gt; ({
+<!-- After: Reusable Alpine component -->
+<script>
+  Alpine.data("modal", () => ({
     open: false,
     show() {
-      this.open &#x3D; true;
+      this.open = true;
     },
     hide() {
-      this.open &#x3D; false;
+      this.open = false;
     },
   }));
-&lt;/script&gt;
-&lt;div x-data&#x3D;&quot;modal&quot;&gt;...&lt;/div&gt;
-&lt;div x-data&#x3D;&quot;modal&quot;&gt;...&lt;/div&gt;
-&#x60;&#x60;&#x60;
+</script>
+<div x-data="modal">...</div>
+<div x-data="modal">...</div>
+```
 
 **Add Accessibility:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Before: No ARIA --&gt;
-&lt;div x-data&#x3D;&quot;{ open: false }&quot;&gt;
-  &lt;div x-on:click&#x3D;&quot;open &#x3D; !open&quot;&gt;Menu&lt;/div&gt;
-  &lt;div x-show&#x3D;&quot;open&quot;&gt;&lt;div&gt;Item&lt;/div&gt;&lt;/div&gt;
-&lt;/div&gt;
+```html title="template.html"
+<!-- Before: No ARIA -->
+<div x-data="{ open: false }">
+  <div x-on:click="open = !open">Menu</div>
+  <div x-show="open"><div>Item</div></div>
+</div>
 
-&lt;!-- After: Proper ARIA --&gt;
-&lt;div x-data&#x3D;&quot;{ open: false }&quot;&gt;
-  &lt;button
-    x-on:click&#x3D;&quot;open &#x3D; !open&quot;
-    x-bind:aria-expanded&#x3D;&quot;open&quot;
-    aria-controls&#x3D;&quot;menu&quot;
-  &gt;
+<!-- After: Proper ARIA -->
+<div x-data="{ open: false }">
+  <button
+    x-on:click="open = !open"
+    x-bind:aria-expanded="open"
+    aria-controls="menu"
+  >
     Menu
-  &lt;/button&gt;
-  &lt;div x-show&#x3D;&quot;open&quot; id&#x3D;&quot;menu&quot; role&#x3D;&quot;menu&quot;&gt;
-    &lt;button role&#x3D;&quot;menuitem&quot;&gt;Item&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+  </button>
+  <div x-show="open" id="menu" role="menu">
+    <button role="menuitem">Item</button>
+  </div>
+</div>
+```
 
 **Optimize Rendering:**
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;large.html&quot;
-&lt;!-- Before: Always renders, just hides --&gt;
-&lt;div x-show&#x3D;&quot;showLargeComponent&quot;&gt;&lt;cms:embed &#x27;components/large.html&#x27; /&gt;&lt;/div&gt;
+```html title="large.html"
+<!-- Before: Always renders, just hides -->
+<div x-show="showLargeComponent"><cms:embed 'components/large.html' /></div>
 
-&lt;!-- After: Only renders when needed --&gt;
-&lt;template x-if&#x3D;&quot;showLargeComponent&quot;&gt;
-  &lt;div&gt;&lt;cms:embed &#x27;components/large.html&#x27; /&gt;&lt;/div&gt;
-&lt;/template&gt;
-&#x60;&#x60;&#x60;
+<!-- After: Only renders when needed -->
+<template x-if="showLargeComponent">
+  <div><cms:embed 'components/large.html' /></div>
+</template>
+```
 
 ### Refactoring Checklist
 
-- [ ] No &#x60;@&#x60; or &#x60;:&#x60; shorthand in CouchCMS templates
-- [ ] Components follow single responsibility (&lt; 50 lines)
+- [ ] No `@` or `:` shorthand in CouchCMS templates
+- [ ] Components follow single responsibility (< 50 lines)
 - [ ] ARIA attributes present for accessibility
 - [ ] Events properly debounced/throttled
 - [ ] Complex logic moved to TypeScript
@@ -521,21 +521,21 @@ window.createEpisodeSelector &#x3D; createEpisodeSelector;
 
 | Problem                          | Cause                              | Solution                                                |
 | -------------------------------- | ---------------------------------- | ------------------------------------------------------- |
-| &#x60;@click&#x60; not working in CouchCMS | Colon conflicts with CMS tags      | Use &#x60;x-on:click&#x60; instead                                |
-| State not reactive               | Object/array mutation              | Use spread: &#x60;items &#x3D; [...items, newItem]&#x60;               |
-| x-show flicker on load           | Content visible before Alpine init | Add &#x60;x-cloak&#x60; + CSS &#x60;[x-cloak] { display: none }&#x60;       |
-| Component not found              | Script loaded after Alpine         | Use &#x60;alpine:init&#x60; event                                 |
-| Memory leaks                     | Event listeners not cleaned        | Use &#x60;x-on&#x60; (auto-cleanup) instead of &#x60;addEventListener&#x60; |
+| `@click` not working in CouchCMS | Colon conflicts with CMS tags      | Use `x-on:click` instead                                |
+| State not reactive               | Object/array mutation              | Use spread: `items = [...items, newItem]`               |
+| x-show flicker on load           | Content visible before Alpine init | Add `x-cloak` + CSS `[x-cloak] { display: none }`       |
+| Component not found              | Script loaded after Alpine         | Use `alpine:init` event                                 |
+| Memory leaks                     | Event listeners not cleaned        | Use `x-on` (auto-cleanup) instead of `addEventListener` |
 
 ### Debugging Tips
 
-&#x60;&#x60;&#x60;html title&#x3D;&quot;template.html&quot;
-&lt;!-- Log state changes --&gt;
-&lt;div x-data&#x3D;&quot;{ count: 0 }&quot; x-effect&#x3D;&quot;console.log(&#x27;count:&#x27;, count)&quot;&gt;
-  &lt;button x-on:click&#x3D;&quot;count++&quot;&gt;Increment&lt;/button&gt;
-&lt;/div&gt;
+```html title="template.html"
+<!-- Log state changes -->
+<div x-data="{ count: 0 }" x-effect="console.log('count:', count)">
+  <button x-on:click="count++">Increment</button>
+</div>
 
-&lt;!-- Inspect current state --&gt;
-&lt;pre x-text&#x3D;&quot;JSON.stringify($data, null, 2)&quot;&gt;&lt;/pre&gt;
-&#x60;&#x60;&#x60;
+<!-- Inspect current state -->
+<pre x-text="JSON.stringify($data, null, 2)"></pre>
+```
 

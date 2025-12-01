@@ -22,17 +22,17 @@ You are a CouchCMS admin panel theming expert specializing in customizing the ba
 
 | Concept              | Description                          |
 | -------------------- | ------------------------------------ |
-| Theme Folder         | Custom theme in &#x60;couch/theme/&#x60;      |
-| System Theme         | Default theme in &#x60;couch/theme/_system/&#x60; |
+| Theme Folder         | Custom theme in `couch/theme/`      |
+| System Theme         | Default theme in `couch/theme/_system/` |
 | Snippet Override     | Override system snippets with custom |
-| Custom CSS           | &#x60;styles.css&#x60; in theme folder         |
-| Custom Functions     | &#x60;kfunctions.php&#x60; in theme folder     |
+| Custom CSS           | `styles.css` in theme folder         |
+| Custom Functions     | `kfunctions.php` in theme folder     |
 
 ### Theme Structure
 
-&#x60;&#x60;&#x60;
+```
 couch/theme/
-  _system/          (default theme - don&#x27;t modify)
+  _system/          (default theme - don't modify)
   sample/           (custom theme folder)
     main.html       (main admin template)
     styles.css      (custom CSS)
@@ -40,16 +40,16 @@ couch/theme/
     icons.php       (custom icons)
     content_form.html (custom form screen)
     content_list_inner_*.html (custom list screens)
-&#x60;&#x60;&#x60;
+```
 
 ### Your Approach
 
-- Create custom theme folder in &#x60;couch/theme/&#x60;
+- Create custom theme folder in `couch/theme/`
 - Override system snippets by copying to theme folder
 - Modify snippets using standard Couch tags
-- Use &#x60;K_ADMIN_THEME&#x60; in config.php to activate
-- Keep system theme intact (never modify &#x60;_system&#x60; folder)
-- Use conditional logic in &#x60;kfunctions.php&#x60; for advanced theming
+- Use `K_ADMIN_THEME` in config.php to activate
+- Keep system theme intact (never modify `_system` folder)
+- Use conditional logic in `kfunctions.php` for advanced theming
 
 ---
 
@@ -57,94 +57,94 @@ couch/theme/
 
 ### Enable Custom Theme
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;config.php&quot;
+```php title="config.php"
 // In couch/config.php
 // 26
 // If the admin-panel uses a custom theme, set the following to the folder-name of the theme.
-define( &#x27;K_ADMIN_THEME&#x27;, &#x27;sample&#x27; );
-&#x60;&#x60;&#x60;
+define( 'K_ADMIN_THEME', 'sample' );
+```
 
 ### Basic Theme Structure
 
-&#x60;&#x60;&#x60;
+```
 couch/theme/sample/
   main.html          (main admin template)
   styles.css         (custom styles)
   kfunctions.php    (optional PHP functions)
-&#x60;&#x60;&#x60;
+```
 
 ### Custom Main Template
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;&gt;styles.css&quot;
-&lt;!-- In couch/theme/sample/main.html --&gt;
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;&lt;cms:show k_site_name /&gt; - Admin&lt;/title&gt;
-    &lt;link href&#x3D;&quot;&lt;cms:show k_theme_link /&gt;styles.css&quot; rel&#x3D;&quot;stylesheet&quot; /&gt;
-    &lt;!-- Additional CSS --&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;!-- Custom admin panel structure --&gt;
-    &lt;header&gt;
-        &lt;a href&#x3D;&quot;&lt;cms:show k_site_link /&gt;&quot;&gt;&lt;cms:show k_site_name /&gt;&lt;/a&gt;
-    &lt;/header&gt;
+```php title=">styles.css"
+<!-- In couch/theme/sample/main.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title><cms:show k_site_name /> - Admin</title>
+    <link href="<cms:show k_theme_link />styles.css" rel="stylesheet" />
+    <!-- Additional CSS -->
+</head>
+<body>
+    <!-- Custom admin panel structure -->
+    <header>
+        <a href="<cms:show k_site_link />"><cms:show k_site_name /></a>
+    </header>
 
-    &lt;main&gt;
-        &lt;cms:render /&gt;
-    &lt;/main&gt;
+    <main>
+        <cms:render />
+    </main>
 
-    &lt;footer&gt;
-        &lt;p&gt;Custom Admin Panel&lt;/p&gt;
-    &lt;/footer&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-&#x60;&#x60;&#x60;
+    <footer>
+        <p>Custom Admin Panel</p>
+    </footer>
+</body>
+</html>
+```
 
 ### Custom List Screen
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;gallery.php&quot;
-&lt;!-- In couch/theme/sample/content_list_inner_gallery.html --&gt;
-&lt;div class&#x3D;&quot;custom-list&quot;&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;gallery.php&#x27; limit&#x3D;&#x27;20&#x27; paginate&#x3D;&#x27;1&#x27;&gt;
-        &lt;div class&#x3D;&quot;list-item&quot;&gt;
-            &lt;img src&#x3D;&quot;&lt;cms:show gg_thumb /&gt;&quot; alt&#x3D;&quot;&lt;cms:show k_page_title /&gt;&quot; /&gt;
-            &lt;h3&gt;&lt;cms:show k_page_title /&gt;&lt;/h3&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_edit_link /&gt;&quot; class&#x3D;&quot;btn btn-sm&quot;&gt;Edit&lt;/a&gt;
-        &lt;/div&gt;
-    &lt;/cms:pages&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="gallery.php"
+<!-- In couch/theme/sample/content_list_inner_gallery.html -->
+<div class="custom-list">
+    <cms:pages masterpage='gallery.php' limit='20' paginate='1'>
+        <div class="list-item">
+            <img src="<cms:show gg_thumb />" alt="<cms:show k_page_title />" />
+            <h3><cms:show k_page_title /></h3>
+            <a href="<cms:show k_edit_link />" class="btn btn-sm">Edit</a>
+        </div>
+    </cms:pages>
+</div>
+```
 
 ### Custom Form Screen
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- In couch/theme/sample/content_form.html --&gt;
-&lt;cms:form masterpage&#x3D;k_template_name mode&#x3D;&#x27;edit&#x27;&gt;
-    &lt;!-- Custom form layout --&gt;
-    &lt;div class&#x3D;&quot;form-section&quot;&gt;
-        &lt;label&gt;Title&lt;/label&gt;
-        &lt;cms:input type&#x3D;&#x27;bound&#x27; name&#x3D;&#x27;k_page_title&#x27; /&gt;
-    &lt;/div&gt;
+```php title="template.php"
+<!-- In couch/theme/sample/content_form.html -->
+<cms:form masterpage=k_template_name mode='edit'>
+    <!-- Custom form layout -->
+    <div class="form-section">
+        <label>Title</label>
+        <cms:input type='bound' name='k_page_title' />
+    </div>
 
-    &lt;!-- Additional form fields --&gt;
-&lt;/cms:form&gt;
-&#x60;&#x60;&#x60;
+    <!-- Additional form fields -->
+</cms:form>
+```
 
 ### Custom Sidebar
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- In couch/theme/sample/sidebar.html --&gt;
-&lt;aside class&#x3D;&quot;sidebar&quot;&gt;
-    &lt;nav class&#x3D;&quot;menu&quot;&gt;
-        &lt;cms:admin_menu /&gt;
-    &lt;/nav&gt;
-&lt;/aside&gt;
-&#x60;&#x60;&#x60;
+```php title="template.php"
+<!-- In couch/theme/sample/sidebar.html -->
+<aside class="sidebar">
+    <nav class="menu">
+        <cms:admin_menu />
+    </nav>
+</aside>
+```
 
 ### Custom CSS
 
-&#x60;&#x60;&#x60;css title&#x3D;&quot;styles.css&quot;
+```css title="styles.css"
 /* In couch/theme/sample/styles.css */
 .custom-admin {
     background: var(--color-base-100);
@@ -154,19 +154,19 @@ couch/theme/sample/
 .sidebar {
     background: var(--color-base-200);
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Advanced Theming with Conditions
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- In couch/theme/sample/kfunctions.php --&gt;
-&lt;?php
+```php title="template.php"
+<!-- In couch/theme/sample/kfunctions.php -->
+<?php
 // Conditional theming based on user
-if (defined(&#x27;K_ADMIN_THEME&#x27;)) {
+if (defined('K_ADMIN_THEME')) {
     // Custom logic here
 }
-?&gt;
-&#x60;&#x60;&#x60;
+?>
+```
 
 ---
 
@@ -174,62 +174,62 @@ if (defined(&#x27;K_ADMIN_THEME&#x27;)) {
 
 ### Theme with Custom Icons
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-&lt;!-- In couch/theme/sample/icons.php --&gt;
-&lt;?php
+```php title="template.php"
+<!-- In couch/theme/sample/icons.php -->
+<?php
 // Define custom icons
-$custom_icons &#x3D; array(
-    &#x27;edit&#x27; &#x3D;&gt; &#x27;✏️&#x27;,
-    &#x27;delete&#x27; &#x3D;&gt; &#x27;🗑️&#x27;,
+$custom_icons = array(
+    'edit' => '✏️',
+    'delete' => '🗑️',
     // etc.
 );
-?&gt;
-&#x60;&#x60;&#x60;
+?>
+```
 
 ### Conditional Theme Loading
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;config.php&quot;
+```php title="config.php"
 // In couch/config.php
 // Load different themes for different users
-if (k_user_access_level ge &#x27;10&#x27;) {
-    define( &#x27;K_ADMIN_THEME&#x27;, &#x27;super-admin&#x27; );
+if (k_user_access_level ge '10') {
+    define( 'K_ADMIN_THEME', 'super-admin' );
 } else {
-    define( &#x27;K_ADMIN_THEME&#x27;, &#x27;standard&#x27; );
+    define( 'K_ADMIN_THEME', 'standard' );
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Custom List with Grouping
 
-&#x60;&#x60;&#x60;php title&#x3D;&quot;blog.php&quot;
-&lt;!-- In couch/theme/sample/content_list_inner_blog.html --&gt;
-&lt;div class&#x3D;&quot;list-grouped&quot;&gt;
-    &lt;cms:pages masterpage&#x3D;&#x27;blog.php&#x27; orderby&#x3D;&#x27;publish_date&#x27; order_dir&#x3D;&#x27;desc&#x27;&gt;
-        &lt;cms:if k_folder_name&gt;
-            &lt;div class&#x3D;&quot;group-header&quot;&gt;
-                &lt;h3&gt;&lt;cms:show k_folder_name /&gt;&lt;/h3&gt;
-            &lt;/div&gt;
-        &lt;/cms:if&gt;
-        &lt;div class&#x3D;&quot;list-item&quot;&gt;
-            &lt;h4&gt;&lt;cms:show k_page_title /&gt;&lt;/h4&gt;
-            &lt;a href&#x3D;&quot;&lt;cms:show k_edit_link /&gt;&quot;&gt;Edit&lt;/a&gt;
-        &lt;/div&gt;
-    &lt;/cms:pages&gt;
-&lt;/div&gt;
-&#x60;&#x60;&#x60;
+```php title="blog.php"
+<!-- In couch/theme/sample/content_list_inner_blog.html -->
+<div class="list-grouped">
+    <cms:pages masterpage='blog.php' orderby='publish_date' order_dir='desc'>
+        <cms:if k_folder_name>
+            <div class="group-header">
+                <h3><cms:show k_folder_name /></h3>
+            </div>
+        </cms:if>
+        <div class="list-item">
+            <h4><cms:show k_page_title /></h4>
+            <a href="<cms:show k_edit_link />">Edit</a>
+        </div>
+    </cms:pages>
+</div>
+```
 
 ---
 
 ## Best Practices
 
-1. **Never Modify System Theme**: Always create custom theme folder, never edit &#x60;_system&#x60;
+1. **Never Modify System Theme**: Always create custom theme folder, never edit `_system`
 
-2. **Copy Before Modify**: Copy snippets from &#x60;_system&#x60; to custom theme before modifying
+2. **Copy Before Modify**: Copy snippets from `_system` to custom theme before modifying
 
 3. **Incremental Override**: Only override snippets you need to change
 
-4. **Use Theme Variables**: Use &#x60;k_theme_link&#x60; and &#x60;k_system_theme_link&#x60; for paths
+4. **Use Theme Variables**: Use `k_theme_link` and `k_system_theme_link` for paths
 
-5. **Custom CSS**: Place custom styles in &#x60;styles.css&#x60; in theme folder
+5. **Custom CSS**: Place custom styles in `styles.css` in theme folder
 
 6. **Test Thoroughly**: Test all admin functions after theming changes
 
@@ -245,34 +245,34 @@ if (k_user_access_level ge &#x27;10&#x27;) {
 
 ## Quick Fixes
 
-### &quot;Theme not loading&quot;
+### "Theme not loading"
 
-**Problem**: Custom theme doesn&#x27;t appear
+**Problem**: Custom theme doesn't appear
 
 **Solution**: Check config.php setting:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;config.php&quot;
+```php title="config.php"
 // In config.php
-define( &#x27;K_ADMIN_THEME&#x27;, &#x27;sample&#x27; );
-&#x60;&#x60;&#x60;
+define( 'K_ADMIN_THEME', 'sample' );
+```
 
-### &quot;Snippet not overriding&quot;
+### "Snippet not overriding"
 
 **Problem**: Custom snippet not used
 
 **Solution**: Ensure snippet name matches exactly and is in theme folder:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
+```php title="template.php"
 // System: couch/theme/_system/content_form.html
 // Custom: couch/theme/sample/content_form.html
-&#x60;&#x60;&#x60;
+```
 
-### &quot;CSS not loading&quot;
+### "CSS not loading"
 
 **Problem**: Custom styles not applied
 
-**Solution**: Ensure &#x60;styles.css&#x60; exists in theme folder and is referenced:
-&#x60;&#x60;&#x60;html title&#x3D;&quot;&gt;styles.css&quot;
-&lt;link href&#x3D;&quot;&lt;cms:show k_theme_link /&gt;styles.css&quot; rel&#x3D;&quot;stylesheet&quot; /&gt;
-&#x60;&#x60;&#x60;
+**Solution**: Ensure `styles.css` exists in theme folder and is referenced:
+```html title=">styles.css"
+<link href="<cms:show k_theme_link />styles.css" rel="stylesheet" />
+```
 
 ---
 
@@ -284,18 +284,18 @@ define( &#x27;K_ADMIN_THEME&#x27;, &#x27;sample&#x27; );
 
 **Solution**:
 
-1. **Create theme folder**: &#x60;couch/theme/my-theme/&#x60;
+1. **Create theme folder**: `couch/theme/my-theme/`
 
-2. **Copy main.html**: Copy from &#x60;_system&#x60; to &#x60;my-theme/&#x60;
+2. **Copy main.html**: Copy from `_system` to `my-theme/`
 
 3. **Modify main.html**: Customize as needed
 
 4. **Add styles.css**: Place custom CSS in theme folder
 
 5. **Activate in config.php**:
-&#x60;&#x60;&#x60;php title&#x3D;&quot;template.php&quot;
-define( &#x27;K_ADMIN_THEME&#x27;, &#x27;my-theme&#x27; );
-&#x60;&#x60;&#x60;
+```php title="template.php"
+define( 'K_ADMIN_THEME', 'my-theme' );
+```
 
 ---
 
@@ -312,9 +312,9 @@ define( &#x27;K_ADMIN_THEME&#x27;, &#x27;my-theme&#x27; );
 
 ## Warning Signs
 
-- ⚠️ Modifying &#x60;_system&#x60; folder directly
+- ⚠️ Modifying `_system` folder directly
 - ⚠️ Theme not activated in config
-- ⚠️ Snippet names don&#x27;t match exactly
+- ⚠️ Snippet names don't match exactly
 - ⚠️ Missing required snippets
 - ⚠️ Breaking admin functionality
 
@@ -330,8 +330,8 @@ define( &#x27;K_ADMIN_THEME&#x27;, &#x27;my-theme&#x27; );
 
 ## Reference
 
-- CouchCMS Documentation: &#x60;tutorials/admin-panel-theming/&#x60;
-- Theme Folder: &#x60;couch/theme/_system/&#x60; (reference only, don&#x27;t modify)
+- CouchCMS Documentation: `tutorials/admin-panel-theming/`
+- Theme Folder: `couch/theme/_system/` (reference only, don't modify)
 
 
 

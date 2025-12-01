@@ -8,42 +8,17 @@ import { ToolkitError } from './errors.js'
 import { prompt, confirm } from './prompts.js'
 
 /**
- * Determine config file path based on mode and user choice
+ * Determine config file path
+ * Always uses .project/standards.md (standardized location)
  * @param {string} projectDir - Project root directory
- * @param {boolean} simpleMode - Whether in simple mode
+ * @param {boolean} simpleMode - Whether in simple mode (unused, kept for compatibility)
  * @returns {Promise<{configPath: string, configDir: string}>} - Config path and directory
  */
 export async function determineConfigPath(projectDir, simpleMode) {
-    if (simpleMode) {
-        // Simple mode: use recommended defaults
-        return {
-            configPath: join(projectDir, '.project', 'standards.md'),
-            configDir: join(projectDir, '.project'),
-        }
-    }
-
-    // Custom mode: ask for configuration file location
-    console.log('\n📁 Where should standards.md be created?')
-    console.log('  1. .project/standards.md (recommended - project config directory)')
-    console.log('  2. docs/standards.md (documentation location)')
-    console.log('  3. standards.md (root directory)')
-    const locationChoice = await prompt('Choice [1-3]', '1')
-
-    if (locationChoice === '1') {
-        return {
-            configPath: join(projectDir, '.project', 'standards.md'),
-            configDir: join(projectDir, '.project'),
-        }
-    } else if (locationChoice === '2') {
-        return {
-            configPath: join(projectDir, 'docs', 'standards.md'),
-            configDir: join(projectDir, 'docs'),
-        }
-    }
-
+    // Always use .project/standards.md as the standard location
     return {
-        configPath: join(projectDir, 'standards.md'),
-        configDir: projectDir,
+        configPath: join(projectDir, '.project', 'standards.md'),
+        configDir: join(projectDir, '.project'),
     }
 }
 

@@ -19,40 +19,40 @@ You are a TypeScript expert specializing in type-safe frontend code for CouchCMS
 
 ### Strict Configuration
 
-&#x60;&#x60;&#x60;json title&#x3D;&quot;config.json&quot;
+```json title="config.json"
 {
-  &quot;compilerOptions&quot;: {
-    &quot;strict&quot;: true,
-    &quot;noImplicitAny&quot;: true,
-    &quot;strictNullChecks&quot;: true,
-    &quot;noUnusedLocals&quot;: true,
-    &quot;noUnusedParameters&quot;: true,
-    &quot;esModuleInterop&quot;: true,
-    &quot;moduleResolution&quot;: &quot;bundler&quot;,
-    &quot;target&quot;: &quot;ES2022&quot;,
-    &quot;module&quot;: &quot;ESNext&quot;
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "module": "ESNext"
   }
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Naming Conventions
 
 | Type       | Convention  | Example                            |
 | ---------- | ----------- | ---------------------------------- |
-| Variables  | camelCase   | &#x60;userName&#x60;, &#x60;isActive&#x60;             |
-| Functions  | camelCase   | &#x60;fetchData()&#x60;, &#x60;handleClick()&#x60;     |
-| Classes    | PascalCase  | &#x60;EpisodeManager&#x60;, &#x60;VideoPlayer&#x60;    |
-| Interfaces | PascalCase  | &#x60;UserProfile&#x60;, &#x60;FormData&#x60;          |
-| Types      | PascalCase  | &#x60;ContentType&#x60;, &#x60;ApiResponse&#x60;       |
-| Constants  | UPPER_SNAKE | &#x60;MAX_RETRIES&#x60;, &#x60;API_URL&#x60;           |
-| Files      | kebab-case  | &#x60;video-player.ts&#x60;, &#x60;form-utils.ts&#x60; |
+| Variables  | camelCase   | `userName`, `isActive`             |
+| Functions  | camelCase   | `fetchData()`, `handleClick()`     |
+| Classes    | PascalCase  | `EpisodeManager`, `VideoPlayer`    |
+| Interfaces | PascalCase  | `UserProfile`, `FormData`          |
+| Types      | PascalCase  | `ContentType`, `ApiResponse`       |
+| Constants  | UPPER_SNAKE | `MAX_RETRIES`, `API_URL`           |
+| Files      | kebab-case  | `video-player.ts`, `form-utils.ts` |
 
 ### Your Approach
 
-- Use strict TypeScript (no &#x60;any&#x60; unless unavoidable)
+- Use strict TypeScript (no `any` unless unavoidable)
 - Prefer interfaces over types for objects
 - Use named exports (no barrel files)
-- Place TypeScript in &#x60;{{paths.typescript}}/&#x60;
+- Place TypeScript in `{{paths.typescript}}/`
 - Document complex functions with JSDoc
 
 ---
@@ -61,7 +61,7 @@ You are a TypeScript expert specializing in type-safe frontend code for CouchCMS
 
 ### Interface Definition
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // {{paths.typescript}}/types/content.ts
 export interface Episode {
   id: string;
@@ -76,70 +76,70 @@ export interface Episode {
 export interface Project {
   id: string;
   title: string;
-  type: &quot;film&quot; | &quot;series&quot; | &quot;podcast&quot;;
+  type: "film" | "series" | "podcast";
   contentOwner: string;
   isPublished: boolean;
   episodes?: Episode[];
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Utility Functions
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // {{paths.typescript}}/utils/helpers.ts
-export function debounce&lt;T extends (...args: unknown[]) &#x3D;&gt; unknown&gt;(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
-): (...args: Parameters&lt;T&gt;) &#x3D;&gt; void {
-  let timeout: ReturnType&lt;typeof setTimeout&gt; | null &#x3D; null;
+): (...args: Parameters<T>) => void {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  return function (...args: Parameters&lt;T&gt;) {
+  return function (...args: Parameters<T>) {
     if (timeout) clearTimeout(timeout);
-    timeout &#x3D; setTimeout(() &#x3D;&gt; func(...args), wait);
+    timeout = setTimeout(() => func(...args), wait);
   };
 }
 
 export function formatDuration(seconds: number): string {
-  const hours &#x3D; Math.floor(seconds / 3600);
-  const minutes &#x3D; Math.floor((seconds % 3600) / 60);
-  const secs &#x3D; seconds % 60;
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
 
-  if (hours &gt; 0) {
-    return &#x60;${hours}:${minutes.toString().padStart(2, &quot;0&quot;)}:${secs
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
       .toString()
-      .padStart(2, &quot;0&quot;)}&#x60;;
+      .padStart(2, "0")}`;
   }
-  return &#x60;${minutes}:${secs.toString().padStart(2, &quot;0&quot;)}&#x60;;
+  return `${minutes}:${secs.toString().padStart(2, "0")}`;
 }
 
 export function slugify(text: string): string {
   return text
     .toLowerCase()
-    .replace(/[^\w\s-]/g, &quot;&quot;)
-    .replace(/\s+/g, &quot;-&quot;)
-    .replace(/-+/g, &quot;-&quot;)
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
     .trim();
 }
-&#x60;&#x60;&#x60;
+```
 
 ### API Fetching
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;projects.php&quot;
+```typescript title="projects.php"
 // {{paths.typescript}}/api/client.ts
-export interface ApiResponse&lt;T&gt; {
+export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
 }
 
-export async function fetchApi&lt;T&gt;(
+export async function fetchApi<T>(
   endpoint: string,
   options?: RequestInit
-): Promise&lt;ApiResponse&lt;T&gt;&gt; {
+): Promise<ApiResponse<T>> {
   try {
-    const response &#x3D; await fetch(endpoint, {
+    const response = await fetch(endpoint, {
       headers: {
-        &quot;Content-Type&quot;: &quot;application/json&quot;,
+        "Content-Type": "application/json",
         ...options?.headers,
       },
       ...options,
@@ -148,32 +148,32 @@ export async function fetchApi&lt;T&gt;(
     if (!response.ok) {
       return {
         success: false,
-        error: &#x60;HTTP ${response.status}: ${response.statusText}&#x60;,
+        error: `HTTP ${response.status}: ${response.statusText}`,
       };
     }
 
-    const data &#x3D; await response.json();
+    const data = await response.json();
     return { success: true, data };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : &quot;Unknown error&quot;,
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
 
 // Usage
-const result &#x3D; await fetchApi&lt;Project[]&gt;(&quot;/api/projects.php&quot;);
-if (result.success &amp;&amp; result.data) {
+const result = await fetchApi<Project[]>("/api/projects.php");
+if (result.success && result.data) {
   console.log(result.data);
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Alpine.js Integration
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;Alpine.js&quot;
+```typescript title="Alpine.js"
 // {{paths.typescript}}/components/episode-manager.ts
-import type { Episode } from &quot;../types/content&quot;;
+import type { Episode } from "../types/content";
 
 export interface EpisodeManagerState {
   episodes: Episode[];
@@ -181,21 +181,21 @@ export interface EpisodeManagerState {
   filter: string;
 }
 
-export function createEpisodeManager(initialEpisodes: Episode[] &#x3D; []) {
+export function createEpisodeManager(initialEpisodes: Episode[] = []) {
   return {
     episodes: initialEpisodes,
     selectedId: null as string | null,
-    filter: &quot;&quot;,
+    filter: "",
 
     get filteredEpisodes(): Episode[] {
       if (!this.filter) return this.episodes;
-      const query &#x3D; this.filter.toLowerCase();
-      return this.episodes.filter((ep) &#x3D;&gt;
+      const query = this.filter.toLowerCase();
+      return this.episodes.filter((ep) =>
         ep.title.toLowerCase().includes(query)
       );
     },
 
-    addEpisode(episode: Omit&lt;Episode, &quot;id&quot;&gt;): void {
+    addEpisode(episode: Omit<Episode, "id">): void {
       this.episodes.push({
         ...episode,
         id: crypto.randomUUID(),
@@ -203,7 +203,7 @@ export function createEpisodeManager(initialEpisodes: Episode[] &#x3D; []) {
     },
 
     removeEpisode(id: string): void {
-      this.episodes &#x3D; this.episodes.filter((ep) &#x3D;&gt; ep.id !&#x3D;&#x3D; id);
+      this.episodes = this.episodes.filter((ep) => ep.id !== id);
     },
 
     serialize(): string {
@@ -211,18 +211,18 @@ export function createEpisodeManager(initialEpisodes: Episode[] &#x3D; []) {
     },
 
     validate(): { valid: boolean; errors: string[] } {
-      const errors: string[] &#x3D; [];
+      const errors: string[] = [];
 
-      this.episodes.forEach((ep, i) &#x3D;&gt; {
+      this.episodes.forEach((ep, i) => {
         if (!ep.title?.trim()) {
-          errors.push(&#x60;Episode ${i + 1}: Title required&#x60;);
+          errors.push(`Episode ${i + 1}: Title required`);
         }
         if (!/^[a-zA-Z0-9_-]{11}$/.test(ep.youtubeId)) {
-          errors.push(&#x60;Episode ${i + 1}: Invalid YouTube ID&#x60;);
+          errors.push(`Episode ${i + 1}: Invalid YouTube ID`);
         }
       });
 
-      return { valid: errors.length &#x3D;&#x3D;&#x3D; 0, errors };
+      return { valid: errors.length === 0, errors };
     },
   };
 }
@@ -233,8 +233,8 @@ declare global {
     createEpisodeManager: typeof createEpisodeManager;
   }
 }
-window.createEpisodeManager &#x3D; createEpisodeManager;
-&#x60;&#x60;&#x60;
+window.createEpisodeManager = createEpisodeManager;
+```
 
 ---
 
@@ -242,63 +242,63 @@ window.createEpisodeManager &#x3D; createEpisodeManager;
 
 ### Error Handling
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Result type for explicit error handling
-type Result&lt;T, E &#x3D; Error&gt; &#x3D;
+type Result<T, E = Error> =
   | { success: true; data: T }
   | { success: false; error: E };
 
-function parseJson&lt;T&gt;(json: string): Result&lt;T, string&gt; {
+function parseJson<T>(json: string): Result<T, string> {
   try {
-    const data &#x3D; JSON.parse(json) as T;
+    const data = JSON.parse(json) as T;
     return { success: true, data };
   } catch {
-    return { success: false, error: &quot;Invalid JSON&quot; };
+    return { success: false, error: "Invalid JSON" };
   }
 }
 
 // Usage with exhaustive handling
-const result &#x3D; parseJson&lt;Episode[]&gt;(jsonString);
+const result = parseJson<Episode[]>(jsonString);
 if (result.success) {
   console.log(result.data); // Type: Episode[]
 } else {
   console.error(result.error); // Type: string
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Type Guards
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Type guard function
 function isEpisode(value: unknown): value is Episode {
   return (
-    typeof value &#x3D;&#x3D;&#x3D; &quot;object&quot; &amp;&amp;
-    value !&#x3D;&#x3D; null &amp;&amp;
-    &quot;id&quot; in value &amp;&amp;
-    &quot;title&quot; in value &amp;&amp;
-    &quot;youtubeId&quot; in value
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "title" in value &&
+    "youtubeId" in value
   );
 }
 
 // Array type guard
 function isEpisodeArray(value: unknown): value is Episode[] {
-  return Array.isArray(value) &amp;&amp; value.every(isEpisode);
+  return Array.isArray(value) && value.every(isEpisode);
 }
 
 // Usage
-const data: unknown &#x3D; JSON.parse(input);
+const data: unknown = JSON.parse(input);
 if (isEpisodeArray(data)) {
   // data is now typed as Episode[]
-  data.forEach((ep) &#x3D;&gt; console.log(ep.title));
+  data.forEach((ep) => console.log(ep.title));
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Generic Components
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Generic list manager
-export function createListManager&lt;T extends { id: string }&gt;(
-  initialItems: T[] &#x3D; []
+export function createListManager<T extends { id: string }>(
+  initialItems: T[] = []
 ) {
   return {
     items: initialItems,
@@ -308,95 +308,95 @@ export function createListManager&lt;T extends { id: string }&gt;(
     },
 
     remove(id: string): void {
-      this.items &#x3D; this.items.filter((item) &#x3D;&gt; item.id !&#x3D;&#x3D; id);
+      this.items = this.items.filter((item) => item.id !== id);
     },
 
     find(id: string): T | undefined {
-      return this.items.find((item) &#x3D;&gt; item.id &#x3D;&#x3D;&#x3D; id);
+      return this.items.find((item) => item.id === id);
     },
 
-    update(id: string, updates: Partial&lt;T&gt;): void {
-      const index &#x3D; this.items.findIndex((item) &#x3D;&gt; item.id &#x3D;&#x3D;&#x3D; id);
-      if (index !&#x3D;&#x3D; -1) {
-        this.items[index] &#x3D; { ...this.items[index], ...updates };
+    update(id: string, updates: Partial<T>): void {
+      const index = this.items.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        this.items[index] = { ...this.items[index], ...updates };
       }
     },
   };
 }
-&#x60;&#x60;&#x60;
+```
 
 ### Event Handling
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Type-safe event emitter
-type EventMap &#x3D; {
-  &quot;episode:selected&quot;: { id: string; episode: Episode };
-  &quot;episode:added&quot;: { episode: Episode };
-  &quot;episode:removed&quot;: { id: string };
+type EventMap = {
+  "episode:selected": { id: string; episode: Episode };
+  "episode:added": { episode: Episode };
+  "episode:removed": { id: string };
 };
 
 class EventBus {
-  private listeners &#x3D; new Map&lt;string, Set&lt;Function&gt;&gt;();
+  private listeners = new Map<string, Set<Function>>();
 
-  on&lt;K extends keyof EventMap&gt;(
+  on<K extends keyof EventMap>(
     event: K,
-    callback: (data: EventMap[K]) &#x3D;&gt; void
-  ): () &#x3D;&gt; void {
+    callback: (data: EventMap[K]) => void
+  ): () => void {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, new Set());
     }
     this.listeners.get(event)!.add(callback);
 
     // Return unsubscribe function
-    return () &#x3D;&gt; this.listeners.get(event)?.delete(callback);
+    return () => this.listeners.get(event)?.delete(callback);
   }
 
-  emit&lt;K extends keyof EventMap&gt;(event: K, data: EventMap[K]): void {
-    this.listeners.get(event)?.forEach((cb) &#x3D;&gt; cb(data));
+  emit<K extends keyof EventMap>(event: K, data: EventMap[K]): void {
+    this.listeners.get(event)?.forEach((cb) => cb(data));
   }
 }
 
-export const eventBus &#x3D; new EventBus();
+export const eventBus = new EventBus();
 
 // Usage
-const unsubscribe &#x3D; eventBus.on(&quot;episode:selected&quot;, ({ id, episode }) &#x3D;&gt; {
-  console.log(&#x60;Selected: ${episode.title}&#x60;);
+const unsubscribe = eventBus.on("episode:selected", ({ id, episode }) => {
+  console.log(`Selected: ${episode.title}`);
 });
-&#x60;&#x60;&#x60;
+```
 
 ### Validation Schema
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Simple schema validation
-interface ValidationRule&lt;T&gt; {
-  validate: (value: T) &#x3D;&gt; boolean;
+interface ValidationRule<T> {
+  validate: (value: T) => boolean;
   message: string;
 }
 
-function createValidator&lt;T&gt;(rules: ValidationRule&lt;T&gt;[]) {
-  return (value: T): { valid: boolean; errors: string[] } &#x3D;&gt; {
-    const errors &#x3D; rules
-      .filter((rule) &#x3D;&gt; !rule.validate(value))
-      .map((rule) &#x3D;&gt; rule.message);
+function createValidator<T>(rules: ValidationRule<T>[]) {
+  return (value: T): { valid: boolean; errors: string[] } => {
+    const errors = rules
+      .filter((rule) => !rule.validate(value))
+      .map((rule) => rule.message);
 
-    return { valid: errors.length &#x3D;&#x3D;&#x3D; 0, errors };
+    return { valid: errors.length === 0, errors };
   };
 }
 
 // Usage
-const validateEpisode &#x3D; createValidator&lt;Episode&gt;([
+const validateEpisode = createValidator<Episode>([
   {
-    validate: (ep) &#x3D;&gt; ep.title.length &gt;&#x3D; 2,
-    message: &quot;Title must be at least 2 characters&quot;,
+    validate: (ep) => ep.title.length >= 2,
+    message: "Title must be at least 2 characters",
   },
   {
-    validate: (ep) &#x3D;&gt; /^[a-zA-Z0-9_-]{11}$/.test(ep.youtubeId),
-    message: &quot;Invalid YouTube ID format&quot;,
+    validate: (ep) => /^[a-zA-Z0-9_-]{11}$/.test(ep.youtubeId),
+    message: "Invalid YouTube ID format",
   },
 ]);
 
-const result &#x3D; validateEpisode(episode);
-&#x60;&#x60;&#x60;
+const result = validateEpisode(episode);
+```
 
 ---
 
@@ -404,7 +404,7 @@ const result &#x3D; validateEpisode(episode);
 
 ### When to Refactor
 
-- ⚠️ Using &#x60;any&#x60; type instead of proper types
+- ⚠️ Using `any` type instead of proper types
 - ⚠️ Barrel file imports (kills tree-shaking)
 - ⚠️ Missing error handling
 - ⚠️ Complex logic in Alpine.js that belongs in TypeScript
@@ -412,37 +412,37 @@ const result &#x3D; validateEpisode(episode);
 
 ### Anti-Patterns to Fix
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
-// ❌ Bad: Using &#x27;any&#x27; type
+```typescript title="example.ts"
+// ❌ Bad: Using 'any' type
 function processData(data: any) {
-  return data.items.map((item: any) &#x3D;&gt; item.name);
+  return data.items.map((item: any) => item.name);
 }
 
 // ✅ Good: Proper typing
 interface DataResponse {
-  items: Array&lt;{ name: string; id: string }&gt;;
+  items: Array<{ name: string; id: string }>;
 }
 function processData(data: DataResponse): string[] {
-  return data.items.map((item) &#x3D;&gt; item.name);
+  return data.items.map((item) => item.name);
 }
-&#x60;&#x60;&#x60;
+```
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // ❌ Bad: Barrel file imports
-import { ComponentA, ComponentB } from &quot;./components&quot;;
-import { logger, utils } from &quot;./index&quot;;
+import { ComponentA, ComponentB } from "./components";
+import { logger, utils } from "./index";
 
 // ✅ Good: Direct imports (tree-shaking friendly)
-import { ComponentA } from &quot;./components/component-a&quot;;
-import { ComponentB } from &quot;./components/component-b&quot;;
-import { logger } from &quot;./lib/logger&quot;;
-&#x60;&#x60;&#x60;
+import { ComponentA } from "./components/component-a";
+import { ComponentB } from "./components/component-b";
+import { logger } from "./lib/logger";
+```
 
 ### Refactoring Patterns
 
 **Add Type Safety:**
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Before: Loose typing
 function createManager(config) {
   return {
@@ -458,28 +458,28 @@ interface ManagerConfig {
   maxItems: number;
 }
 
-interface Manager&lt;T&gt; {
+interface Manager<T> {
   items: T[];
   add(item: T): void;
 }
 
-function createManager&lt;T&gt;(config: ManagerConfig): Manager&lt;T&gt; {
+function createManager<T>(config: ManagerConfig): Manager<T> {
   return {
     items: [],
     add(item: T) {
-      if (this.items.length &lt; config.maxItems) {
+      if (this.items.length < config.maxItems) {
         this.items.push(item);
       }
     },
   };
 }
-&#x60;&#x60;&#x60;
+```
 
 **Move Logic from Alpine to TypeScript:**
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Before: Complex logic in Alpine x-data
-// &lt;div x-data&#x3D;&quot;{ items: [], async fetch() { ... }, validate() { ... } }&quot;&gt;
+// <div x-data="{ items: [], async fetch() { ... }, validate() { ... } }">
 
 // After: TypeScript module
 export interface Item {
@@ -487,30 +487,30 @@ export interface Item {
   title: string;
 }
 
-export async function fetchItems(endpoint: string): Promise&lt;Item[]&gt; {
-  const response &#x3D; await fetch(endpoint);
-  if (!response.ok) throw new Error(&quot;Fetch failed&quot;);
+export async function fetchItems(endpoint: string): Promise<Item[]> {
+  const response = await fetch(endpoint);
+  if (!response.ok) throw new Error("Fetch failed");
   return response.json();
 }
 
 export function validateItem(item: Item): boolean {
-  return item.id.length &gt; 0 &amp;&amp; item.title.length &gt;&#x3D; 2;
+  return item.id.length > 0 && item.title.length >= 2;
 }
 
 // Register for Alpine
-window.fetchItems &#x3D; fetchItems;
-window.validateItem &#x3D; validateItem;
-&#x60;&#x60;&#x60;
+window.fetchItems = fetchItems;
+window.validateItem = validateItem;
+```
 
 ### Refactoring Checklist
 
-- [ ] No &#x60;any&#x60; types (use &#x60;unknown&#x60; if truly unknown)
+- [ ] No `any` types (use `unknown` if truly unknown)
 - [ ] Direct imports only (no barrel files)
-- [ ] Files in &#x60;{{paths.typescript}}/&#x60; directory
-- [ ] File naming: &#x60;kebab-case.ts&#x60;
-- [ ] Variable naming: &#x60;camelCase&#x60;
-- [ ] Interface/Type naming: &#x60;PascalCase&#x60;
-- [ ] Type-only imports use &#x60;import type&#x60;
+- [ ] Files in `{{paths.typescript}}/` directory
+- [ ] File naming: `kebab-case.ts`
+- [ ] Variable naming: `camelCase`
+- [ ] Interface/Type naming: `PascalCase`
+- [ ] Type-only imports use `import type`
 - [ ] Proper error handling with typed errors
 - [ ] Complex Alpine logic extracted to TypeScript
 
@@ -520,36 +520,36 @@ window.validateItem &#x3D; validateItem;
 
 | Problem                | Cause                   | Solution                                    |
 | ---------------------- | ----------------------- | ------------------------------------------- |
-| &#x60;any&#x60; type error       | Implicit any            | Add explicit type or enable &#x60;noImplicitAny&#x60; |
-| Null error             | Missing null check      | Use optional chaining &#x60;?.&#x60; or null check    |
-| Import error           | Wrong module resolution | Check &#x60;moduleResolution&#x60; in tsconfig        |
-| Type not exported      | Missing export          | Add &#x60;export&#x60; keyword                        |
-| Generic inference fail | Can&#x27;t infer type        | Provide explicit type argument              |
+| `any` type error       | Implicit any            | Add explicit type or enable `noImplicitAny` |
+| Null error             | Missing null check      | Use optional chaining `?.` or null check    |
+| Import error           | Wrong module resolution | Check `moduleResolution` in tsconfig        |
+| Type not exported      | Missing export          | Add `export` keyword                        |
+| Generic inference fail | Can't infer type        | Provide explicit type argument              |
 
 ### Debugging Tips
 
-&#x60;&#x60;&#x60;typescript title&#x3D;&quot;example.ts&quot;
+```typescript title="example.ts"
 // Log type at compile time
-type Debug&lt;T&gt; &#x3D; { [K in keyof T]: T[K] };
-type TestType &#x3D; Debug&lt;Episode&gt;; // Hover to see expanded type
+type Debug<T> = { [K in keyof T]: T[K] };
+type TestType = Debug<Episode>; // Hover to see expanded type
 
 // Runtime type checking
 function assertNever(value: never): never {
-  throw new Error(&#x60;Unexpected value: ${value}&#x60;);
+  throw new Error(`Unexpected value: ${value}`);
 }
 
 // Exhaustive switch
-function handleType(type: &quot;film&quot; | &quot;series&quot; | &quot;podcast&quot;): string {
+function handleType(type: "film" | "series" | "podcast"): string {
   switch (type) {
-    case &quot;film&quot;:
-      return &quot;Film&quot;;
-    case &quot;series&quot;:
-      return &quot;Series&quot;;
-    case &quot;podcast&quot;:
-      return &quot;Podcast&quot;;
+    case "film":
+      return "Film";
+    case "series":
+      return "Series";
+    case "podcast":
+      return "Podcast";
     default:
       return assertNever(type); // Compile error if case missing
   }
 }
-&#x60;&#x60;&#x60;
+```
 
