@@ -122,3 +122,31 @@ export {
     getScriptsDir,
     getLibDir
 } from './paths.js'
+
+// Presets loader
+export {
+    loadPresets,
+    getPreset,
+    getPresetKeys,
+    hasPreset
+} from './presets-loader.js'
+
+// Object utilities
+export {
+    deepMerge,
+    deepClone,
+    deepEqual
+} from './object-utils.js'
+
+// Terminal utilities
+export {
+    colors,
+    terminal,
+    print,
+    printWithIcon,
+    printSuccess,
+    printError,
+    printWarning,
+    printInfo,
+    printProgress
+} from './terminal.js'

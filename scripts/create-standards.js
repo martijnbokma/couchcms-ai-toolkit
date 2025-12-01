@@ -30,30 +30,9 @@ import {
     getConceptExplanation,
     showSummary
 } from './lib/onboarding.js'
-import { getToolkitRootCached } from './lib/index.js'
-import yaml from 'yaml'
+import { getToolkitRootCached, loadPresets } from './lib/index.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
-
-/**
- * Load available presets
- * @returns {Object} Presets configuration
- */
-function loadPresets() {
-    const presetsPath = join(TOOLKIT_ROOT, 'presets.yaml')
-
-    if (!existsSync(presetsPath)) {
-        return {}
-    }
-
-    try {
-        const content = readFileSync(presetsPath, 'utf8')
-        const data = yaml.parse(content)
-        return data.presets || {}
-    } catch {
-        return {}
-    }
-}
 
 /**
  * Ask user about their project in simple terms

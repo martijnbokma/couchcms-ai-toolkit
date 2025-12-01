@@ -17,22 +17,9 @@ import { existsSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { execSync } from 'child_process'
 import { findConfigFile } from './utils/utils.js'
-import { getToolkitRootCached } from './lib/index.js'
+import { getToolkitRootCached, print, printSuccess, printError, printWarning, printInfo, printProgress, colors } from './lib/index.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
-
-// Colors
-const colors = {
-    reset: '\x1b[0m',
-    green: '\x1b[32m',
-    blue: '\x1b[34m',
-    yellow: '\x1b[33m',
-    red: '\x1b[31m',
-}
-
-function print(message, color = 'reset') {
-    console.log(`${colors[color]}${message}${colors.reset}`)
-}
 
 function exec(command, options = {}) {
     try {
@@ -66,23 +53,23 @@ async function reinstall() {
     const args = process.argv.slice(2)
     const force = args.includes('--force')
 
-    print('\n🔄 CouchCMS AI Toolkit - Reinstall\n', 'blue')
+    printProgress('\nCouchCMS AI Toolkit - Reinstall\n', 0)
 
     // Check if toolkit is installed
     if (!existsSync('ai-toolkit-shared')) {
-        print('❌ Toolkit not found in ai-toolkit-shared/', 'red')
-        print('   Run the installer first:', 'yellow')
-        print('   curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash\n')
+        printError('Toolkit not found in ai-toolkit-shared/', 0)
+        printWarning('   Run the installer first:', 0)
+        console.log('   curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash\n')
         process.exit(1)
     }
 
     // Step 1: Update toolkit
-    print('📦 Step 1: Updating toolkit...', 'blue')
+    printProgress('Step 1: Updating toolkit...', 0)
     exec('git pull', { cwd: 'ai-toolkit-shared' })
-    print('  ✅ Toolkit updated\n', 'green')
+    printSuccess('Toolkit updated\n', 2)
 
     // Step 2: Update dependencies
-    print('📚 Step 2: Updating dependencies...', 'blue')
+    printProgress('Step 2: Updating dependencies...', 0)
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
     if (hasBun) {
         exec('bun install', { cwd: 'ai-toolkit-shared' })
@@ -138,17 +125,17 @@ async function reinstall() {
     }
 
     // Success
-    print('\n🎉 Reinstall complete!\n', 'green')
-    print('Summary:', 'blue')
-    print('  ✅ Toolkit updated to latest version')
-    print('  ✅ Dependencies updated')
-    print('  ✅ AI configs regenerated')
-    print('  ✅ Installation verified\n')
+    printSuccess('\nReinstall complete!\n', 0)
+    printInfo('Summary:', 0)
+    printSuccess('Toolkit updated to latest version', 2)
+    printSuccess('Dependencies updated', 2)
+    printSuccess('AI configs regenerated', 2)
+    printSuccess('Installation verified\n', 2)
 
-    print('Next steps:', 'blue')
-    print('  1. Check your AI assistant (Cursor, Claude, etc.)')
-    print('  2. Verify configs are working')
-    print('  3. Edit .project/standards.md if needed\n')
+    printInfo('Next steps:', 0)
+    console.log('  1. Check your AI assistant (Cursor, Claude, etc.)')
+    console.log('  2. Verify configs are working')
+    console.log('  3. Edit .project/standards.md if needed\n')
 }
 
 // Setup stdin
@@ -159,6 +146,6 @@ if (typeof process.stdin.setRawMode === 'function') {
 
 // Run
 reinstall().catch(error => {
-    print(`\n❌ Reinstall failed: ${error.message}`, 'red')
+    printError(`\nReinstall failed: ${error.message}`, 0)
     process.exit(1)
 })
