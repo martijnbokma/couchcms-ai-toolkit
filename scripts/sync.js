@@ -766,8 +766,11 @@ Add your project-specific instructions here...
                                  existsSync(join(potentialToolkitDir, 'templates')) &&
                                  existsSync(join(potentialToolkitDir, 'scripts'))
 
+    let detectedToolkitPath = null
     if (hasToolkitStructure) {
         // Config is in toolkit directory, use parent as project root
+        // Store the toolkit directory path for later use
+        detectedToolkitPath = potentialToolkitDir
         projectDir = dirname(potentialToolkitDir)
         console.log(`📦 Detected toolkit directory, using parent as project root`)
     }
@@ -793,7 +796,15 @@ Add your project-specific instructions here...
     console.log(`📦 Project: ${projectName}`)
 
     // Resolve toolkit path
-    const toolkitPath = resolveToolkitPath(config.toolkit, projectDir, TOOLKIT_ROOT)
+    // If we detected toolkit directory, use that path; otherwise resolve from config
+    let toolkitPath
+    if (detectedToolkitPath) {
+        // We detected the toolkit directory, use it directly
+        toolkitPath = detectedToolkitPath
+    } else {
+        // Normal resolution from config
+        toolkitPath = resolveToolkitPath(config.toolkit, projectDir, TOOLKIT_ROOT)
+    }
 
     // Verify toolkit path exists
     if (!existsSync(toolkitPath)) {
