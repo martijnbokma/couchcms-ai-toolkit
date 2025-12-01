@@ -43,7 +43,11 @@
         "gray-matter": "^4.0.3",
         "yaml": "^2.8.2",
         "handlebars": "^4.7.8",
+<<<<<<< HEAD
         "ansis": "^4.2.0"
+=======
+        "picocolors": "^1.0.1"
+>>>>>>> 9801fc9 (feat: improve terminal output formatting with picocolors)
     },
     "devDependencies": {
         "fast-check": "^3.23.2"
