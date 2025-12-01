@@ -139,3 +139,4 @@ export function showSummary(summary) {
 
     console.log(`\n💡 Tip: You can modify .project/standards.md anytime to change settings.\n`)
 }
+

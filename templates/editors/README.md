@@ -16,7 +16,6 @@ This directory contains optimized template files for configuring AI coding assis
 | `copilot.template.md` | GitHub Copilot | Suggestion validation, completion priorities |
 | `codewhisperer.template.md` | Amazon CodeWhisperer | Generation validation, pattern blocking |
 | `tabnine.template.md` | Tabnine AI | Completion validation, context awareness |
-| `kiro.template.md` | Amazon Kiro IDE | Steering documents, always-included standards |
 | `windsurf.template.md` | Windsurf IDE | Cascade capabilities, smart operations |
 | `agent.template.md` | Universal base | Minimal core template for all agents |
 | `roles.template.md` | Project roles | Role definitions and responsibilities |
@@ -29,7 +28,7 @@ All optimized templates follow this consistent structure:
 ```markdown
 # [Editor] AI Instructions - {{project.name}}
 
-**Critical: Always follow `{{config_file_path}}` before generating any code.**
+**Critical: Always follow `/docs/standards.md` before generating any code.**
 ```
 
 ### 2. Operational Doctrine
@@ -76,15 +75,12 @@ All optimized templates follow this consistent structure:
 
 ## Template Variables
 
-All templates use Handlebars variables populated from the project configuration file:
+All templates use Handlebars variables populated from `project.md`:
 
 ### Project Information
 - `{{project.name}}` - Project name
 - `{{project.type}}` - Project type
 - `{{project.description}}` - Project description
-
-### Configuration File
-- `{{config_file_path}}` - Path to project configuration file (e.g., `docs/standards.md`, `.project/standards.md`, `standards.md`, or `project.md`)
 
 ### Standards
 - `{{standards.indentation}}` - Indentation spaces
@@ -166,4 +162,4 @@ To customize a template for your project:
 - [Smart Operations](../../framework/07-smart-operations.md) - Slash commands and modes
 - [Pre-flight Checks](../../preflight-checks.yaml) - Security patterns
 - [AI Toolkit Documentation](../../docs/GETTING-STARTED.md)
-- [Project Configuration](../standards.md)
+- [Project Configuration](../project.md)

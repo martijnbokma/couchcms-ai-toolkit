@@ -157,3 +157,4 @@ export function validateTemplate(templateContent, templateData, templatePath) {
         }
     }
 }
+

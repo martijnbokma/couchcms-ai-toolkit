@@ -1,6 +1,6 @@
 # Windsurf AI Rules - {{project.name}}
 
-**Critical: Always follow `{{config_file_path}}` before generating any code.**
+**Critical: Always follow `/docs/standards.md` before generating any code.**
 
 ## Project Context
 
@@ -16,7 +16,7 @@
 ### Cascade Philosophy
 
 You are an intelligent AI coding agent with Cascade capabilities. Your actions must:
-- **Follow Project Standards** - All code aligns with `{{config_file_path}}`
+- **Follow Project Standards** - All code aligns with `/docs/standards.md`
 - **Be Contextually Aware** - Understand file type and project structure
 - **Prioritize Safety** - Never generate code with security vulnerabilities
 - **Match Existing Patterns** - Follow established code conventions
@@ -266,7 +266,7 @@ Before generating code:
 
 ## 🔗 INTEGRATION
 
-This file is auto-generated from `{{config_file_path}}`.
+This file is auto-generated from `/docs/standards.md`.
 
 ### Communication Legend
 

@@ -2,17 +2,17 @@
 /**
  * CouchCMS AI Toolkit - Sync Script
  *
- * Generates editor configurations from project.md, toolkit modules,
+ * Generates editor configurations from standards.md, toolkit modules,
  * agents, and project-specific context.
  *
  * Features:
  * - Loads default configuration from defaults.yaml
- * - Merges project-specific overrides from project.md
+ * - Merges project-specific overrides from standards.md
  * - Replaces {{paths.xxx}} variables in output
  * - Supports modules, agents, and project context
  *
  * Usage:
- *   bun ai-toolkit/scripts/sync.js
+ *   bun ai-toolkit-shared/scripts/sync.js
  *   bun ~/couchcms-ai-toolkit/scripts/sync.js
  */
 
@@ -112,11 +112,16 @@ function replaceVariables(content, variables, prefix = '') {
 }
 
 /**
- * Find project.md in current directory or parent directories
+ * Find project configuration file (standards.md) in current directory or parent directories
+ * Checks in order: .project/standards.md, standards.md, docs/standards.md
  */
 function findProjectFile(startDir = process.cwd()) {
     let currentDir = startDir
-    const possibleNames = ['project.md', 'PROJECT.md']
+    const possibleNames = [
+        '.project/standards.md',  // Standard location (recommended)
+        'standards.md',           // Root location
+        'docs/standards.md'       // Docs location
+    ]
 
     while (currentDir !== '/') {
         for (const name of possibleNames) {
@@ -343,7 +348,7 @@ ${generatePathsSection(paths)}
         content += `\n# Project Context\n\n${projectContext.content}\n\n---\n`
     }
 
-    // Add project-specific rules from project.md
+    // Add project-specific rules from standards.md
     if (projectRules && projectRules.trim()) {
         content += `\n# Project-Specific Rules\n\n${projectRules}\n`
     }
@@ -688,12 +693,12 @@ async function sync() {
     try {
         console.log('🔄 CouchCMS AI Toolkit - Sync\n')
 
-        // Find project.md
+        // Find standards.md configuration file
         const projectPath = findProjectFile()
 
         if (!projectPath) {
-            console.error('❌ No project.md found in current directory or parent directories.')
-            console.log('\nCreate a project.md file with:\n')
+            console.error('❌ No configuration file found in current directory or parent directories.')
+            console.log('\nCreate a standards.md file with:\n')
             console.log(`---
 name: "my-project"
 description: "Project description"
@@ -719,9 +724,18 @@ Add your project-specific instructions here...
         }
 
         console.log(`📄 Found: ${projectPath}`)
-        const projectDir = dirname(projectPath)
 
-        // Parse project.md
+        // Determine project root directory
+        // If config is in .project/ or docs/, use parent directory as project root
+        let projectDir = dirname(projectPath)
+        const normalizedPath = projectPath.replace(/\\/g, '/')
+        if (normalizedPath.includes('/.project/') || normalizedPath.includes('/docs/')) {
+            projectDir = dirname(projectDir)
+        }
+
+        console.log(`📁 Project root: ${projectDir}`)
+
+        // Parse standards.md configuration file
         let config, projectRules
         try {
             const projectContent = readFileSync(projectPath, 'utf8')
@@ -729,8 +743,8 @@ Add your project-specific instructions here...
             config = parsed.data
             projectRules = parsed.content
         } catch (error) {
-            console.error(`❌ Failed to parse project.md: ${error.message}`)
-            console.log('\nEnsure project.md has valid YAML frontmatter.\n')
+            console.error(`❌ Failed to parse configuration file: ${error.message}`)
+            console.log('\nEnsure your configuration file has valid YAML frontmatter.\n')
             process.exit(1)
         }
 
@@ -742,7 +756,7 @@ Add your project-specific instructions here...
         // Verify toolkit path exists
         if (!existsSync(toolkitPath)) {
             console.error(`❌ Toolkit path not found: ${toolkitPath}`)
-            console.log("\nCheck the 'toolkit' path in your project.md\n")
+            console.log("\nCheck the 'toolkit' path in your standards.md\n")
             process.exit(1)
         }
 
@@ -847,8 +861,8 @@ Add your project-specific instructions here...
     } catch (error) {
         console.error(`\n❌ Sync failed: ${error.message}\n`)
         console.log('Troubleshooting:')
-        console.log('  1. Verify project.md has valid YAML frontmatter')
-        console.log('  2. Check toolkit path in project.md')
+        console.log('  1. Verify standards.md has valid YAML frontmatter')
+        console.log('  2. Check toolkit path in standards.md')
         console.log('  3. Ensure all referenced modules exist')
         console.log("  4. Run 'bun run validate' for detailed diagnostics\n")
         process.exit(1)

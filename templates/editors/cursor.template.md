@@ -1,6 +1,6 @@
 # Cursor AI Instructions - {{project.name}}
 
-**Critical: Always follow `{{config_file_path}}` before generating any code.**
+**Critical: Always follow `/docs/standards.md` before generating any code.**
 
 ## Project Context
 
@@ -291,20 +291,14 @@ Before generating code, verify:
 
 ## 📖 MODULE REFERENCES
 
-Detailed documentation in `ai-toolkit-shared/modules/`:
+Detailed documentation in `/docs/modules/`:
 
 {{#each modules}}
-- {{name}}: `ai-toolkit-shared/modules/{{slug}}.md`
+- {{name}}: `/docs/modules/{{slug}}/`
 {{/each}}
 
 ---
 
-{{#if framework_enabled}}
-{{framework}}
-
----
-
-{{/if}}
 ## 🔗 INTEGRATION
 
 ### Communication Legend
@@ -326,4 +320,4 @@ COMMANDS:        MODES:           MODIFIERS:
 /form <n>
 ```
 
-**This file is auto-generated from `{{config_file_path}}`. All changes should be made there.**
+**This file is auto-generated from `/docs/standards.md`. All changes should be made there.**

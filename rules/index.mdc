@@ -131,7 +131,7 @@ This file serves as a bridge between Cursor AI rules and the comprehensive Unive
 
 **Workflow:**
 
-1. **Start with project configuration** - Read the project configuration file (detected automatically: `.project/standards.md`, `docs/standards.md`, `standards.md`, or `project.md`) for project context
+1. **Start with project configuration** - Read `project.md` or `docs/standards.md` for project context
 2. **Check active modules** - See which knowledge modules are enabled
 3. **Use appropriate agents** - Select the right agent for your task
 4. **Apply workflows** - Use specialized prompts for debugging, refactoring, etc.

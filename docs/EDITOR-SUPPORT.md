@@ -289,7 +289,7 @@ Rules are generated from `standards.md`. To customize:
 ```text
 .kiro/
   └── steering/                 # Steering files
-      ├── project.md
+      ├── standards.md
       ├── modules.md
       └── ...
 ```
