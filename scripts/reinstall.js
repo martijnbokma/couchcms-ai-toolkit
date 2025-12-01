@@ -43,10 +43,12 @@ async function askConfirmation(message) {
     process.stdout.write(yellow.bold('Continue? [y/N] '))
 
     return new Promise((resolve) => {
-        process.stdin.once('data', (data) => {
+        const handler = (data) => {
+            process.stdin.removeListener('data', handler)
             const answer = data.toString().trim().toLowerCase()
             resolve(answer === 'y' || answer === 'yes')
-        })
+        }
+        process.stdin.once('data', handler)
     })
 }
 
@@ -261,6 +263,9 @@ async function reinstall() {
         '3. Edit .project/standards.md if needed',
         { color: blue, icon: 'ℹ️', title: 'Next Steps' }
     )
+
+    // Explicitly exit to ensure script terminates
+    process.exit(0)
 }
 
 // Setup stdin
@@ -268,6 +273,9 @@ process.stdin.setEncoding('utf8')
 if (typeof process.stdin.setRawMode === 'function') {
     process.stdin.setRawMode(false)
 }
+
+// Ensure stdin is readable
+process.stdin.resume()
 
 // Run
 reinstall().catch(error => {
