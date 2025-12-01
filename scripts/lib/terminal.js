@@ -151,23 +151,28 @@ export function printBox(message, options = {}, indent = 0) {
         ...lines.map(l => l.length),
         title ? title.length + (icon ? 3 : 0) : 0
     )
-    const width = Math.min(maxWidth + 4, getTerminalWidth() - indent - 4)
+    const width = Math.max(10, Math.min(maxWidth + 4, getTerminalWidth() - indent - 4))
 
-    const topBorder = '┌' + '─'.repeat(width - 2) + '┐'
-    const bottomBorder = '└' + '─'.repeat(width - 2) + '┘'
+    const topBorder = '┌' + '─'.repeat(Math.max(0, width - 2)) + '┐'
+    const bottomBorder = '└' + '─'.repeat(Math.max(0, width - 2)) + '┘'
 
     console.log()
     console.log(`${spaces}${colorFn(topBorder)}`)
 
     if (title) {
         const iconText = icon ? `${icon} ` : ''
-        const titleLine = `│ ${iconText}${title}${' '.repeat(width - title.length - iconText.length - 3)}│`
+        const titlePadding = Math.max(0, width - title.length - iconText.length - 3)
+        const titleLine = `│ ${iconText}${title}${' '.repeat(titlePadding)}│`
         console.log(`${spaces}${colorFn(titleLine)}`)
-        console.log(`${spaces}${colorFn('├' + '─'.repeat(width - 2) + '┤')}`)
+        console.log(`${spaces}${colorFn('├' + '─'.repeat(Math.max(0, width - 2)) + '┤')}`)
     }
 
     lines.forEach(line => {
-        const paddedLine = line + ' '.repeat(width - line.length - 4)
+        // Truncate line if it's too long, then pad
+        const maxLineLength = width - 4
+        const truncatedLine = line.length > maxLineLength ? line.substring(0, maxLineLength) : line
+        const padding = Math.max(0, maxLineLength - truncatedLine.length)
+        const paddedLine = truncatedLine + ' '.repeat(padding)
         console.log(`${spaces}${colorFn('│')} ${paddedLine} ${colorFn('│')}`)
     })
 
