@@ -254,15 +254,15 @@ async function reinstall() {
     )
 
     const toolkitStep = steps.find(s => s.name === 'Toolkit update')
-    const toolkitStatus = toolkitStep?.status === 'success' ? 'Updated' :
-                          toolkitStep?.status === 'skipped' ? 'Skipped' :
-                          'Warning'
+    const toolkitStatus = toolkitStep?.status === 'success' ? '✅ Updated' :
+                          toolkitStep?.status === 'skipped' ? '⚠️ Skipped' :
+                          '⚠️ Warning'
 
     printSummary('Summary', {
         'Toolkit': toolkitStatus,
-        'Dependencies': steps.find(s => s.name === 'Dependencies')?.status === 'success' ? 'Updated' : 'Failed',
-        'Configuration': steps.find(s => s.name === 'Config regeneration' || s.name === 'Initial setup')?.status === 'success' ? 'Regenerated' : 'Failed',
-        'Verification': steps.find(s => s.name === 'Verification')?.status === 'success' ? 'Passed' : 'Failed',
+        'Dependencies': steps.find(s => s.name === 'Dependencies')?.status === 'success' ? '✅ Updated' : '❌ Failed',
+        'Configuration': steps.find(s => s.name === 'Config regeneration' || s.name === 'Initial setup')?.status === 'success' ? '✅ Regenerated' : '❌ Failed',
+        'Verification': steps.find(s => s.name === 'Verification')?.status === 'success' ? '✅ Passed' : '❌ Failed',
     })
 
     printBox(
