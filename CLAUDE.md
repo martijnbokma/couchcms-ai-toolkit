@@ -270,3 +270,4 @@ TypeScript standards and patterns
 ---
 
 *Generated from `standards.md` on 2025-11-29T08:16:22.151Z*
+*Generated from `standards.md` on 2025-12-01T08:39:53.020Z*

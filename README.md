@@ -169,6 +169,7 @@ Choose the setup method that fits your experience level:
 bun ai-toolkit-shared/scripts/create-standards.js
 # or
 bun run create
+cd ai-toolkit-shared && bun run create
 ```
 
 **Perfect for:**
@@ -189,6 +190,7 @@ bun run create
 bun ai-toolkit-shared/scripts/init.js
 # or
 bun run init
+cd ai-toolkit-shared && bun run init
 ```
 
 **Perfect for:**
@@ -286,32 +288,63 @@ These are automatically installed when you run `bun install` in the toolkit dire
 
 # Simple setup wizard (recommended for beginners)
 bun ai-toolkit-shared/scripts/create-standards.js
+# or: cd ai-toolkit-shared && bun run create
 
 # Advanced setup (first time) - with auto-detection!
 bun ai-toolkit-shared/scripts/init.js
+# or: cd ai-toolkit-shared && bun run init
 
 # Health check - validate installation and check for updates
 bun ai-toolkit-shared/scripts/health.js
+# or: cd ai-toolkit-shared && bun run health
 
 # Generate/update AI configs
 bun ai-toolkit-shared/scripts/sync.js
+# or: cd ai-toolkit-shared && bun run sync
 
 # Watch mode - auto-sync on config changes
 bun ai-toolkit-shared/scripts/sync.js --watch
+# or: cd ai-toolkit-shared && bun run sync:watch
 
 # Interactive module browser
 bun ai-toolkit-shared/scripts/browse.js          # Browse modules
 bun ai-toolkit-shared/scripts/browse.js --agents # Browse agents
+# or: cd ai-toolkit-shared && bun run browse
+# or: cd ai-toolkit-shared && bun run browse:agents
 
 # Validate configuration
 bun ai-toolkit-shared/scripts/validate.js
+# or: cd ai-toolkit-shared && bun run validate
+
+# Audit documentation for accuracy and consistency
+bun ai-toolkit-shared/scripts/audit-docs.js
+# or: cd ai-toolkit-shared && bun run audit:docs
 
 # Migrate from old configuration format
 bun ai-toolkit-shared/scripts/migrate.js
+# or: cd ai-toolkit-shared && bun run migrate
 
 # Extend modules from documentation
 cd ai-toolkit-shared && bun run extend-modules --analyze
 cd ai-toolkit-shared && bun run extend-modules --module comments
+```
+
+### Updates
+
+```bash
+# Check for updates (interactive - asks to update)
+cd ai-toolkit-shared && bun run update
+
+# Check only (no prompt)
+cd ai-toolkit-shared && bun run update:check
+
+# Apply updates automatically (no prompt)
+cd ai-toolkit-shared && bun run update:apply
+
+# Update submodule (alternative method)
+cd ai-toolkit-shared && bun run update-submodule
+```
+
 ```
 
 ### Updates
@@ -351,7 +384,7 @@ bun scripts/git-flow.js hotfix finish critical-fix  # Deploy hotfix
 # Utilities
 bun scripts/git-flow.js check-stale                 # Find old branches
 bun scripts/git-flow.js changelog                   # Generate changelog
-```
+```bash
 
 ### Contributing
 
@@ -372,6 +405,7 @@ Initialize Gitflow in your repository:
 ```bash
 # One-time setup
 bun scripts/git-flow-init.js
+# or: cd ai-toolkit-shared && bun run git-flow-init
 ```
 
 This creates the `develop` branch and sets up the workflow structure.
@@ -393,6 +427,7 @@ feature branches     ──●  ●  ●     ●  ●  ●     Your work (isolat
 ```bash
 # Start new feature
 bun scripts/git-flow.js feature start my-feature
+# or: cd ai-toolkit-shared && bun run git-flow feature start my-feature
 
 # Work on it
 git add .
@@ -400,16 +435,17 @@ git commit -m "Add functionality"
 
 # Finish and create PR
 bun scripts/git-flow.js feature finish my-feature
+# or: cd ai-toolkit-shared && bun run git-flow feature finish my-feature
 ```
 
 ### Quick Release (Solo Developer)
 
 ```bash
 # One command to release!
-bun run release 1.0.0
+cd ai-toolkit-shared && bun run release 1.0.0
 
 # Or with npm
-npm run release 1.0.0
+cd ai-toolkit-shared && npm run release 1.0.0
 ```
 
 This automatically:
@@ -469,7 +505,7 @@ This automatically:
 bun ai-toolkit-shared/scripts/init.js
 
 # 2. Customize configuration
-code .project/standards.md
+code standards.md
 
 # 3. Sync after changes
 bun ai-toolkit-shared/scripts/sync.js

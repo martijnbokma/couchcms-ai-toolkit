@@ -1,5 +1,7 @@
 # Troubleshooting Guide
 
+**Navigation:** [← Documentation Index](README.md) | [← Main README](../README.md) | [Getting Started](GETTING-STARTED.md) | [Quick Start](QUICK-START.md)
+
 Common issues and solutions for the CouchCMS AI Toolkit.
 
 > [!TIP]
@@ -100,7 +102,7 @@ cat standards.md
 # - name my-project       ✗ Missing colon
 # - name: "my-project"   ✓ Good (quotes optional for simple strings)
 # - name: "it's mine"    ✓ Good (quotes required for apostrophes)
-```
+```yaml
 
 **❌ Wrong YAML examples**:
 
@@ -127,6 +129,19 @@ modules:                     # ✓ Consistent indentation
     - tailwindcss           # ✓ Spaces only
 ---
 ```
+
+**✅ Correct YAML example (standards.md frontmatter)**:
+
+```yaml
+---
+name: 'my-project'           # ✓ Quoted string
+description: "it's mine"     # ✓ Quoted apostrophe
+toolkit: './ai-toolkit-shared'  # ✓ Proper path
+modules:                     # ✓ Consistent indentation
+    - couchcms-core         # ✓ No trailing comma
+    - tailwindcss           # ✓ Spaces only
+---
+```yaml
 
 ---
 
@@ -232,7 +247,7 @@ git submodule update --init --recursive
 ```bash
 # Simply run sync to generate them
 bun ai-toolkit-shared/scripts/sync.js
-```
+```yaml
 
 ---
 
@@ -278,7 +293,7 @@ See [Migration Guide](MIGRATION.md) for step-by-step instructions on upgrading f
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```
+```yaml
 
 ---
 
@@ -310,7 +325,7 @@ bun ai-toolkit-shared/scripts/sync.js
 # standards.md must have at least couchcms-core
 modules:
     - couchcms-core # Always required
-```
+```yaml
 
 ---
 
@@ -350,7 +365,7 @@ git pull origin master
 
 # Make changes, then:
 git checkout -b feature/my-changes
-```
+```yaml
 
 See [CONTRIBUTING.md](../CONTRIBUTING.md) for full workflow.
 
@@ -396,7 +411,7 @@ git submodule deinit -f ai-toolkit-shared
 rm -rf .git/modules/ai-toolkit-shared
 git rm -f ai-toolkit-shared
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
-```
+```yaml
 
 ---
 
@@ -536,7 +551,7 @@ bun ai-toolkit-shared/scripts/validate.js | grep -i path
 ```bash
 # Skip optional checks
 bun ai-toolkit-shared/scripts/validate.js --quick
-```
+```yaml
 
 ---
 
@@ -778,6 +793,18 @@ Or copy key sections into your prompts.
 
     **✅ Correct GitHub Actions setup**:
     ```yaml
+    ```yaml
+    # ✗ Missing submodules
+    - uses: actions/checkout@v3
+    
+    # ✗ Wrong submodule flag
+    - uses: actions/checkout@v3
+      with:
+          submodules: true
+    ```
+
+    **✅ Correct GitHub Actions setup**:
+    ```yaml
     # ✓ Recursive submodules
     - uses: actions/checkout@v3
       with:
@@ -799,6 +826,18 @@ Or copy key sections into your prompts.
 
     **✅ Correct dependency installation**:
     ```yaml
+    ```yaml
+    # ✗ Missing cd command
+    - name: Install dependencies
+      run: bun install
+    
+    # ✗ Wrong directory
+    - name: Install dependencies  
+      run: cd toolkit && bun install
+    ```
+
+    **✅ Correct dependency installation**:
+    ```yaml
     # ✓ Correct path and cd back
     - name: Install toolkit dependencies
       run: cd ai-toolkit-shared && bun install
@@ -807,6 +846,20 @@ Or copy key sections into your prompts.
 3. **Generated files out of sync**
 
     **❌ Wrong sync check**:
+    ```yaml
+    # ✗ Missing sync step
+    - name: Check files
+      run: git diff --exit-code .cursorrules
+    
+    # ✗ Wrong file list
+    - name: Check sync
+      run: |
+          bun ai-toolkit-shared/scripts/sync.js
+          git diff --exit-code
+    ```
+
+    **✅ Correct sync check**:
+    ```yaml
     ```yaml
     # ✗ Missing sync step
     - name: Check files
@@ -864,7 +917,7 @@ bun ai-toolkit-shared/scripts/validate.js
 # Fix warnings/errors
 # Update standards.md as needed
 # Validate again
-```
+```yaml
 
 ---
 
@@ -890,7 +943,7 @@ code .project/standards.md
 code .project/ai/context.md
 # Then regenerate:
 bun ai-toolkit-shared/scripts/sync.js
-```
+```yaml
 
 ---
 

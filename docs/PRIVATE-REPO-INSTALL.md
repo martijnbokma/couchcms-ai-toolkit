@@ -65,7 +65,7 @@ cd ..
 
 # 4. Run setup
 bun ai-toolkit-shared/scripts/init.js
-```
+```bash
 
 **Security Note:** Don't commit the token! Use credential helper:
 ```bash
@@ -87,7 +87,7 @@ cd ..
 
 # 3. Run setup
 bun ai-toolkit-shared/scripts/init.js
-```
+```text
 
 **Note:** This is not a submodule, so updates are manual.
 
@@ -135,7 +135,7 @@ git submodule add git@github.com:org/repo.git ai-toolkit-shared
 # Create deploy key for CI/CD
 # Settings → Deploy keys → Add deploy key
 # Use in automated deployments
-```
+```text
 
 **Option 3: GitHub App**
 ```bash
@@ -154,7 +154,7 @@ Use GitHub Actions secrets:
   with:
     submodules: recursive
     token: ${{ secrets.GITHUB_TOKEN }}
-```
+```text
 
 ## 📊 Comparison
 

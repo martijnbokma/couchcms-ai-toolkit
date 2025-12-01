@@ -1,5 +1,7 @@
 # Quick Start Guide - CouchCMS AI Toolkit
 
+**Navigation:** [← Documentation Index](README.md) | [← Main README](../README.md) | [Getting Started](GETTING-STARTED.md) | [Troubleshooting](TROUBLESHOOTING.md)
+
 **Goal:** Get a fully working AI toolkit for your CouchCMS project in 5 minutes.
 
 ## 📋 What You Need
@@ -58,7 +60,7 @@ curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/ma
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js
 bun install.js
 rm install.js
-```
+```text
 
 ### Option 3: Manual Installation
 
@@ -80,6 +82,32 @@ bun ai-toolkit-shared/scripts/init.js
 ## 🎯 Setup Wizard
 
 After installation, you have two setup options:
+
+### Option A: Simple Setup (Nieuw! Voor Beginners) ✨
+
+**Perfect als je:**
+- Voor het eerst met de toolkit werkt
+- Snel wilt starten zonder technische details
+- Niet precies weet welke modules je nodig hebt
+
+```bash
+bun ai-toolkit-shared/scripts/create-standards.js
+# of
+bun run create
+```text
+
+**Wat gebeurt er:**
+- 📝 Beantwoord simpele vragen in begrijpelijke taal
+- 🎯 Kies je project type (blog, webapp, portfolio, etc.)
+- 🛠️ Selecteer technologieën via eenvoudige vragen
+- ✅ Automatische aanbevelingen op basis van je keuzes
+- ⚡ Klaar in 2 minuten!
+
+**Zie:** [Simple Setup Guide](SIMPLE-SETUP.md) voor details
+
+### Option B: Advanced Setup (Voor Gevorderden) 🔧
+
+After installation, the advanced setup wizard starts automatically. You get 4 options:
 
 ### Option A: Simple Setup (Nieuw! Voor Beginners) ✨
 
@@ -199,7 +227,7 @@ Open your AI assistant (Cursor, Claude, etc.) and ask:
 
 ```text
 "Create a CouchCMS template for a blog post"
-```
+```text
 
 Your AI now knows:
 - ✅ All CouchCMS tags and patterns
@@ -250,7 +278,7 @@ agents:
 ---
 
 # Your project rules here
-```
+```bash
 
 After changes:
 ```bash
@@ -267,7 +295,7 @@ bun ai-toolkit-shared/scripts/sync.js
 **Option 1: Interactive (Easy)**
 ```bash
 bun ai-toolkit-shared/scripts/browse.js
-```
+```text
 
 **Option 2: Manual**
 
@@ -315,7 +343,7 @@ Install Git:
 Initialize git in your project:
 ```bash
 git init
-```
+```bash
 
 ### "Bun/Node not found"
 
@@ -340,7 +368,7 @@ Run health check:
 ```bash
 # Check toolkit status and updates
 bun ai-toolkit-shared/scripts/health.js
-```
+```text
 
 This shows what's wrong and how to fix it.
 
@@ -366,7 +394,7 @@ During setup/development:
 ```bash
 # Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
-```
+```bash
 
 ### Tip 3: Run Health Check Regularly
 

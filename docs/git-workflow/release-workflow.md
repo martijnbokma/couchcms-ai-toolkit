@@ -8,7 +8,7 @@ Release branches are used to prepare a new production version. They allow final 
 
 **Lifecycle:** develop → release → main + develop
 
-```
+```text
 develop ──●──●──●──●────────────●──→
            ↓                    ↑
 release   ●──●──●──●──●──●──●──●
@@ -36,7 +36,7 @@ Don't create a release when:
 
 We use **Semantic Versioning** (semver): `MAJOR.MINOR.PATCH`
 
-```
+```text
 v1.2.3
 │ │ │
 │ │ └─ PATCH: Bug fixes (1.2.3 → 1.2.4)
@@ -62,7 +62,7 @@ v1.2.3
 
 # Breaking changes (API changes, removed features)
 # → 2.0.0
-```
+```text
 
 ## Complete Workflow
 
@@ -99,7 +99,7 @@ bun scripts/git-flow.js changelog
 # - What features were added?
 # - What bugs were fixed?
 # - Any breaking changes?
-```
+```yaml
 
 **Step 3: Decide version number**
 
@@ -140,7 +140,7 @@ git checkout -b release/1.3.0 develop
 # Commit version bump
 git add .
 git commit -m "chore: Bump version to 1.3.0"
-```
+```bash
 
 **Step 3: Generate changelog**
 
@@ -164,7 +164,7 @@ git commit -m "docs: Update changelog for v1.3.0"
 
 ```bash
 git push origin release/1.3.0
-```
+```text
 
 ### Phase 3: Release Testing
 
@@ -207,7 +207,7 @@ git push origin release/1.3.0
 
 # Re-test
 # Repeat until stable
-```
+```text
 
 **Important:** Only bug fixes on release branch!
 - ✅ Bug fixes
@@ -239,7 +239,7 @@ cat CHANGELOG.md
 ```bash
 # Using script (recommended)
 bun scripts/git-flow.js release finish 1.3.0
-```
+```yaml
 
 **This creates TWO pull requests:**
 
@@ -275,7 +275,7 @@ Description:
 - None
 
 Closes #123, #124
-```
+```text
 
 PR to develop:
 ```
@@ -285,7 +285,7 @@ Compare: release/1.3.0
 
 Description:
 Merging release branch back to develop to include any bug fixes made during release preparation.
-```
+```text
 
 ### Phase 5: Deployment
 
@@ -309,7 +309,7 @@ Merging release branch back to develop to include any bug fixes made during rele
 # - Test critical features
 # - Check version number
 # - Monitor error logs
-```
+```text
 
 **Step 3: Merge back to develop**
 
@@ -333,7 +333,7 @@ git branch -D release/1.3.0
 # Switch back to develop
 git checkout develop
 git pull origin develop
-```
+```text
 
 ### Phase 6: Post-Release
 
@@ -391,7 +391,7 @@ git commit -m "fix: Resolve critical issue"
 
 # Finish hotfix (creates v1.3.1)
 bun scripts/git-flow.js hotfix finish critical-fix
-```
+```text
 
 See [Hotfix Workflow](hotfix-workflow.md)
 
@@ -421,7 +421,7 @@ git merge main
 git add .
 git commit -m "Resolve merge conflicts"
 git push origin release/1.3.0
-```
+```text
 
 ## Best Practices
 
@@ -506,7 +506,7 @@ git pull origin develop
 
 ## Version History Example
 
-```
+```yaml
 v2.0.0 (2024-03-01) - Major update
   - Breaking: Changed API structure
   - Added: New authentication system

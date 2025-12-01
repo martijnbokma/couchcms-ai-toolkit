@@ -139,7 +139,7 @@ Brief description of what this command does.
 ## Examples
 
 Example usage or output.
-```
+```text
 
 ### Best Practices
 
@@ -261,7 +261,7 @@ Creates a single component
 # ❌ Bad: Too broad
 # Do Everything
 Creates components, forms, views, fixes issues...
-```
+```text
 
 ### 2. Use Clear Titles
 
@@ -285,7 +285,7 @@ Show expected usage:
 **Input**: `/create-component card`
 
 **Output**: Creates `components/card.html`
-```
+```text
 
 ### 4. Use Path Variables
 

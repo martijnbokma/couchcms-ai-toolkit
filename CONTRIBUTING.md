@@ -40,7 +40,7 @@ git commit -m "feat: add functionality"
 
 # Finish and create PR
 bun scripts/git-flow.js feature finish your-feature-name
-```
+```text
 
 **New to Gitflow?** Read:
 - 📖 [Getting Started Guide](docs/git-workflow/getting-started.md) - 10 minute setup
@@ -76,7 +76,7 @@ bun run prepare-contribution
 
 # Or create a branch directly
 bun run prepare-contribution --branch feature/your-feature-name
-```
+```text
 
 The script will:
 - ✅ Check your git state
@@ -108,7 +108,7 @@ git status
 # Check remote configuration
 git remote -v
 # Should show: https://github.com/martijnbokma/couchcms-ai-toolkit.git
-```
+```text
 
 **Important**: Submodules are often in "detached HEAD" state. We need to fix this first.
 
@@ -137,7 +137,7 @@ git pull origin master
 git remote add upstream https://github.com/martijnbokma/couchcms-ai-toolkit.git  # First time only
 git fetch upstream
 git merge upstream/master  # Sync with upstream
-```
+```text
 
 ### Step 4: Create a Feature Branch
 
@@ -163,7 +163,7 @@ git checkout -b feature/your-feature-name
 git checkout -b feature/add-vue-module
 git checkout -b fix/alpine-docs-typo
 git checkout -b docs/improve-readme
-```
+```text
 
 ### Step 5: Make Your Changes
 
@@ -192,7 +192,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 # Validate
 bun ai-toolkit-shared/scripts/validate.js
-```
+```text
 
 If sync and validation work, your changes are good!
 
@@ -228,7 +228,7 @@ git commit -m "feat: add Vue.js module
 ```bash
 # This will push and create PR automatically
 bun scripts/git-flow.js feature finish your-feature-name
-```
+```text
 
 This automatically:
 - ✅ Pushes your branch to GitHub
@@ -252,7 +252,7 @@ git push -u origin feature/your-feature-name
 git push fork feature/your-feature-name
 # or if fork is your origin:
 git push origin feature/your-feature-name
-```
+```text
 
 ### Step 9: Create a Pull Request (if not using git-flow)
 
@@ -318,7 +318,7 @@ cd ..
 git add ai-toolkit-shared
 git commit -m "chore: update ai-toolkit-shared with new features"
 git push
-```
+```text
 
 **Note:** Features are merged to `develop` first. They will be included in the next release to `main`.
 
@@ -371,7 +371,7 @@ Code examples...
 ### DON'T
 
 - List anti-patterns
-```
+```text
 
 ### 2. Improve Existing Modules
 
@@ -399,7 +399,7 @@ git checkout -b feature/add-docker-agent
 touch agents/docker.md
 
 # Follow existing agent structure
-```
+```text
 
 ### 4. Improve Documentation
 
@@ -423,7 +423,7 @@ git checkout -b feature/add-performance-prompts
 
 # Add to prompts library
 touch prompts/best-practices/performance-optimization.md
-```
+```text
 
 ## 🚫 Common Mistakes to Avoid
 
@@ -443,7 +443,7 @@ cd ai-toolkit-shared
 git checkout master
 git checkout -b feature/my-feature
 code modules/alpinejs.md
-```
+```bash
 
 ### ❌ Don't Commit node_modules
 
@@ -456,7 +456,7 @@ git commit -m "add dependencies"  # Don't do this!
 ```bash
 # GOOD - dependencies are gitignored
 # Users run: bun install
-```
+```bash
 
 ### ❌ Don't Push Directly to Master
 
@@ -473,7 +473,7 @@ git checkout -b feature/my-feature
 git commit -m "changes"
 git push origin feature/my-feature
 # Then create a Pull Request
-```
+```text
 
 ## 📝 Contribution Checklist
 
@@ -507,7 +507,7 @@ git reflog  # Find your commit hash
 git checkout -b rescue-my-work <commit-hash>
 git checkout master
 git merge rescue-my-work
-```
+```bash
 
 ### "Merge conflicts in my PR"
 
@@ -531,7 +531,7 @@ git remote -v
 
 # If wrong, fix it:
 git remote set-url origin https://github.com/martijnbokma/couchcms-ai-toolkit.git
-```
+```text
 
 ## 🎓 Learning Resources
 
@@ -572,7 +572,7 @@ bun ai-toolkit-shared/scripts/validate.js
 
 # Check generated .cursorrules file
 cat .cursorrules | grep -i "your-change"
-```
+```text
 
 ### 3. Document Your Changes
 

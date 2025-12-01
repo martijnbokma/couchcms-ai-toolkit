@@ -78,7 +78,7 @@ bun install.js
 
 # Cleanup
 rm install.js
-```
+```text
 
 **Pros:**
 - ✅ Uses Bun (faster)
@@ -133,7 +133,7 @@ cd ..
 
 # Run setup
 bun ai-toolkit-shared/scripts/init.js
-```
+```text
 
 **Pros:**
 - ✅ Can modify toolkit
@@ -206,7 +206,7 @@ Install Git:
 Initialize git first:
 ```bash
 git init
-```
+```yaml
 
 ### Installation Fails
 

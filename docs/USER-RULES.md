@@ -65,6 +65,11 @@ bun ai-toolkit-shared/scripts/sync.js
 # bun ai-toolkit-shared/scripts/sync.js --watch
 ```
 
+
+# Optional: Watch mode - auto-sync when standards.md changes
+# bun ai-toolkit-shared/scripts/sync.js --watch
+```text
+
 This creates `USER-RULES.md` in your project with a template you should copy to Cursor Settings.
 
 ## Example User Rules
@@ -90,7 +95,7 @@ When explaining code:
 - Favor immutability over mutation
 - Always use explicit types (no 'any')
 - Prefer named exports over default exports
-```
+```text
 
 ### Workflow Preferences
 
@@ -111,7 +116,7 @@ When explaining code:
 - All code, comments, and documentation must be in English
 - Use clear, descriptive variable names
 - Avoid abbreviations unless widely understood
-```
+```text
 
 ## Best Practices
 
@@ -137,7 +142,7 @@ Always use explicit return types in TypeScript functions.
 
 # ❌ Bad: Vague
 Write good code.
-```
+```text
 
 ### 3. Keep It Short
 
@@ -161,7 +166,7 @@ Reply in a friendly, helpful tone. Use examples when explaining concepts.
 
 # ❌ Bad: Too technical
 When working with TypeScript, always use generics with constraints...
-```
+```text
 
 ## Integration with Toolkit
 
@@ -192,7 +197,7 @@ User Rules and Project Rules complement each other:
 **User Rules** (Global):
 ```markdown
 Reply concisely. Use English only.
-```
+```yaml
 
 **Project Rules** (Specific):
 ```yaml
@@ -219,7 +224,7 @@ Together, they ensure:
 - Use English for all code and comments
 - Provide examples when helpful
 - Explain the "why" behind recommendations
-```
+```text
 
 ### Pattern 2: Code Style Preferences
 
@@ -241,7 +246,7 @@ Together, they ensure:
 - Suggest improvements but don't implement without approval
 - Explain alternatives when possible
 - Focus on maintainability
-```
+```text
 
 ### Pattern 4: Learning Style
 

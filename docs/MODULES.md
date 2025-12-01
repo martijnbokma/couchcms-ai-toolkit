@@ -314,7 +314,7 @@ CouchCMS DataBound Forms implementation patterns.
 ```yaml
 modules:
     - couchcms-core # Always included
-```
+```text
 
 ### For Modern Frontend Project
 
@@ -338,7 +338,7 @@ modules:
     - relationships
     - search
     - pagination
-```
+```text
 
 ### For User-Interactive Site
 
@@ -364,7 +364,7 @@ modules:
     - databound-forms
     - search
     - pagination
-```
+```yaml
 
 ---
 
@@ -417,7 +417,7 @@ modules:
     - alpinejs
     - folders
     - search
-```
+```text
 
 Then sync:
 
@@ -472,7 +472,7 @@ framework/
 ├── playbooks/         # Workflow templates (optional)
 ├── enhancements/      # Advanced features (optional)
 └── docs/              # Documentation
-```
+```text
 
 **Configuration:**
 

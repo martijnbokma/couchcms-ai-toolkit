@@ -1,5 +1,6 @@
 # Getting Started with CouchCMS AI Toolkit
 
+**Navigation:** [← Documentation Index](README.md) | [← Main README](../README.md) | [Quick Start](QUICK-START.md) | [Troubleshooting](TROUBLESHOOTING.md)
 
 :::warning[Critical Step]
 You **must** install the toolkit's dependencies before running any scripts. The toolkit requires several npm packages (gray-matter, yaml, handlebars) that need to be installed first.
@@ -60,7 +61,7 @@ cd my-couchcms-project
 
 ```bash
 git init
-```
+```text
 
 ### 3. Add Toolkit as Submodule
 
@@ -80,7 +81,7 @@ You **must** install the toolkit's dependencies before running any scripts. With
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```
+```text
 
 This installs the required packages:
 - `gray-matter` - Frontmatter parsing
@@ -174,7 +175,7 @@ Already have a project? Add the toolkit:
 
 ```bash
 cd your-existing-project
-```
+```text
 
 ### 2. Add Toolkit Submodule
 
@@ -194,7 +195,7 @@ You **must** install the toolkit's dependencies before running any scripts.
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```
+```bash
 
 ### 4. Run Setup Wizard
 
@@ -226,7 +227,7 @@ Choose one method:
 cd your-project
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 cd ai-toolkit-shared && bun install && cd ..
-```
+```bash
 
 **Option B: Clone to Home Directory**
 
@@ -305,7 +306,7 @@ framework: false
 # Project-Specific Rules
 
 Add your project-specific coding standards here...
-```
+```text
 
 ### 3. Understanding Configuration Files
 
@@ -350,7 +351,7 @@ If you do need it (very rare), create `.project/ai/context.md`:
 
 ```bash
 mkdir -p .project/ai
-```
+```yaml
 
 ```markdown
 ---

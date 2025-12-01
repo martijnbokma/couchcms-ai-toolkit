@@ -239,7 +239,7 @@ Choice [1-4]: 2
   3. 📝 E-commerce - Online store with products, cart, and checkout
   ...
 Choice [0-8]: 2
-```
+```text
 
 ### Customizing Presets
 
@@ -271,7 +271,7 @@ bun scripts/sync.js --watch
 
 # Or use npm script
 cd ai-toolkit-shared && bun run sync:watch
-```
+```text
 
 ### How It Works
 
@@ -316,7 +316,7 @@ bun scripts/health.js
 
 # Or use npm script
 cd ai-toolkit-shared && bun run health
-```
+```yaml
 
 ### What It Checks
 
@@ -389,7 +389,7 @@ Get notified when toolkit updates are available.
 │ Update with:                                            │
 │   cd ai-toolkit-shared && git pull                      │
 └─────────────────────────────────────────────────────────┘
-```
+```text
 
 ### Manual Check
 
@@ -421,7 +421,7 @@ bun scripts/browse.js --agents
 cd ai-toolkit-shared && bun run browse
 cd ai-toolkit-shared && bun run browse:modules
 cd ai-toolkit-shared && bun run browse:agents
-```
+```text
 
 ### Controls
 
@@ -483,7 +483,7 @@ bun scripts/sync.js
 bun scripts/sync.js
 # Edit config
 bun scripts/sync.js
-```
+```bash
 
 ### Now (Current Version)
 
@@ -533,7 +533,7 @@ bun ai-toolkit-shared/scripts/init.js
 
 # 3. Start coding!
 # Your AI assistant now knows everything about your project
-```
+```bash
 
 ### Existing Project
 
@@ -561,7 +561,7 @@ bun ai-toolkit-shared/scripts/sync.js --watch
 # Configs auto-update on save
 
 # When done, Ctrl+C to stop
-```
+```text
 
 ## 🆘 Troubleshooting
 

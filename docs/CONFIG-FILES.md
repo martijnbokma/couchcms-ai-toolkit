@@ -56,7 +56,7 @@ framework: false
 
 ## Patterns
 [Common patterns...]
-```
+```text
 
 ### What It Contains
 
@@ -86,7 +86,7 @@ framework: false                # AAPF framework
 #   playbooks: true
 
 context: ".project/ai"          # Context directory (optional)
-```
+```yaml
 
 #### 2. Markdown Body (Rules & Documentation)
 
@@ -154,7 +154,7 @@ editors:                        # Target editors (optional)
   - kiro
   - copilot
 ---
-```
+```text
 
 ### Available Modules
 
@@ -250,7 +250,7 @@ Edit `standards.md` to add project-specific rules:
 
 ```bash
 code standards.md
-```
+```text
 
 ### 3. Sync Configuration
 
@@ -280,6 +280,7 @@ bun ai-toolkit-shared/scripts/validate.js
 # - Compliance score (0-100%)
 # - Specific issues and recommendations
 ```
+```text
 
 ### 5. Watch Mode (Optional)
 
@@ -307,7 +308,7 @@ modules:
 # My Blog
 
 Simple blog with CouchCMS.
-```
+```yaml
 
 ### Full-Featured Project
 

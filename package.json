@@ -1,6 +1,6 @@
 {
     "name": "couchcms-ai-toolkit",
-    "version": "1.0.14",
+    "version": "1.0.15",
     "description": "Universal AI Development Toolkit for CouchCMS Projects",
     "type": "module",
     "main": "scripts/sync.js",
@@ -27,6 +27,8 @@
         "update-submodule": "bun scripts/utils/update-submodule.js",
         "prepare-contribution": "bun scripts/utils/prepare-contribution.js",
         "extend-modules": "bun scripts/maintenance/extend-modules.js",
+        "create:module": "bun scripts/create-module.js",
+        "create:agent": "bun scripts/create-agent.js",
         "git-flow": "bun scripts/git-flow/main.js",
         "git-flow-init": "bun scripts/git-flow/init.js",
         "release": "bun scripts/utils/quick-release.js",
@@ -34,6 +36,7 @@
         "release:major": "bun scripts/utils/quick-release.js --major",
         "release:minor": "bun scripts/utils/quick-release.js --minor",
         "release:patch": "bun scripts/utils/quick-release.js --patch",
+        "audit:docs": "bun scripts/audit-docs.js",
         "test": "bun test"
     },
     "dependencies": {

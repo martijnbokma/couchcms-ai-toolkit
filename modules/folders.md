@@ -57,7 +57,7 @@ Complete guide to creating hierarchical page structures and dynamic navigation m
 
 **Important**
 
-If not, please first take a look at the [**Cloned Pages**](../cloned-pages/) documentation. Much of the current discussion will not make much sense unless you are familiar with the regular cloned pages in Couch.
+If not, please first take a look at the CouchCMS cloned pages documentation. Much of the current discussion will not make much sense unless you are familiar with the regular cloned pages in Couch.
 
 **Important**
 

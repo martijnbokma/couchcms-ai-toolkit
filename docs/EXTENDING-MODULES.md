@@ -12,7 +12,7 @@ The `extend-modules.js` script analyzes CouchCMS documentation and automatically
 
 ```bash
 bun scripts/extend-modules.js --analyze
-```
+```yaml
 
 This shows:
 - Available concepts, tags, and custom routes
@@ -29,7 +29,7 @@ bun scripts/extend-modules.js
 
 ```bash
 bun scripts/extend-modules.js --module comments
-```
+```bash
 
 ### Dry Run (Preview Changes)
 
@@ -41,7 +41,7 @@ bun scripts/extend-modules.js --module comments --dry-run
 
 ```bash
 bun scripts/extend-modules.js --docs-path /path/to/CouchCMS-Documentation/src/content
-```
+```text
 
 ## Module Mapping
 
@@ -161,7 +161,7 @@ Edit `scripts/extend-modules.js` and add to `MODULE_MAPPING`:
     tags: ['tag1', 'tag2'],
     newModule: true, // Set to true if module doesn't exist yet
 },
-```
+```text
 
 ## Workflow
 
@@ -177,7 +177,7 @@ bun scripts/extend-modules.js --analyze
 ```bash
 # See what would be added
 bun scripts/extend-modules.js --module comments --dry-run
-```
+```bash
 
 ### 3. Extend Module
 
@@ -198,7 +198,7 @@ bun scripts/extend-modules.js --module comments
 ```bash
 # After extending modules, sync to your project
 bun scripts/sync.js
-```
+```yaml
 
 ## Best Practices
 
@@ -240,7 +240,7 @@ bun scripts/sync.js
 
 ```text
 ❌ Documentation path not found: /path/to/docs
-```
+```yaml
 
 **Solution**:
 - Check the path is correct
@@ -282,7 +282,7 @@ cat modules/comments.md
 
 # 5. Sync
 bun scripts/sync.js
-```
+```text
 
 ### Creating New Module
 
@@ -298,7 +298,7 @@ bun scripts/sync.js
 2. Run extension:
 ```bash
 bun scripts/extend-modules.js --module photo-gallery
-```
+```bash
 
 3. Review and refine the generated module
 

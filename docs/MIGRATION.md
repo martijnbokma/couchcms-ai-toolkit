@@ -105,7 +105,7 @@ modules:
   - couchcms-core      # Always required for CouchCMS projects
   - tailwindcss        # TailwindCSS 4 patterns and utilities
 ---
-```
+```bash
 
 ### 4. Remove Old Files
 
@@ -168,7 +168,7 @@ If any verification step fails, review the migration steps above or check the [T
 defaults.yaml
 smart-defaults.yaml
 preflight-checks.yaml
-```
+```text
 
 **Now (single file):**
 ```text
@@ -180,6 +180,15 @@ standards.md
 The migration involves changing from multiple configuration files to a single `standards.md` file.
 
 #### File Structure Comparison
+
+| **Before (Configuration v1.0)** | **After (Configuration v2.0)** |
+|----------------------------------|--------------------------------|
+| `.project/standards.md` | `standards.md` (in root) |
+| `defaults.yaml` | *(removed - built into toolkit)* |
+| `smart-defaults.yaml` | *(removed - built into toolkit)* |
+| `preflight-checks.yaml` | *(removed - built into toolkit)* |
+| `config.yaml` | *(removed - replaced by standards.md)* |
+
 
 | **Before (Configuration v1.0)** | **After (Configuration v2.0)** |
 |----------------------------------|--------------------------------|
