@@ -151,29 +151,32 @@ export function printBox(message, options = {}, indent = 0) {
         ...lines.map(l => l.length),
         title ? title.length + (icon ? 3 : 0) : 0
     )
-    const width = Math.max(10, Math.min(maxWidth + 4, getTerminalWidth() - indent - 4))
+    // Calculate width: content + 2 spaces + 2 border chars = content + 4
+    const contentWidth = Math.max(10, Math.min(maxWidth, getTerminalWidth() - indent - 6))
+    const boxWidth = contentWidth + 4 // 2 spaces + 2 border chars
 
-    const topBorder = '┌' + '─'.repeat(Math.max(0, width - 2)) + '┐'
-    const bottomBorder = '└' + '─'.repeat(Math.max(0, width - 2)) + '┘'
+    const topBorder = '┌' + '─'.repeat(Math.max(0, boxWidth - 2)) + '┐'
+    const bottomBorder = '└' + '─'.repeat(Math.max(0, boxWidth - 2)) + '┘'
 
     console.log()
     console.log(`${spaces}${colorFn(topBorder)}`)
 
     if (title) {
         const iconText = icon ? `${icon} ` : ''
-        const titlePadding = Math.max(0, width - title.length - iconText.length - 3)
-        const titleLine = `│ ${iconText}${title}${' '.repeat(titlePadding)}│`
+        const titleContent = `${iconText}${title}`
+        const titlePadding = Math.max(0, contentWidth - titleContent.length)
+        const titleLine = `│ ${titleContent}${' '.repeat(titlePadding)} │`
         console.log(`${spaces}${colorFn(titleLine)}`)
-        console.log(`${spaces}${colorFn('├' + '─'.repeat(Math.max(0, width - 2)) + '┤')}`)
+        console.log(`${spaces}${colorFn('├' + '─'.repeat(Math.max(0, boxWidth - 2)) + '┤')}`)
     }
 
     lines.forEach(line => {
-        // Truncate line if it's too long, then pad
-        const maxLineLength = width - 4
-        const truncatedLine = line.length > maxLineLength ? line.substring(0, maxLineLength) : line
-        const padding = Math.max(0, maxLineLength - truncatedLine.length)
-        const paddedLine = truncatedLine + ' '.repeat(padding)
-        console.log(`${spaces}${colorFn('│')} ${paddedLine} ${colorFn('│')}`)
+        // Truncate line if it's too long, then pad to exact contentWidth
+        const truncatedLine = line.length > contentWidth ? line.substring(0, contentWidth) : line
+        const padding = Math.max(0, contentWidth - truncatedLine.length)
+        const contentLine = `${truncatedLine}${' '.repeat(padding)}`
+        // Ensure exact width: │ + space + content + space + │ = boxWidth
+        console.log(`${spaces}${colorFn('│')} ${contentLine} ${colorFn('│')}`)
     })
 
     console.log(`${spaces}${colorFn(bottomBorder)}`)
