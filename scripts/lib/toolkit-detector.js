@@ -89,4 +89,7 @@ export function detectToolkitPathAbsolute(projectDir) {
 
     return detected
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5881bba (updates 2025-12-01)

@@ -8,6 +8,7 @@
 import { TemplateError } from './errors.js'
 
 /**
+<<<<<<< HEAD
  * Extract each block contexts from Handlebars template
  * @param {string} templateContent - Template content
  * @returns {Array<{arrayName: string, variables: Array<string>}>} - Array of each contexts
@@ -57,6 +58,8 @@ function extractEachContexts(templateContent) {
 }
 
 /**
+=======
+>>>>>>> 5881bba (updates 2025-12-01)
  * Extract all variable references from Handlebars template
  * @param {string} templateContent - Template content
  * @returns {Array<string>} - Array of variable names (without {{}})
@@ -68,6 +71,7 @@ export function extractTemplateVariables(templateContent) {
     const variablePattern = /\{\{([^}]+)\}\}/g
     let match
 
+<<<<<<< HEAD
     // List of Handlebars built-in helpers that should be ignored
     const builtInHelpers = ['if', 'unless', 'each', 'with', 'lookup', 'log', 'join', 'add', 'subtract', 'multiply', 'divide', 'mod', 'eq', 'ne', 'lt', 'gt', 'lte', 'gte', 'and', 'or', 'not', 'contains', 'in', 'block', 'partial', 'raw', 'comment', 'hash', 'else']
 
@@ -93,6 +97,20 @@ export function extractTemplateVariables(templateContent) {
 
         // Skip if it's a built-in helper, special variable, or empty
         if (cleanVariable && !builtInHelpers.includes(cleanVariable) && !specialVariables.includes(cleanVariable) && !variables.includes(cleanVariable)) {
+=======
+    while ((match = variablePattern.exec(templateContent)) !== null) {
+        const variable = match[1].trim()
+
+        // Remove Handlebars helpers and modifiers
+        // e.g., "if variable", "each items", "variable.property"
+        const cleanVariable = variable
+            .replace(/^(if|unless|each|with)\s+/, '') // Remove helpers
+            .replace(/^(#|\/|>)\s*/, '') // Remove block helpers
+            .split('.')[0] // Get root variable name
+            .trim()
+
+        if (cleanVariable && !variables.includes(cleanVariable)) {
+>>>>>>> 5881bba (updates 2025-12-01)
             variables.push(cleanVariable)
         }
     }
@@ -115,6 +133,7 @@ export function validateTemplateVariables(templateContent, templateData, templat
     // Flatten templateData for easier checking
     const flattened = flattenObject(templateData)
 
+<<<<<<< HEAD
     // Extract context from template (which variables are used in each blocks)
     const eachContexts = extractEachContexts(templateContent)
 
@@ -139,11 +158,18 @@ export function validateTemplateVariables(templateContent, templateData, templat
             }
 
             // Check for nested access (e.g., project.name, modules.slug)
+=======
+    for (const variable of variables) {
+        // Check if variable exists in templateData
+        if (!(variable in flattened) && !(variable in templateData)) {
+            // Check for nested access (e.g., project.name)
+>>>>>>> 5881bba (updates 2025-12-01)
             const parts = variable.split('.')
             let current = templateData
             let found = true
 
             for (const part of parts) {
+<<<<<<< HEAD
                 if (current && typeof current === 'object') {
                     if (Array.isArray(current)) {
                         // For arrays, check if the property exists in array items
@@ -161,6 +187,10 @@ export function validateTemplateVariables(templateContent, templateData, templat
                         found = false
                         break
                     }
+=======
+                if (current && typeof current === 'object' && part in current) {
+                    current = current[part]
+>>>>>>> 5881bba (updates 2025-12-01)
                 } else {
                     found = false
                     break
@@ -202,11 +232,14 @@ function flattenObject(obj, prefix = '') {
 
         if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
             Object.assign(flattened, flattenObject(value, newKey))
+<<<<<<< HEAD
         } else if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') {
             // For arrays of objects, flatten the first item's properties
             // This allows validation of properties like "modules.slug"
             Object.assign(flattened, flattenObject(value[0], newKey))
             flattened[newKey] = value // Also keep the array itself
+=======
+>>>>>>> 5881bba (updates 2025-12-01)
         } else {
             flattened[newKey] = value
         }
@@ -259,4 +292,7 @@ export function validateTemplate(templateContent, templateData, templatePath) {
         }
     }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5881bba (updates 2025-12-01)

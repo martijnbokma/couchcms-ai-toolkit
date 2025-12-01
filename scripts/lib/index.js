@@ -114,6 +114,7 @@ export {
     formatTemplateErrors,
     validateTemplate
 } from './template-validator.js'
+<<<<<<< HEAD
 
 // Path utilities
 export {
@@ -157,3 +158,5 @@ export {
     printList,
     printSummary
 } from './terminal.js'
+=======
+>>>>>>> 5881bba (updates 2025-12-01)
