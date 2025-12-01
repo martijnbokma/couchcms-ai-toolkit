@@ -42,9 +42,16 @@ async function askConfirmation(message) {
     printBox(message, { color: yellow, icon: '⚠️' })
     process.stdout.write(yellow.bold('Continue? [y/N] '))
 
+    // Ensure stdin is readable for this prompt
+    if (process.stdin.isPaused()) {
+        process.stdin.resume()
+    }
+
     return new Promise((resolve) => {
         const handler = (data) => {
             process.stdin.removeListener('data', handler)
+            // Pause stdin after reading to allow process to exit cleanly
+            process.stdin.pause()
             const answer = data.toString().trim().toLowerCase()
             resolve(answer === 'y' || answer === 'yes')
         }
@@ -200,6 +207,8 @@ async function reinstall() {
 
         if (!confirmed) {
             printBox('Reinstall cancelled', { color: yellow, icon: '⚠️' })
+            // Pause stdin before exiting
+            process.stdin.pause()
             process.exit(0)
         }
     }
@@ -264,7 +273,8 @@ async function reinstall() {
         { color: blue, icon: 'ℹ️', title: 'Next Steps' }
     )
 
-    // Explicitly exit to ensure script terminates
+    // Close stdin and exit to ensure script terminates
+    // Force exit immediately - stdin cleanup happens in askConfirmation
     process.exit(0)
 }
 
@@ -273,9 +283,8 @@ process.stdin.setEncoding('utf8')
 if (typeof process.stdin.setRawMode === 'function') {
     process.stdin.setRawMode(false)
 }
-
-// Ensure stdin is readable
-process.stdin.resume()
+// Resume stdin only when needed (for prompts)
+// Don't resume here - let it be resumed by the prompt functions
 
 // Run
 reinstall().catch(error => {
