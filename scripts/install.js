@@ -1,14 +1,14 @@
 #!/usr/bin/env bun
 /**
  * CouchCMS AI Toolkit - One-Command Installer
- * 
+ *
  * Installs toolkit as git submodule and runs setup
- * 
+ *
  * Usage:
  *   curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js
  *   bun install.js
  *   rm install.js
- *   
+ *
  * Or with curl (bash):
  *   curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
  */
@@ -16,23 +16,10 @@
 import { execSync } from 'child_process'
 import { existsSync } from 'fs'
 import { join } from 'path'
+import { print, printSuccess, printError, printWarning, printInfo, printProgress, colors } from './lib/index.js'
 
 const REPO_URL = 'https://github.com/martijnbokma/couchcms-ai-toolkit.git'
 const TOOLKIT_DIR = 'ai-toolkit-shared'
-
-// Colors
-const colors = {
-    reset: '\x1b[0m',
-    bright: '\x1b[1m',
-    green: '\x1b[32m',
-    blue: '\x1b[34m',
-    yellow: '\x1b[33m',
-    red: '\x1b[31m',
-}
-
-function print(message, color = 'reset') {
-    console.log(`${colors[color]}${message}${colors.reset}`)
-}
 
 function exec(command, options = {}) {
     try {
@@ -50,119 +37,119 @@ function exec(command, options = {}) {
 }
 
 async function checkPrerequisites() {
-    print('\n🔍 Checking prerequisites...', 'blue')
-    
+    printProgress('\nChecking prerequisites...', 0)
+
     // Check git
     const hasGit = exec('git --version', { silent: true, ignoreError: true })
     if (!hasGit) {
-        print('❌ Git is not installed', 'red')
-        print('   Install from: https://git-scm.com/', 'yellow')
+        printError('Git is not installed', 2)
+        printWarning('   Install from: https://git-scm.com/', 2)
         process.exit(1)
     }
-    print('  ✅ Git installed', 'green')
-    
+    printSuccess('Git installed', 2)
+
     // Check bun or node
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
     const hasNode = exec('node --version', { silent: true, ignoreError: true })
-    
+
     if (!hasBun && !hasNode) {
-        print('❌ Neither Bun nor Node.js is installed', 'red')
-        print('   Install Bun: curl -fsSL https://bun.sh/install | bash', 'yellow')
-        print('   Or Node.js: https://nodejs.org/', 'yellow')
+        printError('Neither Bun nor Node.js is installed', 2)
+        printWarning('   Install Bun: curl -fsSL https://bun.sh/install | bash', 2)
+        printWarning('   Or Node.js: https://nodejs.org/', 2)
         process.exit(1)
     }
-    
+
     if (hasBun) {
-        print('  ✅ Bun installed', 'green')
+        printSuccess('Bun installed', 2)
     } else {
-        print('  ✅ Node.js installed', 'green')
+        printSuccess('Node.js installed', 2)
     }
-    
+
     // Check if in git repo
     const isGitRepo = exec('git rev-parse --git-dir', { silent: true, ignoreError: true })
     if (!isGitRepo) {
-        print('❌ Not in a git repository', 'red')
-        print('   Run: git init', 'yellow')
+        printError('Not in a git repository', 2)
+        printWarning('   Run: git init', 2)
         process.exit(1)
     }
-    print('  ✅ Git repository detected', 'green')
+    printSuccess('Git repository detected', 2)
 }
 
 async function installToolkit() {
-    print('\n📦 Installing CouchCMS AI Toolkit...', 'blue')
-    
+    printProgress('\nInstalling CouchCMS AI Toolkit...', 0)
+
     // Check if already installed
     if (existsSync(TOOLKIT_DIR)) {
-        print(`⚠️  ${TOOLKIT_DIR} already exists`, 'yellow')
-        
+        printWarning(`${TOOLKIT_DIR} already exists`, 2)
+
         // Ask if should update
         process.stdout.write('   Update existing installation? [Y/n] ')
-        
+
         const answer = await new Promise((resolve) => {
             process.stdin.once('data', (data) => {
                 resolve(data.toString().trim().toLowerCase())
             })
         })
-        
+
         if (answer === 'n' || answer === 'no') {
-            print('   Skipping installation', 'yellow')
+            printWarning('   Skipping installation', 2)
             return false
         }
-        
-        print('   Updating toolkit...', 'blue')
+
+        printProgress('   Updating toolkit...', 2)
         exec(`cd ${TOOLKIT_DIR} && git pull`, { cwd: process.cwd() })
-        print('  ✅ Toolkit updated', 'green')
+        printSuccess('Toolkit updated', 2)
         return true
     }
-    
+
     // Check if submodule exists but directory is missing
     try {
-        const gitmodules = exec('git config --file .gitmodules --get submodule.ai-toolkit-shared.url', { 
-            silent: true, 
-            ignoreError: true 
+        const gitmodules = exec('git config --file .gitmodules --get submodule.ai-toolkit-shared.url', {
+            silent: true,
+            ignoreError: true
         })
-        
+
         if (gitmodules) {
-            print('⚠️  Submodule exists in .gitmodules but directory is missing', 'yellow')
-            print('   Cleaning up old submodule configuration...', 'blue')
+            printWarning('Submodule exists in .gitmodules but directory is missing', 2)
+            printProgress('   Cleaning up old submodule configuration...', 2)
             exec(`git submodule deinit -f ${TOOLKIT_DIR}`, { ignoreError: true })
             exec(`git rm -f ${TOOLKIT_DIR}`, { ignoreError: true })
             exec(`rm -rf .git/modules/${TOOLKIT_DIR}`, { ignoreError: true })
-            print('   Cleaned up old submodule', 'green')
+            printSuccess('Cleaned up old submodule', 2)
         }
     } catch {}
-    
+
     // Add as submodule
-    print(`   Adding submodule from ${REPO_URL}...`, 'blue')
+    printProgress(`   Adding submodule from ${REPO_URL}...`, 2)
     exec(`git submodule add ${REPO_URL} ${TOOLKIT_DIR}`)
-    
-    print('  ✅ Toolkit installed', 'green')
+
+    printSuccess('Toolkit installed', 2)
     return true
 }
 
 async function installDependencies() {
-    print('\n📚 Installing dependencies...', 'blue')
-    
+    printProgress('\nInstalling dependencies...', 0)
+
     const toolkitPath = join(process.cwd(), TOOLKIT_DIR)
-    
+
     // Make scripts executable
     try {
-        print('   Making scripts executable...', 'blue')
+        printProgress('   Making scripts executable...', 2)
         exec('chmod +x scripts/*.js', { cwd: toolkitPath, ignoreError: true })
     } catch {}
-    
+
     // Check if bun is available
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
-    
+
     if (hasBun) {
-        print('   Using Bun...', 'blue')
+        printProgress('   Using Bun...', 2)
         exec('bun install', { cwd: toolkitPath })
     } else {
-        print('   Using npm...', 'blue')
+        printProgress('   Using npm...', 2)
         exec('npm install', { cwd: toolkitPath })
     }
-    
-    print('  ✅ Dependencies installed', 'green')
+
+    printSuccess('Dependencies installed', 2)
 }
 
 
@@ -170,50 +157,50 @@ async function installDependencies() {
 async function displaySuccess() {
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
     const runtime = hasBun ? 'bun' : 'npm'
-    
-    print('\n' + '='.repeat(60), 'green')
-    print('🎉 CouchCMS AI Toolkit installed successfully!', 'green')
-    print('='.repeat(60), 'green')
-    
-    print('\n📚 Next step - Run setup wizard:', 'blue')
-    print(`\n    cd ${TOOLKIT_DIR} && ${runtime} run init\n`, 'bright')
-    
-    print('💡 Useful commands (after setup):', 'blue')
-    print(`   cd ${TOOLKIT_DIR} && ${runtime} run health     # Check installation`)
-    print(`   cd ${TOOLKIT_DIR} && ${runtime} run sync       # Re-sync configs`)
-    print(`   cd ${TOOLKIT_DIR} && ${runtime} run browse     # Browse modules`)
-    
-    print('\n📖 Documentation:', 'blue')
-    print('   https://github.com/martijnbokma/couchcms-ai-toolkit#readme')
-    
-    print('\n✨ Happy coding!\n', 'green')
+
+    console.log('\n' + colors.green + '='.repeat(60) + colors.reset)
+    printSuccess('CouchCMS AI Toolkit installed successfully!', 0)
+    console.log(colors.green + '='.repeat(60) + colors.reset)
+
+    printInfo('\nNext step - Run setup wizard:', 0)
+    console.log(`\n    cd ${TOOLKIT_DIR} && ${runtime} run init\n`)
+
+    printInfo('Useful commands (after setup):', 0)
+    console.log(`   cd ${TOOLKIT_DIR} && ${runtime} run health     # Check installation`)
+    console.log(`   cd ${TOOLKIT_DIR} && ${runtime} run sync       # Re-sync configs`)
+    console.log(`   cd ${TOOLKIT_DIR} && ${runtime} run browse     # Browse modules`)
+
+    printInfo('Documentation:', 0)
+    console.log('   https://github.com/martijnbokma/couchcms-ai-toolkit#readme')
+
+    printSuccess('\nHappy coding!\n', 0)
 }
 
 async function main() {
     print('\n' + '='.repeat(60), 'bright')
     print('🚀 CouchCMS AI Toolkit - One-Command Installer', 'bright')
     print('='.repeat(60) + '\n', 'bright')
-    
+
     try {
         // Step 1: Check prerequisites
         await checkPrerequisites()
-        
+
         // Step 2: Install toolkit
         await installToolkit()
-        
+
         // Step 3: Install dependencies
         await installDependencies()
-        
+
         // Step 4: Success message
         await displaySuccess()
-        
+
     } catch (error) {
-        print('\n❌ Installation failed:', 'red')
-        print(`   ${error.message}`, 'red')
-        print('\n💡 Try manual installation:', 'yellow')
-        print('   git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared')
-        print('   cd ai-toolkit-shared && bun install && cd ..')
-        print('   bun ai-toolkit-shared/scripts/init.js')
+        printError('\nInstallation failed:', 0)
+        console.log(`   ${error.message}`)
+        printWarning('\nTry manual installation:', 0)
+        console.log('   git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared')
+        console.log('   cd ai-toolkit-shared && bun install && cd ..')
+        console.log('   bun ai-toolkit-shared/scripts/init.js')
         process.exit(1)
     }
 }
