@@ -5,6 +5,18 @@ All notable changes to the CouchCMS AI Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.15] - 2025-12-01
+
+### Other
+- docs(toolkit): complete documentation audit and implement comprehensive updates
+- docs(toolkit): complete documentation audit and implement CouchCMS preset
+- docs(toolkit): add language consistency requirements and update documentation
+- docs(toolkit): add comprehensive playbook phases and documentation audit
+- feat(toolkit): restructure skills and enhance Claude integration
+- feat(toolkit): add editor support enhancements and documentation updates
+- Merge release v1.0.14 back to develop
+
+
 ## [Unreleased]
 
 ### Added
