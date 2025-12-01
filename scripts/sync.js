@@ -765,7 +765,7 @@ Add your project-specific instructions here...
     const hasToolkitStructure = existsSync(join(potentialToolkitDir, 'modules')) &&
                                  existsSync(join(potentialToolkitDir, 'templates')) &&
                                  existsSync(join(potentialToolkitDir, 'scripts'))
-    
+
     if (hasToolkitStructure) {
         // Config is in toolkit directory, use parent as project root
         projectDir = dirname(potentialToolkitDir)
