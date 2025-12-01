@@ -5,6 +5,43 @@ All notable changes to the CouchCMS AI Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-12-01
+
+### Added
+- restore icons in Summary section only
+- improve installation scripts with better UX and visual output
+- improve terminal output formatting with picocolors
+- Add defaults.yaml file to toolkit root
+- Auto-migrate standards.md to .project/standards.md for consistency
+- improve editor templates with best practices and config_file_path support
+
+### Fixed
+- remove .quiet() calls and improve merge conflict handling in quick-release
+- add newline to defaults.yaml for improved formatting
+- improve title padding in printBox for better visual balance
+- improve printBox border alignment and stdin handling in reinstall
+- ensure reinstall script exits automatically after completion
+- prevent RangeError in printBox when handling long messages
+- update health check to use correct project root detection
+- Show migration warning only once per process
+- Use detected toolkit path when config is in toolkit directory
+- Detect toolkit directory and use parent as project root
+- Make template validator context-aware for each blocks
+- Improve template validation and add missing template variables
+
+### Other
+- style: clean up whitespace in quick-release.js
+- refactor: remove icons from reinstall script output
+- Migrate from picocolors to ansis
+- Make editor template installation optional
+- style: remove trailing whitespace in sync.js
+- style: remove trailing whitespace in template-validator.js
+- style: remove trailing whitespace in template-validator.js
+- refactor: centralize utilities and standardize logging
+- test branch
+- updates 2025-12-01
+
+
 ## [1.2.0] - 2025-12-01
 
 ### Added
