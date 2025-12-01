@@ -76,7 +76,7 @@ async function reinstall() {
     } else {
         exec('npm install', { cwd: 'ai-toolkit-shared' })
     }
-    print('  ✅ Dependencies updated\n', 'green')
+    printSuccess('Dependencies updated\n', 2)
 
     // Step 3: Check existing config
     const hasConfig = existsSync('.project/standards.md') || existsSync('config.yaml')
@@ -89,13 +89,13 @@ async function reinstall() {
         )
 
         if (!confirmed) {
-            print('\n❌ Reinstall cancelled\n', 'red')
+            printError('\nReinstall cancelled\n', 0)
             process.exit(0)
         }
     }
 
     // Step 4: Regenerate configs
-    print('🔄 Step 3: Regenerating AI configs...', 'blue')
+    printProgress('Step 3: Regenerating AI configs...', 0)
 
     if (hasConfig) {
         // Just sync existing config
@@ -106,7 +106,7 @@ async function reinstall() {
         }
     } else {
         // No config, run init
-        print('   No configuration found, running setup wizard...\n', 'yellow')
+        printWarning('   No configuration found, running setup wizard...\n', 2)
         if (hasBun) {
             exec('bun scripts/init.js', { cwd: 'ai-toolkit-shared' })
         } else {
@@ -114,10 +114,10 @@ async function reinstall() {
         }
     }
 
-    print('  ✅ Configs regenerated\n', 'green')
+    printSuccess('Configs regenerated\n', 2)
 
     // Step 5: Verify
-    print('✅ Step 4: Verifying installation...', 'blue')
+    printProgress('Step 4: Verifying installation...', 0)
     if (hasBun) {
         exec('bun scripts/health.js', { cwd: 'ai-toolkit-shared' })
     } else {

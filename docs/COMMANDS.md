@@ -550,6 +550,95 @@ jobs:
 
 ---
 
+## bun run reinstall
+
+Reinstalls/updates the toolkit configuration. Useful for updating to the latest toolkit version, fixing broken configurations, or applying new defaults.
+
+### Usage
+
+```bash
+# From your project root
+bun ai-toolkit-shared/scripts/reinstall.js
+
+# Skip confirmation prompt
+bun ai-toolkit-shared/scripts/reinstall.js --force
+```
+
+### What It Does
+
+The reinstall script performs these steps:
+
+1. **Updates toolkit** - Pulls latest changes from git repository
+2. **Updates dependencies** - Runs `bun install` or `npm install`
+3. **Checks configuration** - Detects existing `standards.md` or `config.yaml`
+4. **Regenerates AI configs** - Runs `sync.js` to regenerate all editor configs
+   - If no config exists, runs `init.js` setup wizard instead
+5. **Verifies installation** - Runs `health.js` to check everything is working
+
+### When to Use
+
+Use `reinstall.js` when:
+
+- ✅ **Updating toolkit** - After pulling latest changes from git
+- ✅ **Fixing broken configs** - When AI configs are out of sync or corrupted
+- ✅ **Applying new defaults** - After toolkit updates that add new features
+- ✅ **Recovering from errors** - When sync or validation fails
+
+### Important Notes
+
+- ⚠️ **Your `standards.md` is NOT modified** - Only AI configs are regenerated
+- ⚠️ **Confirmation required** - Script asks for confirmation if config exists (unless `--force`)
+- ✅ **Safe to run** - Won't delete or modify your project configuration
+
+### Example Output
+
+```bash
+$ bun ai-toolkit-shared/scripts/reinstall.js
+
+🔄 CouchCMS AI Toolkit - Reinstall
+
+🔄 Step 1: Updating toolkit...
+  ✅ Toolkit updated
+
+📚 Step 2: Updating dependencies...
+  ✅ Dependencies updated
+
+⚠️  Existing configuration found.
+   This will regenerate all AI configs from your standards.md.
+   Your standards.md will NOT be modified.
+Continue? [y/N]: y
+
+🔄 Step 3: Regenerating AI configs...
+  ✅ Configs regenerated
+
+✅ Step 4: Verifying installation...
+  ✅ Everything looks good! 🎉
+
+✅ Reinstall complete!
+
+Summary:
+  ✅ Toolkit updated to latest version
+  ✅ Dependencies updated
+  ✅ AI configs regenerated
+  ✅ Installation verified
+
+Next steps:
+  1. Check your AI assistant (Cursor, Claude, etc.)
+  2. Verify configs are working
+  3. Edit .project/standards.md if needed
+```
+
+### Comparison with Other Commands
+
+| Command | Purpose | Modifies standards.md | Updates toolkit |
+|---------|---------|----------------------|-----------------|
+| `reinstall.js` | Full reinstall + update | ❌ No | ✅ Yes |
+| `sync.js` | Regenerate AI configs | ❌ No | ❌ No |
+| `update.js` | Check for updates | ❌ No | ⚠️ Optional |
+| `init.js` | Initial setup | ✅ Yes | ❌ No |
+
+---
+
 ## See Also
 
 - [Getting Started Guide](GETTING-STARTED.md)
