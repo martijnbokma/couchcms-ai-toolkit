@@ -158,9 +158,9 @@ async function displaySuccess() {
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
     const runtime = hasBun ? 'bun' : 'npm'
 
-    console.log('\n' + colors.green + '='.repeat(60) + colors.reset)
+    console.log('\n' + colors.green('='.repeat(60)))
     printSuccess('CouchCMS AI Toolkit installed successfully!', 0)
-    console.log(colors.green + '='.repeat(60) + colors.reset)
+    console.log(colors.green('='.repeat(60)))
 
     printInfo('\nNext step - Run setup wizard:', 0)
     console.log(`\n    cd ${TOOLKIT_DIR} && ${runtime} run init\n`)
