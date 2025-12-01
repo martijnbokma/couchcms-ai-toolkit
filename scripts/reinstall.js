@@ -39,7 +39,7 @@ function exec(command, options = {}) {
 }
 
 async function askConfirmation(message) {
-    printBox(message, { color: yellow, icon: '⚠️' })
+    printBox(message, { color: yellow })
     process.stdout.write(yellow.bold('Continue? [y/N] '))
 
     // Ensure stdin is readable for this prompt
@@ -110,13 +110,13 @@ async function reinstall() {
     const force = args.includes('--force')
 
     // Print banner
-    printBanner('CouchCMS AI Toolkit', 'Reinstall & Update Configuration', '🔄')
+    printBanner('CouchCMS AI Toolkit', 'Reinstall & Update Configuration', '')
 
     // Check if toolkit is installed
     if (!existsSync('ai-toolkit-shared')) {
         printBox(
             'Toolkit not found in ai-toolkit-shared/\n\nRun the installer first:\ncurl -fsSL https://raw.githubusercontent.com/.../install.sh | bash',
-            { color: red, icon: '❌', title: 'Error' }
+            { color: red, title: 'Error' }
         )
         process.exit(1)
     }
@@ -206,7 +206,7 @@ async function reinstall() {
         )
 
         if (!confirmed) {
-            printBox('Reinstall cancelled', { color: yellow, icon: '⚠️' })
+            printBox('Reinstall cancelled', { color: yellow })
             // Pause stdin before exiting
             process.stdin.pause()
             process.exit(0)
@@ -250,19 +250,19 @@ async function reinstall() {
     // Success summary
     printBox(
         'Reinstall complete!',
-        { color: green, icon: '✅', title: 'Success' }
+        { color: green, title: 'Success' }
     )
 
     const toolkitStep = steps.find(s => s.name === 'Toolkit update')
-    const toolkitStatus = toolkitStep?.status === 'success' ? '✅ Updated' :
-                          toolkitStep?.status === 'skipped' ? '⚠️ Skipped' :
-                          '⚠️ Warning'
+    const toolkitStatus = toolkitStep?.status === 'success' ? 'Updated' :
+                          toolkitStep?.status === 'skipped' ? 'Skipped' :
+                          'Warning'
 
     printSummary('Summary', {
         'Toolkit': toolkitStatus,
-        'Dependencies': steps.find(s => s.name === 'Dependencies')?.status === 'success' ? '✅ Updated' : '❌ Failed',
-        'Configuration': steps.find(s => s.name === 'Config regeneration' || s.name === 'Initial setup')?.status === 'success' ? '✅ Regenerated' : '❌ Failed',
-        'Verification': steps.find(s => s.name === 'Verification')?.status === 'success' ? '✅ Passed' : '❌ Failed',
+        'Dependencies': steps.find(s => s.name === 'Dependencies')?.status === 'success' ? 'Updated' : 'Failed',
+        'Configuration': steps.find(s => s.name === 'Config regeneration' || s.name === 'Initial setup')?.status === 'success' ? 'Regenerated' : 'Failed',
+        'Verification': steps.find(s => s.name === 'Verification')?.status === 'success' ? 'Passed' : 'Failed',
     })
 
     printBox(
@@ -270,7 +270,7 @@ async function reinstall() {
         '1. Check your AI assistant (Cursor, Claude, etc.)\n' +
         '2. Verify configs are working\n' +
         '3. Edit .project/standards.md if needed',
-        { color: blue, icon: 'ℹ️', title: 'Next Steps' }
+        { color: blue, title: 'Next Steps' }
     )
 
     // Close stdin and exit to ensure script terminates
@@ -290,7 +290,7 @@ if (typeof process.stdin.setRawMode === 'function') {
 reinstall().catch(error => {
     printBox(
         `Reinstall failed: ${error.message}`,
-        { color: red, icon: '❌', title: 'Error' }
+        { color: red, title: 'Error' }
     )
     process.exit(1)
 })
