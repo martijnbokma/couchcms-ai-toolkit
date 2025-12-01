@@ -147,7 +147,7 @@ Apply auto-fix? [Y/n]
 
 {{#each modules}}
 - **{{name}}**: {{description}}
-  - Reference: `/docs/modules/{{slug}}/`
+  - Reference: `ai-toolkit-shared/modules/{{slug}}.md`
 {{/each}}
 
 ## 👥 PROJECT ROLES

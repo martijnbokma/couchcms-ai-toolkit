@@ -10,7 +10,7 @@ bun run update
 
 # Apply updates automatically (no prompt)
 bun run update:apply
-```text
+```
 
 ## Update Commands
 
@@ -53,7 +53,7 @@ Example output when updates are available:
 └─────────────────────────────────────────────────────────┘
 
 Would you like to update now? (y/N): 
-```text
+```
 
 Perfect for when you want to review changes before updating.
 
@@ -76,7 +76,7 @@ Use this when you just want to see what's available.
 
 ```bash
 bun run update:apply
-```text
+```
 
 Automatically updates without prompting:
 1. Checks for updates
@@ -102,7 +102,7 @@ If you prefer manual control:
 cd ai-toolkit-shared
 git pull origin master
 bun install
-```text
+```
 
 ## Update Notifications
 

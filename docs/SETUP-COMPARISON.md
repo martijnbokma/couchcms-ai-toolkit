@@ -9,7 +9,7 @@ You **must** install the toolkit's dependencies before running any scripts. The 
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```text
+```
 
 This installs the required packages:
 - `gray-matter` - YAML frontmatter parsing
@@ -156,7 +156,7 @@ Enable AAPF framework? (y/N): n
 📁 Context directory:
 Create context directory? (Y/n): y
 Context path: .project/context
-```text
+```
 
 ## 🎯 Setup Modes (Advanced Init)
 
@@ -197,7 +197,7 @@ Start met Simple Creator. Je kunt later altijd overstappen naar Advanced Init al
 ```bash
 bun run init
 # Kies: Auto mode
-```bash
+```
 Gebruik Advanced Init in Auto mode voor consistente setup binnen teams.
 
 ### Voor Experts
@@ -211,7 +211,7 @@ Gebruik Advanced Init in Custom mode voor volledige controle.
 ```bash
 bun run create
 # Kies: Landing Page of Blog
-```text
+```
 Simple Creator met een basis project type is het snelst.
 
 ## 🔄 Overstappen

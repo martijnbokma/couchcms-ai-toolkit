@@ -9,7 +9,7 @@ You **must** install the toolkit's dependencies before running any scripts. The 
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```text
+```
 
 This installs the required packages:
 - `gray-matter` - YAML frontmatter parsing

@@ -36,7 +36,7 @@ ls -la .cursorrules CLAUDE.md AGENTS.md 2>/dev/null || echo "Generated files mis
 
 # Quick syntax check for YAML frontmatter
 head -20 standards.md | grep -A 20 "^---$" | head -19 | tail -18 | bun -e "console.log(require('yaml').parse(require('fs').readFileSync(0, 'utf8')))" 2>/dev/null && echo "✓ YAML syntax valid" || echo "✗ YAML syntax error"
-```yaml
+```
 
 The validation output will point you to specific problems.
 
@@ -128,6 +128,19 @@ modules:                     # ✓ Consistent indentation
     - couchcms-core         # ✓ No trailing comma
     - tailwindcss           # ✓ Spaces only
 ---
+```
+
+**✅ Correct YAML example (standards.md frontmatter)**:
+
+```yaml
+---
+name: 'my-project'           # ✓ Quoted string
+description: "it's mine"     # ✓ Quoted apostrophe
+toolkit: './ai-toolkit-shared'  # ✓ Proper path
+modules:                     # ✓ Consistent indentation
+    - couchcms-core         # ✓ No trailing comma
+    - tailwindcss           # ✓ Spaces only
+---
 ```yaml
 
 ---
@@ -195,7 +208,7 @@ cd ai-toolkit-shared && git pull origin master && cd ..
 
 # 5. Verify fix worked
 bun ai-toolkit-shared/scripts/validate.js | grep -i agent
-```yaml
+```
 
 ---
 
@@ -438,7 +451,7 @@ Or remove the `context:` line from `standards.md` if not needed:
 ```bash
 # Remove context line from standards.md
 sed -i '/^context:/d' standards.md
-```yaml
+```
 
 **Note:** For most projects, you don't need `context.md`. Just add all rules to the `standards.md` body.
 
@@ -780,6 +793,18 @@ Or copy key sections into your prompts.
 
     **✅ Correct GitHub Actions setup**:
     ```yaml
+    ```yaml
+    # ✗ Missing submodules
+    - uses: actions/checkout@v3
+    
+    # ✗ Wrong submodule flag
+    - uses: actions/checkout@v3
+      with:
+          submodules: true
+    ```
+
+    **✅ Correct GitHub Actions setup**:
+    ```yaml
     # ✓ Recursive submodules
     - uses: actions/checkout@v3
       with:
@@ -801,6 +826,18 @@ Or copy key sections into your prompts.
 
     **✅ Correct dependency installation**:
     ```yaml
+    ```yaml
+    # ✗ Missing cd command
+    - name: Install dependencies
+      run: bun install
+    
+    # ✗ Wrong directory
+    - name: Install dependencies  
+      run: cd toolkit && bun install
+    ```
+
+    **✅ Correct dependency installation**:
+    ```yaml
     # ✓ Correct path and cd back
     - name: Install toolkit dependencies
       run: cd ai-toolkit-shared && bun install
@@ -809,6 +846,20 @@ Or copy key sections into your prompts.
 3. **Generated files out of sync**
 
     **❌ Wrong sync check**:
+    ```yaml
+    # ✗ Missing sync step
+    - name: Check files
+      run: git diff --exit-code .cursorrules
+    
+    # ✗ Wrong file list
+    - name: Check sync
+      run: |
+          bun ai-toolkit-shared/scripts/sync.js
+          git diff --exit-code
+    ```
+
+    **✅ Correct sync check**:
+    ```yaml
     ```yaml
     # ✗ Missing sync step
     - name: Check files
@@ -924,7 +975,7 @@ toolkit: "./ai-toolkit"          # ✗ Wrong directory name
 toolkit: "../ai-toolkit-shared"  # ✗ Wrong relative path
 toolkit: "/ai-toolkit-shared"    # ✗ Absolute path
 toolkit: "~/ai-toolkit"          # ✗ Wrong name in home
-```yaml
+```
 
 **✅ Correct toolkit paths**:
 
@@ -954,7 +1005,7 @@ modules:
   - alpine             # ✗ Should be alpinejs
   - typescript-core    # ✗ Should be typescript
   - databound          # ✗ Should be databound-forms
-```yaml
+```
 
 **✅ Correct module names**:
 
@@ -981,7 +1032,7 @@ agents:
   - tailwind           # ✗ Should be tailwindcss
   - alpine-js          # ✗ Should be alpinejs
   - db-forms           # ✗ Should be databound-forms
-```yaml
+```
 
 **✅ Correct agent names**:
 
@@ -1013,7 +1064,7 @@ bun scripts/sync.js
 
 # ✗ Missing cd back to project root
 cd ai-toolkit-shared && bun scripts/sync.js
-```bash
+```
 
 **✅ Correct commands**:
 
@@ -1048,7 +1099,7 @@ context.md
 
 # ✗ Generated files in toolkit directory
 ai-toolkit-shared/.cursorrules
-```text
+```
 
 **✅ Correct file locations**:
 
@@ -1083,7 +1134,7 @@ modules:
 agents:
       - couchcms             # ✗ Too much indentation
 ---
-```yaml
+```
 
 **✅ Correct YAML indentation**:
 
@@ -1119,7 +1170,7 @@ git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-too
 
 # ✗ Wrong update command
 git submodule update
-```bash
+```
 
 **✅ Correct git commands**:
 

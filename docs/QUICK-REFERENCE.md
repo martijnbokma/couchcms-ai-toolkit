@@ -65,7 +65,7 @@ your-project/
 ├── .cursorrules          ← Auto-generated (don't edit)
 ├── CLAUDE.md             ← Auto-generated (don't edit)
 └── AGENTS.md             ← Auto-generated (don't edit)
-```yaml
+```
 
 ---
 

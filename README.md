@@ -168,6 +168,7 @@ Choose the setup method that fits your experience level:
 ```bash
 bun ai-toolkit-shared/scripts/create-standards.js
 # or
+bun run create
 cd ai-toolkit-shared && bun run create
 ```
 
@@ -188,6 +189,7 @@ cd ai-toolkit-shared && bun run create
 ```bash
 bun ai-toolkit-shared/scripts/init.js
 # or
+bun run init
 cd ai-toolkit-shared && bun run init
 ```
 
@@ -325,6 +327,24 @@ bun ai-toolkit-shared/scripts/migrate.js
 # Extend modules from documentation
 cd ai-toolkit-shared && bun run extend-modules --analyze
 cd ai-toolkit-shared && bun run extend-modules --module comments
+```
+
+### Updates
+
+```bash
+# Check for updates (interactive - asks to update)
+cd ai-toolkit-shared && bun run update
+
+# Check only (no prompt)
+cd ai-toolkit-shared && bun run update:check
+
+# Apply updates automatically (no prompt)
+cd ai-toolkit-shared && bun run update:apply
+
+# Update submodule (alternative method)
+cd ai-toolkit-shared && bun run update-submodule
+```
+
 ```
 
 ### Updates

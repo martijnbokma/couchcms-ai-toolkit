@@ -268,7 +268,7 @@ bun ai-toolkit-shared/scripts/sync.js
 # - .cursorrules (references standards.md)
 # - CLAUDE.md (references standards.md)
 # - AGENTS.md (references standards.md)
-```bash
+```
 
 ### 4. Validate
 

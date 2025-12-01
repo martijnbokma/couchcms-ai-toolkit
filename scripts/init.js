@@ -222,9 +222,12 @@ async function init() {
         (autoMode ? detected.description : await prompt('Project description', detected.description))
 
     // Determine toolkit path - auto-detect based on current location
+    // Path must be relative to config directory, not project root
     const toolkitDirName = basename(TOOLKIT_ROOT)
-    let toolkitPath = `./${toolkitDirName}`
-    
+    let toolkitPath = configDir === projectDir
+        ? `./${toolkitDirName}`  // Config in root: ./ai-toolkit-shared
+        : `../${toolkitDirName}` // Config in subdirectory: ../ai-toolkit-shared
+
     console.log(`\n📦 Toolkit location: ${toolkitPath}`)
     if (!simpleMode && !autoMode) {
         const changeLocation = await confirm('Use different location?', false)

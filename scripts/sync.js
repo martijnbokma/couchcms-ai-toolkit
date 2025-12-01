@@ -52,7 +52,9 @@ function findProjectConfiguration() {
     // Determine project root directory
     // If config is in .project/ or docs/, use parent directory as project root
     let projectDir = dirname(configPath)
-    if (configPath.includes('/.project/') || configPath.includes('/docs/')) {
+    // Normalize path separators for cross-platform compatibility
+    const normalizedPath = configPath.replace(/\\/g, '/')
+    if (normalizedPath.includes('/.project/') || normalizedPath.includes('/docs/')) {
         projectDir = dirname(projectDir)
     }
     

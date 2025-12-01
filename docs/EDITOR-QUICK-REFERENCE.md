@@ -20,7 +20,7 @@ Quick reference for editor-specific configurations in the CouchCMS AI Toolkit.
 ```text
 .cursorrules                    # Global rules
 .cursor/rules/*.mdc             # Context-aware rules
-```yaml
+```
 
 ### MDC Rules (Auto-Activate)
 - Activate based on file patterns (globs)
@@ -55,7 +55,7 @@ globs:
 .claude/skills/*.md             # Modular knowledge
 CLAUDE.md                       # Memory (startup)
 AGENTS.md                       # Agent docs
-```yaml
+```
 
 ### Skills (Auto-Activate)
 - One skill per module/agent
@@ -85,7 +85,7 @@ allowed-tools: Read, Write, Bash, Grep
     "NODE_ENV": "development"
   }
 }
-```yaml
+```
 
 ### Memory File (CLAUDE.md)
 - Loaded at startup
@@ -116,7 +116,7 @@ bun ai-toolkit-shared/scripts/sync.js
 ```bash
 # Generate AI configuration files
 bun ai-toolkit-shared/scripts/sync.js --watch
-```bash
+```
 
 ### Validate Configuration
 ```bash
@@ -137,7 +137,7 @@ bun ai-toolkit-shared/scripts/validate.js
 rm -rf .cursor/rules/
 rm -rf .claude/
 bun ai-toolkit-shared/scripts/sync.js
-```yaml
+```
 
 ---
 

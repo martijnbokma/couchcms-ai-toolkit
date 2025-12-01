@@ -291,10 +291,10 @@ Before generating code, verify:
 
 ## 📖 MODULE REFERENCES
 
-Detailed documentation in `/docs/modules/`:
+Detailed documentation in `ai-toolkit-shared/modules/`:
 
 {{#each modules}}
-- {{name}}: `/docs/modules/{{slug}}/`
+- {{name}}: `ai-toolkit-shared/modules/{{slug}}.md`
 {{/each}}
 
 ---

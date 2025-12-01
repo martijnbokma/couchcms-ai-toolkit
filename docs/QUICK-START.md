@@ -21,7 +21,7 @@ You **must** install the toolkit's dependencies before running any scripts. The 
 cd ai-toolkit-shared
 bun install  # or: npm install
 cd ..
-```text
+```
 
 This installs the required packages:
 - `gray-matter` - YAML frontmatter parsing
@@ -109,6 +109,32 @@ bun run create
 
 After installation, the advanced setup wizard starts automatically. You get 4 options:
 
+### Option A: Simple Setup (Nieuw! Voor Beginners) ✨
+
+**Perfect als je:**
+- Voor het eerst met de toolkit werkt
+- Snel wilt starten zonder technische details
+- Niet precies weet welke modules je nodig hebt
+
+```bash
+bun ai-toolkit-shared/scripts/create-standards.js
+# of
+bun run create
+```
+
+**Wat gebeurt er:**
+- 📝 Beantwoord simpele vragen in begrijpelijke taal
+- 🎯 Kies je project type (blog, webapp, portfolio, etc.)
+- 🛠️ Selecteer technologieën via eenvoudige vragen
+- ✅ Automatische aanbevelingen op basis van je keuzes
+- ⚡ Klaar in 2 minuten!
+
+**Zie:** [Simple Setup Guide](SIMPLE-SETUP.md) voor details
+
+### Option B: Advanced Setup (Voor Gevorderden) 🔧
+
+After installation, the advanced setup wizard starts automatically. You get 4 options:
+
 ### 1. Auto Mode (Recommended) ⚡
 
 ```text
@@ -144,7 +170,7 @@ Choose from 8 predefined project types:
   6. 📝 Documentation - Documentation site
   7. 📝 Minimal - Bare minimum
   8. 📝 Full Stack - Everything included
-```text
+```
 
 **Questions:** 1-2
 **Time:** ~45 seconds
@@ -291,7 +317,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
 # bun ai-toolkit-shared/scripts/sync.js --watch
-```text
+```
 
 ### Use Watch Mode
 
