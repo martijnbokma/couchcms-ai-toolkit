@@ -32,7 +32,8 @@ import {
     ConfigError,
     handleError,
     resolvePath,
-    getToolkitRootCached
+    getToolkitRootCached,
+    deepMerge
 } from './lib/index.js'
 import { findProjectFile, resolveToolkitPath } from './utils/utils.js'
 
@@ -91,27 +92,6 @@ function loadDefaults(toolkitPath) {
     const content = readFileSync(defaultsPath, 'utf8')
     return parseYaml(content)
 }
-
-/**
- * Deep merge two objects
- * @param {object} target - Target object to merge into
- * @param {object} source - Source object to merge from
- * @returns {object} - Merged object
- */
-function deepMerge(target, source) {
-    const result = { ...target }
-
-    for (const key in source) {
-        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-            result[key] = deepMerge(target[key] || {}, source[key])
-        } else if (source[key] !== undefined) {
-            result[key] = source[key]
-        }
-    }
-
-    return result
-}
-
 
 /**
  * Load a module from the toolkit (with caching)

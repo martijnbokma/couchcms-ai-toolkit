@@ -14,6 +14,7 @@ import { join, resolve } from 'path'
 import { parse as parseYaml } from 'yaml'
 import matter from 'gray-matter'
 import { validateYAMLFile, formatYAMLErrors } from './yaml-validator.js'
+import { deepMerge } from './object-utils.js'
 
 /**
  * Load configuration from all sources and merge
@@ -168,53 +169,6 @@ export function convertLegacyConfig(frontmatter) {
     return config
 }
 
-/**
- * Deep merge two objects
- *
- * - Nested objects are merged recursively
- * - Arrays are replaced (not merged)
- * - Undefined values in source are ignored
- * - Null values in source override target
- *
- * @param {object} target - Target object to merge into
- * @param {object} source - Source object to merge from
- * @returns {object} - Merged object (new object, doesn't mutate inputs)
- */
-function deepMerge(target, source) {
-    const result = { ...target }
-
-    for (const key in source) {
-        const sourceValue = source[key]
-        const targetValue = target[key]
-
-        // Skip undefined values
-        if (sourceValue === undefined) {
-            continue
-        }
-
-        // Handle null explicitly (null overrides)
-        if (sourceValue === null) {
-            result[key] = null
-            continue
-        }
-
-        // Recursively merge objects (but not arrays)
-        if (
-            typeof sourceValue === 'object' &&
-            !Array.isArray(sourceValue) &&
-            typeof targetValue === 'object' &&
-            !Array.isArray(targetValue) &&
-            targetValue !== null
-        ) {
-            result[key] = deepMerge(targetValue, sourceValue)
-        } else {
-            // Replace value (including arrays)
-            result[key] = sourceValue
-        }
-    }
-
-    return result
-}
 
 /**
  * Validate configuration structure and values
