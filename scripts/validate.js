@@ -13,7 +13,10 @@ import { dirname, resolve, join } from 'path'
 import { findConfigFile, loadConfig, getConfigFileName, findProjectFile, resolveToolkitPath } from './utils/utils.js'
 import { validateConfiguration } from './lib/config-validator.js'
 import { checkAndInstallDependencies } from './lib/dependency-checker.js'
+<<<<<<< HEAD
 import { getToolkitRootCached } from './lib/index.js'
+=======
+>>>>>>> eb63280 (updates 2025-12-01)
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 

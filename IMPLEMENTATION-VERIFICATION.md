@@ -376,4 +376,7 @@ The toolkit is now:
 - ✅ Cross-platform compatible (line ending normalization)
 
 **Status:** ✅ **IMPLEMENTATION COMPLETE**
+<<<<<<< HEAD
 
+=======
+>>>>>>> eb63280 (updates 2025-12-01)

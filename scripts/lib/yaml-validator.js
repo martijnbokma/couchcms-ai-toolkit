@@ -172,4 +172,7 @@ export function formatYAMLErrors(errors) {
 
     return output
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> eb63280 (updates 2025-12-01)

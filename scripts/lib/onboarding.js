@@ -139,4 +139,7 @@ export function showSummary(summary) {
 
     console.log(`\n💡 Tip: You can modify .project/standards.md anytime to change settings.\n`)
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> eb63280 (updates 2025-12-01)
