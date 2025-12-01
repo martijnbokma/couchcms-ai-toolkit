@@ -3,23 +3,26 @@
  * CouchCMS AI Toolkit - Terminal Utilities
  *
  * Terminal formatting, colors, and interactive utilities
+ * Uses picocolors for fast, dependency-free terminal colors
  */
 
+import pc from 'picocolors'
+
 /**
- * ANSI color codes
+ * Color functions using picocolors
  */
 export const colors = {
-    reset: '\x1b[0m',
-    bright: '\x1b[1m',
-    dim: '\x1b[2m',
-    red: '\x1b[31m',
-    green: '\x1b[32m',
-    yellow: '\x1b[33m',
-    blue: '\x1b[34m',
-    magenta: '\x1b[35m',
-    cyan: '\x1b[36m',
-    white: '\x1b[37m',
-    gray: '\x1b[90m',
+    reset: (text) => text,
+    bright: pc.bold,
+    dim: pc.dim,
+    red: pc.red,
+    green: pc.green,
+    yellow: pc.yellow,
+    blue: pc.blue,
+    magenta: pc.magenta,
+    cyan: pc.cyan,
+    white: pc.white,
+    gray: pc.gray,
 }
 
 /**
@@ -37,28 +40,35 @@ export const terminal = {
 }
 
 /**
+ * Get terminal width (default 80)
+ */
+function getTerminalWidth() {
+    return process.stdout.columns || 80
+}
+
+/**
  * Print colored message
  * @param {string} message - Message to print
- * @param {string} [color='reset'] - Color name from colors object
+ * @param {string|Function} [color='reset'] - Color function or name
  * @param {number} [indent=0] - Number of spaces to indent
  */
 export function print(message, color = 'reset', indent = 0) {
     const spaces = ' '.repeat(indent)
-    const colorCode = colors[color] || colors.reset
-    console.log(`${spaces}${colorCode}${message}${colors.reset}`)
+    const colorFn = typeof color === 'function' ? color : colors[color] || colors.reset
+    console.log(`${spaces}${colorFn(message)}`)
 }
 
 /**
  * Print with icon and color
  * @param {string} icon - Icon/emoji to display
  * @param {string} message - Message to print
- * @param {string} [color='reset'] - Color name
+ * @param {string|Function} [color='reset'] - Color function or name
  * @param {number} [indent=0] - Number of spaces to indent
  */
 export function printWithIcon(icon, message, color = 'reset', indent = 0) {
     const spaces = ' '.repeat(indent)
-    const colorCode = colors[color] || colors.reset
-    console.log(`${spaces}${icon} ${colorCode}${message}${colors.reset}`)
+    const colorFn = typeof color === 'function' ? color : colors[color] || colors.reset
+    console.log(`${spaces}${icon} ${colorFn(message)}`)
 }
 
 /**
@@ -67,7 +77,7 @@ export function printWithIcon(icon, message, color = 'reset', indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printSuccess(message, indent = 0) {
-    printWithIcon('✅', message, 'green', indent)
+    printWithIcon('✅', message, pc.green, indent)
 }
 
 /**
@@ -76,7 +86,7 @@ export function printSuccess(message, indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printError(message, indent = 0) {
-    printWithIcon('❌', message, 'red', indent)
+    printWithIcon('❌', message, pc.red, indent)
 }
 
 /**
@@ -85,7 +95,7 @@ export function printError(message, indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printWarning(message, indent = 0) {
-    printWithIcon('⚠️', message, 'yellow', indent)
+    printWithIcon('⚠️ ', message, pc.yellow, indent)
 }
 
 /**
@@ -94,7 +104,7 @@ export function printWarning(message, indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printInfo(message, indent = 0) {
-    printWithIcon('ℹ️', message, 'blue', indent)
+    printWithIcon('ℹ️ ', message, pc.blue, indent)
 }
 
 /**
@@ -103,7 +113,118 @@ export function printInfo(message, indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printProgress(message, indent = 0) {
-    printWithIcon('🔄', message, 'blue', indent)
+    printWithIcon('🔄', message, pc.cyan, indent)
+}
+
+/**
+ * Print a section header with visual separator
+ * @param {string} title - Section title
+ * @param {string} [icon=''] - Optional icon/emoji
+ * @param {number} [indent=0] - Indentation
+ */
+export function printSection(title, icon = '', indent = 0) {
+    const spaces = ' '.repeat(indent)
+    const width = getTerminalWidth() - indent - 2
+    const separator = '─'.repeat(Math.max(0, width - title.length - (icon ? 3 : 0)))
+    const iconText = icon ? `${icon} ` : ''
+    console.log()
+    console.log(`${spaces}${pc.bold(pc.cyan(`${iconText}${title}`))} ${pc.dim(separator)}`)
+}
+
+/**
+ * Print a boxed message
+ * @param {string} message - Message to box
+ * @param {Object} [options] - Box options
+ * @param {string} [options.title] - Optional title
+ * @param {string} [options.color='cyan'] - Border color
+ * @param {string} [options.icon] - Optional icon
+ * @param {number} [indent=0] - Indentation
+ */
+export function printBox(message, options = {}, indent = 0) {
+    const spaces = ' '.repeat(indent)
+    const { title, color = 'cyan', icon = '' } = options
+    const colorFn = typeof color === 'function' ? color : colors[color] || colors.cyan
+
+    const lines = message.split('\n')
+    const maxWidth = Math.max(
+        ...lines.map(l => l.length),
+        title ? title.length + (icon ? 3 : 0) : 0
+    )
+    const width = Math.min(maxWidth + 4, getTerminalWidth() - indent - 4)
+
+    const topBorder = '┌' + '─'.repeat(width - 2) + '┐'
+    const bottomBorder = '└' + '─'.repeat(width - 2) + '┘'
+
+    console.log()
+    console.log(`${spaces}${colorFn(topBorder)}`)
+
+    if (title) {
+        const iconText = icon ? `${icon} ` : ''
+        const titleLine = `│ ${iconText}${title}${' '.repeat(width - title.length - iconText.length - 3)}│`
+        console.log(`${spaces}${colorFn(titleLine)}`)
+        console.log(`${spaces}${colorFn('├' + '─'.repeat(width - 2) + '┤')}`)
+    }
+
+    lines.forEach(line => {
+        const paddedLine = line + ' '.repeat(width - line.length - 4)
+        console.log(`${spaces}${colorFn('│')} ${paddedLine} ${colorFn('│')}`)
+    })
+
+    console.log(`${spaces}${colorFn(bottomBorder)}`)
+    console.log()
+}
+
+/**
+ * Print a header banner
+ * @param {string} title - Banner title
+ * @param {string} [subtitle] - Optional subtitle
+ * @param {string} [icon='✨'] - Icon/emoji
+ */
+export function printBanner(title, subtitle = '', icon = '✨') {
+    const width = getTerminalWidth()
+    const padding = Math.max(2, Math.floor((width - title.length - (icon ? 3 : 0)) / 2))
+
+    console.log()
+    console.log(pc.bold(pc.cyan('═'.repeat(width))))
+    console.log(pc.bold(pc.cyan(' '.repeat(padding) + `${icon} ${title}` + ' '.repeat(padding))))
+    if (subtitle) {
+        const subPadding = Math.max(2, Math.floor((width - subtitle.length) / 2))
+        console.log(pc.dim(' '.repeat(subPadding) + subtitle))
+    }
+    console.log(pc.bold(pc.cyan('═'.repeat(width))))
+    console.log()
+}
+
+/**
+ * Print a step indicator
+ * @param {number} step - Step number
+ * @param {number} total - Total steps
+ * @param {string} message - Step message
+ * @param {number} [indent=0] - Indentation
+ */
+export function printStep(step, total, message, indent = 0) {
+    const spaces = ' '.repeat(indent)
+    const stepText = `[${step}/${total}]`
+    const formatted = `${spaces}${pc.dim(stepText)} ${pc.bold(pc.cyan(message))}`
+    console.log(formatted)
+}
+
+/**
+ * Print a list of items with consistent formatting
+ * @param {string[]} items - List of items
+ * @param {Object} [options] - List options
+ * @param {string} [options.bullet='•'] - Bullet character
+ * @param {string} [options.color='reset'] - Color for items
+ * @param {number} [indent=0] - Indentation
+ */
+export function printList(items, options = {}, indent = 0) {
+    const spaces = ' '.repeat(indent)
+    const { bullet = '•', color = 'reset' } = options
+    const colorFn = typeof color === 'function' ? color : colors[color] || colors.reset
+
+    items.forEach(item => {
+        console.log(`${spaces}${bullet} ${colorFn(item)}`)
+    })
 }
 
 /**
@@ -129,35 +250,32 @@ export function printConfigSummary(config, indent = 0) {
     )
 
     // Format title with sparkle
-    console.log(`${spaces}${colors.cyan}✨ ${title}${colors.reset}`)
+    console.log(`${spaces}${pc.cyan('✨')} ${pc.bold(pc.cyan(title))}`)
     console.log()
 
     // Format each field with proper alignment
     if (project) {
         const label = 'Project:'.padEnd(maxLabelWidth)
-        console.log(`${spaces}   ${colors.dim}${label}${colors.reset} ${colors.bright}${project}${colors.reset}`)
+        console.log(`${spaces}   ${pc.dim(label)} ${pc.bold(project)}`)
     }
 
     if (type) {
         const label = 'Type:'.padEnd(maxLabelWidth)
-        console.log(`${spaces}   ${colors.dim}${label}${colors.reset} ${colors.cyan}${type}${colors.reset}`)
+        console.log(`${spaces}   ${pc.dim(label)} ${pc.cyan(type)}`)
     }
 
     // Format modules with smart wrapping
     if (modules.length > 0) {
         const label = 'Modules:'.padEnd(maxLabelWidth)
         const modulesText = modules.join(', ')
-        // Wrap long lists nicely (max 80 chars per line)
         const maxLineLength = 80
-        const labelWidth = maxLabelWidth + 3 // spaces + label
+        const labelWidth = maxLabelWidth + 3
         const availableWidth = maxLineLength - labelWidth
 
         if (modulesText.length <= availableWidth) {
-            // Single line
-            console.log(`${spaces}   ${colors.dim}${label}${colors.reset} ${modulesText}`)
+            console.log(`${spaces}   ${pc.dim(label)} ${modulesText}`)
         } else {
-            // Multi-line with proper indentation
-            console.log(`${spaces}   ${colors.dim}${label}${colors.reset}`)
+            console.log(`${spaces}   ${pc.dim(label)}`)
             let currentLine = ''
             modules.forEach((module, index) => {
                 const separator = index > 0 ? ', ' : ''
@@ -182,17 +300,14 @@ export function printConfigSummary(config, indent = 0) {
     if (agents.length > 0) {
         const label = 'Agents:'.padEnd(maxLabelWidth)
         const agentsText = agents.join(', ')
-        // Wrap long lists nicely (max 80 chars per line)
         const maxLineLength = 80
-        const labelWidth = maxLabelWidth + 3 // spaces + label
+        const labelWidth = maxLabelWidth + 3
         const availableWidth = maxLineLength - labelWidth
 
         if (agentsText.length <= availableWidth) {
-            // Single line
-            console.log(`${spaces}   ${colors.dim}${label}${colors.reset} ${agentsText}`)
+            console.log(`${spaces}   ${pc.dim(label)} ${agentsText}`)
         } else {
-            // Multi-line with proper indentation
-            console.log(`${spaces}   ${colors.dim}${label}${colors.reset}`)
+            console.log(`${spaces}   ${pc.dim(label)}`)
             let currentLine = ''
             agents.forEach((agent, index) => {
                 const separator = index > 0 ? ', ' : ''
@@ -213,5 +328,24 @@ export function printConfigSummary(config, indent = 0) {
         }
     }
 
+    console.log()
+}
+
+/**
+ * Print a summary box with key-value pairs
+ * @param {string} title - Summary title
+ * @param {Object} items - Key-value pairs to display
+ * @param {number} [indent=0] - Indentation
+ */
+export function printSummary(title, items, indent = 0) {
+    const spaces = ' '.repeat(indent)
+    const maxKeyWidth = Math.max(...Object.keys(items).map(k => k.length))
+
+    console.log()
+    console.log(`${spaces}${pc.bold(pc.cyan(title))}`)
+    Object.entries(items).forEach(([key, value]) => {
+        const keyText = `${key}:`.padEnd(maxKeyWidth + 1)
+        console.log(`${spaces}  ${pc.dim(keyText)} ${value}`)
+    })
     console.log()
 }

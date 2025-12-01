@@ -17,7 +17,8 @@ import { existsSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { execSync } from 'child_process'
 import { findConfigFile } from './utils/utils.js'
-import { getToolkitRootCached, print, printSuccess, printError, printWarning, printInfo, printProgress, colors } from './lib/index.js'
+import { getToolkitRootCached, print, printSuccess, printError, printWarning, printInfo, printProgress, printBanner, printStep, printBox, printSummary, printList, colors } from './lib/index.js'
+import pc from 'picocolors'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 
@@ -38,8 +39,8 @@ function exec(command, options = {}) {
 }
 
 async function askConfirmation(message) {
-    print(`\n${message}`, 'yellow')
-    process.stdout.write('Continue? [y/N] ')
+    printBox(message, { color: pc.yellow, icon: '⚠️' })
+    process.stdout.write(pc.bold(pc.yellow('Continue? [y/N] ')))
 
     return new Promise((resolve) => {
         process.stdin.once('data', (data) => {
@@ -53,49 +54,63 @@ async function reinstall() {
     const args = process.argv.slice(2)
     const force = args.includes('--force')
 
-    printProgress('\nCouchCMS AI Toolkit - Reinstall\n', 0)
+    // Print banner
+    printBanner('CouchCMS AI Toolkit', 'Reinstall & Update Configuration', '🔄')
 
     // Check if toolkit is installed
     if (!existsSync('ai-toolkit-shared')) {
-        printError('Toolkit not found in ai-toolkit-shared/', 0)
-        printWarning('   Run the installer first:', 0)
-        console.log('   curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash\n')
+        printBox(
+            'Toolkit not found in ai-toolkit-shared/\n\nRun the installer first:\ncurl -fsSL https://raw.githubusercontent.com/.../install.sh | bash',
+            { color: pc.red, icon: '❌', title: 'Error' }
+        )
         process.exit(1)
     }
 
+    const totalSteps = 4
+    const steps = []
+
     // Step 1: Update toolkit
-    printProgress('Step 1: Updating toolkit...', 0)
-    exec('git pull', { cwd: 'ai-toolkit-shared' })
-    printSuccess('Toolkit updated\n', 2)
+    printStep(1, totalSteps, 'Updating toolkit...')
+    try {
+        exec('git pull', { cwd: 'ai-toolkit-shared' })
+        printSuccess('Toolkit updated', 2)
+        steps.push({ name: 'Toolkit update', status: 'success' })
+    } catch (error) {
+        printWarning('Git pull failed (may already be up to date)', 2)
+        steps.push({ name: 'Toolkit update', status: 'warning' })
+    }
+    console.log()
 
     // Step 2: Update dependencies
-    printProgress('Step 2: Updating dependencies...', 0)
+    printStep(2, totalSteps, 'Updating dependencies...')
     const hasBun = exec('bun --version', { silent: true, ignoreError: true })
     if (hasBun) {
         exec('bun install', { cwd: 'ai-toolkit-shared' })
     } else {
         exec('npm install', { cwd: 'ai-toolkit-shared' })
     }
-    printSuccess('Dependencies updated\n', 2)
+    printSuccess('Dependencies updated', 2)
+    steps.push({ name: 'Dependencies', status: 'success' })
+    console.log()
 
     // Step 3: Check existing config
-    const hasConfig = existsSync('.project/standards.md') || existsSync('config.yaml')
+    const hasConfig = existsSync('.project/standards.md') || existsSync('standards.md') || existsSync('config.yaml')
 
     if (hasConfig && !force) {
         const confirmed = await askConfirmation(
-            '⚠️  Existing configuration found.\n' +
-            '   This will regenerate all AI configs from your standards.md.\n' +
-            '   Your standards.md will NOT be modified.'
+            'Existing configuration found.\n\n' +
+            'This will regenerate all AI configs from your standards.md.\n' +
+            'Your standards.md will NOT be modified.'
         )
 
         if (!confirmed) {
-            printError('\nReinstall cancelled\n', 0)
+            printBox('Reinstall cancelled', { color: pc.yellow, icon: '⚠️' })
             process.exit(0)
         }
     }
 
     // Step 4: Regenerate configs
-    printProgress('Step 3: Regenerating AI configs...', 0)
+    printStep(3, totalSteps, 'Regenerating AI configs...')
 
     if (hasConfig) {
         // Just sync existing config
@@ -104,38 +119,50 @@ async function reinstall() {
         } else {
             exec('node scripts/sync.js', { cwd: 'ai-toolkit-shared' })
         }
+        steps.push({ name: 'Config regeneration', status: 'success' })
     } else {
         // No config, run init
-        printWarning('   No configuration found, running setup wizard...\n', 2)
+        printWarning('No configuration found, running setup wizard...', 2)
         if (hasBun) {
             exec('bun scripts/init.js', { cwd: 'ai-toolkit-shared' })
         } else {
             exec('node scripts/init.js', { cwd: 'ai-toolkit-shared' })
         }
+        steps.push({ name: 'Initial setup', status: 'success' })
     }
-
-    printSuccess('Configs regenerated\n', 2)
+    printSuccess('Configs regenerated', 2)
+    console.log()
 
     // Step 5: Verify
-    printProgress('Step 4: Verifying installation...', 0)
+    printStep(4, totalSteps, 'Verifying installation...')
     if (hasBun) {
         exec('bun scripts/health.js', { cwd: 'ai-toolkit-shared' })
     } else {
         exec('node scripts/health.js', { cwd: 'ai-toolkit-shared' })
     }
+    steps.push({ name: 'Verification', status: 'success' })
+    console.log()
 
-    // Success
-    printSuccess('\nReinstall complete!\n', 0)
-    printInfo('Summary:', 0)
-    printSuccess('Toolkit updated to latest version', 2)
-    printSuccess('Dependencies updated', 2)
-    printSuccess('AI configs regenerated', 2)
-    printSuccess('Installation verified\n', 2)
+    // Success summary
+    printBox(
+        'Reinstall complete!',
+        { color: pc.green, icon: '✅', title: 'Success' }
+    )
 
-    printInfo('Next steps:', 0)
-    console.log('  1. Check your AI assistant (Cursor, Claude, etc.)')
-    console.log('  2. Verify configs are working')
-    console.log('  3. Edit .project/standards.md if needed\n')
+    printSummary('Summary', {
+        'Toolkit': steps.find(s => s.name === 'Toolkit update')?.status === 'success' ? '✅ Updated' : '⚠️ Skipped',
+        'Dependencies': steps.find(s => s.name === 'Dependencies')?.status === 'success' ? '✅ Updated' : '❌ Failed',
+        'Configuration': steps.find(s => s.name === 'Config regeneration' || s.name === 'Initial setup')?.status === 'success' ? '✅ Regenerated' : '❌ Failed',
+        'Verification': steps.find(s => s.name === 'Verification')?.status === 'success' ? '✅ Passed' : '❌ Failed',
+    })
+
+    printBox(
+        'Next Steps:\n\n' +
+        '1. Check your AI assistant (Cursor, Claude, etc.)\n' +
+        '2. Verify configs are working\n' +
+        '3. Edit .project/standards.md if needed',
+        { color: pc.blue, icon: 'ℹ️', title: 'Next Steps' }
+    )
 }
 
 // Setup stdin
@@ -146,6 +173,9 @@ if (typeof process.stdin.setRawMode === 'function') {
 
 // Run
 reinstall().catch(error => {
-    printError(`\nReinstall failed: ${error.message}`, 0)
+    printBox(
+        `Reinstall failed: ${error.message}`,
+        { color: pc.red, icon: '❌', title: 'Error' }
+    )
     process.exit(1)
 })
