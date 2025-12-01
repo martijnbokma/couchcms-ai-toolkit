@@ -461,8 +461,9 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
         : []
 
     if (editorsToGenerate.length === 0) {
+        // Use simple console.log since this function is not async
         console.log('ℹ️  No editor templates selected - skipping template generation')
-        console.log('   To generate templates, edit .project/standards.md and set editors to true, then run sync again')
+        console.log('   💡 Tip: Edit .project/standards.md and set editors to true, then run sync again')
         return 0
     }
 
@@ -525,8 +526,10 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
             writeFileSync(outputPath, rendered)
             generatedCount++
 
+            // Use simple console.log since this function is not async
             console.log(`✅ Generated: ${mapping.output}`)
         } catch (error) {
+            // Use simple console.warn since this function is not async
             console.warn(`⚠️  Failed to generate from ${templateFile}: ${error.message}`)
         }
     }
@@ -596,6 +599,7 @@ function generateClaudeCodeConfig(toolkitPath, projectDir, moduleNames, mergedCo
     if (Object.keys(combinedSkillRules).length > 0) {
         const skillRulesPath = join(skillsDir, 'skill-rules.json')
         writeFileSync(skillRulesPath, JSON.stringify(combinedSkillRules, null, 2))
+        // Use simple console.log since this function is not async
         console.log(`✅ Generated: .claude/skills/skill-rules.json (${loadedCount} modules)`)
     }
 
@@ -713,6 +717,7 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
 
     if (ruleFiles.length > 0) {
         const copiedCount = ruleFiles.filter(f => f !== 'README.md').length
+        // Note: syncCursorRules is not async, keep console.log for now
         console.log(`✅ Synced: ${copiedCount} Cursor rules to .cursor/rules/`)
     }
 }
@@ -722,8 +727,11 @@ function syncCursorRules(toolkitPath, projectDir, mergedConfig) {
  * @returns {{config: object, projectRules: string, projectDir: string, toolkitPath: string}}
  * @throws {ConfigError} If configuration cannot be loaded
  */
-function loadProjectConfiguration() {
-    console.log('🔄 CouchCMS AI Toolkit - Sync\n')
+async function loadProjectConfiguration() {
+    // Import terminal utilities for better output
+    const { printBanner, printStep, printSuccess, printInfo, printProgress, printWarning, printError } = await import('./lib/terminal.js')
+
+    printBanner('CouchCMS AI Toolkit', 'Configuration Sync', '🔄')
 
     // Find standards.md configuration file
     const projectPath = findProjectFile()
@@ -779,10 +787,10 @@ Add your project-specific instructions here...
         // Store the toolkit directory path for later use
         detectedToolkitPath = potentialToolkitDir
         projectDir = dirname(potentialToolkitDir)
-        console.log(`📦 Detected toolkit directory, using parent as project root`)
+        printInfo('Detected toolkit directory, using parent as project root', 2)
     }
 
-    console.log(`📁 Project root: ${projectDir}`)
+    printInfo(`Project root: ${projectDir}`, 2)
 
     // Parse standards.md configuration file
     let config, projectRules
@@ -794,13 +802,17 @@ Add your project-specific instructions here...
     } catch (error) {
         const configError = new ConfigError('Failed to parse configuration file', error)
         handleError(configError, 'Configuration Parsing')
-        console.log('\nEnsure your configuration file has valid YAML frontmatter.\n')
+        printError('Invalid YAML syntax in configuration file', 2)
+        printInfo('💡 Tip: Ensure your configuration file has valid YAML frontmatter', 2)
+        console.log()
         process.exit(1)
     }
 
     // Support both old format (config.name) and new format (config.project.name)
     const projectName = config.project?.name || config.name || 'Unnamed'
-    console.log(`📦 Project: ${projectName}`)
+
+    printStep(2, 4, 'Loading project configuration...')
+    printInfo(`Project: ${projectName}`, 2)
 
     // Resolve toolkit path
     // If we detected toolkit directory, use that path; otherwise resolve from config
@@ -817,11 +829,13 @@ Add your project-specific instructions here...
     if (!existsSync(toolkitPath)) {
         const error = new ConfigError(`Toolkit path not found: ${toolkitPath}`)
         handleError(error, 'Toolkit Path Resolution')
-        console.log("\nCheck the 'toolkit' path in your standards.md\n")
+        printError(`Toolkit path not found: ${toolkitPath}`, 2)
+        printInfo("💡 Tip: Check the 'toolkit' path in your standards.md", 2)
         process.exit(1)
     }
 
-    console.log(`🛠️  Toolkit: ${toolkitPath}`)
+    printSuccess(`Toolkit: ${toolkitPath}`, 2)
+    console.log()
 
     // Determine relative config file path (cross-platform)
     const relativeConfigPath = projectPath.startsWith(projectDir)
@@ -836,9 +850,11 @@ Add your project-specific instructions here...
  * @param {object} config - Project configuration
  * @param {string} toolkitPath - Toolkit root directory
  * @param {string} projectDir - Project root directory
- * @returns {{modules: Array, agents: Array, projectContext: object|null}}
+ * @returns {Promise<{modules: Array, agents: Array, projectContext: object|null}>}
  */
-function loadToolkitResources(config, toolkitPath, projectDir) {
+async function loadToolkitResources(config, toolkitPath, projectDir) {
+    // Import terminal utilities
+    const { printStep, printProgress, printSuccess, printWarning, printInfo, printError } = await import('./lib/terminal.js')
     // Load defaults and merge with project config
     const defaults = loadDefaults(toolkitPath)
     const mergedConfig = deepMerge(defaults, {
@@ -847,7 +863,9 @@ function loadToolkitResources(config, toolkitPath, projectDir) {
         naming: config.naming || {},
     })
 
-    console.log(`📁 Paths: ${Object.keys(mergedConfig.paths).length} configured`)
+    printStep(3, 4, 'Loading toolkit resources...')
+
+    printProgress(`Loading paths (${Object.keys(mergedConfig.paths).length} configured)...`, 2)
 
     // Ensure couchcms-core is always included
     const moduleList = config.modules || ['couchcms-core']
@@ -855,10 +873,17 @@ function loadToolkitResources(config, toolkitPath, projectDir) {
         moduleList.unshift('couchcms-core')
     }
 
-    console.log(`📚 Modules: ${moduleList.join(', ')}`)
-
+    printProgress(`Loading modules (${moduleList.length} modules)...`, 2)
     // Load modules
     const modules = moduleList.map(name => loadModule(name, toolkitPath)).filter(Boolean)
+
+    const loadedModules = modules.length
+    const missingModules = moduleList.length - loadedModules
+    if (missingModules > 0) {
+        printWarning(`${missingModules} module(s) not found`, 2)
+    } else {
+        printSuccess(`Loaded ${loadedModules} module(s)`, 2)
+    }
 
     // Load agents
     // Support both active_agents (new format) and agents (legacy format)
@@ -881,23 +906,32 @@ function loadToolkitResources(config, toolkitPath, projectDir) {
             agentList = Array.from(agentSet)
         }
     }
+
+    printProgress(`Loading agents (${agentList.length} agents)...`, 2)
     const agents = agentList.map(name => loadAgent(name, toolkitPath)).filter(Boolean)
 
-    if (agents.length > 0) {
-        console.log(`🤖 Agents: ${agents.map(a => a.name).join(', ')}`)
+    const loadedAgents = agents.length
+    const missingAgents = agentList.length - loadedAgents
+    if (missingAgents > 0) {
+        printWarning(`${missingAgents} agent(s) not found`, 2)
+    } else if (loadedAgents > 0) {
+        printSuccess(`Loaded ${loadedAgents} agent(s)`, 2)
     }
 
     // Load project context
     const projectContext = loadProjectContext(config.context, projectDir)
     if (projectContext) {
-        console.log(`📋 Context: ${projectContext.path}`)
+        printInfo(`Context: ${projectContext.path}`, 2)
     }
+
+    console.log()
 
     // Check for conflicts
     const conflicts = checkConflicts(modules)
     if (conflicts.length > 0) {
-        console.log('\n')
-        conflicts.forEach(c => console.log(c))
+        printError('Module conflicts detected:', 0)
+        conflicts.forEach(c => console.log(`  ${c}`))
+        printInfo('💡 Tip: Remove conflicting modules from your standards.md', 2)
         process.exit(1)
     }
 
@@ -944,6 +978,7 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
     // Generate editor configurations from templates
     try {
         const generatedCount = generateEditorConfigs(toolkitPath, projectDir, templateData, config)
+        // Note: generateEditorConfigs is not async, use simple console output
         if (generatedCount === 0) {
             console.warn('⚠️  No editor configs generated - templates may be missing or no editors selected')
         } else {
@@ -978,6 +1013,8 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
             ...mergedConfig,
             name: projectName,
         })
+        // Use simple console.log since generateAllConfigurations is not async
+        // Terminal utilities are used in the main sync() function instead
         console.log(`✅ Generated: .claude/ directory structure`)
         if (skillRulesCount > 0) {
             console.log(`🤖 Claude Code: ${skillRulesCount} skill-rules configured`)
@@ -996,35 +1033,56 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
 async function sync() {
     try {
         // Load project configuration
-        const { config, projectRules, projectDir, toolkitPath, configFilePath } = loadProjectConfiguration()
+        const { config, projectRules, projectDir, toolkitPath, configFilePath } = await loadProjectConfiguration()
 
         // Check and install dependencies if needed (non-blocking)
+        const { printWarning, printInfo } = await import('./lib/terminal.js')
         if (typeof checkAndInstallDependencies === 'function') {
             try {
                 await checkAndInstallDependencies(toolkitPath)
             } catch (error) {
-                console.warn(`⚠️  Dependency check failed: ${error.message}`)
-                console.warn('⚠️  Continuing with sync, but some features may not work correctly')
-                console.warn('⚠️  Run "bun install" in the toolkit directory to fix this\n')
+                printWarning(`Dependency check failed: ${error.message}`, 2)
+                printWarning('Continuing with sync, but some features may not work correctly', 2)
+                printInfo('💡 Tip: Run "bun install" in the toolkit directory to fix this', 2)
+                console.log()
             }
         } else {
-            console.warn('⚠️  Dependency checker not available, skipping dependency check\n')
+            printWarning('Dependency checker not available, skipping dependency check', 2)
+            console.log()
         }
 
         // Load toolkit resources
-        const { modules, agents, projectContext, mergedConfig } = loadToolkitResources(config, toolkitPath, projectDir)
+        const { modules, agents, projectContext, mergedConfig } = await loadToolkitResources(config, toolkitPath, projectDir)
 
         // Generate all configurations
+        const { printStep, printBox, printSuccess } = await import('./lib/terminal.js')
+        printStep(4, 4, 'Generating configuration files...')
+        console.log()
+
         generateAllConfigurations(config, mergedConfig, modules, agents, projectContext, projectRules, toolkitPath, projectDir, configFilePath)
 
-        console.log(`\n✨ Sync complete! ${modules.length} modules, ${agents.length} agents loaded.\n`)
+        // Display success summary
+        printBox(
+            `Modules: ${modules.length} loaded\n` +
+            `Agents: ${agents.length} loaded\n` +
+            `Configuration files generated successfully`,
+            { title: 'Sync Complete', icon: '✨', color: 'green' },
+            0
+        )
+        console.log()
     } catch (error) {
         handleError(error, 'Sync Process')
-        console.log('Troubleshooting:')
-        console.log('  1. Verify standards.md has valid YAML frontmatter')
-        console.log('  2. Check toolkit path in standards.md')
-        console.log('  3. Ensure all referenced modules exist')
-        console.log("  4. Run 'bun run validate' for detailed diagnostics\n")
+
+        const { printError, printInfo, printList } = await import('./lib/terminal.js')
+        printError('Sync failed', 0)
+        printInfo('Troubleshooting steps:', 2)
+        printList([
+            'Verify standards.md has valid YAML frontmatter',
+            'Check toolkit path in standards.md',
+            'Ensure all referenced modules exist',
+            "Run 'bun ai-toolkit-shared/scripts/validate.js' for detailed diagnostics"
+        ], { bullet: '•', color: 'reset' }, 2)
+        console.log()
         process.exit(1)
     }
 }
