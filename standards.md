@@ -7,6 +7,19 @@ description: "CouchCMS AI Toolkit - Development and maintenance configuration"
 # Self-referential: toolkit points to itself
 toolkit: "."
 
+# === CODING STANDARDS ===
+standards:
+  indentation: 4
+  lineLength: 120
+  language: "english"
+
+# === NAMING CONVENTIONS ===
+naming:
+  files: "kebab-case"
+  variables: "camelCase"
+  classes: "PascalCase"
+  constants: "snake_case"
+
 # === MODULES ===
 # All available modules for toolkit development
 modules:
