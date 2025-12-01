@@ -18,7 +18,7 @@ import { resolve, dirname } from 'path'
 import { execSync } from 'child_process'
 import { findConfigFile } from './utils/utils.js'
 import { getToolkitRootCached, print, printSuccess, printError, printWarning, printInfo, printProgress, printBanner, printStep, printBox, printSummary, printList, colors } from './lib/index.js'
-import pc from 'picocolors'
+import ansis, { red, yellow, green, blue } from 'ansis'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 
@@ -39,8 +39,8 @@ function exec(command, options = {}) {
 }
 
 async function askConfirmation(message) {
-    printBox(message, { color: pc.yellow, icon: '⚠️' })
-    process.stdout.write(pc.bold(pc.yellow('Continue? [y/N] ')))
+    printBox(message, { color: yellow, icon: '⚠️' })
+    process.stdout.write(yellow.bold('Continue? [y/N] '))
 
     return new Promise((resolve) => {
         process.stdin.once('data', (data) => {
@@ -48,6 +48,52 @@ async function askConfirmation(message) {
             resolve(answer === 'y' || answer === 'yes')
         })
     })
+}
+
+/**
+ * Check if there are unstaged changes in git repository
+ * @param {string} cwd - Working directory
+ * @returns {boolean} - True if there are unstaged changes
+ */
+function hasUnstagedChanges(cwd) {
+    try {
+        const status = execSync('git status --porcelain', {
+            encoding: 'utf8',
+            cwd,
+            stdio: 'pipe'
+        })
+        // git status --porcelain format:
+        // First char: staged changes (space if unstaged)
+        // Second char: unstaged changes (M, A, D, etc.)
+        // Lines starting with '??' are untracked files (ignore)
+        return status.split('\n').some(line => {
+            const trimmed = line.trim()
+            if (!trimmed || trimmed.startsWith('??')) return false
+            // If first char is space, there are unstaged changes
+            // If second char is not space, there are unstaged changes
+            return line[0] === ' ' || (line[1] && line[1] !== ' ')
+        })
+    } catch {
+        return false
+    }
+}
+
+/**
+ * Check if git repository is clean (no changes at all)
+ * @param {string} cwd - Working directory
+ * @returns {boolean} - True if repository is clean
+ */
+function isGitClean(cwd) {
+    try {
+        const status = execSync('git status --porcelain', {
+            encoding: 'utf8',
+            cwd,
+            stdio: 'pipe'
+        })
+        return status.trim().length === 0
+    } catch {
+        return true
+    }
 }
 
 async function reinstall() {
@@ -61,7 +107,7 @@ async function reinstall() {
     if (!existsSync('ai-toolkit-shared')) {
         printBox(
             'Toolkit not found in ai-toolkit-shared/\n\nRun the installer first:\ncurl -fsSL https://raw.githubusercontent.com/.../install.sh | bash',
-            { color: pc.red, icon: '❌', title: 'Error' }
+            { color: red, icon: '❌', title: 'Error' }
         )
         process.exit(1)
     }
@@ -72,12 +118,59 @@ async function reinstall() {
     // Step 1: Update toolkit
     printStep(1, totalSteps, 'Updating toolkit...')
     try {
-        exec('git pull', { cwd: 'ai-toolkit-shared' })
-        printSuccess('Toolkit updated', 2)
-        steps.push({ name: 'Toolkit update', status: 'success' })
+        const toolkitPath = 'ai-toolkit-shared'
+
+        // Check if there are unstaged changes
+        if (hasUnstagedChanges(toolkitPath)) {
+            printWarning('Found unstaged changes in toolkit directory', 2)
+            printInfo('Git pull requires a clean working directory', 2)
+
+            const confirmed = await askConfirmation(
+                'You have local changes in ai-toolkit-shared/.\n\n' +
+                'Options:\n' +
+                '1. Stash changes, pull updates, then restore changes\n' +
+                '2. Skip update (keep your local changes)\n\n' +
+                'Stash and pull?'
+            )
+
+            if (confirmed) {
+                printProgress('Stashing local changes...', 2)
+                exec('git stash push -m "Auto-stash before reinstall"', { cwd: toolkitPath })
+                printSuccess('Changes stashed', 2)
+
+                printProgress('Pulling latest updates...', 2)
+                exec('git pull', { cwd: toolkitPath })
+                printSuccess('Updates pulled', 2)
+
+                printProgress('Restoring stashed changes...', 2)
+                exec('git stash pop', { cwd: toolkitPath, ignoreError: true })
+                printSuccess('Changes restored', 2)
+
+                steps.push({ name: 'Toolkit update', status: 'success' })
+            } else {
+                printWarning('Skipping toolkit update (keeping local changes)', 2)
+                steps.push({ name: 'Toolkit update', status: 'skipped' })
+            }
+        } else {
+            // No changes, safe to pull
+            exec('git pull', { cwd: toolkitPath })
+            printSuccess('Toolkit updated', 2)
+            steps.push({ name: 'Toolkit update', status: 'success' })
+        }
     } catch (error) {
-        printWarning('Git pull failed (may already be up to date)', 2)
-        steps.push({ name: 'Toolkit update', status: 'warning' })
+        const errorMsg = error.message || String(error)
+        if (errorMsg.includes('unstaged changes') || errorMsg.includes('cannot pull')) {
+            printWarning('Git pull failed: Unstaged changes detected', 2)
+            printInfo('Tip: Commit or stash your changes first, then run reinstall again', 2)
+        } else if (errorMsg.includes('already up to date')) {
+            printSuccess('Toolkit already up to date', 2)
+            steps.push({ name: 'Toolkit update', status: 'success' })
+        } else {
+            printWarning(`Git pull failed: ${errorMsg}`, 2)
+        }
+        if (!steps.find(s => s.name === 'Toolkit update')) {
+            steps.push({ name: 'Toolkit update', status: 'warning' })
+        }
     }
     console.log()
 
@@ -104,7 +197,7 @@ async function reinstall() {
         )
 
         if (!confirmed) {
-            printBox('Reinstall cancelled', { color: pc.yellow, icon: '⚠️' })
+            printBox('Reinstall cancelled', { color: yellow, icon: '⚠️' })
             process.exit(0)
         }
     }
@@ -146,11 +239,16 @@ async function reinstall() {
     // Success summary
     printBox(
         'Reinstall complete!',
-        { color: pc.green, icon: '✅', title: 'Success' }
+        { color: green, icon: '✅', title: 'Success' }
     )
 
+    const toolkitStep = steps.find(s => s.name === 'Toolkit update')
+    const toolkitStatus = toolkitStep?.status === 'success' ? '✅ Updated' :
+                          toolkitStep?.status === 'skipped' ? '⚠️ Skipped' :
+                          '⚠️ Warning'
+
     printSummary('Summary', {
-        'Toolkit': steps.find(s => s.name === 'Toolkit update')?.status === 'success' ? '✅ Updated' : '⚠️ Skipped',
+        'Toolkit': toolkitStatus,
         'Dependencies': steps.find(s => s.name === 'Dependencies')?.status === 'success' ? '✅ Updated' : '❌ Failed',
         'Configuration': steps.find(s => s.name === 'Config regeneration' || s.name === 'Initial setup')?.status === 'success' ? '✅ Regenerated' : '❌ Failed',
         'Verification': steps.find(s => s.name === 'Verification')?.status === 'success' ? '✅ Passed' : '❌ Failed',
@@ -161,7 +259,7 @@ async function reinstall() {
         '1. Check your AI assistant (Cursor, Claude, etc.)\n' +
         '2. Verify configs are working\n' +
         '3. Edit .project/standards.md if needed',
-        { color: pc.blue, icon: 'ℹ️', title: 'Next Steps' }
+        { color: blue, icon: 'ℹ️', title: 'Next Steps' }
     )
 }
 
@@ -175,7 +273,7 @@ if (typeof process.stdin.setRawMode === 'function') {
 reinstall().catch(error => {
     printBox(
         `Reinstall failed: ${error.message}`,
-        { color: pc.red, icon: '❌', title: 'Error' }
+        { color: red, icon: '❌', title: 'Error' }
     )
     process.exit(1)
 })

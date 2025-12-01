@@ -3,26 +3,26 @@
  * CouchCMS AI Toolkit - Terminal Utilities
  *
  * Terminal formatting, colors, and interactive utilities
- * Uses picocolors for fast, dependency-free terminal colors
+ * Uses ansis for fast, feature-rich terminal colors with chainable syntax
  */
 
-import pc from 'picocolors'
+import ansis, { red, green, yellow, blue, magenta, cyan, white, gray, bold, dim } from 'ansis'
 
 /**
- * Color functions using picocolors
+ * Color functions using ansis (chainable syntax)
  */
 export const colors = {
     reset: (text) => text,
-    bright: pc.bold,
-    dim: pc.dim,
-    red: pc.red,
-    green: pc.green,
-    yellow: pc.yellow,
-    blue: pc.blue,
-    magenta: pc.magenta,
-    cyan: pc.cyan,
-    white: pc.white,
-    gray: pc.gray,
+    bright: bold,
+    dim: dim,
+    red: red,
+    green: green,
+    yellow: yellow,
+    blue: blue,
+    magenta: magenta,
+    cyan: cyan,
+    white: white,
+    gray: gray,
 }
 
 /**
@@ -77,7 +77,7 @@ export function printWithIcon(icon, message, color = 'reset', indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printSuccess(message, indent = 0) {
-    printWithIcon('✅', message, pc.green, indent)
+    printWithIcon('✅', message, green, indent)
 }
 
 /**
@@ -86,7 +86,7 @@ export function printSuccess(message, indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printError(message, indent = 0) {
-    printWithIcon('❌', message, pc.red, indent)
+    printWithIcon('❌', message, red, indent)
 }
 
 /**
@@ -95,7 +95,7 @@ export function printError(message, indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printWarning(message, indent = 0) {
-    printWithIcon('⚠️ ', message, pc.yellow, indent)
+    printWithIcon('⚠️ ', message, yellow, indent)
 }
 
 /**
@@ -104,7 +104,7 @@ export function printWarning(message, indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printInfo(message, indent = 0) {
-    printWithIcon('ℹ️ ', message, pc.blue, indent)
+    printWithIcon('ℹ️ ', message, blue, indent)
 }
 
 /**
@@ -113,7 +113,7 @@ export function printInfo(message, indent = 0) {
  * @param {number} [indent=0] - Indentation
  */
 export function printProgress(message, indent = 0) {
-    printWithIcon('🔄', message, pc.cyan, indent)
+    printWithIcon('🔄', message, cyan, indent)
 }
 
 /**
@@ -128,7 +128,7 @@ export function printSection(title, icon = '', indent = 0) {
     const separator = '─'.repeat(Math.max(0, width - title.length - (icon ? 3 : 0)))
     const iconText = icon ? `${icon} ` : ''
     console.log()
-    console.log(`${spaces}${pc.bold(pc.cyan(`${iconText}${title}`))} ${pc.dim(separator)}`)
+    console.log(`${spaces}${cyan.bold(`${iconText}${title}`)} ${dim(separator)}`)
 }
 
 /**
@@ -143,7 +143,8 @@ export function printSection(title, icon = '', indent = 0) {
 export function printBox(message, options = {}, indent = 0) {
     const spaces = ' '.repeat(indent)
     const { title, color = 'cyan', icon = '' } = options
-    const colorFn = typeof color === 'function' ? color : colors[color] || colors.cyan
+    // Support both function (ansis) and string (color name)
+    const colorFn = typeof color === 'function' ? color : colors[color] || cyan
 
     const lines = message.split('\n')
     const maxWidth = Math.max(
@@ -185,13 +186,13 @@ export function printBanner(title, subtitle = '', icon = '✨') {
     const padding = Math.max(2, Math.floor((width - title.length - (icon ? 3 : 0)) / 2))
 
     console.log()
-    console.log(pc.bold(pc.cyan('═'.repeat(width))))
-    console.log(pc.bold(pc.cyan(' '.repeat(padding) + `${icon} ${title}` + ' '.repeat(padding))))
+    console.log(cyan.bold('═'.repeat(width)))
+    console.log(cyan.bold(' '.repeat(padding) + `${icon} ${title}` + ' '.repeat(padding)))
     if (subtitle) {
         const subPadding = Math.max(2, Math.floor((width - subtitle.length) / 2))
-        console.log(pc.dim(' '.repeat(subPadding) + subtitle))
+        console.log(dim(' '.repeat(subPadding) + subtitle))
     }
-    console.log(pc.bold(pc.cyan('═'.repeat(width))))
+    console.log(cyan.bold('═'.repeat(width)))
     console.log()
 }
 
@@ -205,7 +206,7 @@ export function printBanner(title, subtitle = '', icon = '✨') {
 export function printStep(step, total, message, indent = 0) {
     const spaces = ' '.repeat(indent)
     const stepText = `[${step}/${total}]`
-    const formatted = `${spaces}${pc.dim(stepText)} ${pc.bold(pc.cyan(message))}`
+    const formatted = `${spaces}${dim(stepText)} ${cyan.bold(message)}`
     console.log(formatted)
 }
 
@@ -250,18 +251,18 @@ export function printConfigSummary(config, indent = 0) {
     )
 
     // Format title with sparkle
-    console.log(`${spaces}${pc.cyan('✨')} ${pc.bold(pc.cyan(title))}`)
+    console.log(`${spaces}${cyan('✨')} ${cyan.bold(title)}`)
     console.log()
 
     // Format each field with proper alignment
     if (project) {
         const label = 'Project:'.padEnd(maxLabelWidth)
-        console.log(`${spaces}   ${pc.dim(label)} ${pc.bold(project)}`)
+        console.log(`${spaces}   ${dim(label)} ${bold(project)}`)
     }
 
     if (type) {
         const label = 'Type:'.padEnd(maxLabelWidth)
-        console.log(`${spaces}   ${pc.dim(label)} ${pc.cyan(type)}`)
+        console.log(`${spaces}   ${dim(label)} ${cyan(type)}`)
     }
 
     // Format modules with smart wrapping
@@ -273,9 +274,9 @@ export function printConfigSummary(config, indent = 0) {
         const availableWidth = maxLineLength - labelWidth
 
         if (modulesText.length <= availableWidth) {
-            console.log(`${spaces}   ${pc.dim(label)} ${modulesText}`)
+            console.log(`${spaces}   ${dim(label)} ${modulesText}`)
         } else {
-            console.log(`${spaces}   ${pc.dim(label)}`)
+            console.log(`${spaces}   ${dim(label)}`)
             let currentLine = ''
             modules.forEach((module, index) => {
                 const separator = index > 0 ? ', ' : ''
@@ -305,9 +306,9 @@ export function printConfigSummary(config, indent = 0) {
         const availableWidth = maxLineLength - labelWidth
 
         if (agentsText.length <= availableWidth) {
-            console.log(`${spaces}   ${pc.dim(label)} ${agentsText}`)
+            console.log(`${spaces}   ${dim(label)} ${agentsText}`)
         } else {
-            console.log(`${spaces}   ${pc.dim(label)}`)
+            console.log(`${spaces}   ${dim(label)}`)
             let currentLine = ''
             agents.forEach((agent, index) => {
                 const separator = index > 0 ? ', ' : ''
@@ -342,10 +343,10 @@ export function printSummary(title, items, indent = 0) {
     const maxKeyWidth = Math.max(...Object.keys(items).map(k => k.length))
 
     console.log()
-    console.log(`${spaces}${pc.bold(pc.cyan(title))}`)
+    console.log(`${spaces}${cyan.bold(title)}`)
     Object.entries(items).forEach(([key, value]) => {
         const keyText = `${key}:`.padEnd(maxKeyWidth + 1)
-        console.log(`${spaces}  ${pc.dim(keyText)} ${value}`)
+        console.log(`${spaces}  ${dim(keyText)} ${value}`)
     })
     console.log()
 }
