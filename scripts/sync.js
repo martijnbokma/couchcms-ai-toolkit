@@ -897,6 +897,19 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
     // Add module list for templates
     templateData.module_list = (config.modules || ['couchcms-core']).join(', ')
 
+    // Add framework content if enabled
+    if (templateData.framework_enabled && config.framework) {
+        // Framework can be boolean true or an object with content
+        if (typeof config.framework === 'object' && config.framework.content) {
+            templateData.framework = config.framework.content
+        } else {
+            // Default framework content (can be loaded from a file if needed)
+            templateData.framework = '# Framework\n\nFramework content goes here.'
+        }
+    } else {
+        templateData.framework = ''
+    }
+
     // Generate editor configurations from templates
     try {
         const generatedCount = generateEditorConfigs(toolkitPath, projectDir, templateData, config)
