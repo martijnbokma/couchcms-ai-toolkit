@@ -147,10 +147,11 @@ export function printBox(message, options = {}, indent = 0) {
     const colorFn = typeof color === 'function' ? color : colors[color] || cyan
 
     const lines = message.split('\n')
-    const maxWidth = Math.max(
-        ...lines.map(l => l.length),
-        title ? title.length + (icon ? 3 : 0) : 0
-    )
+    const maxContentWidth = Math.max(...lines.map(l => l.length), 0)
+    const titleWidth = title ? (title.length + (icon ? 3 : 0)) : 0
+    // Use the maximum of content and title to ensure both fit nicely
+    // But if title is much shorter, add some padding for visual balance
+    const maxWidth = Math.max(maxContentWidth, titleWidth)
     // Calculate width: content + 2 spaces + 2 border chars = content + 4
     const contentWidth = Math.max(10, Math.min(maxWidth, getTerminalWidth() - indent - 6))
     const boxWidth = contentWidth + 4 // 2 spaces + 2 border chars
@@ -164,9 +165,22 @@ export function printBox(message, options = {}, indent = 0) {
     if (title) {
         const iconText = icon ? `${icon} ` : ''
         const titleContent = `${iconText}${title}`
-        const titlePadding = Math.max(0, contentWidth - titleContent.length)
-        const titleLine = `│ ${titleContent}${' '.repeat(titlePadding)} │`
+        // Pad title to exact contentWidth to match content lines exactly
+        // This ensures the vertical border aligns perfectly with content lines
+        // Limit padding after title text to maximum of 10 spaces for better visual balance
+        // But still pad to full contentWidth for perfect border alignment
+        const maxTitlePadding = 10
+        const titlePadding = Math.min(maxTitlePadding, Math.max(0, contentWidth - titleContent.length))
+        const paddedTitle = `${titleContent}${' '.repeat(titlePadding)}`
+        // Always pad to full contentWidth for perfect border alignment with content lines
+        const finalPaddedTitle = paddedTitle.length < contentWidth
+            ? paddedTitle + ' '.repeat(contentWidth - paddedTitle.length)
+            : paddedTitle
+        // Title line structure: │ + space + finalPaddedTitle + space + │ = boxWidth
+        // This matches the content line structure exactly for perfect alignment
+        const titleLine = `│ ${finalPaddedTitle} │`
         console.log(`${spaces}${colorFn(titleLine)}`)
+        // Separator line uses same width as borders
         console.log(`${spaces}${colorFn('├' + '─'.repeat(Math.max(0, boxWidth - 2)) + '┤')}`)
     }
 
