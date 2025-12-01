@@ -148,5 +148,6 @@ export {
     printError,
     printWarning,
     printInfo,
-    printProgress
+    printProgress,
+    printConfigSummary
 } from './terminal.js'

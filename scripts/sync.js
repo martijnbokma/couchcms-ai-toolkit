@@ -825,7 +825,26 @@ function loadToolkitResources(config, toolkitPath, projectDir) {
     const modules = moduleList.map(name => loadModule(name, toolkitPath)).filter(Boolean)
 
     // Load agents
-    const agentList = config.agents || []
+    // Support both active_agents (new format) and agents (legacy format)
+    // Also handle case where agents might be an object (editor-specific config)
+    let agentList = []
+    if (config.active_agents && Array.isArray(config.active_agents)) {
+        agentList = config.active_agents
+    } else if (config.agents) {
+        if (Array.isArray(config.agents)) {
+            agentList = config.agents
+        } else if (typeof config.agents === 'object') {
+            // If agents is an object (editor-specific), extract all unique agent names
+            // This handles editor-specific agent configurations
+            const agentSet = new Set()
+            Object.values(config.agents).forEach(value => {
+                if (Array.isArray(value)) {
+                    value.forEach(agent => agentSet.add(agent))
+                }
+            })
+            agentList = Array.from(agentSet)
+        }
+    }
     const agents = agentList.map(name => loadAgent(name, toolkitPath)).filter(Boolean)
 
     if (agents.length > 0) {

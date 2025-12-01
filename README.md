@@ -314,6 +314,11 @@ bun ai-toolkit-shared/scripts/init.js
 bun ai-toolkit-shared/scripts/health.js
 # or: cd ai-toolkit-shared && bun run health
 
+# Reinstall toolkit - update and regenerate configs
+bun ai-toolkit-shared/scripts/reinstall.js
+# or: cd ai-toolkit-shared && bun run reinstall
+# Skip confirmation: bun ai-toolkit-shared/scripts/reinstall.js --force
+
 # Generate/update AI configs
 bun ai-toolkit-shared/scripts/sync.js
 # or: cd ai-toolkit-shared && bun run sync
@@ -348,6 +353,10 @@ cd ai-toolkit-shared && bun run extend-modules --module comments
 ### Updates
 
 ```bash
+# Reinstall - update toolkit and regenerate configs (recommended)
+bun ai-toolkit-shared/scripts/reinstall.js
+# or: cd ai-toolkit-shared && bun run reinstall
+
 # Check for updates (interactive - asks to update)
 cd ai-toolkit-shared && bun run update
 
@@ -360,6 +369,8 @@ cd ai-toolkit-shared && bun run update:apply
 # Update submodule (alternative method)
 cd ai-toolkit-shared && bun run update-submodule
 ```
+
+**💡 Tip:** Use `reinstall.js` for a complete update - it updates the toolkit, dependencies, and regenerates all AI configs in one command.
 
 📖 **[See Update Guide](docs/UPDATES.md)** for detailed update instructions.
 
