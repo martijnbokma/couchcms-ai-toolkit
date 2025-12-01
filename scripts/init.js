@@ -12,6 +12,7 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve, dirname, basename, join } from 'path'
 import { findConfigFile, getConfigFileName, handleError } from './utils/utils.js'
 import { prompt, confirm, selectModules, selectAgents, selectFramework, selectEditors } from './lib/prompts.js'
+import { printConfigSummary } from './lib/index.js'
 import {
     determineConfigPath,
     generateStandardsFile,
@@ -177,11 +178,13 @@ async function init() {
     const isCustomMode = !simpleMode && !autoMode && !presetMode
 
     if (autoMode) {
-        console.log('\n✨ Auto mode: Using detected settings')
-        console.log(`   - Project: ${detected.name}`)
-        console.log(`   - Type: ${detected.type}`)
-        console.log(`   - Modules: ${getRecommendedModules(detected).join(', ')}`)
-        console.log(`   - Agents: ${getRecommendedAgents(detected).join(', ')}`)
+        printConfigSummary({
+            title: 'Auto mode: Using detected settings',
+            project: detected.name,
+            type: detected.type,
+            modules: getRecommendedModules(detected),
+            agents: getRecommendedAgents(detected)
+        })
     } else if (presetMode && selectedPreset) {
         console.log(`\n✨ Preset: ${selectedPreset.name}`)
         console.log(`   - ${selectedPreset.description}`)
