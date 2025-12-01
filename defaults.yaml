@@ -23,4 +23,3 @@ naming:
   php_variables: 'snake_case'
   ts_variables: 'camelCase'
   css_classes: 'kebab-case'
-
