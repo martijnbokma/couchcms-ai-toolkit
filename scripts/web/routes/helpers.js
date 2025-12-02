@@ -36,13 +36,7 @@ export function getStepDefinitions(setupType) {
 export function getProgressIndicatorData(currentStep, setupType = 'simple') {
     const steps = getStepDefinitions(setupType)
     const totalSteps = steps.length
-    // Progress should extend to the next step (not just current step)
-    // For step 1 of 5: progress to step 2 = 1/4 = 25%
-    // For step 2 of 5: progress to step 3 = 2/4 = 50%
-    // Formula: (currentStep - 1) / (totalSteps - 1) * 100
-    const progressPercentage = totalSteps === 1
-        ? 100
-        : Math.round(((currentStep - 1) / (totalSteps - 1)) * 100)
+    const progressPercentage = Math.round((currentStep / totalSteps) * 100)
 
     const stepDescriptions = {
         'simple': {
