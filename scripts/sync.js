@@ -218,6 +218,53 @@ function loadProjectContext(contextPath, projectDir) {
 }
 
 /**
+ * Resolve module dependencies recursively
+ * Automatically adds required dependencies to the module list
+ * @param {Array<string>} moduleList - Initial list of module names
+ * @param {string} toolkitPath - Path to toolkit directory
+ * @returns {Array<string>} - Module list with dependencies added
+ */
+function resolveDependencies(moduleList, toolkitPath) {
+    const resolved = new Set(moduleList)
+    const toProcess = [...moduleList]
+    const processed = new Set()
+
+    while (toProcess.length > 0) {
+        const moduleName = toProcess.shift()
+
+        if (processed.has(moduleName)) {
+            continue // Already processed (prevents infinite loops)
+        }
+        processed.add(moduleName)
+
+        // Try to load module to check dependencies
+        const module = loadModule(moduleName, toolkitPath)
+        if (module && module.meta && module.meta.requires) {
+            // Handle both array and single value formats
+            let requires = []
+            if (Array.isArray(module.meta.requires)) {
+                requires = module.meta.requires
+            } else if (typeof module.meta.requires === 'string') {
+                requires = [module.meta.requires]
+            } else {
+                requires = [module.meta.requires]
+            }
+
+            for (const required of requires) {
+                // Handle string values (YAML might parse [tailwindcss] as array with string)
+                const requiredName = typeof required === 'string' ? required : String(required)
+                if (requiredName && !resolved.has(requiredName)) {
+                    resolved.add(requiredName)
+                    toProcess.push(requiredName)
+                }
+            }
+        }
+    }
+
+    return Array.from(resolved)
+}
+
+/**
  * Check for module conflicts and missing dependencies
  * @param {Array<object>} modules - Array of loaded module objects
  * @returns {Array<string>} - Array of error messages (empty if no conflicts)
@@ -228,7 +275,11 @@ function checkConflicts(modules) {
 
     for (const mod of modules) {
         if (mod.meta.conflicts) {
-            for (const conflict of mod.meta.conflicts) {
+            const conflicts = Array.isArray(mod.meta.conflicts)
+                ? mod.meta.conflicts
+                : [mod.meta.conflicts]
+
+            for (const conflict of conflicts) {
                 if (moduleNames.includes(conflict)) {
                     errors.push(`❌ Conflict: ${mod.name} cannot be used with ${conflict}`)
                 }
@@ -236,7 +287,11 @@ function checkConflicts(modules) {
         }
 
         if (mod.meta.requires) {
-            for (const required of mod.meta.requires) {
+            const requires = Array.isArray(mod.meta.requires)
+                ? mod.meta.requires
+                : [mod.meta.requires]
+
+            for (const required of requires) {
                 if (!moduleNames.includes(required)) {
                     errors.push(`❌ Missing dependency: ${mod.name} requires ${required}`)
                 }
@@ -927,10 +982,13 @@ async function loadToolkitResources(config, toolkitPath, projectDir) {
     printProgress(`Loading paths (${Object.keys(mergedConfig.paths).length} configured)...`, 2)
 
     // Ensure couchcms-core is always included
-    const moduleList = config.modules || ['couchcms-core']
+    let moduleList = config.modules || ['couchcms-core']
     if (!moduleList.includes('couchcms-core')) {
         moduleList.unshift('couchcms-core')
     }
+
+    // Resolve dependencies automatically
+    moduleList = resolveDependencies(moduleList, toolkitPath)
 
     printProgress(`Loading modules (${moduleList.length} modules)...`, 2)
     // Load modules
