@@ -37,7 +37,7 @@ const SUBCOMMANDS = {
     UPDATE: 'update',
     SERVE: 'serve',
     HELP: 'help'
-} as const
+}
 
 /**
  * Script names for subcommands that spawn child processes
@@ -48,7 +48,7 @@ const SCRIPT_MAP = {
     [SUBCOMMANDS.HEALTH]: 'health.js',
     [SUBCOMMANDS.BROWSE]: 'browse.js',
     [SUBCOMMANDS.UPDATE]: 'update.js'
-} as const
+}
 
 /**
  * Handle dependency check errors with solution suggestions
