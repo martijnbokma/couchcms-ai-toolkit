@@ -12,6 +12,17 @@
         <div class="mb-4">
             <h3 class="text-sm font-semibold mb-2 text-base-content">CSS Framework</h3>
             <div class="grid gap-2 sm:grid-cols-2">
+                {% if frontendOptions %}
+                {% for option in frontendOptions.css %}
+                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="css" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm" {% if option.selected %}checked{% endif %} />
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-semibold text-base-content">{{ option.name }}</h4>
+                        <p class="text-xs text-base-content/60">{{ option.description }}</p>
+                    </div>
+                </label>
+                {% endfor %}
+                {% else %}
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
                     <input type="checkbox" name="css" value="tailwindcss" class="checkbox checkbox-primary checkbox-sm" checked />
                     <div class="flex-1 min-w-0">
@@ -19,7 +30,6 @@
                         <p class="text-xs text-base-content/60">Utility-first CSS framework</p>
                     </div>
                 </label>
-
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
                     <input type="checkbox" name="css" value="daisyui" class="checkbox checkbox-primary checkbox-sm" />
                     <div class="flex-1 min-w-0">
@@ -27,12 +37,24 @@
                         <p class="text-xs text-base-content/60">Component library for TailwindCSS</p>
                     </div>
                 </label>
+                {% endif %}
             </div>
         </div>
 
         <div class="mb-4">
             <h3 class="text-sm font-semibold mb-2 text-base-content">JavaScript Frameworks</h3>
             <div class="grid gap-2 sm:grid-cols-2">
+                {% if frontendOptions %}
+                {% for option in frontendOptions.js %}
+                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="js" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm" {% if option.selected %}checked{% endif %} />
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-semibold text-base-content">{{ option.name }}</h4>
+                        <p class="text-xs text-base-content/60">{{ option.description }}</p>
+                    </div>
+                </label>
+                {% endfor %}
+                {% else %}
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
                     <input type="checkbox" name="js" value="alpinejs" class="checkbox checkbox-primary checkbox-sm" checked />
                     <div class="flex-1 min-w-0">
@@ -40,7 +62,6 @@
                         <p class="text-xs text-base-content/60">Lightweight reactive JavaScript</p>
                     </div>
                 </label>
-
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
                     <input type="checkbox" name="js" value="typescript" class="checkbox checkbox-primary checkbox-sm" />
                     <div class="flex-1 min-w-0">
@@ -48,6 +69,7 @@
                         <p class="text-xs text-base-content/60">Type-safe JavaScript</p>
                     </div>
                 </label>
+                {% endif %}
             </div>
         </div>
 

@@ -11,9 +11,9 @@
 
         <!-- AAPF Framework -->
         <div class="relative flex flex-col h-full px-4 py-4 bg-base-200 shadow-sm border border-base-300 rounded-xl mb-4">
-            <div>
-                <h3 class="card-title text-lg font-semibold mb-3 text-base-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <div class="w-full">
+                <h3 class="flex items-center gap-2 text-lg font-semibold mb-3 text-base-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                     AAPF Framework
@@ -21,9 +21,9 @@
 
                 <div class="alert alert-info mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <div>
-                        <h4 class="font-semibold">What is the AAPF Framework?</h4>
-                        <p class="text-sm">The AAPF (Autonomous Agent Programming Framework) framework provides structured and predictable behavior for AI agents. It includes doctrine (core principles), directives (communication guidelines), playbooks (workflow templates), and enhancements (advanced features).</p>
+                    <div class="flex-1">
+                        <h4 class="font-semibold mb-1">What is the AAPF Framework?</h4>
+                        <p class="text-sm leading-relaxed">The AAPF (Autonomous Agent Programming Framework) framework provides structured and predictable behavior for AI agents. It includes doctrine (core principles), directives (communication guidelines), playbooks (workflow templates), and enhancements (advanced features).</p>
                     </div>
                 </div>
 
@@ -31,40 +31,40 @@
 
                 <div class="form-control">
                     <label class="label cursor-pointer justify-start gap-4">
-                        <input type="checkbox" name="framework" value="true" class="checkbox checkbox-primary rounded-xl" />
+                        <input type="checkbox" name="framework" value="true" class="checkbox checkbox-primary rounded-xl" {% if framework %}checked{% endif %} />
                         <span class="label-text font-medium text-base-content">Enable AAPF Framework</span>
                     </label>
                 </div>
 
-                <div id="framework-options" class="mt-4 space-y-2 hidden">
-                    <p class="text-sm font-medium mb-2">Framework Components:</p>
-                    <div class="space-y-2">
-                        <label class="label cursor-pointer justify-start gap-4">
-                            <input type="checkbox" name="framework_doctrine" value="true" class="checkbox checkbox-sm rounded-xl" checked />
-                            <div class="flex-1">
-                                <span class="label-text text-sm font-medium text-base-content">Doctrine</span>
-                                <p class="text-xs text-base-content/60">Core principles and operational doctrine for AI agents</p>
+                <div id="framework-options" class="mt-4 hidden">
+                    <p class="text-sm font-medium mb-3 text-base-content">Framework Components:</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="label cursor-pointer justify-start gap-3 items-start">
+                            <input type="checkbox" name="framework_doctrine" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5" {% if framework and framework.doctrine %}checked{% endif %} />
+                            <div class="flex-1 min-w-0">
+                                <span class="label-text text-sm font-semibold text-base-content block mb-0.5">Doctrine</span>
+                                <p class="text-xs text-base-content/60 leading-relaxed">Core principles and operational doctrine for AI agents</p>
                             </div>
                         </label>
-                        <label class="label cursor-pointer justify-start gap-4">
-                            <input type="checkbox" name="framework_directives" value="true" class="checkbox checkbox-sm rounded-xl" checked />
-                            <div class="flex-1">
-                                <span class="label-text text-sm font-medium text-base-content">Directives</span>
-                                <p class="text-xs text-base-content/60">Communication guidelines and best practices</p>
+                        <label class="label cursor-pointer justify-start gap-3 items-start">
+                            <input type="checkbox" name="framework_directives" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5" {% if framework and framework.directives %}checked{% endif %} />
+                            <div class="flex-1 min-w-0">
+                                <span class="label-text text-sm font-semibold text-base-content block mb-0.5">Directives</span>
+                                <p class="text-xs text-base-content/60 leading-relaxed">Communication guidelines and best practices</p>
                             </div>
                         </label>
-                        <label class="label cursor-pointer justify-start gap-4">
-                            <input type="checkbox" name="framework_playbooks" value="true" class="checkbox checkbox-sm rounded-xl" checked />
-                            <div class="flex-1">
-                                <span class="label-text text-sm font-medium text-base-content">Playbooks</span>
-                                <p class="text-xs text-base-content/60">Reusable workflow templates for common tasks</p>
+                        <label class="label cursor-pointer justify-start gap-3 items-start">
+                            <input type="checkbox" name="framework_playbooks" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5" {% if framework and framework.playbooks %}checked{% endif %} />
+                            <div class="flex-1 min-w-0">
+                                <span class="label-text text-sm font-semibold text-base-content block mb-0.5">Playbooks</span>
+                                <p class="text-xs text-base-content/60 leading-relaxed">Reusable workflow templates for common tasks</p>
                             </div>
                         </label>
-                        <label class="label cursor-pointer justify-start gap-4">
-                            <input type="checkbox" name="framework_enhancements" value="true" class="checkbox checkbox-sm rounded-xl" />
-                            <div class="flex-1">
-                                <span class="label-text text-sm font-medium text-base-content">Enhancements</span>
-                                <p class="text-xs text-base-content/60">Advanced features and optimizations (optional)</p>
+                        <label class="label cursor-pointer justify-start gap-3 items-start">
+                            <input type="checkbox" name="framework_enhancements" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5" {% if framework and framework.enhancements %}checked{% endif %} />
+                            <div class="flex-1 min-w-0">
+                                <span class="label-text text-sm font-semibold text-base-content block mb-0.5">Enhancements</span>
+                                <p class="text-xs text-base-content/60 leading-relaxed">Advanced features and optimizations (optional)</p>
                             </div>
                         </label>
                     </div>
@@ -74,9 +74,9 @@
 
         <!-- Context Directory -->
         <div class="relative flex flex-col h-full px-4 py-4 bg-base-200 shadow-sm border border-base-300 rounded-xl mb-4">
-            <div>
-                <h3 class="card-title text-lg font-semibold mb-3 text-base-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <div class="w-full">
+                <h3 class="flex items-center gap-2 text-lg font-semibold mb-3 text-base-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
                     Context Directory
@@ -84,9 +84,9 @@
 
                 <div class="alert alert-info mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <div>
-                        <h4 class="font-semibold">What are AI context files?</h4>
-                        <p class="text-sm">AI context files contain project-specific information that AI agents use to better understand how your project works. This can include coding standards, architecture documentation, or custom patterns that agents need to know.</p>
+                    <div class="flex-1">
+                        <h4 class="font-semibold mb-1">What are AI context files?</h4>
+                        <p class="text-sm leading-relaxed">AI context files contain project-specific information that AI agents use to better understand how your project works. This can include coding standards, architecture documentation, or custom patterns that agents need to know.</p>
                     </div>
                 </div>
 
@@ -96,7 +96,7 @@
                     <label class="label">
                         <span class="label-text font-medium text-base-content">Context Directory Path</span>
                     </label>
-                    <input type="text" name="contextDir" placeholder=".project/ai" value=".project/ai" class="input input-bordered w-full rounded-xl" />
+                    <input type="text" name="contextDir" placeholder=".project/ai" value="{{ contextDir or '.project/ai' }}" class="input input-bordered w-full rounded-xl" />
                     <label class="label">
                         <span class="label-text-alt text-base-content/60">Relative path from project root (e.g., .project/ai or docs/ai-context)</span>
                     </label>
@@ -121,13 +121,20 @@
     </form>
 
     <script>
-        // Toggle framework options visibility
-        document.querySelector('input[name="framework"]')?.addEventListener('change', function(e) {
+        // Toggle framework options visibility on load and change
+        function updateFrameworkVisibility() {
+            const checkbox = document.querySelector('input[name="framework"]')
             const options = document.getElementById('framework-options')
-            if (options) {
-                options.classList.toggle('hidden', !e.target.checked)
+            if (checkbox && options) {
+                options.classList.toggle('hidden', !checkbox.checked)
             }
-        })
+        }
+
+        // Run on page load
+        updateFrameworkVisibility()
+
+        // Run on change
+        document.querySelector('input[name="framework"]')?.addEventListener('change', updateFrameworkVisibility)
 
         // Back button handler - go back to editors step
         document.querySelector('button[onclick="goBack()"]')?.addEventListener('click', function(e) {
@@ -138,6 +145,12 @@
             const css = Array.from(form.querySelectorAll('input[name="css"]')).map(i => i.value)
             const js = Array.from(form.querySelectorAll('input[name="js"]')).map(i => i.value)
             const editors = Array.from(form.querySelectorAll('input[name="editors"]:checked')).map(i => i.value)
+            const framework = form.querySelector('input[name="framework"]')?.checked || false
+            const frameworkDoctrine = form.querySelector('input[name="framework_doctrine"]')?.checked || false
+            const frameworkDirectives = form.querySelector('input[name="framework_directives"]')?.checked || false
+            const frameworkPlaybooks = form.querySelector('input[name="framework_playbooks"]')?.checked || false
+            const frameworkEnhancements = form.querySelector('input[name="framework_enhancements"]')?.checked || false
+            const contextDir = form.querySelector('input[name="contextDir"]')?.value || '.project/ai'
 
             const params = new URLSearchParams()
             params.append('setupType', 'extended')
@@ -146,6 +159,14 @@
             css.forEach(c => params.append('css', c))
             js.forEach(j => params.append('js', j))
             editors.forEach(ed => params.append('editors', ed))
+            if (framework) {
+                params.append('framework', 'true')
+                if (frameworkDoctrine) params.append('framework_doctrine', 'true')
+                if (frameworkDirectives) params.append('framework_directives', 'true')
+                if (frameworkPlaybooks) params.append('framework_playbooks', 'true')
+                if (frameworkEnhancements) params.append('framework_enhancements', 'true')
+            }
+            params.append('contextDir', contextDir)
 
             htmx.ajax('GET', `/api/setup/step/editors?${params.toString()}`, {
                 target: '#wizard-content',

@@ -20,7 +20,7 @@
             <div class="grid gap-2 sm:grid-cols-2">
                 {% for editor in popularEditors %}
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="editors" value="{{ editor.id }}" class="checkbox checkbox-primary checkbox-sm" {% if editor.id == 'cursor' %}checked{% endif %} />
+                    <input type="checkbox" name="editors" value="{{ editor.id }}" class="checkbox checkbox-primary checkbox-sm" {% if editor.selected %}checked{% endif %} />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-semibold text-base-content">{{ editor.name }}</h4>
                         <p class="text-xs text-base-content/60 truncate">{{ editor.description }}</p>
@@ -41,7 +41,7 @@
             <div class="grid gap-2 sm:grid-cols-2">
                 {% for editor in otherEditors %}
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="editors" value="{{ editor.id }}" class="checkbox checkbox-primary checkbox-sm" />
+                    <input type="checkbox" name="editors" value="{{ editor.id }}" class="checkbox checkbox-primary checkbox-sm" {% if editor.id in editors %}checked{% endif %} />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-semibold text-base-content">{{ editor.name }}</h4>
                         <p class="text-xs text-base-content/60 truncate">{{ editor.description }}</p>

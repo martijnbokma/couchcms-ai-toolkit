@@ -101,8 +101,30 @@ export function apiRoutes(projectDir) {
 
     // GET route for frontend step (for back navigation)
     app.get('/setup/step/frontend', async (c) => {
-        const projectName = c.req.query('projectName') || 'my-project'
-        const projectDescription = c.req.query('projectDescription') || 'A CouchCMS web application'
+        const query = c.req.query()
+        const projectName = query.projectName || 'my-project'
+        const projectDescription = query.projectDescription || 'A CouchCMS web application'
+
+        // Parse array parameters (for state persistence)
+        const css = []
+        const js = []
+
+        Object.keys(query).forEach(key => {
+            if (key.startsWith('css[') || key === 'css') css.push(query[key])
+            else if (key.startsWith('js[') || key === 'js') js.push(query[key])
+        })
+
+        // Create frontend options with selected state
+        const frontendOptions = {
+            css: [
+                { id: 'tailwindcss', name: 'TailwindCSS', description: 'Utility-first CSS framework', selected: css.includes('tailwindcss') },
+                { id: 'daisyui', name: 'daisyUI', description: 'Component library for TailwindCSS', selected: css.includes('daisyui') }
+            ],
+            js: [
+                { id: 'alpinejs', name: 'Alpine.js', description: 'Lightweight reactive JavaScript', selected: js.includes('alpinejs') },
+                { id: 'typescript', name: 'TypeScript', description: 'Type-safe JavaScript', selected: js.includes('typescript') }
+            ]
+        }
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -112,6 +134,8 @@ export function apiRoutes(projectDir) {
                 setupType: 'extended',
                 projectName,
                 projectDescription,
+                frontend: { css, js },
+                frontendOptions,
                 hiddenFields: [
                     { name: 'projectName', value: projectName },
                     { name: 'projectDescription', value: projectDescription },
@@ -141,8 +165,12 @@ export function apiRoutes(projectDir) {
         })
 
         const editorsList = getAvailableEditors()
-        const popularEditors = editorsList.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
-        const otherEditors = editorsList.filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
+        const popularEditors = editorsList
+            .filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
+            .map(e => ({ ...e, selected: editors.includes(e.id) }))
+        const otherEditors = editorsList
+            .filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
+            .map(e => ({ ...e, selected: editors.includes(e.id) }))
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -153,6 +181,7 @@ export function apiRoutes(projectDir) {
                 projectName,
                 projectDescription,
                 frontend: { css, js },
+                editors, // Pass editors array for state persistence
                 popularEditors,
                 otherEditors,
                 hiddenFields: [
@@ -185,6 +214,18 @@ export function apiRoutes(projectDir) {
             else if (key.startsWith('editors[') || key === 'editors') editors.push(query[key])
         })
 
+        // Parse framework config from query params
+        const framework = query.framework === 'true'
+        const frameworkConfig = framework ? {
+            enabled: true,
+            doctrine: query.framework_doctrine === 'true',
+            directives: query.framework_directives === 'true',
+            playbooks: query.framework_playbooks === 'true',
+            enhancements: query.framework_enhancements === 'true'
+        } : false
+
+        const contextDir = query.contextDir || '.project/ai'
+
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             4,
@@ -195,6 +236,8 @@ export function apiRoutes(projectDir) {
                 projectDescription,
                 frontend: { css, js },
                 editors,
+                framework: frameworkConfig,
+                contextDir,
                 hiddenFields: [
                     { name: 'projectName', value: projectName },
                     { name: 'projectDescription', value: projectDescription },
@@ -219,8 +262,12 @@ export function apiRoutes(projectDir) {
         if (setupType === 'simple') {
             // Simple: project → editors
             const editors = getAvailableEditors()
-            const popularEditors = editors.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
-            const otherEditors = editors.filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
+            const popularEditors = editors
+                .filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
+                .map(e => ({ ...e, selected: e.id === 'cursor' })) // Default cursor selected
+            const otherEditors = editors
+                .filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
+                .map(e => ({ ...e, selected: false }))
 
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
@@ -230,6 +277,7 @@ export function apiRoutes(projectDir) {
                     setupType: 'simple',
                     projectName,
                     projectDescription,
+                    editors: [], // Empty on first load
                     popularEditors,
                     otherEditors,
                     hiddenFields: [
@@ -242,6 +290,18 @@ export function apiRoutes(projectDir) {
             return c.html(html)
         } else {
             // Extended: project → frontend
+            // Create frontend options with default selected state
+            const frontendOptions = {
+                css: [
+                    { id: 'tailwindcss', name: 'TailwindCSS', description: 'Utility-first CSS framework', selected: true },
+                    { id: 'daisyui', name: 'daisyUI', description: 'Component library for TailwindCSS', selected: false }
+                ],
+                js: [
+                    { id: 'alpinejs', name: 'Alpine.js', description: 'Lightweight reactive JavaScript', selected: true },
+                    { id: 'typescript', name: 'TypeScript', description: 'Type-safe JavaScript', selected: false }
+                ]
+            }
+
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
                 2,
@@ -250,6 +310,8 @@ export function apiRoutes(projectDir) {
                     setupType: 'extended',
                     projectName,
                     projectDescription,
+                    frontend: { css: ['tailwindcss'], js: ['alpinejs'] },
+                    frontendOptions,
                     hiddenFields: [
                         { name: 'projectName', value: projectName },
                         { name: 'projectDescription', value: projectDescription },
@@ -277,8 +339,12 @@ export function apiRoutes(projectDir) {
 
         // Next: editors & tools (combined step)
         const editors = getAvailableEditors()
-        const popularEditors = editors.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
-        const otherEditors = editors.filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
+        const popularEditors = editors
+            .filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
+            .map(e => ({ ...e, selected: e.id === 'cursor' })) // Default cursor selected
+        const otherEditors = editors
+            .filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
+            .map(e => ({ ...e, selected: false }))
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -289,6 +355,7 @@ export function apiRoutes(projectDir) {
                 projectName,
                 projectDescription,
                 frontend: { css: cssFrameworks, js: jsFrameworks },
+                editors: [], // Empty on first load
                 popularEditors,
                 otherEditors,
                 hiddenFields: [
