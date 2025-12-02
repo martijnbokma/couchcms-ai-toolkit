@@ -424,38 +424,38 @@ export function apiRoutes(projectDir) {
     // Handle advanced options (Extended path only)
     app.post('/setup/step/advanced', async (c) => {
         try {
-            const body = await c.req.parseBody()
+        const body = await c.req.parseBody()
             const projectName = body.projectName || 'my-project'
             const projectDescription = body.projectDescription || 'A CouchCMS web application'
 
-            const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
-            const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
-            const editors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
-            const framework = body.framework === 'true'
-            const frameworkDoctrine = body.framework_doctrine === 'true'
-            const frameworkDirectives = body.framework_directives === 'true'
-            const frameworkPlaybooks = body.framework_playbooks === 'true'
-            const frameworkEnhancements = body.framework_enhancements === 'true'
-            const contextDir = body.contextDir || '.project/ai'
+        const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
+        const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
+        const editors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
+        const framework = body.framework === 'true'
+        const frameworkDoctrine = body.framework_doctrine === 'true'
+        const frameworkDirectives = body.framework_directives === 'true'
+        const frameworkPlaybooks = body.framework_playbooks === 'true'
+        const frameworkEnhancements = body.framework_enhancements === 'true'
+        const contextDir = body.contextDir || '.project/ai'
 
-            const frameworkConfig = framework ? {
-                enabled: true,
-                doctrine: frameworkDoctrine,
-                directives: frameworkDirectives,
-                playbooks: frameworkPlaybooks,
-                enhancements: frameworkEnhancements
-            } : false
+        const frameworkConfig = framework ? {
+            enabled: true,
+            doctrine: frameworkDoctrine,
+            directives: frameworkDirectives,
+            playbooks: frameworkPlaybooks,
+            enhancements: frameworkEnhancements
+        } : false
 
-            // Next: review
-            return c.html(await getReviewStep(c.renderTemplate, {
-                setupType: 'extended',
-                projectName,
-                projectDescription,
-                frontend: { css: cssFrameworks, js: jsFrameworks },
-                editors,
-                framework: frameworkConfig,
-                contextDir
-            }))
+        // Next: review
+        return c.html(await getReviewStep(c.renderTemplate, {
+            setupType: 'extended',
+            projectName,
+            projectDescription,
+            frontend: { css: cssFrameworks, js: jsFrameworks },
+            editors,
+            framework: frameworkConfig,
+            contextDir
+        }))
         } catch (error) {
             console.error('Error in /setup/step/advanced:', error)
             return c.html(`<div class="alert alert-error"><p>Error: ${error.message}</p></div>`, 500)
