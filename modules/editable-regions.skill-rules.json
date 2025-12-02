@@ -1,0 +1,263 @@
+{
+  "editable-regions": {
+    "type": "content",
+    "enforcement": "require",
+    "priority": "critical",
+    "description": "Complete guide to all 14 CouchCMS editable field types and content management patterns",
+    "promptTriggers": {
+      "keywords": [
+        "editable",
+        "editable region",
+        "field type",
+        "custom field",
+        "admin field",
+        "content field",
+        "richtext",
+        "textarea",
+        "image upload",
+        "file upload",
+        "dropdown",
+        "radio",
+        "checkbox",
+        "relation",
+        "thumbnail",
+        "cms:editable"
+      ],
+      "intentPatterns": [
+        "(create|add|define|setup).*?(editable|field|input|content)",
+        "(upload|add).*?(image|file|photo)",
+        "(text|textarea|richtext|wysiwyg).*?(editor|field)",
+        "(dropdown|select|radio|checkbox).*?(field|option)",
+        "how.*?(make|create|add).*?editable",
+        "what.*?field.*?type",
+        "(image|file).*?upload",
+        "rich.*?text.*?editor",
+        "content.*?(management|editor|field)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/*.php",
+        "**/templates/*.php",
+        "**/snippets/*.html"
+      ],
+      "contentPatterns": [
+        "<cms:editable",
+        "type='text'",
+        "type='richtext'",
+        "type='textarea'",
+        "type='image'",
+        "type='file'",
+        "type='dropdown'",
+        "type='radio'",
+        "type='checkbox'",
+        "type='relation'",
+        "type='thumbnail'",
+        "type='group'",
+        "type='message'",
+        "type='password'",
+        "type='nicedit'"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "<cms:template",
+        "message": "✓ Template defined (required for editable regions)",
+        "type": "success"
+      },
+      {
+        "pattern": "<cms:editable\\s+name=",
+        "message": "✓ Editable regions defined",
+        "type": "success"
+      },
+      {
+        "pattern": "type=['\"](text|richtext|textarea|image|file|dropdown|radio|checkbox)",
+        "message": "✓ Valid field types used",
+        "type": "success"
+      }
+    },
+    "rules": [
+      "CRITICAL: Define editable regions inside <cms:template> block",
+      "CRITICAL: Never nest editable tags inside other editable tags",
+      "CRITICAL: Must visit template as admin after adding editable regions",
+      "Name parameter is required and must be unique within template",
+      "Use snake_case for field names (no spaces, no hyphens)",
+      "Editable region content only available in page view (k_is_page='1')",
+      "In list views, access editable content via <cms:pages> loop",
+      "Always provide label and desc for better UX",
+      "Set maxlength for text/textarea to prevent excessive input",
+      "Optimize images with width, height, quality parameters",
+      "Use validator parameter for input validation",
+      "Group related fields with type='group' for organization",
+      "Use search_type parameter to enable content search",
+      "Default values only apply to new pages, not existing ones"
+    ],
+    "fieldTypes": {
+      "text": {
+        "description": "Single-line text input",
+        "useCase": "Titles, names, short text",
+        "example": "<cms:editable name='title' label='Title' type='text' maxlength='100' required='1' />",
+        "parameters": ["width", "maxlength", "search_type", "validator"]
+      },
+      "textarea": {
+        "description": "Multi-line plain text",
+        "useCase": "Descriptions, plain text content",
+        "example": "<cms:editable name='description' label='Description' type='textarea' height='100' maxlength='500' />",
+        "parameters": ["width", "height", "maxlength", "search_type"]
+      },
+      "richtext": {
+        "description": "WYSIWYG HTML editor",
+        "useCase": "Formatted content with HTML",
+        "example": "<cms:editable name='content' label='Content' type='richtext' height='400' toolbar='full' />",
+        "parameters": ["height", "toolbar", "custom_toolbar"]
+      },
+      "image": {
+        "description": "Image upload with auto-resize",
+        "useCase": "Featured images, photos, banners",
+        "example": "<cms:editable name='featured_image' label='Featured Image' type='image' width='1200' height='630' quality='85' crop='1' />",
+        "parameters": ["width", "height", "enforce_max", "crop", "quality", "show_preview", "preview_width", "preview_height"]
+      },
+      "thumbnail": {
+        "description": "Auto-generated thumbnail",
+        "useCase": "Automatic thumbnail from image field",
+        "example": "<cms:editable name='thumb' label='Thumbnail' type='thumbnail' assoc_field='featured_image' width='300' height='200' />",
+        "parameters": ["assoc_field", "width", "height", "enforce_max"]
+      },
+      "file": {
+        "description": "File upload",
+        "useCase": "PDFs, documents, downloads",
+        "example": "<cms:editable name='brochure' label='Brochure' type='file' allowed_ext='pdf,doc' max_size='10240' />",
+        "parameters": ["allowed_ext", "max_size"]
+      },
+      "radio": {
+        "description": "Radio button group",
+        "useCase": "Single choice from options",
+        "example": "<cms:editable name='status' label='Status' type='radio' opt_values='Active | Inactive' />",
+        "parameters": ["opt_values", "opt_selected", "separator"]
+      },
+      "checkbox": {
+        "description": "Multiple checkboxes",
+        "useCase": "Multiple selections",
+        "example": "<cms:editable name='features' label='Features' type='checkbox' opt_values='Pool | Gym | Parking' />",
+        "parameters": ["opt_values", "separator"]
+      },
+      "dropdown": {
+        "description": "Select dropdown menu",
+        "useCase": "Single selection from many options",
+        "example": "<cms:editable name='category' label='Category' type='dropdown' opt_values='News | Blog | Tutorial' />",
+        "parameters": ["opt_values", "opt_selected", "separator", "val_separator", "search_type"]
+      },
+      "group": {
+        "description": "Visual field grouping",
+        "useCase": "Organize related fields",
+        "example": "<cms:editable name='seo' label='SEO Settings' type='group' />",
+        "parameters": []
+      },
+      "message": {
+        "description": "Display-only help text",
+        "useCase": "Instructions, notices",
+        "example": "<cms:editable name='help' label='Instructions' desc='Help text here' type='message' />",
+        "parameters": []
+      },
+      "password": {
+        "description": "Password input (encrypted)",
+        "useCase": "Passwords, API keys",
+        "example": "<cms:editable name='api_key' label='API Key' type='password' required='1' />",
+        "parameters": []
+      },
+      "nicedit": {
+        "description": "Lightweight WYSIWYG editor",
+        "useCase": "Simple formatted text",
+        "example": "<cms:editable name='excerpt' label='Excerpt' type='nicedit' height='150' />",
+        "parameters": ["height"]
+      },
+      "relation": {
+        "description": "Link to related pages",
+        "useCase": "Page relationships",
+        "example": "<cms:editable name='related_posts' label='Related Posts' type='relation' masterpage='blog.php' has='many' />",
+        "parameters": ["masterpage", "has", "folder", "order_by"]
+      }
+    },
+    "commonPatterns": [
+      {
+        "name": "Basic text field",
+        "code": "<cms:editable name='page_title' label='Page Title' type='text' required='1' maxlength='100' />"
+      },
+      {
+        "name": "Rich text editor",
+        "code": "<cms:editable name='content' label='Content' type='richtext' height='400' />"
+      },
+      {
+        "name": "Image upload with optimization",
+        "code": "<cms:editable name='featured_image' label='Featured Image' type='image' width='1200' height='630' quality='85' crop='1' show_preview='1' />"
+      },
+      {
+        "name": "Dropdown with options",
+        "code": "<cms:editable name='category' label='Category' type='dropdown' opt_values='News | Blog | Tutorial' />"
+      },
+      {
+        "name": "Field grouping",
+        "code": "<cms:editable name='seo_group' label='SEO Settings' type='group' />\n    <cms:editable name='meta_title' label='Meta Title' type='text' />\n    <cms:editable name='meta_description' label='Meta Description' type='textarea' />\n<cms:editable name='seo_group_end' type='endgroup' />"
+      },
+      {
+        "name": "File upload with restrictions",
+        "code": "<cms:editable name='brochure' label='Brochure' type='file' allowed_ext='pdf,doc,docx' max_size='10240' />"
+      },
+      {
+        "name": "Related pages",
+        "code": "<cms:editable name='related_posts' label='Related Posts' type='relation' masterpage='blog.php' has='many' />"
+      },
+      {
+        "name": "Checkbox multiple selection",
+        "code": "<cms:editable name='features' label='Features' type='checkbox' opt_values='Featured | New | Popular | Sale' />"
+      },
+      {
+        "name": "Text with validation",
+        "code": "<cms:editable name='email' label='Email' type='text' validator='email' required='1' />"
+      },
+      {
+        "name": "Display editable content",
+        "code": "<cms:show field_name />"
+      }
+    ],
+    "antiPatterns": [
+      {
+        "pattern": "<cms:editable[^>]*>[^<]*<cms:editable",
+        "message": "CRITICAL: Cannot nest editable tags inside other editable tags",
+        "severity": "error"
+      },
+      {
+        "pattern": "<cms:editable\\s+name=['\"][^'\"]*[\\s-][^'\"]*['\"]",
+        "message": "Use snake_case for field names (no spaces or hyphens)",
+        "severity": "warning"
+      },
+      {
+        "pattern": "<cms:editable(?![^>]*name=)",
+        "message": "CRITICAL: name parameter is required for editable regions",
+        "severity": "error"
+      },
+      {
+        "pattern": "<cms:editable(?![^>]*type=)",
+        "message": "WARNING: type parameter recommended (defaults to 'text')",
+        "severity": "warning"
+      },
+      {
+        "pattern": "type=['\"]image['\"](?![^>]*width=|[^>]*height=)",
+        "message": "Specify width/height for image fields to optimize uploads",
+        "severity": "warning"
+      }
+    ],
+    "validators": {
+      "email": "Validates email format",
+      "regex": "Custom regex pattern (validator='regex=/pattern/')",
+      "min_len": "Minimum length (validator='min_len=5')",
+      "max_len": "Maximum length (validator='max_len=50')",
+      "min_val": "Minimum numeric value",
+      "max_val": "Maximum numeric value",
+      "alpha": "Alphabetic characters only",
+      "alpha_num": "Alphanumeric only",
+      "numeric": "Numbers only",
+      "url": "Valid URL format"
+    }
+  }
+}
