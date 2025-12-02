@@ -2,16 +2,52 @@
 /**
  * CouchCMS AI Toolkit - Web Server
  *
- * Browser-based setup interface using Hono
+ * Browser-based setup interface using Hono + Nunjucks
  * Provides guided setup wizard for non-technical users
  */
 
 import { Hono } from 'hono'
+import nunjucks from 'nunjucks'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
 import { setupRoutes } from './routes/setup.js'
 import { apiRoutes } from './routes/api.js'
 import { getToolkitRootCached } from '../lib/paths.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+// Configure Nunjucks
+const templatesPath = join(__dirname, 'templates')
+const env = new nunjucks.Environment(
+    new nunjucks.FileSystemLoader(templatesPath, {
+        noCache: process.env.NODE_ENV !== 'production',
+        watch: false // Disable watch mode (requires chokidar)
+    }),
+    {
+        autoescape: true,
+        throwOnUndefined: false
+    }
+)
+
+/**
+ * Render Nunjucks template
+ * @param {string} template - Template name (relative to templates directory)
+ * @param {Object} context - Template context
+ * @returns {Promise<string>} Rendered HTML
+ */
+export async function renderTemplate(template, context = {}) {
+    return new Promise((resolve, reject) => {
+        env.render(template, context, (err, res) => {
+            if (err) reject(err)
+            else resolve(res)
+        })
+    })
+}
+
+// Make renderTemplate available globally for routes
+global.renderTemplate = renderTemplate
 
 /**
  * Create and configure Hono app
@@ -24,6 +60,12 @@ export function createApp(options = {}) {
     const { projectDir = process.cwd() } = options
 
     const app = new Hono()
+
+    // Make renderTemplate available to route handlers via context
+    app.use('*', async (c, next) => {
+        c.renderTemplate = renderTemplate
+        await next()
+    })
 
     // Setup routes
     app.route('/', setupRoutes(projectDir))

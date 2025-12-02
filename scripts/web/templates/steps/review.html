@@ -1,0 +1,110 @@
+<div>
+    <h2 class="text-2xl font-bold mb-4">Review Configuration</h2>
+    <p class="mb-6 text-base-content/70">Review your settings before generating the configuration.</p>
+
+    <div class="space-y-4 mb-6">
+        <div class="card bg-base-200 shadow-sm border border-base-300">
+            <div class="card-body">
+                <h3 class="card-title text-lg font-semibold mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    Project Information
+                </h3>
+                <div class="space-y-2 mt-2">
+                    <div class="flex items-start gap-2">
+                        <span class="font-medium text-base-content/90 min-w-[100px]">Name:</span>
+                        <span class="text-base-content/80">{{ projectName }}</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="font-medium text-base-content/90 min-w-[100px]">Description:</span>
+                        <span class="text-base-content/80">{{ projectDescription }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-200 shadow-sm border border-base-300">
+            <div class="card-body">
+                <h3 class="card-title text-lg font-semibold mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Setup Complexity
+                </h3>
+                <div class="mt-2">
+                    <span class="badge badge-primary badge-lg capitalize">{{ complexity }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-200 shadow-sm border border-base-300">
+            <div class="card-body">
+                <h3 class="card-title text-lg font-semibold mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                    </svg>
+                    Frontend Frameworks
+                </h3>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {% for css in frontend.css %}
+                    <span class="badge badge-primary">{{ css }}</span>
+                    {% endfor %}
+                    {% for js in frontend.js %}
+                    <span class="badge badge-secondary">{{ js }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-200 shadow-sm border border-base-300">
+            <div class="card-body">
+                <h3 class="card-title text-lg font-semibold mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    Included Components
+                </h3>
+                <div class="space-y-2 mt-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-medium text-base-content/90">CouchCMS Modules:</span>
+                        <span class="badge badge-neutral">{{ couchcmsModules.length }}</span>
+                        <span class="text-sm text-base-content/60">(automatic)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-medium text-base-content/90">CouchCMS Agents:</span>
+                        <span class="badge badge-neutral">{{ couchcmsAgents.length }}</span>
+                        <span class="text-sm text-base-content/60">(automatic)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form hx-post="/api/setup/generate" hx-target="#wizard-content" hx-swap="innerHTML" class="mt-6">
+        {% for css in frontend.css %}
+        <input type="hidden" name="css" value="{{ css }}" />
+        {% endfor %}
+        {% for js in frontend.js %}
+        <input type="hidden" name="js" value="{{ js }}" />
+        {% endfor %}
+        <input type="hidden" name="projectName" value="{{ projectName }}" />
+        <input type="hidden" name="projectDescription" value="{{ projectDescription }}" />
+        <input type="hidden" name="complexity" value="{{ complexity }}" />
+
+        <div class="card-actions justify-between mt-6">
+            <button type="button" class="btn btn-outline" onclick="history.back()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back
+            </button>
+            <button type="submit" class="btn btn-primary btn-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Generate Configuration
+            </button>
+        </div>
+    </form>
+</div>

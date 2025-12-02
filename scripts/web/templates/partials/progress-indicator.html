@@ -1,0 +1,5 @@
+<div class="steps steps-horizontal w-full mb-8" id="progress-indicator" hx-swap-oob="true">
+    {% for step in steps %}
+    <div class="{{ step.class }}" id="step-{{ step.num }}" {{ step.dataAttr }}>{{ step.label }}</div>
+    {% endfor %}
+</div>

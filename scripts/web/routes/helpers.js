@@ -1,16 +1,15 @@
 #!/usr/bin/env bun
 /**
  * Helper functions for wizard UI
+ * Uses Nunjucks templates
  */
-
-import { html } from 'hono/html'
 
 /**
- * Generate progress indicator HTML for a specific step
+ * Generate progress indicator data for Nunjucks template
  * @param {number} currentStep - Current step number (1-4)
- * @returns {string} HTML for progress indicator
+ * @returns {Array} Steps data for template
  */
-export function getProgressIndicator(currentStep) {
+export function getProgressIndicatorData(currentStep) {
     const steps = [
         { num: 1, label: 'Project Info' },
         { num: 2, label: 'Complexity' },
@@ -18,40 +17,33 @@ export function getProgressIndicator(currentStep) {
         { num: 4, label: 'Review' }
     ]
 
-    const stepsHtml = steps.map((step) => {
+    return steps.map((step) => {
         const isActive = step.num === currentStep
         const isCompleted = step.num < currentStep
-        const stepClass = isActive ? 'step step-primary' : (isCompleted ? 'step step-primary' : 'step')
 
-        return `<div class="${stepClass}" id="step-${step.num}">${step.label}</div>`
-    }).join('')
-
-    return html`
-<div class="steps steps-horizontal w-full mb-8" id="progress-indicator" hx-swap-oob="true">
-    ${stepsHtml}
-</div>
-    `
-}
-
-/**
- * Generate badge HTML (properly rendered)
- * @param {string} text - Badge text
- * @param {string} variant - Badge variant (primary, secondary, accent, etc.)
- * @returns {string} HTML for badge
- */
-export function renderBadge(text, variant = 'primary') {
-    return `<span class="badge badge-${variant}">${text}</span>`
+        return {
+            num: step.num,
+            label: step.label,
+            class: isActive ? 'step step-primary' : 'step',
+            dataAttr: isCompleted ? 'data-completed="true"' : ''
+        }
+    })
 }
 
 /**
  * Generate step wrapper with progress indicator update
+ * @param {Function} renderTemplate - Nunjucks render function
  * @param {number} stepNumber - Current step number
- * @param {string} content - Step content HTML
- * @returns {string} Complete HTML with progress indicator (using HTMX out-of-band swap)
+ * @param {string} stepTemplate - Step template name
+ * @param {Object} stepContext - Step template context
+ * @returns {Promise<string>} Complete HTML with progress indicator (using HTMX out-of-band swap)
  */
-export function wrapStepWithProgress(stepNumber, content) {
-    const progressIndicator = getProgressIndicator(stepNumber)
+export async function wrapStepWithProgress(renderTemplate, stepNumber, stepTemplate, stepContext = {}) {
+    const progressSteps = getProgressIndicatorData(stepNumber)
+    const progressHtml = await renderTemplate('partials/progress-indicator.html', { steps: progressSteps })
+    const stepHtml = await renderTemplate(stepTemplate, stepContext)
+
     // HTMX will handle the out-of-band swap for the progress indicator
     // The content goes to #wizard-content, progress indicator goes to #progress-indicator
-    return progressIndicator + '\n' + content
+    return progressHtml + '\n' + stepHtml
 }

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - CouchCMS AI Toolkit Setup{% endblock %}
+
+{% block content %}
+<div class="hero min-h-screen bg-base-200">
+    <div class="hero-content text-center">
+        <div class="max-w-md">
+            <h1 class="text-5xl font-bold">CouchCMS AI Toolkit</h1>
+            <p class="py-6 text-lg">Choose your setup method</p>
+            <div class="flex flex-col gap-4">
+                <a href="/setup/wizard" class="btn btn-primary btn-lg">
+                    🌐 Guided Browser Setup
+                    <span class="badge badge-sm">Recommended</span>
+                </a>
+                <a href="/setup/terminal" class="btn btn-outline btn-lg">
+                    💻 Terminal Setup
+                    <span class="text-xs opacity-70">Quick install</span>
+                </a>
+            </div>
+            <div class="mt-8 text-sm opacity-70">
+                <p>Browser setup provides a visual, step-by-step guide</p>
+                <p>Terminal setup is faster for experienced users</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
