@@ -18,14 +18,19 @@ Choose your path:
 
 2. **Run unified install command:**
    ```bash
-   # Recommended: Using bun run (works from project root)
-   bun run toolkit install
-
-   # Alternative: Link globally first, then use direct command
-   # cd ai-toolkit-shared && bun link && toolkit install
+   # From project root (recommended)
+   bun ai-toolkit-shared/scripts/toolkit.js install
    ```
-
-   **Note:** If you see "command not found: toolkit", use `bun run toolkit install` instead.
+   
+   **Note:** You must run this from your project root directory, not from inside `ai-toolkit-shared`.
+   
+   **💡 Tip:** After installation, you'll be asked if you want to add a script to `package.json`.
+   If you say "yes", you can then use the simpler command:
+   ```bash
+   bun run toolkit install
+   bun run toolkit sync
+   bun run toolkit health
+   ```
 
 3. **Choose setup complexity:**
    - **Easy** (1 min, 2 questions) - Quick setup with recommended defaults
@@ -48,7 +53,7 @@ Choose your path:
 
 **Command:**
 ```bash
-bun run toolkit setup
+bun ai-toolkit-shared/scripts/toolkit.js setup
 ```
 
 **Options:**
@@ -58,7 +63,7 @@ bun run toolkit setup
 
 **Change complexity later:**
 ```bash
-bun run toolkit reconfigure
+bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 ```
 
 ---
@@ -69,7 +74,7 @@ bun run toolkit reconfigure
 
 **Command:**
 ```bash
-bun run toolkit sync
+bun ai-toolkit-shared/scripts/toolkit.js sync
 ```
 
 **What it does:**
@@ -79,7 +84,7 @@ bun run toolkit sync
 
 **Watch mode** (auto-sync on changes):
 ```bash
-bun run toolkit sync --watch
+bun ai-toolkit-shared/scripts/toolkit.js sync --watch
 ```
 
 ---
@@ -90,8 +95,8 @@ bun run toolkit sync --watch
 
 **Commands:**
 ```bash
-bun run toolkit health    # Check installation status
-bun run toolkit validate # Validate configuration compliance
+bun ai-toolkit-shared/scripts/toolkit.js health    # Check installation status
+bun ai-toolkit-shared/scripts/toolkit.js validate # Validate configuration compliance
 ```
 
 **What they check:**
@@ -108,9 +113,9 @@ bun run toolkit validate # Validate configuration compliance
 
 **Command:**
 ```bash
-bun run toolkit browse              # Browse all
-bun run toolkit browse --modules   # Browse modules only
-bun run toolkit browse --agents    # Browse agents only
+bun ai-toolkit-shared/scripts/toolkit.js browse              # Browse all
+bun ai-toolkit-shared/scripts/toolkit.js browse --modules   # Browse modules only
+bun ai-toolkit-shared/scripts/toolkit.js browse --agents    # Browse agents only
 ```
 
 ---
@@ -136,7 +141,7 @@ bun run toolkit browse --agents    # Browse agents only
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 
 # Install and setup (unified command)
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 ```
 
 **Expected output:**
@@ -190,7 +195,7 @@ Choice [1-3]: _
 After setup, generate your AI editor configs:
 
 ```bash
-bun run toolkit sync
+bun ai-toolkit-shared/scripts/toolkit.js sync
 ```
 
 **What gets generated:**
@@ -206,7 +211,7 @@ bun run toolkit sync
 ### Step 5: Verify Setup
 
 ```bash
-bun run toolkit health
+bun ai-toolkit-shared/scripts/toolkit.js health
 ```
 
 **Expected output:**
@@ -278,7 +283,7 @@ bun run toolkit health
 
 **Quick Fix:**
 ```bash
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 ```
 
 The unified command installs dependencies automatically.
@@ -289,7 +294,7 @@ The unified command installs dependencies automatically.
 
 **Quick Fix:**
 ```bash
-bun run toolkit setup
+bun ai-toolkit-shared/scripts/toolkit.js setup
 ```
 
 ### Toolkit Path Not Found
@@ -324,4 +329,4 @@ The toolkit auto-detects its location. If detection fails:
 
 ---
 
-**Ready to start?** Run `bun run toolkit install` now! 🚀
+**Ready to start?** Run `bun ai-toolkit-shared/scripts/toolkit.js install` now! 🚀

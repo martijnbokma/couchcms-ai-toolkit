@@ -335,11 +335,8 @@ agents:
 
 ```bash
 # First-time installation and setup
-# Option 1: Using bun run (works from project root)
-bun run toolkit install
-
-# Option 2: Direct command (if toolkit is linked globally)
-toolkit install
+# From project root directory (recommended)
+bun ai-toolkit-shared/scripts/toolkit.js install
 
 # Configure or reconfigure project
 bun run toolkit setup
@@ -366,12 +363,12 @@ bun run toolkit help
 **Options:**
 ```bash
 # Specify complexity
-bun run toolkit setup --complexity=easy
-bun run toolkit setup --complexity=medium
-bun run toolkit setup --complexity=comprehensive
+bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=easy
+bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=medium
+bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=comprehensive
 
 # Show all options (temporary override)
-bun run toolkit setup --show-all
+bun ai-toolkit-shared/scripts/toolkit.js setup --show-all
 ```
 
 ### Legacy Commands (Still Work)

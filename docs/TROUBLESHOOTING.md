@@ -8,20 +8,33 @@ Common issues and solutions.
 
 **Cause:** The `toolkit` command is not globally available.
 
-**Solution:** Use `bun run toolkit` instead:
+**Solution:** Use the direct path to the toolkit script:
 
 ```bash
 # Instead of: toolkit install
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 
 # Instead of: toolkit setup
-bun run toolkit setup
+bun ai-toolkit-shared/scripts/toolkit.js setup
 
 # Instead of: toolkit sync
+bun ai-toolkit-shared/scripts/toolkit.js sync
+```
+
+**Important:** Run these commands from your **project root** directory, not from inside `ai-toolkit-shared`.
+
+**Alternative 1:** Add script to package.json (recommended):
+
+```bash
+# Run this once from your project root
+bun ai-toolkit-shared/scripts/add-toolkit-script.js
+
+# Then you can use:
+bun run toolkit install
 bun run toolkit sync
 ```
 
-**Alternative:** Link globally (optional):
+**Alternative 2:** Link globally (optional):
 
 ```bash
 cd ai-toolkit-shared
@@ -45,7 +58,7 @@ bun install
 Then try again:
 
 ```bash
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 ```
 
 ## Wrong Directory
@@ -59,11 +72,11 @@ bun run toolkit install
 ```bash
 # Correct: From project root
 cd ~/my-project
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 
 # Wrong: From toolkit directory
 cd ~/my-project/ai-toolkit-shared
-bun run toolkit install  # This won't work correctly
+bun scripts/toolkit.js install  # This won't work correctly (wrong working directory)
 ```
 
 ## Configuration File Not Found
@@ -75,16 +88,16 @@ bun run toolkit install  # This won't work correctly
 **Solution:** Run setup:
 
 ```bash
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 # or
-bun run toolkit setup
+bun ai-toolkit-shared/scripts/toolkit.js setup
 ```
 
 ## Still Having Issues?
 
 1. Check installation status:
    ```bash
-   bun run toolkit health
+   bun ai-toolkit-shared/scripts/toolkit.js health
    ```
 
 2. Verify dependencies:

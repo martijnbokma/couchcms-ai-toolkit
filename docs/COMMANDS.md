@@ -8,14 +8,27 @@ Complete reference for all toolkit commands.
 
 | Command | Purpose | Example |
 |---------|---------|---------|
-| `toolkit install` | First-time installation and setup | `bun run toolkit install` |
-| `toolkit setup` | Configure or reconfigure project | `bun run toolkit setup` |
-| `toolkit sync` | Generate/update AI configuration files | `bun run toolkit sync` |
-| `toolkit validate` | Validate project configuration & compliance | `bun run toolkit validate` |
-| `toolkit health` | Check installation status | `bun run toolkit health` |
-| `toolkit browse` | Browse available modules/agents | `bun run toolkit browse` |
-| `toolkit reconfigure` | Change setup complexity preference | `bun run toolkit reconfigure` |
-| `toolkit help` | Show help message | `bun run toolkit help` |
+| `toolkit install` | First-time installation and setup | `bun ai-toolkit-shared/scripts/toolkit.js install` |
+| `toolkit setup` | Configure or reconfigure project | `bun ai-toolkit-shared/scripts/toolkit.js setup` |
+| `toolkit sync` | Generate/update AI configuration files | `bun ai-toolkit-shared/scripts/toolkit.js sync` |
+| `toolkit validate` | Validate project configuration & compliance | `bun ai-toolkit-shared/scripts/toolkit.js validate` |
+| `toolkit health` | Check installation status | `bun ai-toolkit-shared/scripts/toolkit.js health` |
+| `toolkit browse` | Browse available modules/agents | `bun ai-toolkit-shared/scripts/toolkit.js browse` |
+| `toolkit reconfigure` | Change setup complexity preference | `bun ai-toolkit-shared/scripts/toolkit.js reconfigure` |
+| `toolkit help` | Show help message | `bun ai-toolkit-shared/scripts/toolkit.js help` |
+
+**Note:** All commands should be run from your **project root** directory, not from inside `ai-toolkit-shared`.
+
+**💡 Easier to Remember:** After installation, you can add a script to `package.json`:
+```bash
+# Run once to add script
+bun ai-toolkit-shared/scripts/add-toolkit-script.js
+
+# Then use the simpler format:
+bun run toolkit install
+bun run toolkit sync
+bun run toolkit health
+```
 
 **Legacy commands** (still work, but use `toolkit` instead):
 - `init` → Use `toolkit setup` or `toolkit install`
@@ -23,7 +36,7 @@ Complete reference for all toolkit commands.
 
 ---
 
-## bun run toolkit install
+## bun ai-toolkit-shared/scripts/toolkit.js install
 
 **Purpose:** First-time installation and setup
 
@@ -34,7 +47,8 @@ Complete reference for all toolkit commands.
 
 **Usage:**
 ```bash
-bun run toolkit install
+# From project root directory
+bun ai-toolkit-shared/scripts/toolkit.js install
 ```
 
 **What it does:**
@@ -47,17 +61,17 @@ bun run toolkit install
 **Options:**
 ```bash
 # Specify complexity directly
-bun run toolkit install --complexity=easy
-bun run toolkit install --complexity=medium
-bun run toolkit install --complexity=comprehensive
+bun ai-toolkit-shared/scripts/toolkit.js install --complexity=easy
+bun ai-toolkit-shared/scripts/toolkit.js install --complexity=medium
+bun ai-toolkit-shared/scripts/toolkit.js install --complexity=comprehensive
 
 # Show all options regardless of complexity
-bun run toolkit install --show-all
+bun ai-toolkit-shared/scripts/toolkit.js install --show-all
 ```
 
 **Example Session:**
 ```bash
-$ bun run toolkit install
+$ bun ai-toolkit-shared/scripts/toolkit.js install
 
 🚀 CouchCMS AI Toolkit - Installation
 
@@ -141,14 +155,14 @@ Project description [A CouchCMS web application]: A blog about web development
 
 🚀 Next Steps:
    1. Review your configuration: .project/standards.md
-   2. Run sync to generate configs: toolkit sync
+   2. Run sync to generate configs: bun ai-toolkit-shared/scripts/toolkit.js sync
    3. Start developing with AI assistance!
 
 💡 Useful Commands:
-   • toolkit sync       - Generate configs from standards.md
-   • toolkit validate   - Check configuration
-   • toolkit health    - Check installation status
-   • toolkit reconfigure - Change setup complexity
+   • bun ai-toolkit-shared/scripts/toolkit.js sync       - Generate configs from standards.md
+   • bun ai-toolkit-shared/scripts/toolkit.js validate   - Check configuration
+   • bun ai-toolkit-shared/scripts/toolkit.js health    - Check installation status
+   • bun ai-toolkit-shared/scripts/toolkit.js reconfigure - Change setup complexity
 ```
 
 **Key Features:**
@@ -159,7 +173,7 @@ Project description [A CouchCMS web application]: A blog about web development
 
 ---
 
-## bun run toolkit setup
+## bun ai-toolkit-shared/scripts/toolkit.js setup
 
 **Purpose:** Configure or reconfigure your project
 
@@ -171,18 +185,18 @@ Project description [A CouchCMS web application]: A blog about web development
 
 **Usage:**
 ```bash
-bun run toolkit setup
+bun ai-toolkit-shared/scripts/toolkit.js setup
 ```
 
 **Options:**
 ```bash
 # Use specific complexity
-bun run toolkit setup --complexity=easy
-bun run toolkit setup --complexity=medium
-bun run toolkit setup --complexity=comprehensive
+bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=easy
+bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=medium
+bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=comprehensive
 
 # Show all options (temporary override)
-bun run toolkit setup --show-all
+bun ai-toolkit-shared/scripts/toolkit.js setup --show-all
 ```
 
 **What it does:**
@@ -194,7 +208,7 @@ bun run toolkit setup --show-all
 
 **Example:**
 ```bash
-$ bun run toolkit setup
+$ bun ai-toolkit-shared/scripts/toolkit.js setup
 
 ⚙️  CouchCMS AI Toolkit - Project Setup
 
@@ -210,7 +224,7 @@ Current setup complexity: Makkelijk (Easy)
 
 ---
 
-## bun run toolkit reconfigure
+## bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 
 **Purpose:** Change your setup complexity preference
 
@@ -221,7 +235,7 @@ Current setup complexity: Makkelijk (Easy)
 
 **Usage:**
 ```bash
-bun run toolkit reconfigure
+bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 ```
 
 **What it does:**
@@ -232,7 +246,7 @@ bun run toolkit reconfigure
 
 **Example:**
 ```bash
-$ bun run toolkit reconfigure
+$ bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 
 🔄 CouchCMS AI Toolkit - Reconfigure
 
@@ -249,7 +263,7 @@ Run setup with new complexity? [Y/n]: y
 
 ---
 
-## bun run toolkit sync
+## bun ai-toolkit-shared/scripts/toolkit.js sync
 
 **Purpose:** Generate AI editor configs from `.project/standards.md`
 
@@ -261,12 +275,12 @@ Run setup with new complexity? [Y/n]: y
 
 **Usage:**
 ```bash
-bun run toolkit sync
+bun ai-toolkit-shared/scripts/toolkit.js sync
 ```
 
 **Watch mode** (auto-sync on file changes):
 ```bash
-bun run toolkit sync --watch
+bun ai-toolkit-shared/scripts/toolkit.js sync --watch
 # or
 bun run sync:watch
 ```
@@ -284,7 +298,7 @@ bun run sync:watch
 
 **Example:**
 ```bash
-$ bun run toolkit sync
+$ bun ai-toolkit-shared/scripts/toolkit.js sync
 
 🔄 Generating AI configurations...
 
@@ -312,7 +326,7 @@ $ bun run toolkit sync
 
 ---
 
-## bun run toolkit validate
+## bun ai-toolkit-shared/scripts/toolkit.js validate
 
 **Purpose:** Validate project configuration and check compliance
 
@@ -324,7 +338,7 @@ $ bun run toolkit sync
 
 **Usage:**
 ```bash
-bun run toolkit validate
+bun ai-toolkit-shared/scripts/toolkit.js validate
 ```
 
 **What it checks:**
@@ -338,7 +352,7 @@ bun run toolkit validate
 
 **Example Output:**
 ```bash
-$ bun run toolkit validate
+$ bun ai-toolkit-shared/scripts/toolkit.js validate
 
 🔍 CouchCMS AI Toolkit - Validation
 
@@ -354,7 +368,7 @@ $ bun run toolkit validate
 
 **With Warnings:**
 ```bash
-$ bun run toolkit validate
+$ bun ai-toolkit-shared/scripts/toolkit.js validate
 
 🔍 CouchCMS AI Toolkit - Validation
 
@@ -375,7 +389,7 @@ $ bun run toolkit validate
 
 ---
 
-## bun run toolkit health
+## bun ai-toolkit-shared/scripts/toolkit.js health
 
 **Purpose:** Check toolkit installation and status
 
@@ -387,7 +401,7 @@ $ bun run toolkit validate
 
 **Usage:**
 ```bash
-bun run toolkit health
+bun ai-toolkit-shared/scripts/toolkit.js health
 ```
 
 **What it checks:**
@@ -400,7 +414,7 @@ bun run toolkit health
 
 **Example Output:**
 ```bash
-$ bun run toolkit health
+$ bun ai-toolkit-shared/scripts/toolkit.js health
 
 💚 CouchCMS AI Toolkit - Health Check
 
@@ -416,7 +430,7 @@ $ bun run toolkit health
 
 **With Issues:**
 ```bash
-$ bun run toolkit health
+$ bun ai-toolkit-shared/scripts/toolkit.js health
 
 💚 CouchCMS AI Toolkit - Health Check
 
@@ -432,7 +446,7 @@ $ bun run toolkit health
 
 ---
 
-## bun run toolkit browse
+## bun ai-toolkit-shared/scripts/toolkit.js browse
 
 **Purpose:** Browse available modules and agents interactively
 
@@ -445,18 +459,18 @@ $ bun run toolkit health
 **Usage:**
 ```bash
 # Browse all
-bun run toolkit browse
+bun ai-toolkit-shared/scripts/toolkit.js browse
 
 # Browse modules only
-bun run toolkit browse --modules
+bun ai-toolkit-shared/scripts/toolkit.js browse --modules
 
 # Browse agents only
-bun run toolkit browse --agents
+bun ai-toolkit-shared/scripts/toolkit.js browse --agents
 ```
 
 **Example:**
 ```bash
-$ bun run toolkit browse --modules
+$ bun ai-toolkit-shared/scripts/toolkit.js browse --modules
 
 📚 Available Modules:
 
@@ -480,15 +494,15 @@ Press Enter to continue...
 
 ---
 
-## bun run toolkit help
+## bun ai-toolkit-shared/scripts/toolkit.js help
 
 **Purpose:** Show help message with all commands
 
 **Usage:**
 ```bash
-bun run toolkit help
+bun ai-toolkit-shared/scripts/toolkit.js help
 # or
-bun run toolkit
+bun ai-toolkit-shared/scripts/toolkit.js
 ```
 
 **Output:**
@@ -561,12 +575,12 @@ These commands still work but are deprecated. Use `toolkit` commands instead:
 
 | Legacy | New Equivalent |
 |--------|----------------|
-| `bun ai-toolkit-shared/scripts/init.js` | `bun run toolkit setup` |
-| `bun ai-toolkit-shared/scripts/create-standards.js` | `bun run toolkit install` |
-| `bun ai-toolkit-shared/scripts/sync.js` | `bun run toolkit sync` |
-| `bun ai-toolkit-shared/scripts/validate.js` | `bun run toolkit validate` |
-| `bun ai-toolkit-shared/scripts/health.js` | `bun run toolkit health` |
-| `bun ai-toolkit-shared/scripts/browse.js` | `bun run toolkit browse` |
+| `bun ai-toolkit-shared/scripts/init.js` | `bun ai-toolkit-shared/scripts/toolkit.js setup` |
+| `bun ai-toolkit-shared/scripts/create-standards.js` | `bun ai-toolkit-shared/scripts/toolkit.js install` |
+| `bun ai-toolkit-shared/scripts/sync.js` | `bun ai-toolkit-shared/scripts/toolkit.js sync` |
+| `bun ai-toolkit-shared/scripts/validate.js` | `bun ai-toolkit-shared/scripts/toolkit.js validate` |
+| `bun ai-toolkit-shared/scripts/health.js` | `bun ai-toolkit-shared/scripts/toolkit.js health` |
+| `bun ai-toolkit-shared/scripts/browse.js` | `bun ai-toolkit-shared/scripts/toolkit.js browse` |
 
 ---
 
@@ -578,41 +592,41 @@ These commands still work but are deprecated. Use `toolkit` commands instead:
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 
 # 2. Install and setup
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 
 # 3. Verify
-bun run toolkit health
+bun ai-toolkit-shared/scripts/toolkit.js health
 ```
 
 ### Update Configuration
 ```bash
 # 1. Edit .project/standards.md manually
 # or run setup again
-bun run toolkit setup
+bun ai-toolkit-shared/scripts/toolkit.js setup
 
 # 2. Generate new configs
-bun run toolkit sync
+bun ai-toolkit-shared/scripts/toolkit.js sync
 
 # 3. Validate
-bun run toolkit validate
+bun ai-toolkit-shared/scripts/toolkit.js validate
 ```
 
 ### Change Complexity
 ```bash
 # Change from Easy to Medium
-bun run toolkit reconfigure
+bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 
 # Or use setup with complexity flag
-bun run toolkit setup --complexity=medium
+bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=medium
 ```
 
 ### Daily Usage
 ```bash
 # After editing standards.md
-bun run toolkit sync
+bun ai-toolkit-shared/scripts/toolkit.js sync
 
 # Check everything is OK
-bun run toolkit validate
+bun ai-toolkit-shared/scripts/toolkit.js validate
 ```
 
 ---
@@ -641,4 +655,4 @@ bun run toolkit validate
 
 ---
 
-**Ready to start?** Run `bun run toolkit install` now! 🚀
+**Ready to start?** Run `bun ai-toolkit-shared/scripts/toolkit.js install` now! 🚀

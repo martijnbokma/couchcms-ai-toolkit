@@ -8,15 +8,16 @@
 
 import { join } from 'path'
 import { existsSync } from 'fs'
-import { prompt } from './prompts.js'
+import { prompt, confirm } from './prompts.js'
 import { info, success, progress } from './logger.js'
-import { printInfo, printSuccess, printProgress, printSection } from './terminal.js'
+import { printInfo, printSuccess, printProgress, printSection, printWarning } from './terminal.js'
 import { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents } from './option-organizer.js'
 import { selectFrontendFrameworks } from './frontend-selector.js'
 import { checkAndInstallDependencies } from './dependency-checker.js'
 import { detectToolkitPath } from './toolkit-detector.js'
 import { determineConfigPath, generateStandardsFile } from './config-generator.js'
 import { getToolkitRootCached } from './paths.js'
+import { addToolkitScript, hasToolkitScript } from './package-json-utils.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 
@@ -106,7 +107,10 @@ export async function runSetupFlow(projectDir, complexity, options = {}) {
     const { runInitialSync } = await import('./sync-runner.js')
     await runInitialSync(projectDir, TOOLKIT_ROOT)
 
-    // Step 11: Show success message
+    // Step 11: Offer to add toolkit script to package.json
+    await offerAddToolkitScript(projectDir, toolkitPath)
+
+    // Step 12: Show success message
     showSuccessMessage(projectDir, complexity, allModules, allAgents)
 }
 
@@ -127,6 +131,49 @@ async function gatherProjectInfo(complexity) {
     const description = await prompt('Project description', 'A CouchCMS web application')
 
     return { name, description }
+}
+
+/**
+ * Offer to add toolkit script to package.json
+ * @param {string} projectDir - Project directory
+ * @param {string} toolkitPath - Toolkit path (relative)
+ */
+async function offerAddToolkitScript(projectDir, toolkitPath) {
+    // Check if script already exists
+    if (hasToolkitScript(projectDir)) {
+        printInfo('Toolkit script already exists in package.json')
+        return
+    }
+
+    // Check if package.json exists
+    const packageJsonPath = join(projectDir, 'package.json')
+    if (!existsSync(packageJsonPath)) {
+        // No package.json, skip
+        return
+    }
+
+    // Ask user if they want to add the script
+    console.log('\n' + '='.repeat(70))
+    console.log('  Add Toolkit Script to package.json?')
+    console.log('='.repeat(70))
+    console.log('\n💡 Tip: Adding a script to package.json makes it easier to use:')
+    console.log('   Instead of: bun ai-toolkit-shared/scripts/toolkit.js install')
+    console.log('   You can use: bun run toolkit install\n')
+
+    const shouldAdd = await confirm('Add toolkit script to package.json?', true)
+
+    if (shouldAdd) {
+        const result = await addToolkitScript(projectDir, toolkitPath)
+        if (result.added) {
+            printSuccess(result.message)
+            console.log(`   Script: ${result.script}`)
+            console.log('\n✅ Now you can use: bun run toolkit [command]')
+        } else {
+            printWarning(result.message)
+        }
+    } else {
+        printInfo('Skipped. You can add it later or use the full path.')
+    }
 }
 
 /**
@@ -154,12 +201,30 @@ function showSuccessMessage(projectDir, complexity, modules, allAgents) {
 
     console.log('🚀 Next Steps:')
     console.log('   1. Review your configuration: .project/standards.md')
-    console.log('   2. Run sync to generate configs: toolkit sync')
+    
+    // Show appropriate command based on whether script exists
+    if (hasToolkitScript(projectDir)) {
+        console.log('   2. Run sync to generate configs: bun run toolkit sync')
+    } else {
+        console.log('   2. Run sync to generate configs: bun ai-toolkit-shared/scripts/toolkit.js sync')
+    }
+    
     console.log('   3. Start developing with AI assistance!\n')
 
     console.log('💡 Useful Commands:')
-    console.log('   • toolkit sync       - Generate configs from standards.md')
-    console.log('   • toolkit validate  - Check configuration')
-    console.log('   • toolkit health    - Check installation status')
-    console.log('   • toolkit reconfigure - Change setup complexity\n')
+    
+    // Check if toolkit script exists in package.json
+    if (hasToolkitScript(projectDir)) {
+        console.log('   • bun run toolkit sync       - Generate configs from standards.md')
+        console.log('   • bun run toolkit validate  - Check configuration')
+        console.log('   • bun run toolkit health    - Check installation status')
+        console.log('   • bun run toolkit reconfigure - Change setup complexity\n')
+    } else {
+        console.log('   • bun ai-toolkit-shared/scripts/toolkit.js sync       - Generate configs')
+        console.log('   • bun ai-toolkit-shared/scripts/toolkit.js validate  - Check configuration')
+        console.log('   • bun ai-toolkit-shared/scripts/toolkit.js health    - Check status')
+        console.log('   • bun ai-toolkit-shared/scripts/toolkit.js reconfigure - Change complexity')
+        console.log('\n💡 Tip: Add a script to package.json for easier use:')
+        console.log('   Run setup again and choose "yes" when asked to add script\n')
+    }
 }

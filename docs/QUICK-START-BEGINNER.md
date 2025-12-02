@@ -58,10 +58,16 @@ Submodule path 'ai-toolkit-shared': checked out 'XXXX'
 
 **Exact command to copy-paste:**
 ```bash
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 ```
 
-**Note:** If you see "command not found: toolkit", that's normal! Use `bun run toolkit install` instead.
+**Important:**
+- Run this from your **project root** directory (not from inside `ai-toolkit-shared`)
+- Make sure you're in the directory where you added the submodule
+
+**💡 After installation:** You'll be asked if you want to add a script to `package.json`.
+- If you say **"yes"**, you can then use the simpler command: `bun run toolkit install`
+- If you say **"no"**, you can always add it later or use the full path
 
 **What's happening:**
 - The toolkit checks if dependencies are installed
@@ -202,7 +208,7 @@ Project description [A CouchCMS web application]: A blog about web development
 **Check that everything worked:**
 
 ```bash
-bun run toolkit health
+bun ai-toolkit-shared/scripts/toolkit.js health
 ```
 
 **Expected output:**
@@ -295,7 +301,7 @@ npm run toolkit install
 cd ai-toolkit-shared
 bun install
 cd ..
-bun run toolkit install
+bun ai-toolkit-shared/scripts/toolkit.js install
 ```
 
 ---
@@ -306,7 +312,7 @@ bun run toolkit install
 
 **Solution:**
 ```bash
-bun run toolkit setup
+bun ai-toolkit-shared/scripts/toolkit.js setup
 ```
 
 ---
@@ -318,7 +324,7 @@ bun run toolkit setup
 **Solution:**
 1. Check that `ai-toolkit-shared/` folder exists
 2. Verify it contains `modules/`, `scripts/`, `templates/` folders
-3. Run: `bun run toolkit setup` again
+3. Run: `bun ai-toolkit-shared/scripts/toolkit.js setup` again
 
 ---
 
@@ -328,7 +334,7 @@ bun run toolkit setup
 
 **A:** Yes! Run:
 ```bash
-bun run toolkit reconfigure
+bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 ```
 
 This lets you:
@@ -340,7 +346,7 @@ This lets you:
 
 **A:** Run:
 ```bash
-bun run toolkit reconfigure
+bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 ```
 
 Choose "Medium" or "Comprehensive" to select different frameworks.
@@ -351,7 +357,7 @@ Choose "Medium" or "Comprehensive" to select different frameworks.
 
 **Optional:** If you edit `.project/standards.md`, run:
 ```bash
-bun run toolkit sync
+bun ai-toolkit-shared/scripts/toolkit.js sync
 ```
 
 This updates all AI configs.
@@ -375,7 +381,7 @@ After completing this guide, you should have:
 - ✅ Dependencies installed
 - ✅ Configuration file created (`.project/standards.md`)
 - ✅ AI configs generated (`.cursorrules`, `CLAUDE.md`, etc.)
-- ✅ Health check passes (`toolkit health`)
+- ✅ Health check passes (`bun ai-toolkit-shared/scripts/toolkit.js health`)
 
 **If all checkboxes are checked, you're ready to go!** 🎉
 
