@@ -85,7 +85,7 @@ export function apiRoutes(projectDir) {
         // Show frontend selection based on complexity
         if (complexity === 'easy') {
             // Skip frontend selection, go to review
-            return c.html(getReviewStep(projectName, projectDescription, complexity, {
+            return c.html(await getReviewStep(c.renderTemplate, projectName, projectDescription, complexity, {
                 css: ['tailwindcss'],
                 js: ['alpinejs']
             }))
