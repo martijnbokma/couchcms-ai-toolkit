@@ -4,96 +4,137 @@
 
 {% block content %}
 <div class="hero min-h-screen bg-base-200">
-    <div class="hero-content text-center">
-        <div class="max-w-2xl">
-            <h1 class="text-5xl font-bold mb-4">CouchCMS AI Toolkit</h1>
-            <p class="py-6 text-lg">Choose your setup method</p>
+    <div class="hero-content text-center py-12">
+        <div class="max-w-4xl w-full">
+            <!-- Header Section -->
+            <div class="mb-10">
+                <h1 class="text-5xl font-bold mb-4 text-base-content">CouchCMS AI Toolkit</h1>
+                <p class="text-xl text-base-content/70">Choose your setup method</p>
+            </div>
 
             <!-- Main Setup Options -->
-            <div class="grid md:grid-cols-2 gap-4 mb-6">
-                <a href="/setup/wizard?type=simple" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-                    <div class="card-body">
-                        <h2 class="card-title justify-center text-2xl mb-2">
-                            🎯 Simpel
-                        </h2>
-                        <p class="text-base-content/70 mb-4">Snelle setup voor pure CouchCMS projecten</p>
-                        <ul class="text-left text-sm space-y-2 mb-4">
-                            <li class="flex items-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Simple Setup Card -->
+                <a href="/setup/wizard?type=simple" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+                    <div class="card-body items-center text-center p-6">
+                        <div class="mb-4">
+                            <div class="avatar placeholder mb-3">
+                                <div class="bg-primary/10 text-primary rounded-full w-16 h-16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="card-title text-2xl font-bold justify-center mb-2 text-base-content">
+                                Simple
+                            </h2>
+                            <p class="text-base text-base-content/70 mb-6">Quick setup for pure CouchCMS projects</p>
+                        </div>
+
+                        <ul class="text-left text-sm space-y-3 mb-6 w-full">
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <span>Alle CouchCMS modules & agents</span>
+                                <span class="text-base-content">All CouchCMS modules & agents</span>
                             </li>
-                            <li class="flex items-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <span>Editors configuratie (optioneel)</span>
+                                <span class="text-base-content">Editor configuration (optional)</span>
                             </li>
-                            <li class="flex items-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/40 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/30 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
-                                <span class="text-base-content/50">Geen frontend frameworks</span>
+                                <span class="text-base-content/50">No frontend frameworks</span>
                             </li>
-                            <li class="flex items-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/40 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/30 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
-                                <span class="text-base-content/50">Geen development tools</span>
+                                <span class="text-base-content/50">No development tools</span>
                             </li>
                         </ul>
-                        <div class="card-actions justify-center">
-                            <span class="badge badge-primary badge-lg">3 stappen</span>
+
+                        <div class="card-actions justify-center mt-auto pt-4">
+                            <div class="badge badge-primary badge-lg px-4 py-3 font-semibold">
+                                3 steps
+                            </div>
                         </div>
                     </div>
                 </a>
 
-                <a href="/setup/wizard?type=extended" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-                    <div class="card-body">
-                        <h2 class="card-title justify-center text-2xl mb-2">
-                            🚀 Uitgebreid
-                        </h2>
-                        <p class="text-base-content/70 mb-4">Complete setup met alle toolkit opties</p>
-                        <ul class="text-left text-sm space-y-2 mb-4">
-                            <li class="flex items-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <!-- Extended Setup Card -->
+                <a href="/setup/wizard?type=extended" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+                    <div class="card-body items-center text-center p-6">
+                        <div class="mb-4">
+                            <div class="avatar placeholder mb-3">
+                                <div class="bg-secondary/10 text-secondary rounded-full w-16 h-16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="card-title text-2xl font-bold justify-center mb-2 text-base-content">
+                                Extended
+                            </h2>
+                            <p class="text-base text-base-content/70 mb-6">Complete setup with all toolkit options</p>
+                        </div>
+
+                        <ul class="text-left text-sm space-y-3 mb-6 w-full">
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <span>Alle CouchCMS modules & agents</span>
+                                <span class="text-base-content">All CouchCMS modules & agents</span>
                             </li>
-                            <li class="flex items-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <span>Frontend frameworks (TailwindCSS, Alpine.js, etc.)</span>
+                                <span class="text-base-content">Frontend frameworks (TailwindCSS, Alpine.js, etc.)</span>
                             </li>
-                            <li class="flex items-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <span>Development tools (Bun, Git, MySQL, etc.)</span>
+                                <span class="text-base-content">Development tools (Bun, Git, MySQL, etc.)</span>
                             </li>
-                            <li class="flex items-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <span>Editors & Advanced opties</span>
+                                <span class="text-base-content">Editors & advanced options</span>
                             </li>
                         </ul>
-                        <div class="card-actions justify-center">
-                            <span class="badge badge-secondary badge-lg">6 stappen</span>
+
+                        <div class="card-actions justify-center mt-auto pt-4">
+                            <div class="badge badge-secondary badge-lg px-4 py-3 font-semibold">
+                                6 steps
+                            </div>
                         </div>
                     </div>
                 </a>
             </div>
 
             <!-- Terminal Option -->
-            <div class="divider">OF</div>
-            <a href="/setup/terminal" class="btn btn-outline btn-lg w-full max-w-md">
-                💻 Terminal Setup
-                <span class="text-xs opacity-70 ml-2">Snelle installatie voor ervaren gebruikers</span>
-            </a>
+            <div class="divider divider-horizontal text-base-content/50 before:bg-base-300 after:bg-base-300 my-8">
+                <span class="px-4 font-medium">OR</span>
+            </div>
+
+            <div class="flex justify-center">
+                <a href="/setup/terminal" class="btn btn-outline btn-lg gap-3 px-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <div class="flex flex-col items-start">
+                        <span class="font-semibold">Terminal Setup</span>
+                        <span class="text-xs text-base-content/60 font-normal">Quick installation for experienced users</span>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 </div>

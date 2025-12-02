@@ -1,6 +1,6 @@
 <div>
-    <h2 class="text-2xl font-bold mb-4">Advanced Options</h2>
-    <p class="mb-6 text-base-content/70">Optionele geavanceerde configuratie opties voor ervaren gebruikers. Deze instellingen beïnvloeden hoe AI agents zich gedragen en waar contextbestanden worden opgeslagen.</p>
+    <h2 class="text-2xl font-bold mb-4 text-base-content">Advanced Options</h2>
+    <p class="text-base text-base-content/70 mb-6">Optional advanced configuration options for experienced users. These settings affect how AI agents behave and where context files are stored.</p>
 
     <form hx-post="/api/setup/step/advanced" hx-target="#wizard-content" hx-swap="innerHTML">
         {% for hidden in hiddenFields %}
@@ -10,9 +10,9 @@
         <!-- AAPF Framework -->
         <div class="card bg-base-200 shadow-sm border border-base-300 mb-6">
             <div class="card-body">
-                <h3 class="card-title text-lg font-semibold mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                <h3 class="card-title text-lg font-semibold mb-3 text-base-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                     AAPF Framework
                 </h3>
@@ -20,12 +20,12 @@
                 <div class="alert alert-info mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div>
-                        <h4 class="font-semibold">Wat is het AAPF Framework?</h4>
-                        <p class="text-sm">Het AAPF (Autonomous Agent Programming Framework) framework zorgt voor gestructureerd en voorspelbaar gedrag van AI agents. Het bevat doctrine (kernprincipes), directives (communicatie richtlijnen), playbooks (workflow templates) en enhancements (geavanceerde features).</p>
+                        <h4 class="font-semibold">What is the AAPF Framework?</h4>
+                        <p class="text-sm">The AAPF (Autonomous Agent Programming Framework) framework provides structured and predictable behavior for AI agents. It includes doctrine (core principles), directives (communication guidelines), playbooks (workflow templates), and enhancements (advanced features).</p>
                     </div>
                 </div>
 
-                <p class="text-sm text-base-content/70 mb-4">Schakel het AAPF framework in voor meer gestructureerd en voorspelbaar gedrag van AI agents. Dit is vooral nuttig voor complexe projecten waar consistentie belangrijk is.</p>
+                <p class="text-sm text-base-content/70 mb-4">Enable the AAPF framework for more structured and predictable AI agent behavior. This is especially useful for complex projects where consistency is important.</p>
 
                 <div class="form-control">
                     <label class="label cursor-pointer justify-start gap-4">
@@ -41,28 +41,28 @@
                             <input type="checkbox" name="framework_doctrine" value="true" class="checkbox checkbox-sm" checked />
                             <div class="flex-1">
                                 <span class="label-text text-sm font-medium">Doctrine</span>
-                                <p class="text-xs text-base-content/60">Kernprincipes en operationele doctrine voor AI agents</p>
+                                <p class="text-xs text-base-content/60">Core principles and operational doctrine for AI agents</p>
                             </div>
                         </label>
                         <label class="label cursor-pointer justify-start gap-4">
                             <input type="checkbox" name="framework_directives" value="true" class="checkbox checkbox-sm" checked />
                             <div class="flex-1">
                                 <span class="label-text text-sm font-medium">Directives</span>
-                                <p class="text-xs text-base-content/60">Communicatie richtlijnen en best practices</p>
+                                <p class="text-xs text-base-content/60">Communication guidelines and best practices</p>
                             </div>
                         </label>
                         <label class="label cursor-pointer justify-start gap-4">
                             <input type="checkbox" name="framework_playbooks" value="true" class="checkbox checkbox-sm" checked />
                             <div class="flex-1">
                                 <span class="label-text text-sm font-medium">Playbooks</span>
-                                <p class="text-xs text-base-content/60">Herbruikbare workflow templates voor veelvoorkomende taken</p>
+                                <p class="text-xs text-base-content/60">Reusable workflow templates for common tasks</p>
                             </div>
                         </label>
                         <label class="label cursor-pointer justify-start gap-4">
                             <input type="checkbox" name="framework_enhancements" value="true" class="checkbox checkbox-sm" />
                             <div class="flex-1">
                                 <span class="label-text text-sm font-medium">Enhancements</span>
-                                <p class="text-xs text-base-content/60">Geavanceerde features en optimalisaties (optioneel)</p>
+                                <p class="text-xs text-base-content/60">Advanced features and optimizations (optional)</p>
                             </div>
                         </label>
                     </div>
@@ -73,9 +73,9 @@
         <!-- Context Directory -->
         <div class="card bg-base-200 shadow-sm border border-base-300 mb-6">
             <div class="card-body">
-                <h3 class="card-title text-lg font-semibold mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                <h3 class="card-title text-lg font-semibold mb-3 text-base-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
                     Context Directory
                 </h3>
@@ -83,36 +83,36 @@
                 <div class="alert alert-info mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div>
-                        <h4 class="font-semibold">Wat zijn AI context bestanden?</h4>
-                        <p class="text-sm">AI context bestanden bevatten project-specifieke informatie die AI agents gebruiken om beter te begrijpen hoe jouw project werkt. Dit kunnen coding standards, architectuur documentatie, of custom patterns zijn die agents moeten kennen.</p>
+                        <h4 class="font-semibold">What are AI context files?</h4>
+                        <p class="text-sm">AI context files contain project-specific information that AI agents use to better understand how your project works. This can include coding standards, architecture documentation, or custom patterns that agents need to know.</p>
                     </div>
                 </div>
 
-                <p class="text-sm text-base-content/70 mb-4">Specificeer een aangepaste directory waar AI context bestanden worden opgeslagen. Standaard wordt <code class="bg-base-300 px-1 py-0.5 rounded">.project/ai</code> gebruikt. Je kunt dit aanpassen als je een andere locatie prefereert of als je meerdere context directories wilt gebruiken.</p>
+                <p class="text-sm text-base-content/70 mb-4">Specify a custom directory where AI context files will be stored. By default, <code class="bg-base-300 px-1 py-0.5 rounded text-sm">.project/ai</code> is used. You can change this if you prefer a different location or want to use multiple context directories.</p>
 
                 <div class="form-control">
                     <label class="label">
-                        <span class="label-text font-medium">Context Directory Path</span>
+                        <span class="label-text font-medium text-base-content">Context Directory Path</span>
                     </label>
                     <input type="text" name="contextDir" placeholder=".project/ai" value=".project/ai" class="input input-bordered w-full" />
                     <label class="label">
-                        <span class="label-text-alt text-base-content/60">Relatief pad vanaf project root (bijv. .project/ai of docs/ai-context)</span>
+                        <span class="label-text-alt text-base-content/60">Relative path from project root (e.g., .project/ai or docs/ai-context)</span>
                     </label>
                 </div>
             </div>
         </div>
 
         <div class="card-actions justify-between mt-6">
-            <button type="button" class="btn btn-outline" onclick="goBack()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <button type="button" class="btn btn-outline gap-2" onclick="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
-                Terug
+                Back
             </button>
-            <button type="submit" class="btn btn-primary btn-lg">
-                Volgende: Review
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <button type="submit" class="btn btn-primary btn-lg gap-2">
+                Next: Review
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
             </button>
         </div>
@@ -131,8 +131,8 @@
         document.querySelector('button[onclick="goBack()"]')?.addEventListener('click', function(e) {
             e.preventDefault()
             const form = document.querySelector('form')
-            const projectName = form.querySelector('input[name="projectName"]')?.value || 'mijn-project'
-            const projectDescription = form.querySelector('input[name="projectDescription"]')?.value || 'Een CouchCMS web applicatie'
+            const projectName = form.querySelector('input[name="projectName"]')?.value || 'my-project'
+            const projectDescription = form.querySelector('input[name="projectDescription"]')?.value || 'A CouchCMS web application'
             const css = Array.from(form.querySelectorAll('input[name="css"]')).map(i => i.value)
             const js = Array.from(form.querySelectorAll('input[name="js"]')).map(i => i.value)
             const devtools = Array.from(form.querySelectorAll('input[name="devtools"]')).map(i => i.value)
