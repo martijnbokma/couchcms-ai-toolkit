@@ -355,7 +355,7 @@ function prepareTemplateData(config, mergedConfig, modules, agents, projectConte
 
     // Check if framework is enabled (AAPF framework)
     const frameworkEnabled = config.framework !== undefined && config.framework !== false
-    if (frameworkEnabled && typeof config.framework === 'object') {
+    if (frameworkEnabled && config.framework !== null && typeof config.framework === 'object') {
         // If framework is an object with doctrine/directives/etc, it's AAPF
         if (config.framework.doctrine || config.framework.directives || config.framework.playbooks) {
             if (!frameworks.includes('AAPF')) {
@@ -987,7 +987,7 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
     // Add framework content if enabled
     if (templateData.framework_enabled && config.framework) {
         // Framework can be boolean true or an object with content
-        if (typeof config.framework === 'object' && config.framework.content) {
+        if (config.framework !== null && typeof config.framework === 'object' && config.framework.content) {
             templateData.framework = config.framework.content
         } else {
             // Default framework content (can be loaded from a file if needed)
