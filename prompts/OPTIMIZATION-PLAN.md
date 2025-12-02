@@ -1,6 +1,8 @@
 # Prompts Map Optimization & Expansion Plan
 
-**Based on:** Anthropic Claude Skills System, Claude Code best practices, and Anthropic Cookbook patterns
+**Based on:** Anthropic Claude Skills System, Claude Code best practices, Anthropic Cookbook patterns, and **CouchCMS-specific workflows**
+
+**Focus:** Optimize prompts specifically for CouchCMS development workflows across all supported editors (Cursor, Claude Code, GitHub Copilot, Windsurf, Kiro, Zed, VS Code AI Toolkit, Tabnine, CodeWhisperer, Antigravity, Jules, Roo Code, Generic Agent)
 
 ---
 
@@ -12,6 +14,8 @@ This plan outlines how to expand and optimize the `prompts/` directory to:
 3. **Add evaluation frameworks** for prompt quality assurance
 4. **Support advanced workflows** like multi-agent collaboration
 5. **Enable framework-specific extensions** without cluttering base prompts
+6. **Optimize for CouchCMS** - Templates, DataBound Forms, Views, Relationships, etc.
+7. **Editor-agnostic patterns** - Work seamlessly across all 13 supported editors
 
 ---
 
@@ -60,8 +64,16 @@ prompts/
 │   ├── patterns/               # NEW: Common error patterns
 │   │   ├── javascript-errors.md
 │   │   ├── typescript-errors.md
-│   │   ├── couchcms-errors.md
-│   │   └── alpinejs-errors.md
+│   │   ├── couchcms-errors.md  # CouchCMS-specific: template parsing, editable regions, etc.
+│   │   ├── alpinejs-errors.md  # Alpine.js + CouchCMS integration issues
+│   │   ├── databound-forms-errors.md  # DataBound Forms debugging
+│   │   └── template-inheritance-errors.md  # Template extends/block issues
+│   ├── couchcms/               # NEW: CouchCMS-specific debugging
+│   │   ├── template-debugging.md  # Template syntax, editable regions
+│   │   ├── cms-tag-debugging.md   # <cms:tag> parsing issues
+│   │   ├── form-debugging.md      # DataBound Forms issues
+│   │   ├── view-debugging.md      # List View, Page View, Folder View
+│   │   └── relationship-debugging.md  # Page relationships
 │   └── framework/              # Framework-specific debugging
 │       ├── README.md
 │       └── [framework-name]/   # Progressive loading
@@ -96,7 +108,16 @@ prompts/
 │   ├── bug-fix-workflow.md     # Systematic bug fixing
 │   ├── code-review.md          # Review workflow
 │   ├── testing.md              # Testing workflow
-│   └── deployment.md           # Deployment checklist
+│   ├── deployment.md           # Deployment checklist
+│   └── couchcms/               # NEW: CouchCMS-specific workflows
+│       ├── template-creation.md         # Create new CouchCMS template
+│       ├── databound-form-workflow.md   # Create/edit DataBound Form
+│       ├── view-setup.md                # Set up List/Page/Folder View
+│       ├── relationship-setup.md        # Configure page relationships
+│       ├── repeatable-region-setup.md    # Set up repeatable regions
+│       ├── custom-route-setup.md        # Configure custom routes
+│       ├── archive-setup.md             # Set up archive views
+│       └── content-migration.md         # Migrate content between templates
 │
 ├── collaboration/               # NEW: Multi-agent patterns
 │   ├── README.md               # Collaboration patterns
@@ -111,12 +132,23 @@ prompts/
 │   ├── regression-testing.md   # Testing prompt changes
 │   └── benchmarks.md           # Performance benchmarks
 │
+├── editors/                     # NEW: Editor-specific prompt patterns
+│   ├── README.md               # Editor capabilities comparison
+│   ├── cursor.md               # Cursor IDE specific patterns
+│   ├── claude-code.md          # Claude Code CLI patterns
+│   ├── copilot.md              # GitHub Copilot patterns
+│   ├── windsurf.md             # Windsurf IDE patterns
+│   ├── kiro.md                 # Amazon Kiro patterns
+│   ├── vscode-ai.md            # VS Code AI Toolkit patterns
+│   └── universal.md            # Patterns that work across all editors
+│
 └── templates/                   # NEW: Prompt templates
     ├── README.md               # Template usage guide
     ├── specialist-template.md  # Template for creating specialists
     ├── workflow-template.md    # Template for workflows
-    ├── validator-template.md   # Template for validators
-    └── agent-template.md       # Template for agent prompts
+    ├── validator-template.md  # Template for validators
+    ├── agent-template.md       # Template for agent prompts
+    └── couchcms-template.md    # Template for CouchCMS-specific prompts
 ```
 
 ---
@@ -205,75 +237,176 @@ Load only the pattern you need:
 
 ## 📝 New Prompt Files to Create
 
-### High Priority
+### High Priority (CouchCMS-Focused)
 
-1. **`prompts/best-practices/prompt-engineering.md`**
+1. **`prompts/workflows/couchcms/template-creation.md`** ⭐ **CRITICAL**
+   - Complete CouchCMS template creation workflow
+   - Template inheritance patterns (`<cms:extends>`, `<cms:block>`)
+   - Editable regions setup (`<cms:editable>`)
+   - Security best practices (HTML comments, self-closing tags)
+   - Works across all editors (Cursor, Claude Code, Copilot, etc.)
+
+2. **`prompts/workflows/couchcms/databound-form-workflow.md`** ⭐ **CRITICAL**
+   - Create/edit DataBound Forms workflow
+   - Form field configuration
+   - Validation patterns
+   - CRUD operations
+   - Editor-agnostic patterns
+
+3. **`prompts/debugging/couchcms/template-debugging.md`** ⭐ **CRITICAL**
+   - CouchCMS template parsing errors
+   - `<cms:tag>` syntax issues
+   - Template inheritance problems
+   - Editable region conflicts
+   - Common CouchCMS error patterns
+
+4. **`prompts/best-practices/couchcms-security.md`** ⭐ **CRITICAL**
+   - HTML comment security (`<cms:` vs `[cms:`)
+   - Self-closing tag patterns (`<cms:else />`)
+   - Authentication patterns
+   - CSRF protection
+   - Input sanitization
+
+5. **`prompts/refactoring/couchcms/template-refactoring.md`**
+   - Refactor template inheritance
+   - Extract reusable blocks
+   - Consolidate editable regions
+   - Optimize template structure
+
+### High Priority (General)
+
+6. **`prompts/best-practices/prompt-engineering.md`**
    - How to write effective prompts
-   - Claude-specific best practices
+   - Editor-specific best practices (Cursor, Claude Code, Copilot, etc.)
    - Common anti-patterns
    - Token optimization tips
 
-2. **`prompts/debugging/workflow.md`**
+7. **`prompts/debugging/workflow.md`**
    - Systematic debugging process
    - Step-by-step methodology
    - Decision trees
    - Escalation paths
 
-3. **`prompts/workflows/feature-development.md`**
+8. **`prompts/workflows/feature-development.md`**
    - Complete feature dev lifecycle
    - Phase-by-phase guidance
    - Quality gates
    - Integration points
+   - CouchCMS-specific phases (template setup, CMS configuration)
 
-4. **`prompts/evaluation/quality-metrics.md`**
+9. **`prompts/evaluation/quality-metrics.md`**
    - How to measure prompt effectiveness
    - Success criteria
    - Metrics to track
    - Improvement strategies
 
-5. **`prompts/collaboration/handoff-protocol.md`**
-   - Agent-to-agent communication
-   - Context preservation
-   - State management
-   - Error handling
+10. **`prompts/collaboration/handoff-protocol.md`**
+    - Agent-to-agent communication
+    - Context preservation
+    - State management
+    - Error handling
 
-### Medium Priority
+### Medium Priority (CouchCMS-Focused)
 
-6. **`prompts/refactoring/patterns/extract-component.md`**
-   - Component extraction workflow
-   - Dependency analysis
-   - Interface design
-   - Testing strategy
+11. **`prompts/workflows/couchcms/view-setup.md`**
+    - List View setup workflow
+    - Page View configuration
+    - Folder View setup
+    - Archive View configuration
+    - Editor-specific patterns
 
-7. **`prompts/debugging/patterns/javascript-errors.md`**
-   - Common JS error patterns
-   - Quick diagnosis
-   - Fix strategies
-   - Prevention tips
+12. **`prompts/workflows/couchcms/relationship-setup.md`**
+    - One-to-one relationships
+    - One-to-many relationships
+    - Many-to-many relationships
+    - Related content queries
 
-8. **`prompts/workflows/code-review.md`**
-   - Review checklist
-   - Quality gates
-   - Feedback patterns
-   - Approval criteria
+13. **`prompts/workflows/couchcms/repeatable-region-setup.md`**
+    - Repeatable regions configuration
+    - Dynamic content blocks
+    - Portfolio patterns
+    - Image gallery setup
 
-9. **`prompts/templates/specialist-template.md`**
-   - Standard specialist structure
-   - Required sections
-   - Best practices
-   - Examples
+14. **`prompts/debugging/couchcms/form-debugging.md`**
+    - DataBound Forms errors
+    - Form validation issues
+    - Submission problems
+    - Field configuration errors
 
-10. **`prompts/evaluation/test-cases.md`**
+15. **`prompts/refactoring/couchcms/editable-regions.md`**
+    - Refactor editable regions
+    - Consolidate duplicate fields
+    - Optimize field types
+    - Improve field organization
+
+### Medium Priority (General)
+
+16. **`prompts/refactoring/patterns/extract-component.md`**
+    - Component extraction workflow
+    - Dependency analysis
+    - Interface design
+    - Testing strategy
+
+17. **`prompts/debugging/patterns/javascript-errors.md`**
+    - Common JS error patterns
+    - Quick diagnosis
+    - Fix strategies
+    - Prevention tips
+
+18. **`prompts/workflows/code-review.md`**
+    - Review checklist
+    - Quality gates
+    - Feedback patterns
+    - Approval criteria
+    - CouchCMS-specific checks
+
+19. **`prompts/templates/specialist-template.md`**
+    - Standard specialist structure
+    - Required sections
+    - Best practices
+    - Examples
+    - CouchCMS-specific sections
+
+20. **`prompts/evaluation/test-cases.md`**
     - Creating test cases for prompts
     - Edge cases
     - Regression scenarios
     - Performance benchmarks
+    - CouchCMS-specific test cases
 
 ---
 
 ## 🔧 Optimization Strategies
 
-### 1. Token Efficiency
+### 1. CouchCMS-First Optimization
+
+**Principle:** All prompts prioritize CouchCMS workflows and patterns
+
+**Strategies:**
+- **CouchCMS patterns first**: Lead with CouchCMS-specific guidance
+- **Editor-agnostic core**: Base prompts work across all 13 editors
+- **Editor-specific extensions**: Add editor capabilities as extensions, not replacements
+- **Template-aware**: Prompts understand CouchCMS template structure
+- **CMS-aware**: Prompts understand CouchCMS data patterns (pages, folders, relationships)
+
+**Example:**
+```markdown
+# Template Creation Workflow
+
+## CouchCMS-Specific Steps (Universal)
+1. Create template file (`*.php`)
+2. Add `<cms:extends>` for layout inheritance
+3. Define `<cms:block 'templates'>` for template config
+4. Add `<cms:editable>` regions
+5. Implement `<cms:block 'content'>` for page content
+
+## Editor-Specific Enhancements
+- **Cursor**: Auto-loads `refactor-html.mdc` when editing `.php` files
+- **Claude Code**: Uses `couchcms-core` skill automatically
+- **Copilot**: Reads CouchCMS patterns from instructions
+```
+
+### 2. Token Efficiency
 
 **Current:** Full prompts loaded even when only part is needed
 **Optimization:**
@@ -281,6 +414,7 @@ Load only the pattern you need:
 - Split large prompts into focused sub-prompts
 - Use progressive disclosure (load on demand)
 - Implement prompt versioning (short vs. detailed)
+- **CouchCMS-specific**: Load only relevant CouchCMS patterns (templates vs. forms vs. views)
 
 **Example:**
 ```markdown
@@ -343,22 +477,33 @@ prompts/
 ### With Existing Toolkit Components
 
 1. **Agents** (`agents/*.md`)
-   - Prompts can reference agents
+   - Prompts can reference agents (`@couchcms`, `@databound-forms`, etc.)
    - Agents can load prompts dynamically
    - Create agent-specific prompt variants
+   - **CouchCMS agents**: `@couchcms`, `@databound-forms`, `@views`, `@folders`, etc.
 
 2. **Modules** (`modules/*.md`)
    - Module-specific prompts in `debugging/framework/[module]/`
    - Module patterns in `refactoring/patterns/[module]/`
+   - **CouchCMS modules**: `couchcms-core`, `databound-forms`, `custom-routes`, etc.
+   - Prompts reference module knowledge automatically
 
 3. **Rules** (`rules/*.mdc`)
    - Auto-load prompts based on file patterns
    - Extend to workflow detection
    - Add prompt-specific rules
+   - **CouchCMS rules**: Auto-load when editing `.php` or `snippets/**/*.html`
 
 4. **Commands** (`commands/*.md`)
    - Commands can load workflow prompts
    - Create command-specific prompt sets
+   - **CouchCMS commands**: `/create-template`, `/create-form`, `/create-view`
+
+5. **Editors** (13 supported editors)
+   - **Editor-specific prompts**: `prompts/editors/[editor].md`
+   - **Universal patterns**: `prompts/editors/universal.md`
+   - **Editor capabilities**: Each editor has unique features (Cursor MDC, Claude Code skills, etc.)
+   - **Cross-editor compatibility**: Prompts work across all editors with editor-specific enhancements
 
 ---
 
@@ -411,29 +556,52 @@ prompts/
 
 ## 🎯 Implementation Roadmap
 
-### Phase 1: Foundation (Week 1-2)
+### Phase 1: CouchCMS Foundation (Week 1-2) ⭐ **PRIORITY**
+- [ ] Create CouchCMS-specific workflow prompts
+  - [ ] `prompts/workflows/couchcms/template-creation.md`
+  - [ ] `prompts/workflows/couchcms/databound-form-workflow.md`
+  - [ ] `prompts/workflows/couchcms/view-setup.md`
+- [ ] Create CouchCMS debugging prompts
+  - [ ] `prompts/debugging/couchcms/template-debugging.md`
+  - [ ] `prompts/debugging/couchcms/form-debugging.md`
+- [ ] Create CouchCMS security best practices
+  - [ ] `prompts/best-practices/couchcms-security.md`
 - [ ] Create README.md navigation hubs for each category
 - [ ] Implement progressive disclosure pattern
-- [ ] Add `workflows/` category with 3 core workflows
-- [ ] Create `templates/` category with specialist template
 
-### Phase 2: Expansion (Week 3-4)
+### Phase 2: Editor Integration (Week 3-4)
+- [ ] Create `editors/` category with editor-specific patterns
+  - [ ] `prompts/editors/cursor.md` - Cursor MDC patterns
+  - [ ] `prompts/editors/claude-code.md` - Claude Code skills patterns
+  - [ ] `prompts/editors/copilot.md` - GitHub Copilot patterns
+  - [ ] `prompts/editors/universal.md` - Cross-editor patterns
+- [ ] Document editor capabilities and differences
+- [ ] Create editor-specific CouchCMS workflow variants
+- [ ] Test prompts across all 13 supported editors
+
+### Phase 3: Expansion (Week 5-6)
 - [ ] Add `collaboration/` category
 - [ ] Create `evaluation/` framework
 - [ ] Add `refactoring/patterns/` subdirectory
 - [ ] Create `debugging/patterns/` subdirectory
+- [ ] Add CouchCMS refactoring patterns
+  - [ ] `prompts/refactoring/couchcms/template-refactoring.md`
+  - [ ] `prompts/refactoring/couchcms/editable-regions.md`
+  - [ ] `prompts/refactoring/couchcms/repeatable-regions.md`
 
-### Phase 3: Optimization (Week 5-6)
+### Phase 4: Optimization (Week 7-8)
 - [ ] Implement token-efficient loading
 - [ ] Add prompt versioning system
 - [ ] Create evaluation test suite
 - [ ] Document best practices
+- [ ] Optimize CouchCMS prompts for token efficiency
 
-### Phase 4: Integration (Week 7-8)
-- [ ] Integrate with agents system
-- [ ] Connect to module system
-- [ ] Enhance rules auto-loading
+### Phase 5: Integration (Week 9-10)
+- [ ] Integrate with agents system (`@couchcms`, `@databound-forms`, etc.)
+- [ ] Connect to module system (CouchCMS modules)
+- [ ] Enhance rules auto-loading (CouchCMS file patterns)
 - [ ] Update documentation
+- [ ] Create CouchCMS-specific prompt templates
 
 ---
 
@@ -466,12 +634,21 @@ Complete guide covering:
 - Prompt load time (target: <2s)
 - Success rate improvement (target: +15%)
 - User satisfaction score (target: >85%)
+- **CouchCMS-specific:**
+  - Template creation time reduction (target: -50%)
+  - CouchCMS error resolution time (target: -40%)
+  - DataBound Form setup time (target: -60%)
 
 ### Qualitative
 - Improved discoverability
 - Better reusability
 - Clearer workflows
 - Enhanced collaboration
+- **CouchCMS-specific:**
+  - Faster CouchCMS development workflows
+  - Better CouchCMS pattern recognition
+  - Reduced CouchCMS-specific errors
+  - Improved editor compatibility for CouchCMS
 
 ---
 
@@ -491,17 +668,193 @@ Complete guide covering:
 
 ---
 
+## 🎯 CouchCMS-Specific Priorities
+
+### Core CouchCMS Workflows (Must-Have)
+
+1. **Template Creation** - Most common task
+   - Template structure (`<cms:extends>`, `<cms:block>`)
+   - Editable regions (`<cms:editable>`)
+   - Security patterns (HTML comments, self-closing tags)
+   - Works across all editors
+
+2. **DataBound Forms** - Complex but essential
+   - Form creation workflow
+   - Field configuration
+   - CRUD operations
+   - Validation patterns
+
+3. **Views Setup** - Common requirement
+   - List View, Page View, Folder View
+   - Archive View configuration
+   - Query patterns
+
+4. **Debugging** - Critical for productivity
+   - Template parsing errors
+   - Form submission issues
+   - CMS tag syntax errors
+   - Template inheritance problems
+
+### Editor-Specific Considerations
+
+**All prompts must:**
+- Work with Cursor (MDC rules)
+- Work with Claude Code (Skills)
+- Work with GitHub Copilot (Instructions)
+- Work with Windsurf, Kiro, Zed, VS Code AI Toolkit, Tabnine, CodeWhisperer, Antigravity, Jules, Roo Code, Generic Agent
+- Provide editor-specific enhancements where beneficial
+
+**Editor capabilities:**
+
+| Editor | Config Format | Key Features | CouchCMS Integration |
+|--------|--------------|--------------|---------------------|
+| **Cursor** | `.cursorrules`, `.cursor/rules/*.mdc` | MDC rules auto-load, context-aware | Auto-loads `refactor-html.mdc` for `.php` files |
+| **Claude Code** | `CLAUDE.md`, `.claude/skills/*.md` | Skills system, hooks, permissions | `couchcms-core` skill auto-activates |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | Instruction-based, inline suggestions | Reads CouchCMS patterns from instructions |
+| **Windsurf** | `.windsurf/rules.md` | Rule-based, similar to Cursor | Similar MDC-like patterns |
+| **Kiro** | `.kiro/steering/*.md` | Steering files, rule-based | CouchCMS patterns in steering files |
+| **Zed** | `.rules` | Rule-based editor | Similar to Cursor patterns |
+| **VS Code AI Toolkit** | `.vscode/ai-toolkit.md` | Extension-based | Similar to Cursor patterns |
+| **Tabnine** | `.tabnine/settings.json` | JSON config | CouchCMS patterns in config |
+| **CodeWhisperer** | `.codewhisperer/settings.json` | JSON config | CouchCMS patterns in config |
+| **Antigravity** | `.antigravity/rules.md` | Rule-based | Similar to Cursor patterns |
+| **Jules** | `.jules/rules.md` | Rule-based | Similar to Cursor patterns |
+| **Roo Code** | `.roocode/rules.md` | Rule-based | Similar to Cursor patterns |
+| **Generic Agent** | `AGENT.md` | Markdown instructions | Universal patterns |
+
+**Editor-Agnostic Pattern:**
+```markdown
+# CouchCMS Template Creation (Universal)
+
+## Core Steps (All Editors)
+1. Create template file (`*.php`)
+2. Add `<cms:extends>` for layout inheritance
+3. Define `<cms:block 'templates'>` for template config
+4. Add `<cms:editable>` regions
+5. Implement `<cms:block 'content'>` for page content
+
+## Editor-Specific Enhancements
+- **Cursor**: Auto-loads `refactor-html.mdc` when editing `.php` files
+- **Claude Code**: Uses `couchcms-core` skill automatically
+- **Copilot**: Reads CouchCMS patterns from `.github/copilot-instructions.md`
+- **Windsurf/Kiro**: Similar to Cursor, uses rule files
+- **All editors**: Can reference `@prompts/workflows/couchcms/template-creation.md`
+```
+
+---
+
 ## 📚 References
 
 - [Anthropic Skills System](https://github.com/anthropics/skills)
 - [Claude Code Documentation](https://github.com/anthropics/claude-code)
 - [Anthropic Cookbook](https://github.com/anthropics/anthropic-cookbook)
 - [Prompt Engineering Best Practices](https://docs.anthropic.com/claude/docs/prompt-engineering)
+- [CouchCMS Documentation](https://www.couchcms.com/docs/)
+- [CouchCMS AI Toolkit Modules](../modules/)
+
+---
+
+## 🚀 Quick Start: CouchCMS Prompts
+
+### For Template Creation
+```
+@prompts/workflows/couchcms/template-creation.md Create a blog post template
+```
+
+### For DataBound Forms
+```
+@prompts/workflows/couchcms/databound-form-workflow.md Create a contact form
+```
+
+### For Debugging
+```
+@prompts/debugging/couchcms/template-debugging.md Debug this template error
+```
+
+### For Refactoring
+```
+@prompts/refactoring/couchcms/template-refactoring.md Refactor this template
+```
+
+---
+
+## 📋 Editor Integration Matrix
+
+### How Prompts Work Across Editors
+
+| Prompt Type | Cursor | Claude Code | Copilot | Windsurf | Kiro | Others |
+|------------|--------|-------------|---------|----------|------|--------|
+| **Workflow Prompts** | ✅ Via MDC rules | ✅ Via Skills | ✅ Via Instructions | ✅ Via Rules | ✅ Via Steering | ✅ Via Rules/Instructions |
+| **Debugging Prompts** | ✅ Auto-load | ✅ Skill activation | ✅ Instruction reference | ✅ Rule reference | ✅ Steering reference | ✅ Rule reference |
+| **Refactoring Prompts** | ✅ MDC auto-load | ✅ Skill reference | ✅ Instruction reference | ✅ Rule reference | ✅ Steering reference | ✅ Rule reference |
+| **Best Practices** | ✅ MDC rules | ✅ Skills | ✅ Instructions | ✅ Rules | ✅ Steering | ✅ Rules/Instructions |
+
+### CouchCMS-Specific Integration
+
+**All CouchCMS prompts:**
+- Work universally across all 13 editors
+- Provide editor-specific enhancements where beneficial
+- Reference toolkit agents (`@couchcms`, `@databound-forms`, etc.)
+- Use toolkit modules (`couchcms-core`, `databound-forms`, etc.)
+- Follow toolkit standards (`standards.md`)
+
+**Example Integration:**
+```markdown
+# Template Creation Workflow
+
+## Universal Steps (All Editors)
+[Core CouchCMS workflow steps]
+
+## Cursor-Specific
+- Auto-loads `refactor-html.mdc` when editing `.php` files
+- Uses MDC rules for context-aware assistance
+
+## Claude Code-Specific
+- Activates `couchcms-core` skill automatically
+- Uses hooks for pre-flight checks
+
+## Copilot-Specific
+- Reads from `.github/copilot-instructions.md`
+- Provides inline suggestions
+
+## All Editors
+- Can reference: `@prompts/workflows/couchcms/template-creation.md`
+- Can use agents: `@couchcms help with template`
+- Can reference modules: `modules/couchcms-core.md`
+```
+
+---
+
+## 🎯 Toolkit Mission Alignment
+
+**Toolkit Goal:** Make CouchCMS development faster and more efficient without unnecessary complications
+
+**How Prompts Support This:**
+
+1. **Faster Development**
+   - Pre-built workflows for common tasks (template creation, forms, views)
+   - Quick access to CouchCMS patterns
+   - Reduced learning curve
+
+2. **Fewer Errors**
+   - CouchCMS-specific debugging prompts
+   - Security best practices built-in
+   - Template syntax validation
+
+3. **Better Consistency**
+   - Standardized workflows across team
+   - Editor-agnostic patterns
+   - Toolkit standards enforcement
+
+4. **Editor Flexibility**
+   - Works with user's preferred editor
+   - No vendor lock-in
+   - Consistent experience across editors
 
 ---
 
 **Next Steps:**
-1. Review and approve this plan
-2. Prioritize features
-3. Create implementation tickets
-4. Begin Phase 1 implementation
+1. ✅ Review and approve this plan
+2. ⏭️ Prioritize CouchCMS workflows (Phase 1)
+3. ⏭️ Create implementation tickets
+4. ⏭️ Begin Phase 1 implementation (CouchCMS Foundation)

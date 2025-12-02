@@ -335,7 +335,11 @@ agents:
 
 ```bash
 # First-time installation and setup
+# Option 1: Using bun run (works from project root)
 bun run toolkit install
+
+# Option 2: Direct command (if toolkit is linked globally)
+toolkit install
 
 # Configure or reconfigure project
 bun run toolkit setup

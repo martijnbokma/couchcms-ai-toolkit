@@ -4,6 +4,9 @@
     "description": "Universal AI Development Toolkit for CouchCMS Projects",
     "type": "module",
     "main": "scripts/sync.js",
+    "bin": {
+        "toolkit": "./bin/toolkit"
+    },
     "engines": {
         "node": ">=18.0.0",
         "bun": ">=1.0.0"

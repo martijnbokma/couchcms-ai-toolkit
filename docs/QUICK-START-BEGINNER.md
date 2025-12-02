@@ -61,6 +61,8 @@ Submodule path 'ai-toolkit-shared': checked out 'XXXX'
 bun run toolkit install
 ```
 
+**Note:** If you see "command not found: toolkit", that's normal! Use `bun run toolkit install` instead.
+
 **What's happening:**
 - The toolkit checks if dependencies are installed
 - If not, it installs them automatically

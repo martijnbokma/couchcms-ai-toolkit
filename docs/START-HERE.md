@@ -18,8 +18,14 @@ Choose your path:
 
 2. **Run unified install command:**
    ```bash
+   # Recommended: Using bun run (works from project root)
    bun run toolkit install
+
+   # Alternative: Link globally first, then use direct command
+   # cd ai-toolkit-shared && bun link && toolkit install
    ```
+
+   **Note:** If you see "command not found: toolkit", use `bun run toolkit install` instead.
 
 3. **Choose setup complexity:**
    - **Easy** (1 min, 2 questions) - Quick setup with recommended defaults
