@@ -299,8 +299,17 @@ async function handleServe(projectDir, options) {
 
     const port = parseInt(options.port || process.env.PORT || '3000', 10)
 
-    const { startServer } = await import('./web/server.js')
-    await startServer({ port, projectDir })
+    try {
+        const { startServer } = await import('./web/server.js')
+        await startServer({ port, projectDir })
+    } catch (error) {
+        printError(`Failed to start server: ${error.message}`)
+        if (error.message.includes('already in use')) {
+            console.log(`\n💡 Try using a different port:`)
+            console.log(`   bun toolkit serve --port=3001`)
+        }
+        process.exit(1)
+    }
 }
 
 /**
