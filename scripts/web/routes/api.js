@@ -540,8 +540,8 @@ export function apiRoutes(projectDir) {
 
             // Update progress to show completion
             const finalStep = setupType === 'simple' ? 3 : 5
-            const progressSteps = getProgressIndicatorData(finalStep, setupType)
-            const progressHtml = await c.renderTemplate('partials/progress-indicator.html', { steps: progressSteps })
+            const progressData = getProgressIndicatorData(finalStep, setupType)
+            const progressHtml = await c.renderTemplate('partials/progress-indicator.html', progressData)
             const successHtml = await c.renderTemplate('steps/success.html', {})
             return c.html(progressHtml + '\n' + successHtml)
         } catch (error) {

@@ -31,22 +31,51 @@ export function getStepDefinitions(setupType) {
  * Generate progress indicator data for Nunjucks template
  * @param {number} currentStep - Current step number
  * @param {string} setupType - 'simple' or 'extended'
- * @returns {Array} Steps data for template
+ * @returns {Object} Progress data with steps and percentage
  */
 export function getProgressIndicatorData(currentStep, setupType = 'simple') {
     const steps = getStepDefinitions(setupType)
+    const totalSteps = steps.length
+    const progressPercentage = Math.round((currentStep / totalSteps) * 100)
 
-    return steps.map((step) => {
+    const stepDescriptions = {
+        'simple': {
+            1: 'Project name and description',
+            2: 'Select editors and AI tools',
+            3: 'Review and generate configuration'
+        },
+        'extended': {
+            1: 'Project name and description',
+            2: 'CSS and JavaScript frameworks',
+            3: 'Editors and AI tools',
+            4: 'Advanced options and framework',
+            5: 'Review and generate configuration'
+        }
+    }
+
+    const descriptions = stepDescriptions[setupType] || {}
+
+    const stepsData = steps.map((step) => {
         const isActive = step.num === currentStep
         const isCompleted = step.num < currentStep
+        const isFuture = step.num > currentStep
 
         return {
             num: step.num,
             label: step.label,
-            class: isActive ? 'step step-primary' : 'step',
-            dataAttr: isCompleted ? 'data-completed="true"' : ''
+            description: descriptions[step.num] || '',
+            isActive,
+            isCompleted,
+            isFuture
         }
     })
+
+    return {
+        steps: stepsData,
+        progressPercentage,
+        totalSteps,
+        currentStep
+    }
 }
 
 /**
@@ -75,8 +104,8 @@ export function getPreviousStepRoute(currentRoute, setupType = 'simple') {
  */
 export async function wrapStepWithProgress(renderTemplate, stepNumber, stepTemplate, stepContext = {}) {
     const setupType = stepContext.setupType || 'simple'
-    const progressSteps = getProgressIndicatorData(stepNumber, setupType)
-    const progressHtml = await renderTemplate('partials/progress-indicator.html', { steps: progressSteps })
+    const progressData = getProgressIndicatorData(stepNumber, setupType)
+    const progressHtml = await renderTemplate('partials/progress-indicator.html', progressData)
     const stepHtml = await renderTemplate(stepTemplate, stepContext)
 
     // HTMX will handle the out-of-band swap for the progress indicator

@@ -1,5 +1,57 @@
-<div class="steps steps-horizontal w-full mb-8" id="progress-indicator" hx-swap-oob="true">
-    {% for step in steps %}
-    <div class="{{ step.class }}" id="step-{{ step.num }}" {{ step.dataAttr }}>{{ step.label }}</div>
-    {% endfor %}
-</div>
+<nav class="space-y-2 mb-8" id="progress-indicator" hx-swap-oob="true">
+    <!-- Progress Bar -->
+    <div class="flex h-1 w-full items-center overflow-hidden rounded-full bg-primary/20">
+        <div
+            role="progressbar"
+            aria-valuenow="{{ progressPercentage }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            class="flex items-center justify-center self-stretch rounded-full bg-primary text-xs font-medium text-primary-content transition-all duration-500 ease-out"
+            style="width: {{ progressPercentage }}%"
+        ></div>
+    </div>
+
+    <!-- Steps Grid -->
+    <ol class="grid gap-2 sm:gap-4" role="list" style="grid-template-columns: repeat({{ totalSteps }}, minmax(0, 1fr));">
+        {% for step in steps %}
+        <li>
+            <div
+                class="flex items-center gap-3 rounded-lg p-3 text-sm transition-colors {% if step.isCompleted %}border border-base-300 bg-base-200{% elif step.isActive %}border border-primary bg-base-100{% else %}border border-transparent bg-base-100/50{% endif %}"
+            >
+                <!-- Step Number/Icon -->
+                <div
+                    class="flex size-8 flex-none items-center justify-center rounded-full font-semibold {% if step.isCompleted %}bg-primary text-primary-content{% elif step.isActive %}bg-base-100 border-4 border-primary text-primary{% else %}bg-base-300 text-base-content/60{% endif %}"
+                >
+                    {% if step.isCompleted %}
+                    <svg
+                        class="inline-block size-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                    >
+                        <path
+                            fill-rule="evenodd"
+                            d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                            clip-rule="evenodd"
+                        />
+                    </svg>
+                    {% else %}
+                    {{ step.num }}
+                    {% endif %}
+                </div>
+
+                <!-- Step Content -->
+                <div class="grow min-w-0">
+                    <div class="mb-0.5 font-semibold {% if step.isActive %}text-primary{% else %}text-base-content{% endif %}">
+                        {{ step.label }}
+                    </div>
+                    {% if step.description %}
+                    <div class="text-xs text-base-content/60 truncate">{{ step.description }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ol>
+</nav>
