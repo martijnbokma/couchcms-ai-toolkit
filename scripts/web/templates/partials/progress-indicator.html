@@ -11,16 +11,23 @@
         ></div>
     </div>
 
-    <!-- Steps Grid -->
-    <ol class="grid gap-2 sm:gap-4" role="list" style="grid-template-columns: repeat({{ totalSteps }}, minmax(0, 1fr));">
+    <!-- Steps Grid - Responsive: vertical on mobile, horizontal on desktop -->
+    <style>
+        @media (min-width: 640px) {
+            #progress-steps-grid {
+                grid-template-columns: repeat({{ totalSteps }}, minmax(0, 1fr));
+            }
+        }
+    </style>
+    <ol id="progress-steps-grid" class="grid grid-cols-1 gap-2 sm:gap-4 items-stretch" role="list">
         {% for step in steps %}
-        <li>
+        <li class="flex">
             <div
-                class="flex items-center gap-3 rounded-lg p-3 text-sm transition-colors {% if step.isCompleted %}border border-base-300 bg-base-200{% elif step.isActive %}border border-primary bg-base-100{% else %}border border-transparent bg-base-100/50{% endif %}"
+                class="flex items-center gap-3 rounded-lg p-3 text-sm transition-colors w-full h-full {% if step.isCompleted %}border border-base-300 bg-base-200{% elif step.isActive %}border border-primary bg-base-100{% else %}border border-transparent bg-base-100/50{% endif %}"
             >
                 <!-- Step Number/Icon -->
                 <div
-                    class="flex size-8 flex-none items-center justify-center rounded-full font-semibold {% if step.isCompleted %}bg-primary text-primary-content{% elif step.isActive %}bg-base-100 border-4 border-primary text-primary{% else %}bg-base-300 text-base-content/60{% endif %}"
+                    class="flex size-8 flex-none items-center justify-center rounded-full font-semibold shrink-0 {% if step.isCompleted %}bg-primary text-primary-content{% elif step.isActive %}bg-base-100 border-4 border-primary text-primary{% else %}bg-base-300 text-base-content/60{% endif %}"
                 >
                     {% if step.isCompleted %}
                     <svg
@@ -42,13 +49,10 @@
                 </div>
 
                 <!-- Step Content -->
-                <div class="grow min-w-0">
-                    <div class="mb-0.5 font-semibold {% if step.isActive %}text-primary{% else %}text-base-content{% endif %}">
+                <div class="flex items-center min-w-0 flex-1">
+                    <div class="font-semibold {% if step.isActive %}text-primary{% else %}text-base-content{% endif %} truncate">
                         {{ step.label }}
                     </div>
-                    {% if step.description %}
-                    <div class="text-xs text-base-content/60 truncate">{{ step.description }}</div>
-                    {% endif %}
                 </div>
             </div>
         </li>
