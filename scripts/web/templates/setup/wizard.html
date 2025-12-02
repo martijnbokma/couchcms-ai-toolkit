@@ -5,18 +5,16 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-4xl mx-auto">
-        <!-- Progress indicator -->
+        <!-- Progress indicator (will be updated dynamically) -->
         <div class="steps steps-horizontal w-full mb-8" id="progress-indicator" hx-swap-oob="true">
             <div class="step step-primary" id="step-1">Project Info</div>
-            <div class="step" id="step-2">Complexity</div>
-            <div class="step" id="step-3">Frontend</div>
-            <div class="step" id="step-4">Review</div>
+            <div class="step" id="step-2">Loading...</div>
         </div>
 
         <!-- Wizard content -->
         <div class="card bg-base-100 shadow-xl">
             <div class="card-body" id="wizard-content">
-                <div hx-get="/api/setup/step/project" hx-trigger="load" hx-swap="innerHTML" hx-target="#wizard-content">
+                <div hx-get="/api/setup/step/project?setupType={{ setupType or 'simple' }}" hx-trigger="load" hx-swap="innerHTML" hx-target="#wizard-content">
                     <div class="flex justify-center items-center py-8">
                         <span class="loading loading-spinner loading-lg"></span>
                     </div>
@@ -25,4 +23,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Store setup type in session storage for back button navigation
+    const urlParams = new URLSearchParams(window.location.search)
+    const setupType = urlParams.get('type') || 'simple'
+    sessionStorage.setItem('setupType', setupType)
+</script>
 {% endblock %}

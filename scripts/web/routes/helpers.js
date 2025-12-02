@@ -5,17 +5,37 @@
  */
 
 /**
+ * Get step definitions for a setup type
+ * @param {string} setupType - 'simple' or 'extended'
+ * @returns {Array} Step definitions
+ */
+export function getStepDefinitions(setupType) {
+    if (setupType === 'simple') {
+        return [
+            { num: 1, label: 'Project Info', route: 'project' },
+            { num: 2, label: 'Editors', route: 'editors' },
+            { num: 3, label: 'Review', route: 'review' }
+        ]
+    } else {
+        return [
+            { num: 1, label: 'Project Info', route: 'project' },
+            { num: 2, label: 'Frontend', route: 'frontend' },
+            { num: 3, label: 'Dev Tools', route: 'devtools' },
+            { num: 4, label: 'Editors', route: 'editors' },
+            { num: 5, label: 'Advanced', route: 'advanced' },
+            { num: 6, label: 'Review', route: 'review' }
+        ]
+    }
+}
+
+/**
  * Generate progress indicator data for Nunjucks template
- * @param {number} currentStep - Current step number (1-4)
+ * @param {number} currentStep - Current step number
+ * @param {string} setupType - 'simple' or 'extended'
  * @returns {Array} Steps data for template
  */
-export function getProgressIndicatorData(currentStep) {
-    const steps = [
-        { num: 1, label: 'Project Info' },
-        { num: 2, label: 'Complexity' },
-        { num: 3, label: 'Frontend' },
-        { num: 4, label: 'Review' }
-    ]
+export function getProgressIndicatorData(currentStep, setupType = 'simple') {
+    const steps = getStepDefinitions(setupType)
 
     return steps.map((step) => {
         const isActive = step.num === currentStep
@@ -31,6 +51,22 @@ export function getProgressIndicatorData(currentStep) {
 }
 
 /**
+ * Get previous step route
+ * @param {string} currentRoute - Current route name
+ * @param {string} setupType - 'simple' or 'extended'
+ * @returns {string|null} Previous step route or null
+ */
+export function getPreviousStepRoute(currentRoute, setupType = 'simple') {
+    const steps = getStepDefinitions(setupType)
+    const currentIndex = steps.findIndex(s => s.route === currentRoute)
+
+    if (currentIndex > 0) {
+        return steps[currentIndex - 1].route
+    }
+    return null
+}
+
+/**
  * Generate step wrapper with progress indicator update
  * @param {Function} renderTemplate - Nunjucks render function
  * @param {number} stepNumber - Current step number
@@ -39,7 +75,8 @@ export function getProgressIndicatorData(currentStep) {
  * @returns {Promise<string>} Complete HTML with progress indicator (using HTMX out-of-band swap)
  */
 export async function wrapStepWithProgress(renderTemplate, stepNumber, stepTemplate, stepContext = {}) {
-    const progressSteps = getProgressIndicatorData(stepNumber)
+    const setupType = stepContext.setupType || 'simple'
+    const progressSteps = getProgressIndicatorData(stepNumber, setupType)
     const progressHtml = await renderTemplate('partials/progress-indicator.html', { steps: progressSteps })
     const stepHtml = await renderTemplate(stepTemplate, stepContext)
 

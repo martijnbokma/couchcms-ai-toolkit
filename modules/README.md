@@ -2,6 +2,19 @@
 
 Knowledge modules provide AI assistants with framework-specific patterns and best practices.
 
+## Module Organization
+
+Modules are organized into subdirectories for better clarity:
+
+- **`core/`** - CouchCMS-specific modules (always included automatically)
+  - `couchcms-core`, `databound-forms`, `custom-routes`, `folders`, `archives`
+  - `relationships`, `repeatable-regions`, `search`, `pagination`, `comments`, `users`
+
+- **`frontend/`** - Frontend framework modules (optional, user chooses)
+  - `tailwindcss`, `daisyui`, `alpinejs`, `typescript`
+
+The module loader automatically searches these subdirectories, so module names remain the same.
+
 ## Module Structure
 
 Each module consists of:
@@ -132,8 +145,14 @@ See [MODULES.md](../docs/MODULES.md) for complete list.
 
 ### 1. Create Module File
 
+Choose the appropriate subdirectory based on module type:
+
 ```bash
-touch modules/new-module.md
+# CouchCMS module (core/)
+touch modules/core/new-module.md
+
+# Frontend module (frontend/)
+touch modules/frontend/new-module.md
 ```
 
 ### 2. Add Frontmatter

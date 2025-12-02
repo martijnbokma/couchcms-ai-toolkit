@@ -6,7 +6,7 @@
  * with caching for improved performance.
  */
 
-import { existsSync, readFileSync, readdirSync } from 'fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
 import { ModuleCache } from './cache.js'
@@ -53,9 +53,22 @@ function loadModule(moduleName, toolkitPath) {
         return moduleCache.get(cacheKey)
     }
 
-    const modulePath = join(toolkitPath, 'modules', `${moduleName}.md`)
+    // Search in subdirectories: core/ and frontend/
+    const possiblePaths = [
+        join(toolkitPath, 'modules', `${moduleName}.md`), // Legacy flat structure
+        join(toolkitPath, 'modules', 'core', `${moduleName}.md`), // CouchCMS modules
+        join(toolkitPath, 'modules', 'frontend', `${moduleName}.md`), // Frontend modules
+    ]
 
-    if (!existsSync(modulePath)) {
+    let modulePath = null
+    for (const path of possiblePaths) {
+        if (existsSync(path)) {
+            modulePath = path
+            break
+        }
+    }
+
+    if (!modulePath) {
         console.warn(`⚠️  Module not found: ${moduleName}`)
         return null
     }
@@ -308,7 +321,7 @@ export function clearCache() {
 }
 
 /**
- * List available modules in toolkit
+ * List available modules in toolkit (searches subdirectories)
  *
  * @param {string} toolkitPath - Path to toolkit root
  * @returns {Array<string>} - Array of available module names
@@ -321,10 +334,35 @@ export function listAvailableModules(toolkitPath) {
     }
 
     try {
-        return readdirSync(modulesDir)
-            .filter((f) => f.endsWith('.md'))
-            .map((f) => f.replace('.md', ''))
-            .sort()
+        const moduleNames = new Set()
+
+        // Helper function to recursively find .md files
+        function scanDirectory(dir) {
+            if (!existsSync(dir)) {
+                return
+            }
+
+            const entries = readdirSync(dir)
+
+            for (const entry of entries) {
+                const fullPath = join(dir, entry)
+                const stat = statSync(fullPath)
+
+                if (stat.isDirectory()) {
+                    // Recursively scan subdirectories (core/, frontend/, etc.)
+                    scanDirectory(fullPath)
+                } else if (entry.endsWith('.md')) {
+                    // Extract module name from filename
+                    const moduleName = entry.replace('.md', '')
+                    moduleNames.add(moduleName)
+                }
+            }
+        }
+
+        // Scan modules directory (includes subdirectories)
+        scanDirectory(modulesDir)
+
+        return Array.from(moduleNames).sort()
     } catch (error) {
         console.warn(`⚠️  Failed to list modules: ${error.message}`)
         return []

@@ -20,8 +20,44 @@ import { join, dirname, resolve } from 'path'
 import { createInterface } from 'readline'
 import { spawn } from 'child_process'
 import { getToolkitRootCached } from '../lib/index.js'
+import { getCouchCMSModules } from '../lib/option-organizer.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
+
+/**
+ * Find module file path (searches in core/ and frontend/ subdirectories)
+ * @param {string} moduleName - Module name
+ * @returns {string|null} - Full path to module file or null if not found
+ */
+function findModulePath(moduleName) {
+    const couchcmsModules = getCouchCMSModules()
+    const subdir = couchcmsModules.includes(moduleName) ? 'core' : 'frontend'
+
+    // Try subdirectory first
+    const subdirPath = join(TOOLKIT_ROOT, 'modules', subdir, `${moduleName}.md`)
+    if (existsSync(subdirPath)) {
+        return subdirPath
+    }
+
+    // Fallback to root (legacy support)
+    const rootPath = join(TOOLKIT_ROOT, 'modules', `${moduleName}.md`)
+    if (existsSync(rootPath)) {
+        return rootPath
+    }
+
+    return null
+}
+
+/**
+ * Get module directory for creating new modules
+ * @param {string} moduleName - Module name
+ * @returns {string} - Subdirectory path (core/ or frontend/)
+ */
+function getModuleDirectory(moduleName) {
+    const couchcmsModules = getCouchCMSModules()
+    const subdir = couchcmsModules.includes(moduleName) ? 'core' : 'frontend'
+    return join(TOOLKIT_ROOT, 'modules', subdir)
+}
 
 /**
  * Module mapping: Maps documentation topics to modules
@@ -335,7 +371,7 @@ function extendModule(moduleName, docsPath, dryRun = false) {
 
     console.log(`\n📦 Extending module: ${moduleName}`)
 
-    const modulePath = join(TOOLKIT_ROOT, 'modules', `${moduleName}.md`)
+    const modulePath = findModulePath(moduleName) || join(getModuleDirectory(moduleName), `${moduleName}.md`)
     const existingModule = existsSync(modulePath)
         ? readFileSync(modulePath, 'utf8')
         : null
@@ -518,8 +554,8 @@ function showAnalysis(docsPath) {
             console.log(`  Tags: ${mapping.tags.join(', ')}`)
         }
         if (mapping.newModule) {
-            const modulePath = join(TOOLKIT_ROOT, 'modules', `${moduleName}.md`)
-            const exists = existsSync(modulePath)
+            const modulePath = findModulePath(moduleName)
+            const exists = modulePath !== null
             console.log(`  ${exists ? '✅' : '⭐'} ${exists ? 'Module exists' : 'New module (not yet created)'}`)
         }
     }

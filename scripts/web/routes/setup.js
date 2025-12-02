@@ -28,7 +28,8 @@ export function setupRoutes(projectDir) {
 
     // Main wizard interface
     app.get('/setup/wizard', async (c) => {
-        const html = await c.renderTemplate('setup/wizard.html')
+        const setupType = c.req.query('type') || 'simple'
+        const html = await c.renderTemplate('setup/wizard.html', { setupType })
         return c.html(html)
     })
 

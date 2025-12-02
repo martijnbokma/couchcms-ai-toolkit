@@ -1,0 +1,82 @@
+<div>
+    <h2 class="text-2xl font-bold mb-4">Development Tools</h2>
+    <p class="mb-6 text-base-content/70">Selecteer welke development tool agents je wilt activeren. Deze agents helpen bij specifieke development taken.</p>
+
+    <form hx-post="/api/setup/step/devtools" hx-target="#wizard-content" hx-swap="innerHTML">
+        {% for hidden in hiddenFields %}
+        <input type="hidden" name="{{ hidden.name }}" value="{{ hidden.value }}" />
+        {% endfor %}
+
+        <div class="grid gap-3 mb-6">
+            {% for tool in devTools %}
+            <label class="card bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border-2 border-transparent hover:border-primary/20">
+                <div class="card-body">
+                    <div class="flex items-start gap-4">
+                        <input type="checkbox" name="devtools" value="{{ tool.id }}" class="checkbox checkbox-primary mt-1" {% if tool.id == 'bun' or tool.id == 'git' %}checked{% endif %} />
+                        <div class="flex-1">
+                            <h4 class="card-title text-base font-semibold mb-1">{{ tool.name }}</h4>
+                            <p class="text-sm text-base-content/70">{{ tool.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="flex gap-2 mb-6">
+            <button type="button" onclick="selectAllDevTools()" class="btn btn-sm btn-outline">
+                Selecteer Alles
+            </button>
+            <button type="button" onclick="deselectAllDevTools()" class="btn btn-sm btn-outline">
+                Deselecteer Alles
+            </button>
+        </div>
+
+        <div class="card-actions justify-between mt-6">
+            <button type="button" class="btn btn-outline" onclick="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Terug
+            </button>
+            <button type="submit" class="btn btn-primary btn-lg">
+                Volgende: Editors
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </form>
+
+    <script>
+        function selectAllDevTools() {
+            document.querySelectorAll('input[name="devtools"]').forEach(cb => cb.checked = true)
+        }
+        function deselectAllDevTools() {
+            document.querySelectorAll('input[name="devtools"]').forEach(cb => cb.checked = false)
+        }
+        
+        // Back button handler - go back to frontend step
+        document.querySelector('button[onclick="goBack()"]')?.addEventListener('click', function(e) {
+            e.preventDefault()
+            const form = document.querySelector('form')
+            const projectName = form.querySelector('input[name="projectName"]')?.value || 'mijn-project'
+            const projectDescription = form.querySelector('input[name="projectDescription"]')?.value || 'Een CouchCMS web applicatie'
+            const css = Array.from(form.querySelectorAll('input[name="css"]')).map(i => i.value)
+            const js = Array.from(form.querySelectorAll('input[name="js"]')).map(i => i.value)
+            
+            const params = new URLSearchParams()
+            params.append('setupType', 'extended')
+            params.append('projectName', projectName)
+            params.append('projectDescription', projectDescription)
+            css.forEach(c => params.append('css', c))
+            js.forEach(j => params.append('js', j))
+            
+            htmx.ajax('GET', `/api/setup/step/frontend?${params.toString()}`, {
+                target: '#wizard-content',
+                swap: 'innerHTML'
+            })
+        })
+    </script>
+</div>

@@ -1,0 +1,119 @@
+<div>
+    <h2 class="text-2xl font-bold mb-4">Advanced Options</h2>
+    <p class="mb-6 text-base-content/70">Optionele geavanceerde configuratie opties voor ervaren gebruikers.</p>
+
+    <form hx-post="/api/setup/step/advanced" hx-target="#wizard-content" hx-swap="innerHTML">
+        {% for hidden in hiddenFields %}
+        <input type="hidden" name="{{ hidden.name }}" value="{{ hidden.value }}" />
+        {% endfor %}
+
+        <!-- AAPF Framework -->
+        <div class="card bg-base-200 shadow-sm border border-base-300 mb-6">
+            <div class="card-body">
+                <h3 class="card-title text-lg font-semibold mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    AAPF Framework
+                </h3>
+                <p class="text-sm text-base-content/70 mb-4">Enable AAPF framework for disciplined AI agent behavior</p>
+
+                <div class="form-control">
+                    <label class="label cursor-pointer justify-start gap-4">
+                        <input type="checkbox" name="framework" value="true" class="checkbox checkbox-primary" />
+                        <span class="label-text">Enable AAPF Framework</span>
+                    </label>
+                </div>
+
+                <div id="framework-options" class="mt-4 space-y-2 hidden">
+                    <p class="text-sm font-medium mb-2">Framework Components:</p>
+                    <label class="label cursor-pointer justify-start gap-4">
+                        <input type="checkbox" name="framework_doctrine" value="true" class="checkbox checkbox-sm" checked />
+                        <span class="label-text text-sm">Doctrine</span>
+                    </label>
+                    <label class="label cursor-pointer justify-start gap-4">
+                        <input type="checkbox" name="framework_directives" value="true" class="checkbox checkbox-sm" checked />
+                        <span class="label-text text-sm">Directives</span>
+                    </label>
+                    <label class="label cursor-pointer justify-start gap-4">
+                        <input type="checkbox" name="framework_playbooks" value="true" class="checkbox checkbox-sm" checked />
+                        <span class="label-text text-sm">Playbooks</span>
+                    </label>
+                    <label class="label cursor-pointer justify-start gap-4">
+                        <input type="checkbox" name="framework_enhancements" value="true" class="checkbox checkbox-sm" />
+                        <span class="label-text text-sm">Enhancements</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Context Directory -->
+        <div class="card bg-base-200 shadow-sm border border-base-300 mb-6">
+            <div class="card-body">
+                <h3 class="card-title text-lg font-semibold mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                    </svg>
+                    Context Directory
+                </h3>
+                <p class="text-sm text-base-content/70 mb-4">Custom directory for AI context files (optional)</p>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Context Directory Path</span>
+                    </label>
+                    <input type="text" name="contextDir" placeholder=".project/ai" value=".project/ai" class="input input-bordered w-full" />
+                </div>
+            </div>
+        </div>
+
+        <div class="card-actions justify-between mt-6">
+            <button type="button" class="btn btn-outline" onclick="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Terug
+            </button>
+            <button type="submit" class="btn btn-primary btn-lg">
+                Volgende: Review
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </form>
+
+    <script>
+        // Toggle framework options visibility
+        document.querySelector('input[name="framework"]')?.addEventListener('change', function(e) {
+            const options = document.getElementById('framework-options')
+            if (options) {
+                options.classList.toggle('hidden', !e.target.checked)
+            }
+        })
+
+        // Back button handler - go back to editors step
+        document.querySelector('button[onclick="goBack()"]')?.addEventListener('click', function(e) {
+            e.preventDefault()
+            const form = document.querySelector('form')
+            const projectName = form.querySelector('input[name="projectName"]')?.value || 'mijn-project'
+            const projectDescription = form.querySelector('input[name="projectDescription"]')?.value || 'Een CouchCMS web applicatie'
+            const css = Array.from(form.querySelectorAll('input[name="css"]')).map(i => i.value)
+            const js = Array.from(form.querySelectorAll('input[name="js"]')).map(i => i.value)
+            const devtools = Array.from(form.querySelectorAll('input[name="devtools"]')).map(i => i.value)
+
+            const params = new URLSearchParams()
+            params.append('setupType', 'extended')
+            params.append('projectName', projectName)
+            params.append('projectDescription', projectDescription)
+            css.forEach(c => params.append('css', c))
+            js.forEach(j => params.append('js', j))
+            devtools.forEach(dt => params.append('devtools', dt))
+
+            htmx.ajax('GET', `/api/setup/step/editors?${params.toString()}`, {
+                target: '#wizard-content',
+                swap: 'innerHTML'
+            })
+        })
+    </script>
+</div>
