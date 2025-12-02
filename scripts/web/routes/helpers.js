@@ -5,12 +5,28 @@
  */
 
 /**
+ * Constants
+ */
+const SETUP_TYPES = {
+    SIMPLE: 'simple',
+    EXTENDED: 'extended'
+}
+
+/**
+ * Step definition type
+ * @typedef {Object} StepDefinition
+ * @property {number} num - Step number
+ * @property {string} label - Step label
+ * @property {string} route - Step route name
+ */
+
+/**
  * Get step definitions for a setup type
  * @param {string} setupType - 'simple' or 'extended'
- * @returns {Array} Step definitions
+ * @returns {StepDefinition[]} Step definitions
  */
 export function getStepDefinitions(setupType) {
-    if (setupType === 'simple') {
+    if (setupType === SETUP_TYPES.SIMPLE) {
         return [
             { num: 1, label: 'Project Info', route: 'project' },
             { num: 2, label: 'Editors', route: 'editors' },
@@ -28,23 +44,46 @@ export function getStepDefinitions(setupType) {
 }
 
 /**
+ * Step data with state information
+ * @typedef {Object} StepData
+ * @property {number} num - Step number
+ * @property {string} label - Step label
+ * @property {string} route - Step route name
+ * @property {string} description - Step description
+ * @property {boolean} isActive - Whether step is currently active
+ * @property {boolean} isCompleted - Whether step is completed
+ * @property {boolean} isFuture - Whether step is in the future
+ * @property {boolean} isClickable - Whether step can be navigated to
+ */
+
+/**
+ * Progress indicator data
+ * @typedef {Object} ProgressIndicatorData
+ * @property {StepData[]} steps - Array of step data
+ * @property {number} progressPercentage - Progress percentage (0-100)
+ * @property {number} totalSteps - Total number of steps
+ * @property {number} currentStep - Current step number
+ * @property {string} setupType - Setup type ('simple' or 'extended')
+ */
+
+/**
  * Generate progress indicator data for Nunjucks template
  * @param {number} currentStep - Current step number
  * @param {string} setupType - 'simple' or 'extended'
- * @returns {Object} Progress data with steps and percentage
+ * @returns {ProgressIndicatorData} Progress data with steps and percentage
  */
-export function getProgressIndicatorData(currentStep, setupType = 'simple') {
+export function getProgressIndicatorData(currentStep, setupType = SETUP_TYPES.SIMPLE) {
     const steps = getStepDefinitions(setupType)
     const totalSteps = steps.length
     const progressPercentage = Math.round((currentStep / totalSteps) * 100)
 
     const stepDescriptions = {
-        'simple': {
+        [SETUP_TYPES.SIMPLE]: {
             1: 'Project name and description',
             2: 'Select editors and AI tools',
             3: 'Review and generate configuration'
         },
-        'extended': {
+        [SETUP_TYPES.EXTENDED]: {
             1: 'Project name and description',
             2: 'CSS and JavaScript frameworks',
             3: 'Editors and AI tools',
@@ -87,7 +126,7 @@ export function getProgressIndicatorData(currentStep, setupType = 'simple') {
  * @param {string} setupType - 'simple' or 'extended'
  * @returns {string|null} Previous step route or null
  */
-export function getPreviousStepRoute(currentRoute, setupType = 'simple') {
+export function getPreviousStepRoute(currentRoute, setupType = SETUP_TYPES.SIMPLE) {
     const steps = getStepDefinitions(setupType)
     const currentIndex = steps.findIndex(s => s.route === currentRoute)
 
@@ -106,7 +145,7 @@ export function getPreviousStepRoute(currentRoute, setupType = 'simple') {
  * @returns {Promise<string>} Complete HTML with progress indicator (using HTMX out-of-band swap)
  */
 export async function wrapStepWithProgress(renderTemplate, stepNumber, stepTemplate, stepContext = {}) {
-    const setupType = stepContext.setupType || 'simple'
+    const setupType = stepContext.setupType || SETUP_TYPES.SIMPLE
     const progressData = getProgressIndicatorData(stepNumber, setupType)
     const progressHtml = await renderTemplate('partials/progress-indicator.html', progressData)
     const stepHtml = await renderTemplate(stepTemplate, stepContext)

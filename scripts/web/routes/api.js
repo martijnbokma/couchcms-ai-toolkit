@@ -8,10 +8,129 @@ import { Hono } from 'hono'
 import { wrapStepWithProgress, getProgressIndicatorData, getPreviousStepRoute } from './helpers.js'
 import { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents, getMatchingAgents } from '../../lib/option-organizer.js'
 import { getAvailableEditors } from '../../lib/prompts.js'
-import { listAvailableModules, listAvailableAgents } from '../../lib/module-loader.js'
 import { getToolkitRootCached } from '../../lib/paths.js'
 import { existsSync, readdirSync, statSync } from 'fs'
 import { join } from 'path'
+
+/**
+ * Constants
+ */
+const SETUP_TYPES = {
+    SIMPLE: 'simple',
+    EXTENDED: 'extended'
+}
+
+const DEFAULT_PROJECT_NAME = 'my-project'
+const DEFAULT_PROJECT_DESCRIPTION = 'A CouchCMS web application'
+const DEFAULT_SETUP_TYPE = SETUP_TYPES.SIMPLE
+const DEFAULT_CONTEXT_DIR = '.project/ai'
+
+const POPULAR_EDITOR_IDS = ['cursor', 'claude', 'copilot']
+const DEFAULT_SELECTED_EDITOR = 'cursor'
+
+const FRONTEND_MODULES = {
+    CSS: ['tailwindcss', 'daisyui'],
+    JS: ['alpinejs', 'typescript']
+}
+
+/**
+ * Parse array values from query parameters or form body
+ * Handles both array format and multiple inputs with same name
+ * @param {Object} data - Query parameters or form body
+ * @param {string} key - Key to extract array values for
+ * @returns {string[]} Array of unique values
+ */
+function parseArrayValue(data, key) {
+    const values = []
+
+    // Check if it's already an array
+    if (Array.isArray(data[key])) {
+        return data[key].filter(v => v != null && v !== '')
+    }
+
+    // Check if it's a single value
+    if (data[key] != null && data[key] !== '') {
+        return [data[key]]
+    }
+
+    // Collect all values with this key (handles multiple inputs with same name)
+    // Also handles keys like 'css[0]', 'css[1]', etc.
+    for (const [k, v] of Object.entries(data)) {
+        if (k === key || k.startsWith(`${key}[`) || k.startsWith(`${key}.`)) {
+            if (v != null && v !== '' && !values.includes(v)) {
+                values.push(v)
+            }
+        }
+    }
+
+    return values
+}
+
+/**
+ * Create hidden form fields for state persistence
+ * @param {Object} data - Data to create hidden fields from
+ * @returns {Array<Object>} Array of hidden field objects
+ */
+function createHiddenFields(data) {
+    const fields = []
+    if (data.projectName) fields.push({ name: 'projectName', value: data.projectName })
+    if (data.projectDescription) fields.push({ name: 'projectDescription', value: data.projectDescription })
+    if (data.setupType) fields.push({ name: 'setupType', value: data.setupType })
+    if (data.css) data.css.forEach(c => fields.push({ name: 'css', value: c }))
+    if (data.js) data.js.forEach(j => fields.push({ name: 'js', value: j }))
+    if (data.editors) data.editors.forEach(e => fields.push({ name: 'editors', value: e }))
+    return fields
+}
+
+/**
+ * Create frontend options with selected state
+ * @param {string[]} selectedCss - Selected CSS framework IDs
+ * @param {string[]} selectedJs - Selected JS framework IDs
+ * @returns {Object} Frontend options with selection state
+ */
+function createFrontendOptions(selectedCss = [], selectedJs = []) {
+    return {
+        css: [
+            { id: FRONTEND_MODULES.CSS[0], name: 'TailwindCSS', description: 'Utility-first CSS framework', selected: selectedCss.includes(FRONTEND_MODULES.CSS[0]) },
+            { id: FRONTEND_MODULES.CSS[1], name: 'daisyUI', description: 'Component library for TailwindCSS', selected: selectedCss.includes(FRONTEND_MODULES.CSS[1]) }
+        ],
+        js: [
+            { id: FRONTEND_MODULES.JS[0], name: 'Alpine.js', description: 'Lightweight reactive JavaScript', selected: selectedJs.includes(FRONTEND_MODULES.JS[0]) },
+            { id: FRONTEND_MODULES.JS[1], name: 'TypeScript', description: 'Type-safe JavaScript', selected: selectedJs.includes(FRONTEND_MODULES.JS[1]) }
+        ]
+    }
+}
+
+/**
+ * Get editors grouped by popularity
+ * @param {string[]} selectedEditors - Array of selected editor IDs
+ * @returns {Object} Grouped editors with popular and other categories
+ */
+function getEditorsGrouped(selectedEditors = []) {
+    const allEditors = getAvailableEditors()
+
+    return {
+        popular: allEditors
+            .filter(e => POPULAR_EDITOR_IDS.includes(e.id))
+            .map(e => ({ ...e, selected: selectedEditors.includes(e.id) })),
+        other: allEditors
+            .filter(e => !POPULAR_EDITOR_IDS.includes(e.id))
+            .map(e => ({ ...e, selected: selectedEditors.includes(e.id) }))
+    }
+}
+
+/**
+ * Get default project values from query or body
+ * @param {Object} queryOrBody - Query parameters or form body
+ * @returns {Object} Default project values
+ */
+function getProjectDefaults(queryOrBody) {
+    return {
+        projectName: queryOrBody.projectName || DEFAULT_PROJECT_NAME,
+        projectDescription: queryOrBody.projectDescription || DEFAULT_PROJECT_DESCRIPTION,
+        setupType: queryOrBody.setupType || DEFAULT_SETUP_TYPE
+    }
+}
 
 /**
  * Create API routes
@@ -24,7 +143,7 @@ export function apiRoutes(projectDir) {
     // Get available modules
     app.get('/setup/modules', (c) => {
         const couchcmsModules = getCouchCMSModules()
-        const frontendModules = ['tailwindcss', 'daisyui', 'alpinejs', 'typescript']
+        const frontendModules = [...FRONTEND_MODULES.CSS, ...FRONTEND_MODULES.JS]
 
         return c.json({
             couchcms: couchcmsModules.map(name => ({
@@ -59,15 +178,14 @@ export function apiRoutes(projectDir) {
 
     // Get step content (project info) - detects setupType from query
     app.get('/setup/step/project', async (c) => {
-        const setupType = c.req.query('setupType') || 'simple'
-        const projectName = c.req.query('projectName') || 'my-project'
-        const projectDescription = c.req.query('projectDescription') || 'A CouchCMS web application'
+        const query = c.req.query()
+        const defaults = getProjectDefaults(query)
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             1,
             'steps/project.html',
-            { setupType, projectName, projectDescription }
+            defaults
         )
         return c.html(html)
     })
@@ -75,50 +193,20 @@ export function apiRoutes(projectDir) {
     // GET route for frontend step (for back navigation)
     app.get('/setup/step/frontend', async (c) => {
         const query = c.req.query()
-        const projectName = query.projectName || 'my-project'
-        const projectDescription = query.projectDescription || 'A CouchCMS web application'
-
-        // Parse array parameters (for state persistence)
-        const css = []
-        const js = []
-
-        Object.keys(query).forEach(key => {
-            if (key === 'css' || key.startsWith('css[')) {
-                const value = query[key]
-                if (value && !css.includes(value)) css.push(value)
-            } else if (key === 'js' || key.startsWith('js[')) {
-                const value = query[key]
-                if (value && !js.includes(value)) js.push(value)
-            }
-        })
-
-        // Create frontend options with selected state
-        const frontendOptions = {
-            css: [
-                { id: 'tailwindcss', name: 'TailwindCSS', description: 'Utility-first CSS framework', selected: css.includes('tailwindcss') },
-                { id: 'daisyui', name: 'daisyUI', description: 'Component library for TailwindCSS', selected: css.includes('daisyui') }
-            ],
-            js: [
-                { id: 'alpinejs', name: 'Alpine.js', description: 'Lightweight reactive JavaScript', selected: js.includes('alpinejs') },
-                { id: 'typescript', name: 'TypeScript', description: 'Type-safe JavaScript', selected: js.includes('typescript') }
-            ]
-        }
+        const defaults = getProjectDefaults(query)
+        const css = parseArrayValue(query, 'css')
+        const js = parseArrayValue(query, 'js')
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             2,
             'steps/frontend.html',
             {
-                setupType: 'extended',
-                projectName,
-                projectDescription,
+                setupType: SETUP_TYPES.EXTENDED,
+                ...defaults,
                 frontend: { css, js },
-                frontendOptions,
-                hiddenFields: [
-                    { name: 'projectName', value: projectName },
-                    { name: 'projectDescription', value: projectDescription },
-                    { name: 'setupType', value: 'extended' }
-                ]
+                frontendOptions: createFrontendOptions(css, js),
+                hiddenFields: createHiddenFields({ ...defaults, setupType: SETUP_TYPES.EXTENDED })
             }
         )
         return c.html(html)
@@ -127,65 +215,25 @@ export function apiRoutes(projectDir) {
     // GET route for editors step (for back navigation) - Handles both simple and extended paths
     app.get('/setup/step/editors', async (c) => {
         const query = c.req.query()
-        const projectName = query.projectName || 'my-project'
-        const projectDescription = query.projectDescription || 'A CouchCMS web application'
-        const setupType = query.setupType || 'simple'
+        const defaults = getProjectDefaults(query)
+        const css = parseArrayValue(query, 'css')
+        const js = parseArrayValue(query, 'js')
+        const editors = parseArrayValue(query, 'editors')
 
-        // Parse array parameters
-        const css = []
-        const js = []
-        const editors = []
-
-        Object.keys(query).forEach(key => {
-            if (key === 'css' || key.startsWith('css[')) {
-                const value = query[key]
-                if (value && !css.includes(value)) css.push(value)
-            } else if (key === 'js' || key.startsWith('js[')) {
-                const value = query[key]
-                if (value && !js.includes(value)) js.push(value)
-            } else if (key === 'editors' || key.startsWith('editors[')) {
-                const value = query[key]
-                if (value && !editors.includes(value)) editors.push(value)
-            }
-        })
-
-        const editorsList = getAvailableEditors()
-        const popularEditors = editorsList
-            .filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
-            .map(e => ({ ...e, selected: editors.includes(e.id) }))
-        const otherEditors = editorsList
-            .filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
-            .map(e => ({ ...e, selected: editors.includes(e.id) }))
-
-        const stepNumber = setupType === 'simple' ? 2 : 3
-        const hiddenFields = [
-            { name: 'projectName', value: projectName },
-            { name: 'projectDescription', value: projectDescription },
-            { name: 'setupType', value: setupType }
-        ]
-
-        // Add frontend data to hidden fields if extended
-        if (setupType === 'extended') {
-            css.forEach(c => hiddenFields.push({ name: 'css', value: c }))
-            js.forEach(j => hiddenFields.push({ name: 'js', value: j }))
-        }
-
-        // Add editors to hidden fields
-        editors.forEach(ed => hiddenFields.push({ name: 'editors', value: ed }))
+        const { popular: popularEditors, other: otherEditors } = getEditorsGrouped(editors)
+        const stepNumber = defaults.setupType === SETUP_TYPES.SIMPLE ? 2 : 3
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             stepNumber,
             'steps/editors.html',
             {
-                setupType,
-                projectName,
-                projectDescription,
+                ...defaults,
                 frontend: { css, js },
-                editors, // Pass editors array for state persistence
+                editors,
                 popularEditors,
                 otherEditors,
-                hiddenFields
+                hiddenFields: createHiddenFields({ ...defaults, css, js, editors })
             }
         )
         return c.html(html)
@@ -194,26 +242,10 @@ export function apiRoutes(projectDir) {
     // GET route for advanced step (for back navigation)
     app.get('/setup/step/advanced', async (c) => {
         const query = c.req.query()
-        const projectName = query.projectName || 'my-project'
-        const projectDescription = query.projectDescription || 'A CouchCMS web application'
-
-        // Parse array parameters - collect all values with same key
-        const css = []
-        const js = []
-        const editors = []
-
-        Object.keys(query).forEach(key => {
-            if (key === 'css' || key.startsWith('css[')) {
-                const value = query[key]
-                if (value && !css.includes(value)) css.push(value)
-            } else if (key === 'js' || key.startsWith('js[')) {
-                const value = query[key]
-                if (value && !js.includes(value)) js.push(value)
-            } else if (key === 'editors' || key.startsWith('editors[')) {
-                const value = query[key]
-                if (value && !editors.includes(value)) editors.push(value)
-            }
-        })
+        const defaults = getProjectDefaults({ ...query, setupType: SETUP_TYPES.EXTENDED })
+        const css = parseArrayValue(query, 'css')
+        const js = parseArrayValue(query, 'js')
+        const editors = parseArrayValue(query, 'editors')
 
         // Parse framework config from query params
         const framework = query.framework === 'true'
@@ -225,28 +257,19 @@ export function apiRoutes(projectDir) {
             enhancements: query.framework_enhancements === 'true'
         } : false
 
-        const contextDir = query.contextDir || '.project/ai'
+        const contextDir = query.contextDir || DEFAULT_CONTEXT_DIR
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             4,
             'steps/advanced.html',
             {
-                setupType: 'extended',
-                projectName,
-                projectDescription,
+                ...defaults,
                 frontend: { css, js },
                 editors,
                 framework: frameworkConfig,
                 contextDir,
-                hiddenFields: [
-                    { name: 'projectName', value: projectName },
-                    { name: 'projectDescription', value: projectDescription },
-                    { name: 'setupType', value: 'extended' },
-                    ...css.map(c => ({ name: 'css', value: c })),
-                    ...js.map(j => ({ name: 'js', value: j })),
-                    ...editors.map(ed => ({ name: 'editors', value: ed }))
-                ]
+                hiddenFields: createHiddenFields({ ...defaults, css, js, editors })
             }
         )
         return c.html(html)
@@ -255,117 +278,101 @@ export function apiRoutes(projectDir) {
     // Handle project info submission - routes based on setupType
     app.post('/setup/step/project', async (c) => {
         const body = await c.req.parseBody()
-        const projectName = body.projectName || 'my-project'
-        const projectDescription = body.projectDescription || 'A CouchCMS web application'
-        const setupType = body.setupType || 'simple'
+        const defaults = getProjectDefaults(body)
 
         // Route to next step based on setup type
-        if (setupType === 'simple') {
-            // Simple: project → editors
-            const editors = getAvailableEditors()
-            const popularEditors = editors
-                .filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
-                .map(e => ({ ...e, selected: e.id === 'cursor' })) // Default cursor selected
-            const otherEditors = editors
-                .filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
-                .map(e => ({ ...e, selected: false }))
-
-            const html = await wrapStepWithProgress(
-                c.renderTemplate,
-                2,
-                'steps/editors.html',
-                {
-                    setupType: 'simple',
-                    projectName,
-                    projectDescription,
-                    editors: [], // Empty on first load
-                    popularEditors,
-                    otherEditors,
-                    hiddenFields: [
-                        { name: 'projectName', value: projectName },
-                        { name: 'projectDescription', value: projectDescription },
-                        { name: 'setupType', value: 'simple' }
-                    ]
-                }
-            )
-            return c.html(html)
+        if (defaults.setupType === SETUP_TYPES.SIMPLE) {
+            return c.html(await renderSimpleEditorsStep(c.renderTemplate, defaults))
         } else {
-            // Extended: project → frontend
-            // Create frontend options with default selected state
-            const frontendOptions = {
-                css: [
-                    { id: 'tailwindcss', name: 'TailwindCSS', description: 'Utility-first CSS framework', selected: true },
-                    { id: 'daisyui', name: 'daisyUI', description: 'Component library for TailwindCSS', selected: false }
-                ],
-                js: [
-                    { id: 'alpinejs', name: 'Alpine.js', description: 'Lightweight reactive JavaScript', selected: true },
-                    { id: 'typescript', name: 'TypeScript', description: 'Type-safe JavaScript', selected: false }
-                ]
-            }
-
-            const html = await wrapStepWithProgress(
-                c.renderTemplate,
-                2,
-                'steps/frontend.html',
-                {
-                    setupType: 'extended',
-                    projectName,
-                    projectDescription,
-                    frontend: { css: ['tailwindcss'], js: ['alpinejs'] },
-                    frontendOptions,
-                    hiddenFields: [
-                        { name: 'projectName', value: projectName },
-                        { name: 'projectDescription', value: projectDescription },
-                        { name: 'setupType', value: 'extended' }
-                    ]
-                }
-            )
-            return c.html(html)
+            return c.html(await renderExtendedFrontendStep(c.renderTemplate, defaults))
         }
     })
+
+    /**
+     * Render editors step for simple setup flow
+     * @param {Function} renderTemplate - Template render function
+     * @param {Object} defaults - Project defaults
+     * @returns {Promise<string>} HTML content
+     */
+    async function renderSimpleEditorsStep(renderTemplate, defaults) {
+        const editors = getAvailableEditors()
+        const popularEditors = editors
+            .filter(e => POPULAR_EDITOR_IDS.includes(e.id))
+            .map(e => ({ ...e, selected: e.id === DEFAULT_SELECTED_EDITOR }))
+        const otherEditors = editors
+            .filter(e => !POPULAR_EDITOR_IDS.includes(e.id))
+            .map(e => ({ ...e, selected: false }))
+
+        return await wrapStepWithProgress(
+            renderTemplate,
+            2,
+            'steps/editors.html',
+            {
+                setupType: SETUP_TYPES.SIMPLE,
+                ...defaults,
+                editors: [], // Empty on first load
+                popularEditors,
+                otherEditors,
+                hiddenFields: createHiddenFields(defaults)
+            }
+        )
+    }
+
+    /**
+     * Render frontend step for extended setup flow
+     * @param {Function} renderTemplate - Template render function
+     * @param {Object} defaults - Project defaults
+     * @returns {Promise<string>} HTML content
+     */
+    async function renderExtendedFrontendStep(renderTemplate, defaults) {
+        const frontendOptions = createFrontendOptions(
+            [FRONTEND_MODULES.CSS[0]], // Default: tailwindcss
+            [FRONTEND_MODULES.JS[0]]  // Default: alpinejs
+        )
+
+        return await wrapStepWithProgress(
+            renderTemplate,
+            2,
+            'steps/frontend.html',
+            {
+                setupType: SETUP_TYPES.EXTENDED,
+                ...defaults,
+                frontend: { css: [FRONTEND_MODULES.CSS[0]], js: [FRONTEND_MODULES.JS[0]] },
+                frontendOptions,
+                hiddenFields: createHiddenFields({ ...defaults, setupType: SETUP_TYPES.EXTENDED })
+            }
+        )
+    }
 
     // ============================================
     // EXTENDED PATH FLOW
     // ============================================
 
-    // Handle frontend selection (Uitgebreid pad)
+    // Handle frontend selection (Extended path)
     app.post('/setup/step/frontend', async (c) => {
         const body = await c.req.parseBody()
-        const projectName = body.projectName || 'my-project'
-        const projectDescription = body.projectDescription || 'A CouchCMS web application'
-        const setupType = body.setupType || 'extended'
-
+        const defaults = getProjectDefaults({ ...body, setupType: SETUP_TYPES.EXTENDED })
         const cssFrameworks = parseArrayValue(body, 'css')
         const jsFrameworks = parseArrayValue(body, 'js')
 
         // Next: editors & tools (combined step)
-        const editors = getAvailableEditors()
-        const popularEditors = editors
-            .filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
-            .map(e => ({ ...e, selected: e.id === 'cursor' })) // Default cursor selected
-        const otherEditors = editors
-            .filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
-            .map(e => ({ ...e, selected: false }))
+        const { popular: popularEditors, other: otherEditors } = getEditorsGrouped([])
+        // Default cursor selected
+        popularEditors.forEach(e => {
+            if (e.id === DEFAULT_SELECTED_EDITOR) e.selected = true
+        })
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             3,
             'steps/editors.html',
             {
-                setupType: 'extended',
-                projectName,
-                projectDescription,
+                ...defaults,
                 frontend: { css: cssFrameworks, js: jsFrameworks },
-                editors: [], // Empty on first load
+                editors: [],
                 popularEditors,
                 otherEditors,
-                hiddenFields: [
-                    { name: 'projectName', value: projectName },
-                    { name: 'projectDescription', value: projectDescription },
-                    { name: 'setupType', value: 'extended' },
-                    ...cssFrameworks.map(css => ({ name: 'css', value: css })),
-                    ...jsFrameworks.map(js => ({ name: 'js', value: js }))
-                ]
+                hiddenFields: createHiddenFields({ ...defaults, css: cssFrameworks, js: jsFrameworks })
             }
         )
         return c.html(html)
@@ -374,48 +381,31 @@ export function apiRoutes(projectDir) {
     // Handle editors & tools selection (both paths)
     app.post('/setup/step/editors', async (c) => {
         const body = await c.req.parseBody()
-        const projectName = body.projectName || 'my-project'
-        const projectDescription = body.projectDescription || 'A CouchCMS web application'
-        const setupType = body.setupType || 'simple'
-
+        const defaults = getProjectDefaults(body)
         const selectedEditors = parseArrayValue(body, 'editors')
         const cssFrameworks = parseArrayValue(body, 'css')
         const jsFrameworks = parseArrayValue(body, 'js')
 
-        if (setupType === 'simple') {
+        if (defaults.setupType === SETUP_TYPES.SIMPLE) {
             // Simple: editors → review
             return c.html(await getReviewStep(c.renderTemplate, {
-                setupType: 'simple',
-                projectName,
-                projectDescription,
+                ...defaults,
                 editors: selectedEditors,
                 frontend: { css: [], js: [] },
                 framework: false,
-                contextDir: '.project/ai'
+                contextDir: DEFAULT_CONTEXT_DIR
             }))
         } else {
             // Extended: editors → advanced
-            const cssFrameworks = parseArrayValue(body, 'css')
-            const jsFrameworks = parseArrayValue(body, 'js')
-
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
                 4,
                 'steps/advanced.html',
                 {
-                    setupType: 'extended',
-                    projectName,
-                    projectDescription,
+                    ...defaults,
                     frontend: { css: cssFrameworks, js: jsFrameworks },
                     editors: selectedEditors,
-                    hiddenFields: [
-                        { name: 'projectName', value: projectName },
-                        { name: 'projectDescription', value: projectDescription },
-                        { name: 'setupType', value: 'extended' },
-                        ...cssFrameworks.map(css => ({ name: 'css', value: css })),
-                        ...jsFrameworks.map(js => ({ name: 'js', value: js })),
-                        ...selectedEditors.map(ed => ({ name: 'editors', value: ed }))
-                    ]
+                    hiddenFields: createHiddenFields({ ...defaults, css: cssFrameworks, js: jsFrameworks, editors: selectedEditors })
                 }
             )
             return c.html(html)
@@ -425,38 +415,30 @@ export function apiRoutes(projectDir) {
     // Handle advanced options (Extended path only)
     app.post('/setup/step/advanced', async (c) => {
         try {
-        const body = await c.req.parseBody()
-            const projectName = body.projectName || 'my-project'
-            const projectDescription = body.projectDescription || 'A CouchCMS web application'
+            const body = await c.req.parseBody()
+            const defaults = getProjectDefaults({ ...body, setupType: SETUP_TYPES.EXTENDED })
+            const cssFrameworks = parseArrayValue(body, 'css')
+            const jsFrameworks = parseArrayValue(body, 'js')
+            const editors = parseArrayValue(body, 'editors')
+            const framework = body.framework === 'true'
+            const contextDir = body.contextDir || DEFAULT_CONTEXT_DIR
 
-        const cssFrameworks = parseArrayValue(body, 'css')
-        const jsFrameworks = parseArrayValue(body, 'js')
-        const editors = parseArrayValue(body, 'editors')
-        const framework = body.framework === 'true'
-        const frameworkDoctrine = body.framework_doctrine === 'true'
-        const frameworkDirectives = body.framework_directives === 'true'
-        const frameworkPlaybooks = body.framework_playbooks === 'true'
-        const frameworkEnhancements = body.framework_enhancements === 'true'
-        const contextDir = body.contextDir || '.project/ai'
+            const frameworkConfig = framework ? {
+                enabled: true,
+                doctrine: body.framework_doctrine === 'true',
+                directives: body.framework_directives === 'true',
+                playbooks: body.framework_playbooks === 'true',
+                enhancements: body.framework_enhancements === 'true'
+            } : false
 
-        const frameworkConfig = framework ? {
-            enabled: true,
-            doctrine: frameworkDoctrine,
-            directives: frameworkDirectives,
-            playbooks: frameworkPlaybooks,
-            enhancements: frameworkEnhancements
-        } : false
-
-        // Next: review
-        return c.html(await getReviewStep(c.renderTemplate, {
-            setupType: 'extended',
-            projectName,
-            projectDescription,
-            frontend: { css: cssFrameworks, js: jsFrameworks },
-            editors,
-            framework: frameworkConfig,
-            contextDir
-        }))
+            // Next: review
+            return c.html(await getReviewStep(c.renderTemplate, {
+                ...defaults,
+                frontend: { css: cssFrameworks, js: jsFrameworks },
+                editors,
+                framework: frameworkConfig,
+                contextDir
+            }))
         } catch (error) {
             console.error('Error in /setup/step/advanced:', error)
             return c.html(`<div class="alert alert-error"><p>Error: ${error.message}</p></div>`, 500)
@@ -466,82 +448,34 @@ export function apiRoutes(projectDir) {
     // Generate configuration
     app.post('/setup/generate', async (c) => {
         const body = await c.req.parseBody()
-
-        const projectName = body.projectName || 'my-project'
-        const projectDescription = body.projectDescription || 'A CouchCMS web application'
-        const setupType = body.setupType || 'simple'
-
-        // Parse arrays from form data
+        const defaults = getProjectDefaults(body)
         const cssFrameworks = parseArrayValue(body, 'css')
         const jsFrameworks = parseArrayValue(body, 'js')
         const editors = parseArrayValue(body, 'editors')
 
         // Parse framework config
-        let frameworkConfig = false
-        if (body.framework === 'true') {
-            frameworkConfig = {
-                doctrine: body.framework_doctrine === 'true',
-                directives: body.framework_directives === 'true',
-                playbooks: body.framework_playbooks === 'true',
-                enhancements: body.framework_enhancements === 'true'
-            }
-        }
+        const frameworkConfig = body.framework === 'true' ? {
+            doctrine: body.framework_doctrine === 'true',
+            directives: body.framework_directives === 'true',
+            playbooks: body.framework_playbooks === 'true',
+            enhancements: body.framework_enhancements === 'true'
+        } : false
 
-        const contextDir = body.contextDir || '.project/ai'
+        const contextDir = body.contextDir || DEFAULT_CONTEXT_DIR
 
         try {
-            // Import required modules
-            const { checkAndInstallDependencies } = await import('../../lib/dependency-checker.js')
-            const { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents } = await import('../../lib/option-organizer.js')
-            const { detectToolkitPath } = await import('../../lib/toolkit-detector.js')
-            const { determineConfigPath, generateStandardsFile } = await import('../../lib/config-generator.js')
-            const { runInitialSync } = await import('../../lib/sync-runner.js')
-            const { getToolkitRootCached } = await import('../../lib/paths.js')
-
-            const TOOLKIT_ROOT = getToolkitRootCached()
-
-            // Step 1: Ensure dependencies
-            await checkAndInstallDependencies(TOOLKIT_ROOT)
-
-            // Step 2: Build module and agent lists
-            const couchcmsModules = getCouchCMSModules()
-            const couchcmsAgents = getCouchCMSAgents()
-            const frontendModules = [...cssFrameworks, ...jsFrameworks]
-            const allModules = getCompleteModules(frontendModules)
-
-            // Get matching frontend agents for selected modules
-            const frontendAgents = getMatchingAgents(frontendModules)
-
-            // Combine all agents: CouchCMS + frontend
-            const allAgents = getCompleteAgents(frontendAgents, [])
-
-            // Step 3: Detect toolkit path
-            const toolkitPath = detectToolkitPath(projectDir) || './ai-toolkit-shared'
-
-            // Step 4: Determine config path
-            const { configPath, configDir } = await determineConfigPath(projectDir, setupType === 'simple')
-
-            // Step 5: Generate standards.md
-            await generateStandardsFile({
-                projectDir,
-                configPath,
-                configDir,
-                projectName,
-                projectDescription,
-                toolkitPath,
-                toolkitRoot: TOOLKIT_ROOT,
-                selectedModules: allModules,
-                selectedAgents: allAgents,
-                selectedEditors: editors,
-                frameworkConfig: frameworkConfig
+            await generateConfiguration(projectDir, {
+                ...defaults,
+                cssFrameworks,
+                jsFrameworks,
+                editors,
+                frameworkConfig,
+                contextDir
             })
 
-            // Step 6: Run initial sync
-            await runInitialSync(projectDir, TOOLKIT_ROOT)
-
             // Update progress to show completion
-            const finalStep = setupType === 'simple' ? 3 : 5
-            const progressData = getProgressIndicatorData(finalStep, setupType)
+            const finalStep = defaults.setupType === SETUP_TYPES.SIMPLE ? 3 : 5
+            const progressData = getProgressIndicatorData(finalStep, defaults.setupType)
             const progressHtml = await c.renderTemplate('partials/progress-indicator.html', progressData)
             const successHtml = await c.renderTemplate('steps/success.html', {})
             return c.html(progressHtml + '\n' + successHtml)
@@ -551,45 +485,152 @@ export function apiRoutes(projectDir) {
         }
     })
 
+    /**
+     * Generate project configuration
+     * @param {string} projectDir - Project directory
+     * @param {Object} config - Configuration options
+     * @returns {Promise<void>}
+     */
+    async function generateConfiguration(projectDir, config) {
+        // Import required modules
+        const { checkAndInstallDependencies } = await import('../../lib/dependency-checker.js')
+        const { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents } = await import('../../lib/option-organizer.js')
+        const { detectToolkitPath } = await import('../../lib/toolkit-detector.js')
+        const { determineConfigPath, generateStandardsFile } = await import('../../lib/config-generator.js')
+        const { runInitialSync } = await import('../../lib/sync-runner.js')
+        const { getToolkitRootCached } = await import('../../lib/paths.js')
+
+        const TOOLKIT_ROOT = getToolkitRootCached()
+
+        // Step 1: Ensure dependencies
+        await checkAndInstallDependencies(TOOLKIT_ROOT)
+
+        // Step 2: Build module and agent lists
+        const couchcmsModules = getCouchCMSModules()
+        const couchcmsAgents = getCouchCMSAgents()
+        const frontendModules = [...config.cssFrameworks, ...config.jsFrameworks]
+        const allModules = getCompleteModules(frontendModules)
+
+        // Get matching frontend agents for selected modules
+        const frontendAgents = getMatchingAgents(frontendModules)
+
+        // Combine all agents: CouchCMS + frontend
+        const allAgents = getCompleteAgents(frontendAgents, [])
+
+        // Step 3: Detect toolkit path
+        const toolkitPath = detectToolkitPath(projectDir) || './ai-toolkit-shared'
+
+        // Step 4: Determine config path
+        const { configPath, configDir } = await determineConfigPath(projectDir, config.setupType === SETUP_TYPES.SIMPLE)
+
+        // Step 5: Generate standards.md
+        await generateStandardsFile({
+            projectDir,
+            configPath,
+            configDir,
+            projectName: config.projectName,
+            projectDescription: config.projectDescription,
+            toolkitPath,
+            toolkitRoot: TOOLKIT_ROOT,
+            selectedModules: allModules,
+            selectedAgents: allAgents,
+            selectedEditors: config.editors,
+            frameworkConfig: config.frameworkConfig
+        })
+
+        // Step 6: Run initial sync
+        await runInitialSync(projectDir, TOOLKIT_ROOT)
+    }
+
     return app
 }
 
+
 /**
- * Parse array values from form body
- * Handles both array format and multiple inputs with same name
- * Hono's parseBody() may return arrays or single values depending on form structure
+ * Scan directory for markdown files (excluding README)
+ * @param {string} dirPath - Directory path to scan
+ * @param {string[]} excludeNames - Names to exclude from results
+ * @returns {string[]} Array of file names (without .md extension)
  */
-function parseArrayValue(body, key) {
-    // Check if it's already an array
-    if (Array.isArray(body[key])) {
-        return body[key].filter(v => v != null && v !== '')
-    }
+function scanMarkdownFiles(dirPath, excludeNames = []) {
+    const files = []
+    if (!existsSync(dirPath)) return files
 
-    // Check if it's a single value
-    if (body[key] != null && body[key] !== '') {
-        return [body[key]]
-    }
-
-    // Collect all values with this key (handles multiple inputs with same name)
-    // Also handles keys like 'css[0]', 'css[1]', etc.
-    const values = []
-    for (const [k, v] of Object.entries(body)) {
-        if (k === key) {
-            if (v != null && v !== '' && !values.includes(v)) {
-                values.push(v)
-            }
-        } else if (k.startsWith(`${key}[`) || k.startsWith(`${key}.`)) {
-            if (v != null && v !== '' && !values.includes(v)) {
-                values.push(v)
+    try {
+        const entries = readdirSync(dirPath)
+        for (const entry of entries) {
+            const fullPath = join(dirPath, entry)
+            try {
+                const stat = statSync(fullPath)
+                if (stat.isFile() && entry.endsWith('.md') && !entry.includes('README')) {
+                    const name = entry.replace('.md', '')
+                    if (!excludeNames.includes(name)) {
+                        files.push(name)
+                    }
+                }
+            } catch (e) {
+                // Skip if we can't stat the file
             }
         }
+    } catch (error) {
+        console.warn(`⚠️  Failed to scan directory ${dirPath}: ${error.message}`)
     }
 
-    return values
+    return files
+}
+
+/**
+ * Get CouchCMS modules and agents from toolkit directory
+ * @returns {Object} Object with couchcmsModules and couchcmsAgents arrays
+ */
+function getCouchCMSItemsFromToolkit() {
+    const toolkitPath = getToolkitRootCached()
+    const frontendModuleNames = [...FRONTEND_MODULES.CSS, ...FRONTEND_MODULES.JS]
+    const frontendAgentNames = [FRONTEND_MODULES.CSS[0], FRONTEND_MODULES.JS[0], FRONTEND_MODULES.JS[1]]
+
+    let couchcmsModules = []
+    let couchcmsAgents = []
+
+    // Try core directory first
+    const coreModulesDir = join(toolkitPath, 'modules', 'core')
+    const coreAgentsDir = join(toolkitPath, 'agents', 'core')
+
+    couchcmsModules = scanMarkdownFiles(coreModulesDir, frontendModuleNames)
+    couchcmsAgents = scanMarkdownFiles(coreAgentsDir, frontendAgentNames)
+
+    // Fallback to legacy flat structure if core/ is empty
+    if (couchcmsModules.length === 0) {
+        const legacyModulesDir = join(toolkitPath, 'modules')
+        couchcmsModules = scanMarkdownFiles(legacyModulesDir, frontendModuleNames)
+    }
+
+    if (couchcmsAgents.length === 0) {
+        const legacyAgentsDir = join(toolkitPath, 'agents')
+        couchcmsAgents = scanMarkdownFiles(legacyAgentsDir, frontendAgentNames)
+    }
+
+    // Sort and remove duplicates
+    couchcmsModules = [...new Set(couchcmsModules)].sort()
+    couchcmsAgents = [...new Set(couchcmsAgents)].sort()
+
+    // Fallback to hardcoded values if scanning found nothing
+    if (couchcmsModules.length === 0) {
+        const fallback = getCouchCMSModules()
+        if (fallback.length > 0) couchcmsModules = fallback
+    }
+    if (couchcmsAgents.length === 0) {
+        const fallback = getCouchCMSAgents()
+        if (fallback.length > 0) couchcmsAgents = fallback
+    }
+
+    return { couchcmsModules, couchcmsAgents }
 }
 
 /**
  * Get review step HTML using Nunjucks template
+ * @param {Function} renderTemplate - Template render function
+ * @param {Object} data - Review step data
+ * @returns {Promise<string>} HTML content
  */
 async function getReviewStep(renderTemplate, data) {
     const {
@@ -599,116 +640,11 @@ async function getReviewStep(renderTemplate, data) {
         frontend = { css: [], js: [] },
         editors = [],
         framework = false,
-        contextDir = '.project/ai'
+        contextDir = DEFAULT_CONTEXT_DIR
     } = data
 
-    // Get CouchCMS modules/agents directly from toolkit directory
-    // (standards.md doesn't exist yet during setup wizard)
-    const toolkitPath = getToolkitRootCached()
-
-    // Try to get from toolkit directory first
-    let couchcmsModules = []
-    let couchcmsAgents = []
-
-    try {
-        const frontendModuleNames = ['tailwindcss', 'daisyui', 'alpinejs', 'typescript']
-        const frontendAgentNames = ['tailwindcss', 'alpinejs', 'typescript']
-
-        // Scan modules/core/ directory (CouchCMS modules)
-        const coreModulesDir = join(toolkitPath, 'modules', 'core')
-        if (existsSync(coreModulesDir)) {
-            const files = readdirSync(coreModulesDir)
-            for (const file of files) {
-                if (file.endsWith('.md') && !file.includes('README')) {
-                    const moduleName = file.replace('.md', '')
-                    if (!frontendModuleNames.includes(moduleName)) {
-                        couchcmsModules.push(moduleName)
-                    }
-                }
-            }
-        }
-
-        // Scan agents/core/ directory (CouchCMS agents)
-        const coreAgentsDir = join(toolkitPath, 'agents', 'core')
-        if (existsSync(coreAgentsDir)) {
-            const files = readdirSync(coreAgentsDir)
-            for (const file of files) {
-                if (file.endsWith('.md') && !file.includes('README')) {
-                    const agentName = file.replace('.md', '')
-                    if (!frontendAgentNames.includes(agentName)) {
-                        couchcmsAgents.push(agentName)
-                    }
-                }
-            }
-        }
-
-        // Also check legacy flat structure for modules if core/ is empty
-        if (couchcmsModules.length === 0) {
-            const legacyModulesDir = join(toolkitPath, 'modules')
-            if (existsSync(legacyModulesDir)) {
-                const entries = readdirSync(legacyModulesDir)
-                for (const entry of entries) {
-                    const fullPath = join(legacyModulesDir, entry)
-                    try {
-                        const stat = statSync(fullPath)
-                        if (stat.isFile() && entry.endsWith('.md') && !entry.includes('README')) {
-                            const moduleName = entry.replace('.md', '')
-                            if (!frontendModuleNames.includes(moduleName)) {
-                                couchcmsModules.push(moduleName)
-                            }
-                        }
-                    } catch (e) {
-                        // Skip if we can't stat the file
-                    }
-                }
-            }
-        }
-
-        // Also check legacy flat structure for agents if core/ is empty
-        if (couchcmsAgents.length === 0) {
-            const legacyAgentsDir = join(toolkitPath, 'agents')
-            if (existsSync(legacyAgentsDir)) {
-                const entries = readdirSync(legacyAgentsDir)
-                for (const entry of entries) {
-                    const fullPath = join(legacyAgentsDir, entry)
-                    try {
-                        const stat = statSync(fullPath)
-                        if (stat.isFile() && entry.endsWith('.md') && !entry.includes('README')) {
-                            const agentName = entry.replace('.md', '')
-                            if (!frontendAgentNames.includes(agentName)) {
-                                couchcmsAgents.push(agentName)
-                            }
-                        }
-                    } catch (e) {
-                        // Skip if we can't stat the file
-                    }
-                }
-            }
-        }
-
-        // Sort and remove duplicates
-        couchcmsModules = [...new Set(couchcmsModules)].sort()
-        couchcmsAgents = [...new Set(couchcmsAgents)].sort()
-    } catch (error) {
-        console.warn(`⚠️  Failed to scan toolkit directory: ${error.message}`)
-    }
-
-    // Always fallback to hardcoded values if scanning found nothing
-    // This ensures we always have something to show
-    if (couchcmsModules.length === 0) {
-        const fallbackModules = getCouchCMSModules()
-        if (fallbackModules.length > 0) {
-            couchcmsModules = fallbackModules
-        }
-    }
-    if (couchcmsAgents.length === 0) {
-        const fallbackAgents = getCouchCMSAgents()
-        if (fallbackAgents.length > 0) {
-            couchcmsAgents = fallbackAgents
-        }
-    }
-
-    const finalStep = setupType === 'simple' ? 3 : 5
+    const { couchcmsModules, couchcmsAgents } = getCouchCMSItemsFromToolkit()
+    const finalStep = setupType === SETUP_TYPES.SIMPLE ? 3 : 5
 
     return await wrapStepWithProgress(
         renderTemplate,
@@ -730,19 +666,23 @@ async function getReviewStep(renderTemplate, data) {
 
 /**
  * Get module description
+ * @param {string} name - Module name
+ * @returns {string} Module description
  */
 function getModuleDescription(name) {
     const descriptions = {
-        'tailwindcss': 'Utility-first CSS framework',
-        'daisyui': 'Component library for TailwindCSS',
-        'alpinejs': 'Lightweight reactive JavaScript',
-        'typescript': 'Type-safe JavaScript'
+        [FRONTEND_MODULES.CSS[0]]: 'Utility-first CSS framework',
+        [FRONTEND_MODULES.CSS[1]]: 'Component library for TailwindCSS',
+        [FRONTEND_MODULES.JS[0]]: 'Lightweight reactive JavaScript',
+        [FRONTEND_MODULES.JS[1]]: 'Type-safe JavaScript'
     }
     return descriptions[name] || 'CouchCMS module'
 }
 
 /**
  * Get agent description
+ * @param {string} name - Agent name
+ * @returns {string} Agent description
  */
 function getAgentDescription(name) {
     return `AI agent for ${name}`

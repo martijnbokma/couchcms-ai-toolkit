@@ -7,6 +7,11 @@
 import { Hono } from 'hono'
 
 /**
+ * Constants
+ */
+const DEFAULT_SETUP_TYPE = 'simple'
+
+/**
  * Create setup routes
  * @param {string} projectDir - Project directory
  * @returns {Hono} Setup routes app
@@ -28,7 +33,7 @@ export function setupRoutes(projectDir) {
 
     // Main wizard interface
     app.get('/setup/wizard', async (c) => {
-        const setupType = c.req.query('type') || 'simple'
+        const setupType = c.req.query('type') || DEFAULT_SETUP_TYPE
         const html = await c.renderTemplate('setup/wizard.html', { setupType })
         return c.html(html)
     })
