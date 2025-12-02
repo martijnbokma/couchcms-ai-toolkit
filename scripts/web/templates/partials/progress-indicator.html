@@ -1,58 +1,32 @@
-<nav class="space-y-2 mb-8" id="progress-indicator" hx-swap-oob="true">
+<nav class="relative sm:pb-9 mb-8" id="progress-indicator" hx-swap-oob="true">
     <!-- Progress Bar -->
-    <div class="flex h-1 w-full items-center overflow-hidden rounded-full bg-primary/20">
-        <div
-            role="progressbar"
-            aria-valuenow="{{ progressPercentage }}"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            class="flex items-center justify-center self-stretch rounded-full bg-primary text-xs font-medium text-primary-content transition-all duration-500 ease-out"
-            style="width: {{ progressPercentage }}%"
-        ></div>
+    <div class="absolute top-0 right-0 left-0 flex h-4 items-center">
+        <div class="flex h-1 w-full items-center overflow-hidden rounded-full bg-primary/20">
+            <div
+                role="progressbar"
+                aria-valuenow="{{ progressPercentage }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                class="flex items-center justify-center self-stretch rounded-full bg-primary text-xs font-medium text-primary-content transition-all duration-500 ease-out"
+                style="width: {{ progressPercentage }}%"
+            ></div>
+        </div>
     </div>
 
-    <!-- Steps Grid - Responsive: vertical on mobile, horizontal on desktop -->
-    <style>
-        @media (min-width: 640px) {
-            #progress-steps-grid {
-                grid-template-columns: repeat({{ totalSteps }}, minmax(0, 1fr));
-            }
-        }
-    </style>
-    <ol id="progress-steps-grid" class="grid grid-cols-1 gap-2 sm:gap-4 items-stretch" role="list">
+    <!-- Steps Bullets -->
+    <ol class="relative flex items-center justify-between gap-2 md:gap-4 mt-4" role="list">
         {% for step in steps %}
-        <li class="flex">
-            <div
-                class="flex items-center gap-3 rounded-lg p-3 text-sm transition-colors w-full h-full {% if step.isCompleted %}border border-base-300 bg-base-200{% elif step.isActive %}border border-primary bg-base-100{% else %}border border-transparent bg-base-100/50{% endif %}"
-            >
-                <!-- Step Number/Icon -->
+        <li class="flex-1">
+            <div class="group relative flex flex-col items-center">
+                <!-- Bullet -->
                 <div
-                    class="flex size-8 flex-none items-center justify-center rounded-full font-semibold shrink-0 {% if step.isCompleted %}bg-primary text-primary-content{% elif step.isActive %}bg-base-100 border-4 border-primary text-primary{% else %}bg-base-300 text-base-content/60{% endif %}"
+                    class="flex size-4 items-center justify-center rounded-full font-semibold transition-colors {% if step.isCompleted %}bg-primary group-hover:bg-primary/90 group-active:bg-primary{% elif step.isActive %}border-4 border-primary bg-base-100 group-hover:border-primary/90 group-active:border-primary{% else %}bg-primary/20 group-hover:bg-primary/30 group-active:bg-primary/20{% endif %}"
+                ></div>
+                <!-- Label -->
+                <div
+                    class="absolute {% if loop.first %}left-0{% elif loop.last %}right-0{% else %}-right-6 -left-6 text-center{% endif %} hidden py-2 text-sm font-medium group-hover:text-primary sm:block"
                 >
-                    {% if step.isCompleted %}
-                    <svg
-                        class="inline-block size-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                    >
-                        <path
-                            fill-rule="evenodd"
-                            d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
-                    {% else %}
-                    {{ step.num }}
-                    {% endif %}
-                </div>
-
-                <!-- Step Content -->
-                <div class="flex items-center min-w-0 flex-1">
-                    <div class="font-semibold {% if step.isActive %}text-primary{% else %}text-base-content{% endif %} truncate">
-                        {{ step.label }}
-                    </div>
+                    {{ step.label }}
                 </div>
             </div>
         </li>
