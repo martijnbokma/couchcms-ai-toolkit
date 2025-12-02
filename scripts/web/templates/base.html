@@ -57,6 +57,38 @@
         .form-control {
             margin-bottom: 1rem;
         }
+        /* Mesh background wrapper */
+        .mesh-bg {
+            position: relative;
+            background-color: hsl(var(--b1));
+        }
+        .mesh-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://cdn.devdojo.com/images/september2021/mesh-bg.jpeg');
+            background-size: cover;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        .mesh-bg > * {
+            position: relative;
+            z-index: 1;
+        }
+        /* Modern card styling */
+        .card-modern {
+            border-radius: 1.5rem;
+            border: 1px solid hsl(var(--bc) / 0.1);
+            background-color: hsl(var(--b1) / 0.3);
+            backdrop-filter: blur(10px);
+        }
+        /* Modern button styling */
+        .btn-modern {
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+        }
     </style>
 </head>
 <body class="bg-base-100 min-h-screen">
