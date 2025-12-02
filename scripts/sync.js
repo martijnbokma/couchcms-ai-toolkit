@@ -107,9 +107,22 @@ function loadModule(moduleName, toolkitPath) {
         return cached
     }
 
-    const modulePath = join(toolkitPath, 'modules', `${moduleName}.md`)
+    // Search in subdirectories: core/ and frontend/
+    const possiblePaths = [
+        join(toolkitPath, 'modules', `${moduleName}.md`), // Legacy flat structure
+        join(toolkitPath, 'modules', 'core', `${moduleName}.md`), // CouchCMS modules
+        join(toolkitPath, 'modules', 'frontend', `${moduleName}.md`), // Frontend modules
+    ]
 
-    if (!existsSync(modulePath)) {
+    let modulePath = null
+    for (const path of possiblePaths) {
+        if (existsSync(path)) {
+            modulePath = path
+            break
+        }
+    }
+
+    if (!modulePath) {
         console.warn(`⚠️  Module not found: ${moduleName}`)
         return null
     }
@@ -135,19 +148,32 @@ function loadAgent(agentName, toolkitPath) {
         return cached
     }
 
-    // Agents are now in a flat structure under agents/
-    const agentPath = join(toolkitPath, 'agents', `${agentName}.md`)
+    // Search in subdirectories: core/, frontend/, and dev-tools/
+    const possiblePaths = [
+        join(toolkitPath, 'agents', `${agentName}.md`), // Legacy flat structure
+        join(toolkitPath, 'agents', 'core', `${agentName}.md`), // CouchCMS agents
+        join(toolkitPath, 'agents', 'frontend', `${agentName}.md`), // Frontend agents
+        join(toolkitPath, 'agents', 'dev-tools', `${agentName}.md`), // Dev tool agents
+    ]
 
-    if (existsSync(agentPath)) {
-        const fileContent = readFileSync(agentPath, 'utf8')
-        const { data: meta, content } = matter(fileContent)
-        const agent = { meta, content, name: agentName }
-        cache.set(cacheKey, agent)
-        return agent
+    let agentPath = null
+    for (const path of possiblePaths) {
+        if (existsSync(path)) {
+            agentPath = path
+            break
+        }
     }
 
-    console.warn(`⚠️  Agent not found: ${agentName}`)
-    return null
+    if (!agentPath) {
+        console.warn(`⚠️  Agent not found: ${agentName}`)
+        return null
+    }
+
+    const fileContent = readFileSync(agentPath, 'utf8')
+    const { data: meta, content } = matter(fileContent)
+    const agent = { meta, content, name: agentName }
+    cache.set(cacheKey, agent)
+    return agent
 }
 
 /**
@@ -489,7 +515,7 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
 
     // Build templateMap from selected editors only
     const templateMap = {}
-    editorsToGenerate.forEach(editorId => {
+    selectedEditors.forEach(editorId => {
         const editorConfig = editorMap[editorId]
         if (editorConfig) {
             templateMap[editorConfig.template] = {
@@ -564,9 +590,22 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
  * @returns {object|null} - Parsed skill rules JSON or null if not found
  */
 function loadModuleSkillRules(moduleName, toolkitPath) {
-    const skillRulesPath = join(toolkitPath, 'modules', `${moduleName}.skill-rules.json`)
+    // Search in subdirectories: core/ and frontend/
+    const possiblePaths = [
+        join(toolkitPath, 'modules', `${moduleName}.skill-rules.json`), // Legacy flat structure
+        join(toolkitPath, 'modules', 'core', `${moduleName}.skill-rules.json`), // CouchCMS modules
+        join(toolkitPath, 'modules', 'frontend', `${moduleName}.skill-rules.json`), // Frontend modules
+    ]
 
-    if (!existsSync(skillRulesPath)) {
+    let skillRulesPath = null
+    for (const path of possiblePaths) {
+        if (existsSync(path)) {
+            skillRulesPath = path
+            break
+        }
+    }
+
+    if (!skillRulesPath) {
         return null
     }
 
