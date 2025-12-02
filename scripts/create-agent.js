@@ -8,6 +8,8 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { createInterface } from 'readline';
+import { getCouchCMSAgents } from './lib/option-organizer.js';
+import { DEV_TOOL_AGENTS } from './lib/option-organizer.js';
 
 const rl = createInterface({
     input: process.stdin,
@@ -20,10 +22,49 @@ function question(prompt) {
     });
 }
 
+function findAgentPath(agentName) {
+    const couchcmsAgents = getCouchCMSAgents();
+    const devToolNames = DEV_TOOL_AGENTS.map(a => a.name);
+
+    let subdir = 'frontend'; // Default to frontend
+    if (couchcmsAgents.includes(agentName)) {
+        subdir = 'core';
+    } else if (devToolNames.includes(agentName)) {
+        subdir = 'dev-tools';
+    }
+
+    // Try subdirectory first
+    const subdirPath = join('agents', subdir, `${agentName}.md`);
+    if (existsSync(subdirPath)) {
+        return subdirPath;
+    }
+
+    // Fallback to root (legacy support)
+    const rootPath = join('agents', `${agentName}.md`);
+    if (existsSync(rootPath)) {
+        return rootPath;
+    }
+
+    return null;
+}
+
+function getAgentDirectory(agentName) {
+    const couchcmsAgents = getCouchCMSAgents();
+    const devToolNames = DEV_TOOL_AGENTS.map(a => a.name);
+
+    if (couchcmsAgents.includes(agentName)) {
+        return join('agents', 'core');
+    } else if (devToolNames.includes(agentName)) {
+        return join('agents', 'dev-tools');
+    } else {
+        return join('agents', 'frontend');
+    }
+}
+
 function validateAgentId(id) {
     if (!id) return 'Agent ID is required';
     if (!/^[a-z0-9-]+$/.test(id)) return 'Agent ID must contain only lowercase letters, numbers, and hyphens';
-    if (existsSync(join('agents', `${id}.md`))) return 'Agent already exists';
+    if (findAgentPath(id)) return 'Agent already exists';
     return null;
 }
 
@@ -38,7 +79,7 @@ async function promptForInput(prompt, validator = null, defaultValue = '') {
     while (true) {
         const answer = await question(`${prompt}${defaultValue ? ` (${defaultValue})` : ''}: `);
         const value = answer.trim() || defaultValue;
-        
+
         if (validator) {
             const error = validator(value);
             if (error) {
@@ -46,7 +87,7 @@ async function promptForInput(prompt, validator = null, defaultValue = '') {
                 continue;
             }
         }
-        
+
         return value;
     }
 }
@@ -56,15 +97,15 @@ async function selectFromOptions(prompt, options) {
     options.forEach((option, index) => {
         console.log(`  ${index + 1}. ${option}`);
     });
-    
+
     while (true) {
         const answer = await question('Select option (number): ');
         const index = parseInt(answer) - 1;
-        
+
         if (index >= 0 && index < options.length) {
             return options[index];
         }
-        
+
         console.log('❌ Invalid selection. Please enter a valid number.');
     }
 }
@@ -75,74 +116,75 @@ async function promptForList(prompt, examples = []) {
         console.log(`Examples: ${examples.join(', ')}`);
     }
     console.log('Enter items separated by commas, or press Enter for none:');
-    
+
     const answer = await question('> ');
     return answer.trim() ? answer.split(',').map(item => item.trim()) : [];
 }
 
 async function createAgent() {
     console.log('🤖 CouchCMS AI Toolkit - Agent Creator\n');
-    
+
     // Basic Information
     const id = await promptForInput('Agent ID (kebab-case)', validateAgentId);
     const name = await promptForInput('Agent Name', (v) => validateRequired(v, 'Agent Name'));
     const description = await promptForInput('Description', (v) => validateRequired(v, 'Description'));
-    
+
     // Type
     const types = ['combined', 'daily', 'specialized', 'framework'];
     const type = await selectFromOptions('Select agent type:', types);
-    
+
     // Version
     const version = await promptForInput('Version', null, '1.0');
-    
+
     // Tags
     const tags = await promptForList(
         'Tags (for categorization and search):',
         [id, 'framework', 'frontend', 'backend', 'integration']
     );
-    
+
     // Expertise area
     const expertiseArea = await promptForInput(
         'Expertise area (what this agent specializes in)',
         (v) => validateRequired(v, 'Expertise area')
     );
-    
+
     // Technology/Framework
     const technology = await promptForInput(
         'Primary technology/framework',
         (v) => validateRequired(v, 'Technology/framework')
     );
-    
+
     // Key principles
     console.log('\n📋 Agent Approach & Principles');
     console.log('Enter key principles this agent should follow (one per line, empty line to finish):');
-    
+
     const principles = [];
     while (true) {
         const principle = await question('Principle: ');
         if (!principle.trim()) break;
         principles.push(principle.trim());
     }
-    
+
     if (principles.length === 0) {
         principles.push('Follow best practices and conventions');
         principles.push('Integrate cleanly with CouchCMS');
         principles.push('Prioritize performance and security');
     }
-    
+
     // Generate agent content
     const agentContent = generateAgentContent({
         id, name, type, version, description, tags, expertiseArea, technology, principles
     });
-    
-    // Write agent file
-    const agentPath = join('agents', `${id}.md`);
+
+    // Determine agent directory based on type
+    const agentDir = getAgentDirectory(id);
+    const agentPath = join(agentDir, `${id}.md`);
     writeFileSync(agentPath, agentContent);
     console.log(`✅ Created agent: ${agentPath}`);
-    
+
     // Update standards.md
     const updateStandards = (await question('Add to standards.md automatically? (Y/n): ')).toLowerCase() !== 'n';
-    
+
     if (updateStandards) {
         try {
             updateStandardsFile(id);
@@ -152,20 +194,20 @@ async function createAgent() {
             console.log(`Please add "${id}" to the agents list in standards.md manually.`);
         }
     }
-    
+
     console.log('\n🎉 Agent created successfully!');
     console.log('\nNext steps:');
     console.log('1. Edit the agent file to add specific patterns and examples');
     console.log('2. Add common patterns, deep dive sections, and troubleshooting');
     console.log('3. Run `bun scripts/sync.js` to generate AI configs');
     console.log('4. Test the agent with `@' + id + '` syntax');
-    
+
     rl.close();
 }
 
 function generateAgentContent({ id, name, type, version, description, tags, expertiseArea, technology, principles }) {
     const principlesList = principles.map(p => `- ${p}`).join('\n');
-    
+
     return `---
 name: ${name}
 version: "${version}"
@@ -241,11 +283,11 @@ class ${name.replace(/\s+/g, '')}Component {
         this.options = options;
         this.init();
     }
-    
+
     init() {
         // Initialization logic
     }
-    
+
     method() {
         // Method implementation
     }
@@ -274,14 +316,14 @@ class ${name.replace(/\s+/g, '')}Component {
         <label for="field1">Field 1</label>
         <cms:input type='text' name='field1' required='1' />
     </div>
-    
+
     <div class="form-group">
         <label for="field2">Field 2</label>
         <cms:input type='textarea' name='field2' />
     </div>
-    
+
     <button type="submit">Submit</button>
-    
+
     <cms:if k_success>
         <div class="success-message">
             Form submitted successfully!
@@ -312,10 +354,10 @@ function advancedFeature(parameters) {
     if (!validateParameters(parameters)) {
         throw new Error('Invalid parameters');
     }
-    
+
     // Step 2: Processing
     const processed = processData(parameters);
-    
+
     // Step 3: Integration with CouchCMS
     return integrateCouchCMS(processed);
 }
@@ -331,7 +373,7 @@ class CouchCMSIntegration {
         // Process data for CouchCMS
         return $processed_data;
     }
-    
+
     public function saveToCouch($data) {
         // Save to CouchCMS database
         global $FUNCS;
@@ -462,7 +504,7 @@ const debug = {
             console.log(\`[${id.toUpperCase()}] \${message}\`, data);
         }
     },
-    
+
     error: (message, error) => {
         console.error(\`[${id.toUpperCase()}] \${message}\`, error);
     }
@@ -505,17 +547,17 @@ const debug = {
 
 function updateStandardsFile(agentId) {
     const standardsPath = 'standards.md';
-    
+
     if (!existsSync(standardsPath)) {
         throw new Error('standards.md not found');
     }
-    
+
     let content = readFileSync(standardsPath, 'utf8');
-    
+
     // Find the agents section and add the new agent
     const agentsRegex = /(agents:\s*\n(?:  - [^\n]+\n)*)/;
     const match = content.match(agentsRegex);
-    
+
     if (match) {
         const agentsSection = match[1];
         const newAgentsSection = agentsSection + `  - ${agentId}\n`;
@@ -524,18 +566,18 @@ function updateStandardsFile(agentId) {
         // If agents section doesn't exist, add it
         const yamlEndRegex = /^---\s*$/m;
         const yamlEndMatch = content.match(yamlEndRegex);
-        
+
         if (yamlEndMatch) {
             const insertPos = yamlEndMatch.index;
             const beforeYamlEnd = content.substring(0, insertPos);
             const afterYamlEnd = content.substring(insertPos);
-            
+
             content = beforeYamlEnd + `\nagents:\n  - ${agentId}\n\n` + afterYamlEnd;
         } else {
             throw new Error('Could not find YAML frontmatter in standards.md');
         }
     }
-    
+
     writeFileSync(standardsPath, content);
 }
 

@@ -2,6 +2,23 @@
 
 Combined AI agents with Quick Reference + Deep Dive structure.
 
+## Agent Organization
+
+Agents are organized into subdirectories for better clarity:
+
+- **`core/`** - CouchCMS-specific agents (always included automatically)
+  - `couchcms`, `databound-forms`, `custom-routes`, `views`, `folders`, `archives`
+  - `relationships`, `repeatable-regions`, `search`, `pagination`, `comments`
+  - `nested-pages`, `photo-gallery`, `rss-feeds`, `on-page-editing`, `users`
+
+- **`frontend/`** - Frontend framework agents (optional, user chooses)
+  - `tailwindcss`, `alpinejs`, `typescript`
+
+- **`dev-tools/`** - Development tool agents (optional)
+  - `bun`, `git`, `mysql`, `admin-panel-theming`
+
+The agent loader automatically searches these subdirectories, so agent names remain the same.
+
 ## Available Agents
 
 | Agent             | Description                                    |
@@ -89,7 +106,20 @@ agents:
 
 ## Adding New Agents
 
-1. Create `agents/[name].md`
+Choose the appropriate subdirectory based on agent type:
+
+1. Create agent file in the correct subdirectory:
+   ```bash
+   # CouchCMS agent (core/)
+   touch agents/core/new-agent.md
+
+   # Frontend agent (frontend/)
+   touch agents/frontend/new-agent.md
+
+   # Dev tool agent (dev-tools/)
+   touch agents/dev-tools/new-agent.md
+   ```
+
 2. Follow the structure above
 3. Use `{{paths.xxx}}` for path variables
 4. Run `bun run ai:sync` to test

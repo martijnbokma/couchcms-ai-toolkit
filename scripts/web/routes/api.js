@@ -6,7 +6,7 @@
 
 import { Hono } from 'hono'
 import { wrapStepWithProgress, getProgressIndicatorData, getPreviousStepRoute } from './helpers.js'
-import { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents, getMatchingAgents, DEV_TOOL_AGENTS } from '../../lib/option-organizer.js'
+import { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents, getMatchingAgents, getDevToolAgents } from '../../lib/option-organizer.js'
 import { getAvailableEditors } from '../../lib/prompts.js'
 
 /**
@@ -138,7 +138,7 @@ export function apiRoutes(projectDir) {
                 projectName,
                 projectDescription,
                 frontend: { css, js },
-                devTools: DEV_TOOL_AGENTS.map(tool => ({
+                devTools: getDevToolAgents().map(tool => ({
                     id: tool.name,
                     name: tool.name.charAt(0).toUpperCase() + tool.name.slice(1).replace(/-/g, ' '),
                     description: tool.description
@@ -276,7 +276,7 @@ export function apiRoutes(projectDir) {
                 projectName,
                 projectDescription,
                 frontend: { css: cssFrameworks, js: jsFrameworks },
-                devTools: DEV_TOOL_AGENTS.map(tool => ({
+                devTools: getDevToolAgents().map(tool => ({
                     id: tool.name,
                     name: tool.name.charAt(0).toUpperCase() + tool.name.slice(1).replace(/-/g, ' '),
                     description: tool.description

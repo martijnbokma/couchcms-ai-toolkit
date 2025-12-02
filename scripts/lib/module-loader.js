@@ -128,10 +128,23 @@ function loadAgent(agentName, toolkitPath) {
         return moduleCache.get(cacheKey)
     }
 
-    // Agents are in a flat structure under agents/
-    const agentPath = join(toolkitPath, 'agents', `${agentName}.md`)
+    // Search in subdirectories: core/, frontend/, and dev-tools/
+    const possiblePaths = [
+        join(toolkitPath, 'agents', `${agentName}.md`), // Legacy flat structure
+        join(toolkitPath, 'agents', 'core', `${agentName}.md`), // CouchCMS agents
+        join(toolkitPath, 'agents', 'frontend', `${agentName}.md`), // Frontend agents
+        join(toolkitPath, 'agents', 'dev-tools', `${agentName}.md`), // Dev tool agents
+    ]
 
-    if (!existsSync(agentPath)) {
+    let agentPath = null
+    for (const path of possiblePaths) {
+        if (existsSync(path)) {
+            agentPath = path
+            break
+        }
+    }
+
+    if (!agentPath) {
         console.warn(`⚠️  Agent not found: ${agentName}`)
         return null
     }
@@ -370,7 +383,7 @@ export function listAvailableModules(toolkitPath) {
 }
 
 /**
- * List available agents in toolkit
+ * List available agents in toolkit (searches subdirectories)
  *
  * @param {string} toolkitPath - Path to toolkit root
  * @returns {Array<string>} - Array of available agent names
@@ -383,10 +396,35 @@ export function listAvailableAgents(toolkitPath) {
     }
 
     try {
-        return readdirSync(agentsDir)
-            .filter((f) => f.endsWith('.md'))
-            .map((f) => f.replace('.md', ''))
-            .sort()
+        const agentNames = new Set()
+
+        // Helper function to recursively find .md files
+        function scanDirectory(dir) {
+            if (!existsSync(dir)) {
+                return
+            }
+
+            const entries = readdirSync(dir)
+
+            for (const entry of entries) {
+                const fullPath = join(dir, entry)
+                const stat = statSync(fullPath)
+
+                if (stat.isDirectory()) {
+                    // Recursively scan subdirectories (core/, frontend/, dev-tools/, etc.)
+                    scanDirectory(fullPath)
+                } else if (entry.endsWith('.md')) {
+                    // Extract agent name from filename
+                    const agentName = entry.replace('.md', '')
+                    agentNames.add(agentName)
+                }
+            }
+        }
+
+        // Scan agents directory (includes subdirectories)
+        scanDirectory(agentsDir)
+
+        return Array.from(agentNames).sort()
     } catch (error) {
         console.warn(`⚠️  Failed to list agents: ${error.message}`)
         return []
