@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 /**
  * API Routes - Setup wizard API endpoints
- * Uses Nunjucks templates with new Simpel/Uitgebreid flow
+ * Uses Nunjucks templates with new Simple/Extended flow
  */
 
 import { Hono } from 'hono'
 import { wrapStepWithProgress, getProgressIndicatorData, getPreviousStepRoute } from './helpers.js'
-import { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents, getMatchingAgents, getDevToolAgents } from '../../lib/option-organizer.js'
+import { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents, getMatchingAgents } from '../../lib/option-organizer.js'
 import { getAvailableEditors } from '../../lib/prompts.js'
 
 /**
@@ -50,14 +50,14 @@ export function apiRoutes(projectDir) {
     })
 
     // ============================================
-    // SIMPEL PAD FLOW
+    // SIMPLE PATH FLOW
     // ============================================
 
     // Get step content (project info) - detects setupType from query
     app.get('/setup/step/project', async (c) => {
         const setupType = c.req.query('setupType') || 'simple'
-        const projectName = c.req.query('projectName') || 'mijn-project'
-        const projectDescription = c.req.query('projectDescription') || 'Een CouchCMS web applicatie'
+        const projectName = c.req.query('projectName') || 'my-project'
+        const projectDescription = c.req.query('projectDescription') || 'A CouchCMS web application'
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -71,8 +71,8 @@ export function apiRoutes(projectDir) {
     // GET route for editors step (for back navigation)
     app.get('/setup/step/editors', async (c) => {
         const setupType = c.req.query('setupType') || 'simple'
-        const projectName = c.req.query('projectName') || 'mijn-project'
-        const projectDescription = c.req.query('projectDescription') || 'Een CouchCMS web applicatie'
+        const projectName = c.req.query('projectName') || 'my-project'
+        const projectDescription = c.req.query('projectDescription') || 'A CouchCMS web application'
 
         const editors = getAvailableEditors()
         const popularEditors = editors.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
@@ -101,8 +101,8 @@ export function apiRoutes(projectDir) {
 
     // GET route for frontend step (for back navigation)
     app.get('/setup/step/frontend', async (c) => {
-        const projectName = c.req.query('projectName') || 'mijn-project'
-        const projectDescription = c.req.query('projectDescription') || 'Een CouchCMS web applicatie'
+        const projectName = c.req.query('projectName') || 'my-project'
+        const projectDescription = c.req.query('projectDescription') || 'A CouchCMS web application'
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -122,23 +122,21 @@ export function apiRoutes(projectDir) {
         return c.html(html)
     })
 
-    // GET route for editors step (for back navigation) - now includes devtools
+    // GET route for editors step (for back navigation)
     app.get('/setup/step/editors', async (c) => {
         const query = c.req.query()
-        const projectName = query.projectName || 'mijn-project'
-        const projectDescription = query.projectDescription || 'Een CouchCMS web applicatie'
+        const projectName = query.projectName || 'my-project'
+        const projectDescription = query.projectDescription || 'A CouchCMS web application'
         const setupType = query.setupType || 'extended'
 
         // Parse array parameters
         const css = []
         const js = []
-        const devTools = []
         const editors = []
 
         Object.keys(query).forEach(key => {
             if (key.startsWith('css[') || key === 'css') css.push(query[key])
             else if (key.startsWith('js[') || key === 'js') js.push(query[key])
-            else if (key.startsWith('devtools[') || key === 'devtools') devTools.push(query[key])
             else if (key.startsWith('editors[') || key === 'editors') editors.push(query[key])
         })
 
@@ -155,11 +153,6 @@ export function apiRoutes(projectDir) {
                 projectName,
                 projectDescription,
                 frontend: { css, js },
-                devTools: setupType === 'extended' ? getDevToolAgents().map(tool => ({
-                    id: tool.name,
-                    name: tool.name.charAt(0).toUpperCase() + tool.name.slice(1).replace(/-/g, ' '),
-                    description: tool.description
-                })) : [],
                 popularEditors,
                 otherEditors,
                 hiddenFields: [
@@ -168,7 +161,6 @@ export function apiRoutes(projectDir) {
                     { name: 'setupType', value: setupType },
                     ...css.map(c => ({ name: 'css', value: c })),
                     ...js.map(j => ({ name: 'js', value: j })),
-                    ...devTools.map(dt => ({ name: 'devtools', value: dt })),
                     ...editors.map(ed => ({ name: 'editors', value: ed }))
                 ]
             }
@@ -179,19 +171,17 @@ export function apiRoutes(projectDir) {
     // GET route for advanced step (for back navigation)
     app.get('/setup/step/advanced', async (c) => {
         const query = c.req.query()
-        const projectName = query.projectName || 'mijn-project'
-        const projectDescription = query.projectDescription || 'Een CouchCMS web applicatie'
+        const projectName = query.projectName || 'my-project'
+        const projectDescription = query.projectDescription || 'A CouchCMS web application'
 
         // Parse array parameters
         const css = []
         const js = []
-        const devTools = []
         const editors = []
 
         Object.keys(query).forEach(key => {
             if (key.startsWith('css[') || key === 'css') css.push(query[key])
             else if (key.startsWith('js[') || key === 'js') js.push(query[key])
-            else if (key.startsWith('devtools[') || key === 'devtools') devTools.push(query[key])
             else if (key.startsWith('editors[') || key === 'editors') editors.push(query[key])
         })
 
@@ -204,7 +194,6 @@ export function apiRoutes(projectDir) {
                 projectName,
                 projectDescription,
                 frontend: { css, js },
-                devTools,
                 editors,
                 hiddenFields: [
                     { name: 'projectName', value: projectName },
@@ -212,7 +201,6 @@ export function apiRoutes(projectDir) {
                     { name: 'setupType', value: 'extended' },
                     ...css.map(c => ({ name: 'css', value: c })),
                     ...js.map(j => ({ name: 'js', value: j })),
-                    ...devTools.map(dt => ({ name: 'devtools', value: dt })),
                     ...editors.map(ed => ({ name: 'editors', value: ed }))
                 ]
             }
@@ -223,13 +211,13 @@ export function apiRoutes(projectDir) {
     // Handle project info submission - routes based on setupType
     app.post('/setup/step/project', async (c) => {
         const body = await c.req.parseBody()
-        const projectName = body.projectName || 'mijn-project'
-        const projectDescription = body.projectDescription || 'Een CouchCMS web applicatie'
+        const projectName = body.projectName || 'my-project'
+        const projectDescription = body.projectDescription || 'A CouchCMS web application'
         const setupType = body.setupType || 'simple'
 
         // Route to next step based on setup type
         if (setupType === 'simple') {
-            // Simpel: project → editors
+            // Simple: project → editors
             const editors = getAvailableEditors()
             const popularEditors = editors.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
             const otherEditors = editors.filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
@@ -253,7 +241,7 @@ export function apiRoutes(projectDir) {
             )
             return c.html(html)
         } else {
-            // Uitgebreid: project → frontend
+            // Extended: project → frontend
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
                 2,
@@ -274,7 +262,7 @@ export function apiRoutes(projectDir) {
     })
 
     // ============================================
-    // UITGEBREID PAD FLOW
+    // EXTENDED PATH FLOW
     // ============================================
 
     // Handle frontend selection (Uitgebreid pad)
@@ -301,11 +289,6 @@ export function apiRoutes(projectDir) {
                 projectName,
                 projectDescription,
                 frontend: { css: cssFrameworks, js: jsFrameworks },
-                devTools: getDevToolAgents().map(tool => ({
-                    id: tool.name,
-                    name: tool.name.charAt(0).toUpperCase() + tool.name.slice(1).replace(/-/g, ' '),
-                    description: tool.description
-                })),
                 popularEditors,
                 otherEditors,
                 hiddenFields: [
@@ -323,43 +306,39 @@ export function apiRoutes(projectDir) {
     // Handle editors & tools selection (both paths)
     app.post('/setup/step/editors', async (c) => {
         const body = await c.req.parseBody()
-        const projectName = body.projectName || 'mijn-project'
-        const projectDescription = body.projectDescription || 'Een CouchCMS web applicatie'
+        const projectName = body.projectName || 'my-project'
+        const projectDescription = body.projectDescription || 'A CouchCMS web application'
         const setupType = body.setupType || 'simple'
 
         const selectedEditors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
         const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
         const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
-        const devTools = Array.isArray(body.devtools) ? body.devtools : (body.devtools ? [body.devtools] : [])
 
         if (setupType === 'simple') {
-            // Simpel: editors → review
+            // Simple: editors → review
             return c.html(await getReviewStep(c.renderTemplate, {
                 setupType: 'simple',
                 projectName,
                 projectDescription,
                 editors: selectedEditors,
                 frontend: { css: [], js: [] },
-                devTools: [],
                 framework: false,
                 contextDir: '.project/ai'
             }))
         } else {
-            // Uitgebreid: editors → advanced
+            // Extended: editors → advanced
             const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
             const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
-            const devTools = Array.isArray(body.devtools) ? body.devtools : (body.devtools ? [body.devtools] : [])
 
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
-                5,
+                4,
                 'steps/advanced.html',
                 {
                     setupType: 'extended',
                     projectName,
                     projectDescription,
                     frontend: { css: cssFrameworks, js: jsFrameworks },
-                    devTools,
                     editors: selectedEditors,
                     hiddenFields: [
                         { name: 'projectName', value: projectName },
@@ -367,7 +346,6 @@ export function apiRoutes(projectDir) {
                         { name: 'setupType', value: 'extended' },
                         ...cssFrameworks.map(css => ({ name: 'css', value: css })),
                         ...jsFrameworks.map(js => ({ name: 'js', value: js })),
-                        ...devTools.map(dt => ({ name: 'devtools', value: dt })),
                         ...selectedEditors.map(ed => ({ name: 'editors', value: ed }))
                     ]
                 }
@@ -376,15 +354,14 @@ export function apiRoutes(projectDir) {
         }
     })
 
-    // Handle advanced options (Uitgebreid pad only)
+    // Handle advanced options (Extended path only)
     app.post('/setup/step/advanced', async (c) => {
         const body = await c.req.parseBody()
-        const projectName = body.projectName || 'mijn-project'
-        const projectDescription = body.projectDescription || 'Een CouchCMS web applicatie'
+        const projectName = body.projectName || 'my-project'
+        const projectDescription = body.projectDescription || 'A CouchCMS web application'
 
         const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
         const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
-        const devTools = Array.isArray(body.devtools) ? body.devtools : (body.devtools ? [body.devtools] : [])
         const editors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
         const framework = body.framework === 'true'
         const frameworkDoctrine = body.framework_doctrine === 'true'
@@ -407,7 +384,6 @@ export function apiRoutes(projectDir) {
             projectName,
             projectDescription,
             frontend: { css: cssFrameworks, js: jsFrameworks },
-            devTools,
             editors,
             framework: frameworkConfig,
             contextDir
@@ -425,7 +401,6 @@ export function apiRoutes(projectDir) {
         // Parse arrays from form data
         const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
         const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
-        const devTools = Array.isArray(body.devtools) ? body.devtools : (body.devtools ? [body.devtools] : [])
         const editors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
 
         // Parse framework config
@@ -464,8 +439,8 @@ export function apiRoutes(projectDir) {
             // Get matching frontend agents for selected modules
             const frontendAgents = getMatchingAgents(frontendModules)
 
-            // Combine all agents: CouchCMS + frontend + devtools
-            const allAgents = getCompleteAgents(frontendAgents, devTools)
+            // Combine all agents: CouchCMS + frontend
+            const allAgents = getCompleteAgents(frontendAgents, [])
 
             // Step 3: Detect toolkit path
             const toolkitPath = detectToolkitPath(projectDir) || './ai-toolkit-shared'
@@ -492,7 +467,7 @@ export function apiRoutes(projectDir) {
             await runInitialSync(projectDir, TOOLKIT_ROOT)
 
             // Update progress to show completion
-            const finalStep = setupType === 'simple' ? 3 : 6
+            const finalStep = setupType === 'simple' ? 3 : 5
             const progressSteps = getProgressIndicatorData(finalStep, setupType)
             const progressHtml = await c.renderTemplate('partials/progress-indicator.html', { steps: progressSteps })
             const successHtml = await c.renderTemplate('steps/success.html', {})
@@ -515,7 +490,6 @@ async function getReviewStep(renderTemplate, data) {
         projectName,
         projectDescription,
         frontend = { css: [], js: [] },
-        devTools = [],
         editors = [],
         framework = false,
         contextDir = '.project/ai'
@@ -535,7 +509,6 @@ async function getReviewStep(renderTemplate, data) {
             projectName,
             projectDescription,
             frontend,
-            devTools,
             editors,
             framework,
             contextDir,

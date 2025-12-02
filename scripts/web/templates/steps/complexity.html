@@ -1,49 +1,40 @@
 <div>
-    <div class="mb-8">
-        <h2 class="text-3xl font-semibold mb-2 text-base-content">Setup Complexity</h2>
-        <p class="text-base text-base-content/60">Choose how much control you want over the configuration.</p>
+    <div class="mb-4">
+        <h2 class="text-2xl font-semibold mb-1 text-base-content">Setup Complexity</h2>
+        <p class="text-sm text-base-content/60">Choose how much control you want over the configuration.</p>
     </div>
 
     <form hx-post="/api/setup/step/complexity" hx-target="#wizard-content" hx-swap="innerHTML">
         <input type="hidden" name="projectName" value="{{ projectName }}" />
         <input type="hidden" name="projectDescription" value="{{ projectDescription }}" />
 
-        <div class="grid gap-4 mb-6">
-            <label class="relative flex flex-col h-full px-6 py-6 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border-2 border-transparent hover:border-primary/30 rounded-2xl">
-                <div class="flex items-start gap-4">
-                    <input type="radio" name="complexity" value="easy" class="radio radio-primary mt-1" checked />
-                    <div class="flex-1">
-                        <h3 class="text-lg font-semibold mb-1 text-base-content">Easy</h3>
-                        <p class="text-sm text-base-content/70 mb-2">1 minute, 2 questions</p>
-                        <p class="text-xs text-base-content/60">Quick setup with recommended defaults. All CouchCMS modules/agents + TailwindCSS + Alpine.js</p>
-                    </div>
+        <div class="grid gap-2 mb-4">
+            <label class="relative flex items-center gap-3 px-4 py-3 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                <input type="radio" name="complexity" value="easy" class="radio radio-primary radio-sm" checked />
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-sm font-semibold text-base-content">Easy</h3>
+                    <p class="text-xs text-base-content/60">1 minute, 2 questions - Quick setup with recommended defaults</p>
                 </div>
             </label>
 
-            <label class="relative flex flex-col h-full px-6 py-6 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border-2 border-transparent hover:border-primary/30 rounded-2xl">
-                <div class="flex items-start gap-4">
-                    <input type="radio" name="complexity" value="medium" class="radio radio-primary mt-1" />
-                    <div class="flex-1">
-                        <h3 class="text-lg font-semibold mb-1 text-base-content">Medium</h3>
-                        <p class="text-sm text-base-content/70 mb-2">3 minutes, 5 questions</p>
-                        <p class="text-xs text-base-content/60">Choose CSS and JS frameworks. All CouchCMS modules/agents included automatically.</p>
-                    </div>
+            <label class="relative flex items-center gap-3 px-4 py-3 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                <input type="radio" name="complexity" value="medium" class="radio radio-primary radio-sm" />
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-sm font-semibold text-base-content">Medium</h3>
+                    <p class="text-xs text-base-content/60">3 minutes, 5 questions - Choose CSS and JS frameworks</p>
                 </div>
             </label>
 
-            <label class="relative flex flex-col h-full px-6 py-6 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border-2 border-transparent hover:border-primary/30 rounded-2xl">
-                <div class="flex items-start gap-4">
-                    <input type="radio" name="complexity" value="comprehensive" class="radio radio-primary mt-1" />
-                    <div class="flex-1">
-                        <h3 class="text-lg font-semibold mb-1 text-base-content">Comprehensive</h3>
-                        <p class="text-sm text-base-content/70 mb-2">5 minutes, 8+ questions</p>
-                        <p class="text-xs text-base-content/60">Full control over all frontend options and advanced configuration.</p>
-                    </div>
+            <label class="relative flex items-center gap-3 px-4 py-3 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                <input type="radio" name="complexity" value="comprehensive" class="radio radio-primary radio-sm" />
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-sm font-semibold text-base-content">Comprehensive</h3>
+                    <p class="text-xs text-base-content/60">5 minutes, 8+ questions - Full control over all options</p>
                 </div>
             </label>
         </div>
 
-        <div class="flex justify-between mt-8">
+        <div class="flex justify-between mt-6">
             <button type="button" class="relative inline-flex items-center justify-center h-auto px-6 py-3 text-sm font-medium transition-colors bg-base-100 rounded-full sm:text-base border border-base-300 hover:bg-base-200 focus:outline-none gap-2" onclick="goBack()">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />

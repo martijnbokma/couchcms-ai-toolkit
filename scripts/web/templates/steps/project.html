@@ -1,7 +1,7 @@
 <div>
-    <div class="mb-8">
-        <h2 class="text-3xl font-semibold mb-2 text-base-content">Project Information</h2>
-        <p class="text-base text-base-content/60">Let's start by gathering basic information about your project.</p>
+    <div class="mb-4">
+        <h2 class="text-2xl font-semibold mb-1 text-base-content">Project Information</h2>
+        <p class="text-sm text-base-content/60">Let's start by gathering basic information about your project.</p>
     </div>
 
     <form hx-post="/api/setup/step/project" hx-target="#wizard-content" hx-swap="innerHTML">
@@ -34,7 +34,7 @@
             >{{ projectDescription or 'A CouchCMS web application' }}</textarea>
         </div>
 
-        <div class="flex justify-end mt-8">
+        <div class="flex justify-end mt-6">
             <button type="submit" class="relative inline-flex items-center justify-center h-auto px-6 py-3 text-sm font-medium text-primary-content transition-colors bg-primary rounded-full sm:text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:bg-primary/90 gap-2">
                 {% if setupType == 'simple' %}
                 Next: Editors
