@@ -1,0 +1,127 @@
+<script>
+    /**
+     * Shared wizard navigation functions
+     * Used across all wizard steps for consistent behavior
+     */
+
+    /**
+     * Navigate to a specific step in the wizard
+     * Collects current form data to preserve state
+     */
+    function navigateToStep(stepNum, route, setupType) {
+        // Don't navigate if it's the current step (check is done in progress-indicator.html)
+
+        // Collect current form data from the page
+        const form = document.querySelector('form')
+        const params = new URLSearchParams()
+
+        params.append('setupType', setupType || 'simple')
+
+        if (form) {
+            // Always get project info (available from step 1)
+            const projectName = form.querySelector('input[name="projectName"]')?.value || 'my-project'
+            const projectDescription = form.querySelector('input[name="projectDescription"]')?.value || 'A CouchCMS web application'
+            params.append('projectName', projectName)
+            params.append('projectDescription', projectDescription)
+
+            // Get frontend selections (if extended and target step is 2 or later)
+            if (setupType === 'extended' && stepNum >= 2) {
+                // Try to get from hidden fields first
+                const cssHidden = Array.from(form.querySelectorAll('input[name="css"][type="hidden"]')).map(i => i.value).filter(v => v)
+                const jsHidden = Array.from(form.querySelectorAll('input[name="js"][type="hidden"]')).map(i => i.value).filter(v => v)
+
+                // If no hidden fields, try checkboxes
+                const cssCheckboxes = cssHidden.length > 0 ? cssHidden : Array.from(form.querySelectorAll('input[name="css"][type="checkbox"]:checked')).map(i => i.value).filter(v => v)
+                const jsCheckboxes = jsHidden.length > 0 ? jsHidden : Array.from(form.querySelectorAll('input[name="js"][type="checkbox"]:checked')).map(i => i.value).filter(v => v)
+
+                cssCheckboxes.forEach(c => params.append('css', c))
+                jsCheckboxes.forEach(j => params.append('js', j))
+            }
+
+            // Get editor selections (if target step is editors step or later)
+            // For simple: step 2+, for extended: step 3+
+            const editorsStep = setupType === 'simple' ? 2 : 3
+            if (stepNum >= editorsStep) {
+                // Try hidden fields first
+                const editorsHidden = Array.from(form.querySelectorAll('input[name="editors"][type="hidden"]')).map(i => i.value).filter(v => v)
+                // Then try checkboxes
+                const editorsCheckboxes = editorsHidden.length > 0 ? editorsHidden : Array.from(form.querySelectorAll('input[name="editors"][type="checkbox"]:checked')).map(i => i.value).filter(v => v)
+                editorsCheckboxes.forEach(ed => params.append('editors', ed))
+            }
+
+            // Get advanced options (if extended and target step is 4 or later)
+            if (setupType === 'extended' && stepNum >= 4) {
+                const framework = form.querySelector('input[name="framework"]')?.checked || false
+                const frameworkDoctrine = form.querySelector('input[name="framework_doctrine"]')?.checked || false
+                const frameworkDirectives = form.querySelector('input[name="framework_directives"]')?.checked || false
+                const frameworkPlaybooks = form.querySelector('input[name="framework_playbooks"]')?.checked || false
+                const frameworkEnhancements = form.querySelector('input[name="framework_enhancements"]')?.checked || false
+                const contextDir = form.querySelector('input[name="contextDir"]')?.value || '.project/ai'
+
+                if (framework) {
+                    params.append('framework', 'true')
+                    if (frameworkDoctrine) params.append('framework_doctrine', 'true')
+                    if (frameworkDirectives) params.append('framework_directives', 'true')
+                    if (frameworkPlaybooks) params.append('framework_playbooks', 'true')
+                    if (frameworkEnhancements) params.append('framework_enhancements', 'true')
+                }
+                params.append('contextDir', contextDir)
+            }
+        } else {
+            // If no form, try to get data from URL params
+            const urlParams = new URLSearchParams(window.location.search)
+            urlParams.forEach((value, key) => {
+                if (key !== 'step' && key !== 'route') {
+                    params.append(key, value)
+                }
+            })
+        }
+
+        // Navigate to the step
+        htmx.ajax('GET', `/api/setup/step/${route}?${params.toString()}`, {
+            target: '#wizard-content',
+            swap: 'innerHTML'
+        })
+    }
+
+    /**
+     * Universal back button handler
+     * Uses HTMX to navigate back with form data preservation
+     */
+    function goBack(backRoute, formData = {}) {
+        // Get all form data from current form
+        const form = document.querySelector('form')
+        if (form) {
+            const formDataObj = new FormData(form)
+            for (const [key, value] of formDataObj.entries()) {
+                formData[key] = value
+            }
+        }
+
+        // Use HTMX to navigate back
+        if (backRoute) {
+            htmx.ajax('POST', backRoute, {
+                target: '#wizard-content',
+                swap: 'innerHTML',
+                values: formData
+            })
+        }
+    }
+
+    /**
+     * HTMX error handling
+     */
+    document.body.addEventListener('htmx:responseError', function(event) {
+        console.error('HTMX Error:', event.detail)
+        alert('An error occurred while submitting the form. Please try again.')
+    })
+
+    document.body.addEventListener('htmx:sendError', function(event) {
+        console.error('HTMX Send Error:', event.detail)
+        alert('An error occurred while submitting the form. Please check your internet connection.')
+    })
+
+    // Make functions available globally
+    window.navigateToStep = navigateToStep
+    window.goBack = goBack
+</script>

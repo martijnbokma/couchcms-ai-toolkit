@@ -63,10 +63,12 @@ export function getProgressIndicatorData(currentStep, setupType = 'simple') {
         return {
             num: step.num,
             label: step.label,
+            route: step.route,
             description: descriptions[step.num] || '',
             isActive,
             isCompleted,
-            isFuture
+            isFuture,
+            isClickable: step.num <= currentStep // Can navigate to completed or current steps
         }
     })
 
@@ -74,7 +76,8 @@ export function getProgressIndicatorData(currentStep, setupType = 'simple') {
         steps: stepsData,
         progressPercentage,
         totalSteps,
-        currentStep
+        currentStep,
+        setupType
     }
 }
 

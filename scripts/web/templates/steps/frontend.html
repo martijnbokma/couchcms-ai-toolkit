@@ -1,7 +1,7 @@
 <div>
-    <div class="mb-4">
-        <h2 class="text-2xl font-semibold mb-1 text-base-content">Frontend Frameworks</h2>
-        <p class="text-sm text-base-content/60">Select the CSS and JavaScript frameworks you want to use.</p>
+    <div class="mb-4 sm:mb-6">
+        <h2 class="text-xl sm:text-2xl font-semibold mb-1 text-base-content">Frontend Frameworks</h2>
+        <p class="text-xs sm:text-sm text-base-content/60">Select the CSS and JavaScript frameworks you want to use.</p>
     </div>
 
     <form hx-post="/api/setup/step/frontend" hx-target="#wizard-content" hx-swap="innerHTML">
@@ -9,17 +9,17 @@
         <input type="hidden" name="{{ hidden.name }}" value="{{ hidden.value }}" />
         {% endfor %}
 
-        <div class="mb-4">
-            <h3 class="text-sm font-semibold mb-2 text-base-content">CSS Framework</h3>
-            <div class="grid gap-2 sm:grid-cols-2">
+        <div class="mb-4 sm:mb-6">
+            <h3 class="text-xs sm:text-sm font-semibold mb-2 text-base-content">CSS Framework</h3>
+            <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
                 {% if frontendOptions %}
                 {% for option in frontendOptions.css %}
-                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="css" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm" {% if option.selected %}checked{% endif %} />
+                <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="css" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm shrink-0" {% if option.selected %}checked{% endif %} />
                     <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-base-content">{{ option.name }}</h4>
-                        <p class="text-xs text-base-content/60">{{ option.description }}</p>
-                            </div>
+                        <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
+                        <p class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
+                    </div>
                 </label>
                 {% endfor %}
                 {% else %}
@@ -41,16 +41,16 @@
             </div>
         </div>
 
-        <div class="mb-4">
-            <h3 class="text-sm font-semibold mb-2 text-base-content">JavaScript Frameworks</h3>
-            <div class="grid gap-2 sm:grid-cols-2">
+        <div class="mb-4 sm:mb-6">
+            <h3 class="text-xs sm:text-sm font-semibold mb-2 text-base-content">JavaScript Frameworks</h3>
+            <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
                 {% if frontendOptions %}
                 {% for option in frontendOptions.js %}
-                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="js" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm" {% if option.selected %}checked{% endif %} />
+                <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="js" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm shrink-0" {% if option.selected %}checked{% endif %} />
                     <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-base-content">{{ option.name }}</h4>
-                        <p class="text-xs text-base-content/60">{{ option.description }}</p>
+                        <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
+                        <p class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
                     </div>
                 </label>
                 {% endfor %}
@@ -73,14 +73,14 @@
             </div>
         </div>
 
-        <div class="flex justify-between mt-6">
-            <button type="button" class="relative inline-flex items-center justify-center h-auto px-6 py-3 text-sm font-medium transition-colors bg-base-100 rounded-full sm:text-base border border-base-300 hover:bg-base-200 focus:outline-none gap-2" onclick="goBack()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-4 sm:mt-6">
+            <button type="button" class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors bg-base-100 rounded-full border border-base-300 hover:bg-base-200 focus:outline-none gap-2 cursor-pointer" onclick="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
                 Back
             </button>
-            <button type="submit" class="relative inline-flex items-center justify-center h-auto px-6 py-3 text-sm font-medium text-primary-content transition-colors bg-primary rounded-full sm:text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:bg-primary/90 gap-2">
+            <button type="submit" class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-primary-content transition-colors bg-primary rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:bg-primary/90 gap-2 cursor-pointer">
                 Next: Editors
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
@@ -91,9 +91,10 @@
 
     <script>
         // Back button handler - go back to project step
-        document.querySelector('button[onclick="goBack()"]')?.addEventListener('click', function(e) {
-            e.preventDefault()
+        function goBack() {
             const form = document.querySelector('form')
+            if (!form) return
+
             const projectName = form.querySelector('input[name="projectName"]')?.value || 'my-project'
             const projectDescription = form.querySelector('input[name="projectDescription"]')?.value || 'A CouchCMS web application'
 
@@ -107,6 +108,6 @@
                 target: '#wizard-content',
                 swap: 'innerHTML'
             })
-        })
+        }
     </script>
 </div>

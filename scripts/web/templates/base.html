@@ -9,55 +9,7 @@
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
     {% block head %}{% endblock %}
     <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-        .step {
-            transition: all 0.3s ease;
-        }
-        /* Completed steps - show with checkmark and muted color */
-        .step[data-completed="true"] {
-            color: hsl(var(--bc) / 0.6);
-        }
-        .step[data-completed="true"]::before {
-            content: '✓';
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 1.5rem;
-            height: 1.5rem;
-            border-radius: 50%;
-            background-color: hsl(var(--su));
-            color: hsl(var(--suc));
-            margin-right: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        /* Active step - primary color */
-        .step.step-primary:not([data-completed="true"]) {
-            color: hsl(var(--p));
-        }
-        .card {
-            transition: all 0.2s ease;
-        }
-        /* Ensure hidden inputs are truly hidden */
-        input[type="hidden"] {
-            display: none !important;
-            visibility: hidden !important;
-            position: absolute !important;
-            width: 0 !important;
-            height: 0 !important;
-            opacity: 0 !important;
-        }
-        /* Improve card hover states */
-        .card:hover {
-            transform: translateY(-1px);
-        }
-        /* Better spacing for form elements */
-        .form-control {
-            margin-bottom: 1rem;
-        }
-        /* Mesh background wrapper */
+        /* Mesh background wrapper - requires custom CSS */
         .mesh-bg {
             position: relative;
             background-color: hsl(var(--b1));
@@ -77,17 +29,13 @@
             position: relative;
             z-index: 1;
         }
-        /* Modern card styling */
-        .card-modern {
-            border-radius: 1.5rem;
-            border: 1px solid hsl(var(--bc) / 0.1);
-            background-color: hsl(var(--b1) / 0.3);
-            backdrop-filter: blur(10px);
+        /* Hide scrollbar but keep functionality */
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        /* Modern button styling */
-        .btn-modern {
-            border-radius: 9999px;
-            transition: all 0.2s ease;
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>

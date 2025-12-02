@@ -8,6 +8,10 @@ import { Hono } from 'hono'
 import { wrapStepWithProgress, getProgressIndicatorData, getPreviousStepRoute } from './helpers.js'
 import { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents, getMatchingAgents } from '../../lib/option-organizer.js'
 import { getAvailableEditors } from '../../lib/prompts.js'
+import { listAvailableModules, listAvailableAgents } from '../../lib/module-loader.js'
+import { getToolkitRootCached } from '../../lib/paths.js'
+import { existsSync, readdirSync, statSync } from 'fs'
+import { join } from 'path'
 
 /**
  * Create API routes
@@ -68,37 +72,6 @@ export function apiRoutes(projectDir) {
         return c.html(html)
     })
 
-    // GET route for editors step (for back navigation)
-    app.get('/setup/step/editors', async (c) => {
-        const setupType = c.req.query('setupType') || 'simple'
-        const projectName = c.req.query('projectName') || 'my-project'
-        const projectDescription = c.req.query('projectDescription') || 'A CouchCMS web application'
-
-        const editors = getAvailableEditors()
-        const popularEditors = editors.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
-        const otherEditors = editors.filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
-
-        const stepNumber = setupType === 'simple' ? 2 : 4
-        const html = await wrapStepWithProgress(
-            c.renderTemplate,
-            stepNumber,
-            'steps/editors.html',
-            {
-                setupType,
-                projectName,
-                projectDescription,
-                popularEditors,
-                otherEditors,
-                hiddenFields: [
-                    { name: 'projectName', value: projectName },
-                    { name: 'projectDescription', value: projectDescription },
-                    { name: 'setupType', value: setupType }
-                ]
-            }
-        )
-        return c.html(html)
-    })
-
     // GET route for frontend step (for back navigation)
     app.get('/setup/step/frontend', async (c) => {
         const query = c.req.query()
@@ -110,8 +83,13 @@ export function apiRoutes(projectDir) {
         const js = []
 
         Object.keys(query).forEach(key => {
-            if (key.startsWith('css[') || key === 'css') css.push(query[key])
-            else if (key.startsWith('js[') || key === 'js') js.push(query[key])
+            if (key === 'css' || key.startsWith('css[')) {
+                const value = query[key]
+                if (value && !css.includes(value)) css.push(value)
+            } else if (key === 'js' || key.startsWith('js[')) {
+                const value = query[key]
+                if (value && !js.includes(value)) js.push(value)
+            }
         })
 
         // Create frontend options with selected state
@@ -146,12 +124,12 @@ export function apiRoutes(projectDir) {
         return c.html(html)
     })
 
-    // GET route for editors step (for back navigation)
+    // GET route for editors step (for back navigation) - Handles both simple and extended paths
     app.get('/setup/step/editors', async (c) => {
         const query = c.req.query()
         const projectName = query.projectName || 'my-project'
         const projectDescription = query.projectDescription || 'A CouchCMS web application'
-        const setupType = query.setupType || 'extended'
+        const setupType = query.setupType || 'simple'
 
         // Parse array parameters
         const css = []
@@ -159,9 +137,16 @@ export function apiRoutes(projectDir) {
         const editors = []
 
         Object.keys(query).forEach(key => {
-            if (key.startsWith('css[') || key === 'css') css.push(query[key])
-            else if (key.startsWith('js[') || key === 'js') js.push(query[key])
-            else if (key.startsWith('editors[') || key === 'editors') editors.push(query[key])
+            if (key === 'css' || key.startsWith('css[')) {
+                const value = query[key]
+                if (value && !css.includes(value)) css.push(value)
+            } else if (key === 'js' || key.startsWith('js[')) {
+                const value = query[key]
+                if (value && !js.includes(value)) js.push(value)
+            } else if (key === 'editors' || key.startsWith('editors[')) {
+                const value = query[key]
+                if (value && !editors.includes(value)) editors.push(value)
+            }
         })
 
         const editorsList = getAvailableEditors()
@@ -172,9 +157,25 @@ export function apiRoutes(projectDir) {
             .filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
             .map(e => ({ ...e, selected: editors.includes(e.id) }))
 
+        const stepNumber = setupType === 'simple' ? 2 : 3
+        const hiddenFields = [
+            { name: 'projectName', value: projectName },
+            { name: 'projectDescription', value: projectDescription },
+            { name: 'setupType', value: setupType }
+        ]
+
+        // Add frontend data to hidden fields if extended
+        if (setupType === 'extended') {
+            css.forEach(c => hiddenFields.push({ name: 'css', value: c }))
+            js.forEach(j => hiddenFields.push({ name: 'js', value: j }))
+        }
+
+        // Add editors to hidden fields
+        editors.forEach(ed => hiddenFields.push({ name: 'editors', value: ed }))
+
         const html = await wrapStepWithProgress(
             c.renderTemplate,
-            setupType === 'simple' ? 2 : 3,
+            stepNumber,
             'steps/editors.html',
             {
                 setupType,
@@ -184,14 +185,7 @@ export function apiRoutes(projectDir) {
                 editors, // Pass editors array for state persistence
                 popularEditors,
                 otherEditors,
-                hiddenFields: [
-                    { name: 'projectName', value: projectName },
-                    { name: 'projectDescription', value: projectDescription },
-                    { name: 'setupType', value: setupType },
-                    ...css.map(c => ({ name: 'css', value: c })),
-                    ...js.map(j => ({ name: 'js', value: j })),
-                    ...editors.map(ed => ({ name: 'editors', value: ed }))
-                ]
+                hiddenFields
             }
         )
         return c.html(html)
@@ -203,15 +197,22 @@ export function apiRoutes(projectDir) {
         const projectName = query.projectName || 'my-project'
         const projectDescription = query.projectDescription || 'A CouchCMS web application'
 
-        // Parse array parameters
+        // Parse array parameters - collect all values with same key
         const css = []
         const js = []
         const editors = []
 
         Object.keys(query).forEach(key => {
-            if (key.startsWith('css[') || key === 'css') css.push(query[key])
-            else if (key.startsWith('js[') || key === 'js') js.push(query[key])
-            else if (key.startsWith('editors[') || key === 'editors') editors.push(query[key])
+            if (key === 'css' || key.startsWith('css[')) {
+                const value = query[key]
+                if (value && !css.includes(value)) css.push(value)
+            } else if (key === 'js' || key.startsWith('js[')) {
+                const value = query[key]
+                if (value && !js.includes(value)) js.push(value)
+            } else if (key === 'editors' || key.startsWith('editors[')) {
+                const value = query[key]
+                if (value && !editors.includes(value)) editors.push(value)
+            }
         })
 
         // Parse framework config from query params
@@ -334,8 +335,8 @@ export function apiRoutes(projectDir) {
         const projectDescription = body.projectDescription || 'A CouchCMS web application'
         const setupType = body.setupType || 'extended'
 
-        const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
-        const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
+        const cssFrameworks = parseArrayValue(body, 'css')
+        const jsFrameworks = parseArrayValue(body, 'js')
 
         // Next: editors & tools (combined step)
         const editors = getAvailableEditors()
@@ -377,9 +378,9 @@ export function apiRoutes(projectDir) {
         const projectDescription = body.projectDescription || 'A CouchCMS web application'
         const setupType = body.setupType || 'simple'
 
-        const selectedEditors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
-        const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
-        const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
+        const selectedEditors = parseArrayValue(body, 'editors')
+        const cssFrameworks = parseArrayValue(body, 'css')
+        const jsFrameworks = parseArrayValue(body, 'js')
 
         if (setupType === 'simple') {
             // Simple: editors → review
@@ -394,8 +395,8 @@ export function apiRoutes(projectDir) {
             }))
         } else {
             // Extended: editors → advanced
-            const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
-            const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
+            const cssFrameworks = parseArrayValue(body, 'css')
+            const jsFrameworks = parseArrayValue(body, 'js')
 
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
@@ -428,9 +429,9 @@ export function apiRoutes(projectDir) {
             const projectName = body.projectName || 'my-project'
             const projectDescription = body.projectDescription || 'A CouchCMS web application'
 
-        const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
-        const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
-        const editors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
+        const cssFrameworks = parseArrayValue(body, 'css')
+        const jsFrameworks = parseArrayValue(body, 'js')
+        const editors = parseArrayValue(body, 'editors')
         const framework = body.framework === 'true'
         const frameworkDoctrine = body.framework_doctrine === 'true'
         const frameworkDirectives = body.framework_directives === 'true'
@@ -471,9 +472,9 @@ export function apiRoutes(projectDir) {
         const setupType = body.setupType || 'simple'
 
         // Parse arrays from form data
-        const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
-        const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
-        const editors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
+        const cssFrameworks = parseArrayValue(body, 'css')
+        const jsFrameworks = parseArrayValue(body, 'js')
+        const editors = parseArrayValue(body, 'editors')
 
         // Parse framework config
         let frameworkConfig = false
@@ -554,6 +555,40 @@ export function apiRoutes(projectDir) {
 }
 
 /**
+ * Parse array values from form body
+ * Handles both array format and multiple inputs with same name
+ * Hono's parseBody() may return arrays or single values depending on form structure
+ */
+function parseArrayValue(body, key) {
+    // Check if it's already an array
+    if (Array.isArray(body[key])) {
+        return body[key].filter(v => v != null && v !== '')
+    }
+
+    // Check if it's a single value
+    if (body[key] != null && body[key] !== '') {
+        return [body[key]]
+    }
+
+    // Collect all values with this key (handles multiple inputs with same name)
+    // Also handles keys like 'css[0]', 'css[1]', etc.
+    const values = []
+    for (const [k, v] of Object.entries(body)) {
+        if (k === key) {
+            if (v != null && v !== '' && !values.includes(v)) {
+                values.push(v)
+            }
+        } else if (k.startsWith(`${key}[`) || k.startsWith(`${key}.`)) {
+            if (v != null && v !== '' && !values.includes(v)) {
+                values.push(v)
+            }
+        }
+    }
+
+    return values
+}
+
+/**
  * Get review step HTML using Nunjucks template
  */
 async function getReviewStep(renderTemplate, data) {
@@ -567,8 +602,111 @@ async function getReviewStep(renderTemplate, data) {
         contextDir = '.project/ai'
     } = data
 
-    const couchcmsModules = getCouchCMSModules()
-    const couchcmsAgents = getCouchCMSAgents()
+    // Get CouchCMS modules/agents directly from toolkit directory
+    // (standards.md doesn't exist yet during setup wizard)
+    const toolkitPath = getToolkitRootCached()
+
+    // Try to get from toolkit directory first
+    let couchcmsModules = []
+    let couchcmsAgents = []
+
+    try {
+        const frontendModuleNames = ['tailwindcss', 'daisyui', 'alpinejs', 'typescript']
+        const frontendAgentNames = ['tailwindcss', 'alpinejs', 'typescript']
+
+        // Scan modules/core/ directory (CouchCMS modules)
+        const coreModulesDir = join(toolkitPath, 'modules', 'core')
+        if (existsSync(coreModulesDir)) {
+            const files = readdirSync(coreModulesDir)
+            for (const file of files) {
+                if (file.endsWith('.md') && !file.includes('README')) {
+                    const moduleName = file.replace('.md', '')
+                    if (!frontendModuleNames.includes(moduleName)) {
+                        couchcmsModules.push(moduleName)
+                    }
+                }
+            }
+        }
+
+        // Scan agents/core/ directory (CouchCMS agents)
+        const coreAgentsDir = join(toolkitPath, 'agents', 'core')
+        if (existsSync(coreAgentsDir)) {
+            const files = readdirSync(coreAgentsDir)
+            for (const file of files) {
+                if (file.endsWith('.md') && !file.includes('README')) {
+                    const agentName = file.replace('.md', '')
+                    if (!frontendAgentNames.includes(agentName)) {
+                        couchcmsAgents.push(agentName)
+                    }
+                }
+            }
+        }
+
+        // Also check legacy flat structure for modules if core/ is empty
+        if (couchcmsModules.length === 0) {
+            const legacyModulesDir = join(toolkitPath, 'modules')
+            if (existsSync(legacyModulesDir)) {
+                const entries = readdirSync(legacyModulesDir)
+                for (const entry of entries) {
+                    const fullPath = join(legacyModulesDir, entry)
+                    try {
+                        const stat = statSync(fullPath)
+                        if (stat.isFile() && entry.endsWith('.md') && !entry.includes('README')) {
+                            const moduleName = entry.replace('.md', '')
+                            if (!frontendModuleNames.includes(moduleName)) {
+                                couchcmsModules.push(moduleName)
+                            }
+                        }
+                    } catch (e) {
+                        // Skip if we can't stat the file
+                    }
+                }
+            }
+        }
+
+        // Also check legacy flat structure for agents if core/ is empty
+        if (couchcmsAgents.length === 0) {
+            const legacyAgentsDir = join(toolkitPath, 'agents')
+            if (existsSync(legacyAgentsDir)) {
+                const entries = readdirSync(legacyAgentsDir)
+                for (const entry of entries) {
+                    const fullPath = join(legacyAgentsDir, entry)
+                    try {
+                        const stat = statSync(fullPath)
+                        if (stat.isFile() && entry.endsWith('.md') && !entry.includes('README')) {
+                            const agentName = entry.replace('.md', '')
+                            if (!frontendAgentNames.includes(agentName)) {
+                                couchcmsAgents.push(agentName)
+                            }
+                        }
+                    } catch (e) {
+                        // Skip if we can't stat the file
+                    }
+                }
+            }
+        }
+
+        // Sort and remove duplicates
+        couchcmsModules = [...new Set(couchcmsModules)].sort()
+        couchcmsAgents = [...new Set(couchcmsAgents)].sort()
+    } catch (error) {
+        console.warn(`⚠️  Failed to scan toolkit directory: ${error.message}`)
+    }
+
+    // Always fallback to hardcoded values if scanning found nothing
+    // This ensures we always have something to show
+    if (couchcmsModules.length === 0) {
+        const fallbackModules = getCouchCMSModules()
+        if (fallbackModules.length > 0) {
+            couchcmsModules = fallbackModules
+        }
+    }
+    if (couchcmsAgents.length === 0) {
+        const fallbackAgents = getCouchCMSAgents()
+        if (fallbackAgents.length > 0) {
+            couchcmsAgents = fallbackAgents
+        }
+    }
 
     const finalStep = setupType === 'simple' ? 3 : 5
 
