@@ -123,7 +123,7 @@ active_agents:
 
 ## Setup Complexity
 
-### Easy (Makkelijk)
+### Easy
 
 **What you get:**
 - All CouchCMS modules/agents (automatic)
@@ -140,7 +140,7 @@ Done! ✅
 
 **Perfect for:** Getting started quickly, beginners
 
-### Medium (Gemiddeld)
+### Medium
 
 **What you get:**
 - All CouchCMS modules/agents (automatic)
@@ -161,7 +161,7 @@ Done! ✅
 
 **Perfect for:** Most projects, want to choose frameworks
 
-### Comprehensive (Uitgebreid)
+### Comprehensive
 
 **What you get:**
 - All CouchCMS modules/agents (automatic)

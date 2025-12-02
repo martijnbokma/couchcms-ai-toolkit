@@ -23,21 +23,21 @@ export const COMPLEXITY_LEVELS = {
  */
 export const COMPLEXITY_DESCRIPTIONS = {
     [COMPLEXITY_LEVELS.EASY]: {
-        name: 'Makkelijk (Easy)',
+        name: 'Easy',
         time: '1 minute',
         questions: 2,
         description: 'Quick setup with recommended defaults',
         perfectFor: 'Getting started quickly'
     },
     [COMPLEXITY_LEVELS.MEDIUM]: {
-        name: 'Gemiddeld (Medium)',
+        name: 'Medium',
         time: '3 minutes',
         questions: 5,
         description: 'Balanced setup with more choices',
         perfectFor: 'Most projects, want to choose frameworks'
     },
     [COMPLEXITY_LEVELS.COMPREHENSIVE]: {
-        name: 'Uitgebreid (Comprehensive)',
+        name: 'Comprehensive',
         time: '5 minutes',
         questions: 8,
         description: 'Full setup with all options',

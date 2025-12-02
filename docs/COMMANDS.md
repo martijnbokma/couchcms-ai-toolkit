@@ -82,20 +82,20 @@ $ bun ai-toolkit-shared/scripts/toolkit.js install
   What kind of setup do you want?
 ======================================================================
 
-  1. Makkelijk (Easy)
+  1. Easy
      → Quick setup: 1 minute, 2 questions
      → Includes: All CouchCMS modules/agents (automatic)
      → Includes: TailwindCSS + Alpine.js (recommended defaults)
      → Perfect for: Getting started quickly
 
-  2. Gemiddeld (Medium)
+  2. Medium
      → Balanced setup: 3 minutes, 5 questions
      → Includes: All CouchCMS modules/agents (automatic)
      → Choose: CSS framework (TailwindCSS, daisyUI, custom)
      → Choose: JS framework (Alpine.js, TypeScript, none)
      → Perfect for: Most projects
 
-  3. Uitgebreid (Comprehensive)
+  3. Comprehensive
      → Full setup: 5 minutes, 8+ questions
      → Includes: All CouchCMS modules/agents (automatic)
      → Choose: All frontend frameworks and tools
@@ -104,8 +104,8 @@ $ bun ai-toolkit-shared/scripts/toolkit.js install
 
 Choice [1-3]: 1
 
-✅ Selected: Makkelijk (Easy)
-ℹ️  Starting Makkelijk (Easy) setup...
+✅ Selected: Easy
+ℹ️  Starting Easy setup...
 
 ======================================================================
   CouchCMS Modules & Agents (Automatic)
@@ -215,7 +215,7 @@ $ bun ai-toolkit-shared/scripts/toolkit.js setup
 🔄 Checking dependencies...
 ✅ Dependencies ready
 
-Current setup complexity: Makkelijk (Easy)
+Current setup complexity: Easy
 
 [Shows complexity menu if no preference stored]
 
@@ -250,12 +250,12 @@ $ bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 
 🔄 CouchCMS AI Toolkit - Reconfigure
 
-ℹ️  Current setup complexity: Makkelijk (Easy)
+ℹ️  Current setup complexity: Easy
 
 Choose new setup complexity:
 [Shows complexity menu]
 
-✅ Updated preference to: Gemiddeld (Medium)
+✅ Updated preference to: Medium
 Run setup with new complexity? [Y/n]: y
 
 [Continues with setup...]
@@ -544,21 +544,21 @@ For more information, see: docs/START-HERE.md
 
 All setup commands support three complexity levels:
 
-### Easy (Makkelijk)
+### Easy
 - **Time:** 1 minute
 - **Questions:** 2 (project name, description)
 - **CouchCMS:** All modules/agents included automatically
 - **Frontend:** TailwindCSS + Alpine.js (recommended defaults)
 - **Perfect for:** Getting started quickly
 
-### Medium (Gemiddeld)
+### Medium
 - **Time:** 3 minutes
 - **Questions:** 5 (project info + CSS choice + JS choice)
 - **CouchCMS:** All modules/agents included automatically
 - **Frontend:** Choose CSS framework, choose JS framework
 - **Perfect for:** Most projects, want to choose frameworks
 
-### Comprehensive (Uitgebreid)
+### Comprehensive
 - **Time:** 5 minutes
 - **Questions:** 8+ (all frontend options + advanced config)
 - **CouchCMS:** All modules/agents included automatically

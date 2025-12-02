@@ -83,20 +83,20 @@ bun ai-toolkit-shared/scripts/toolkit.js install
   What kind of setup do you want?
 ======================================================================
 
-  1. Makkelijk (Easy)
+  1. Easy
      → Quick setup: 1 minute, 2 questions
      → Includes: All CouchCMS modules/agents (automatic)
      → Includes: TailwindCSS + Alpine.js (recommended defaults)
      → Perfect for: Getting started quickly
 
-  2. Gemiddeld (Medium)
+  2. Medium
      → Balanced setup: 3 minutes, 5 questions
      → Includes: All CouchCMS modules/agents (automatic)
      → Choose: CSS framework (TailwindCSS, daisyUI, custom)
      → Choose: JS framework (Alpine.js, TypeScript, none)
      → Perfect for: Most projects
 
-  3. Uitgebreid (Comprehensive)
+  3. Comprehensive
      → Full setup: 5 minutes, 8+ questions
      → Includes: All CouchCMS modules/agents (automatic)
      → Choose: All frontend frameworks and tools
@@ -125,7 +125,7 @@ Choice [1-3]: _
 **Expected output:**
 ```
 Choice [1-3]: 1
-✅ Selected: Makkelijk (Easy)
+✅ Selected: Easy
 
 ======================================================================
   CouchCMS Modules & Agents (Automatic)

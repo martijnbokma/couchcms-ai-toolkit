@@ -10,7 +10,37 @@ Choose your path:
 
 **Goal:** Install and configure the toolkit for the first time
 
-**Steps:**
+**Choose your setup method:**
+
+#### Option A: Browser Setup (Recommended for beginners)
+
+**Visual, step-by-step guided setup:**
+
+1. **Add toolkit to your project:**
+   ```bash
+   git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
+   ```
+
+2. **Start the web interface:**
+   ```bash
+   bun ai-toolkit-shared/scripts/toolkit.js serve
+   ```
+
+3. **Open your browser:**
+   - Navigate to `http://localhost:3000`
+   - Follow the visual wizard step-by-step
+   - Review and generate your configuration
+
+**Benefits:**
+- ✅ Visual interface with clear explanations
+- ✅ See all options before choosing
+- ✅ Progress indicator shows your position
+- ✅ Review step before generating
+
+#### Option B: Terminal Setup (Quick install)
+
+**Fast command-line setup:**
+
 1. **Add toolkit to your project:**
    ```bash
    git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
@@ -21,9 +51,9 @@ Choose your path:
    # From project root (recommended)
    bun ai-toolkit-shared/scripts/toolkit.js install
    ```
-   
+
    **Note:** You must run this from your project root directory, not from inside `ai-toolkit-shared`.
-   
+
    **💡 Tip:** After installation, you'll be asked if you want to add a script to `package.json`.
    If you say "yes", you can then use the simpler command:
    ```bash
@@ -148,9 +178,9 @@ bun ai-toolkit-shared/scripts/toolkit.js install
 ```
 ✅ Dependencies installed
 What kind of setup do you want?
-  1. Makkelijk (Easy) - 1 minute, 2 questions
-  2. Gemiddeld (Medium) - 3 minutes, 5 questions
-  3. Uitgebreid (Comprehensive) - 5 minutes, 8+ questions
+  1. Easy - 1 minute, 2 questions
+  2. Medium - 3 minutes, 5 questions
+  3. Comprehensive - 5 minutes, 8+ questions
 Choice [1-3]: _
 ```
 
@@ -229,7 +259,8 @@ bun ai-toolkit-shared/scripts/toolkit.js health
 
 | Command | What It Does |
 |---------|--------------|
-| `toolkit install` | First-time installation and setup |
+| `toolkit install` | First-time installation and setup (terminal) |
+| `toolkit serve` | Start browser-based setup interface |
 | `toolkit setup` | Configure or reconfigure project |
 | `toolkit sync` | Generate AI configs from standards.md |
 | `toolkit validate` | Check configuration compliance |
