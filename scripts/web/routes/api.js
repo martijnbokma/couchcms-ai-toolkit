@@ -122,33 +122,54 @@ export function apiRoutes(projectDir) {
         return c.html(html)
     })
 
-    // GET route for devtools step (for back navigation)
-    app.get('/setup/step/devtools', async (c) => {
-        const projectName = c.req.query('projectName') || 'mijn-project'
-        const projectDescription = c.req.query('projectDescription') || 'Een CouchCMS web applicatie'
-        const css = c.req.query('css') ? (Array.isArray(c.req.query('css')) ? c.req.query('css') : [c.req.query('css')]) : []
-        const js = c.req.query('js') ? (Array.isArray(c.req.query('js')) ? c.req.query('js') : [c.req.query('js')]) : []
+    // GET route for editors step (for back navigation) - now includes devtools
+    app.get('/setup/step/editors', async (c) => {
+        const query = c.req.query()
+        const projectName = query.projectName || 'mijn-project'
+        const projectDescription = query.projectDescription || 'Een CouchCMS web applicatie'
+        const setupType = query.setupType || 'extended'
+
+        // Parse array parameters
+        const css = []
+        const js = []
+        const devTools = []
+        const editors = []
+
+        Object.keys(query).forEach(key => {
+            if (key.startsWith('css[') || key === 'css') css.push(query[key])
+            else if (key.startsWith('js[') || key === 'js') js.push(query[key])
+            else if (key.startsWith('devtools[') || key === 'devtools') devTools.push(query[key])
+            else if (key.startsWith('editors[') || key === 'editors') editors.push(query[key])
+        })
+
+        const editorsList = getAvailableEditors()
+        const popularEditors = editorsList.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
+        const otherEditors = editorsList.filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
-            3,
-            'steps/devtools.html',
+            setupType === 'simple' ? 2 : 3,
+            'steps/editors.html',
             {
-                setupType: 'extended',
+                setupType,
                 projectName,
                 projectDescription,
                 frontend: { css, js },
-                devTools: getDevToolAgents().map(tool => ({
+                devTools: setupType === 'extended' ? getDevToolAgents().map(tool => ({
                     id: tool.name,
                     name: tool.name.charAt(0).toUpperCase() + tool.name.slice(1).replace(/-/g, ' '),
                     description: tool.description
-                })),
+                })) : [],
+                popularEditors,
+                otherEditors,
                 hiddenFields: [
                     { name: 'projectName', value: projectName },
                     { name: 'projectDescription', value: projectDescription },
-                    { name: 'setupType', value: 'extended' },
+                    { name: 'setupType', value: setupType },
                     ...css.map(c => ({ name: 'css', value: c })),
-                    ...js.map(j => ({ name: 'js', value: j }))
+                    ...js.map(j => ({ name: 'js', value: j })),
+                    ...devTools.map(dt => ({ name: 'devtools', value: dt })),
+                    ...editors.map(ed => ({ name: 'editors', value: ed }))
                 ]
             }
         )
@@ -176,7 +197,7 @@ export function apiRoutes(projectDir) {
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
-            5,
+            4,
             'steps/advanced.html',
             {
                 setupType: 'extended',
@@ -266,11 +287,15 @@ export function apiRoutes(projectDir) {
         const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
         const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
 
-        // Next: devtools
+        // Next: editors & tools (combined step)
+        const editors = getAvailableEditors()
+        const popularEditors = editors.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
+        const otherEditors = editors.filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
+
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             3,
-            'steps/devtools.html',
+            'steps/editors.html',
             {
                 setupType: 'extended',
                 projectName,
@@ -281,6 +306,8 @@ export function apiRoutes(projectDir) {
                     name: tool.name.charAt(0).toUpperCase() + tool.name.slice(1).replace(/-/g, ' '),
                     description: tool.description
                 })),
+                popularEditors,
+                otherEditors,
                 hiddenFields: [
                     { name: 'projectName', value: projectName },
                     { name: 'projectDescription', value: projectDescription },
@@ -293,55 +320,17 @@ export function apiRoutes(projectDir) {
         return c.html(html)
     })
 
-    // Handle devtools selection (Uitgebreid pad)
-    app.post('/setup/step/devtools', async (c) => {
+    // Handle editors & tools selection (both paths)
+    app.post('/setup/step/editors', async (c) => {
         const body = await c.req.parseBody()
         const projectName = body.projectName || 'mijn-project'
         const projectDescription = body.projectDescription || 'Een CouchCMS web applicatie'
-        const setupType = body.setupType || 'extended'
-
-        const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
-        const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
-        const devTools = Array.isArray(body.devtools) ? body.devtools : (body.devtools ? [body.devtools] : [])
-
-        // Next: editors
-        const editors = getAvailableEditors()
-        const popularEditors = editors.filter(e => ['cursor', 'claude', 'copilot'].includes(e.id))
-        const otherEditors = editors.filter(e => !['cursor', 'claude', 'copilot'].includes(e.id))
-
-        const html = await wrapStepWithProgress(
-            c.renderTemplate,
-            4,
-            'steps/editors.html',
-            {
-                setupType: 'extended',
-                projectName,
-                projectDescription,
-                frontend: { css: cssFrameworks, js: jsFrameworks },
-                devTools,
-                popularEditors,
-                otherEditors,
-                hiddenFields: [
-                    { name: 'projectName', value: projectName },
-                    { name: 'projectDescription', value: projectDescription },
-                    { name: 'setupType', value: 'extended' },
-                    ...cssFrameworks.map(css => ({ name: 'css', value: css })),
-                    ...jsFrameworks.map(js => ({ name: 'js', value: js })),
-                    ...devTools.map(dt => ({ name: 'devtools', value: dt }))
-                ]
-            }
-        )
-        return c.html(html)
-    })
-
-    // Handle editors selection (both paths)
-    app.post('/setup/step/editors', async (c) => {
-        const body = await c.req.parseBody()
-        const projectName = body.projectName || 'my-project'
-        const projectDescription = body.projectDescription || 'A CouchCMS web application'
         const setupType = body.setupType || 'simple'
 
         const selectedEditors = Array.isArray(body.editors) ? body.editors : (body.editors ? [body.editors] : [])
+        const cssFrameworks = Array.isArray(body.css) ? body.css : (body.css ? [body.css] : [])
+        const jsFrameworks = Array.isArray(body.js) ? body.js : (body.js ? [body.js] : [])
+        const devTools = Array.isArray(body.devtools) ? body.devtools : (body.devtools ? [body.devtools] : [])
 
         if (setupType === 'simple') {
             // Simpel: editors → review
@@ -535,7 +524,7 @@ async function getReviewStep(renderTemplate, data) {
     const couchcmsModules = getCouchCMSModules()
     const couchcmsAgents = getCouchCMSAgents()
 
-    const finalStep = setupType === 'simple' ? 3 : 6
+    const finalStep = setupType === 'simple' ? 3 : 5
 
     return await wrapStepWithProgress(
         renderTemplate,

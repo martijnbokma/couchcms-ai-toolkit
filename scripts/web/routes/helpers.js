@@ -20,10 +20,9 @@ export function getStepDefinitions(setupType) {
         return [
             { num: 1, label: 'Project Info', route: 'project' },
             { num: 2, label: 'Frontend', route: 'frontend' },
-            { num: 3, label: 'Dev Tools', route: 'devtools' },
-            { num: 4, label: 'Editors', route: 'editors' },
-            { num: 5, label: 'Advanced', route: 'advanced' },
-            { num: 6, label: 'Review', route: 'review' }
+            { num: 3, label: 'Editors & Tools', route: 'editors' },
+            { num: 4, label: 'Advanced', route: 'advanced' },
+            { num: 5, label: 'Review', route: 'review' }
         ]
     }
 }

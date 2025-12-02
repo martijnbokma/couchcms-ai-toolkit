@@ -1,6 +1,6 @@
 <div>
     <h2 class="text-2xl font-bold mb-4">Advanced Options</h2>
-    <p class="mb-6 text-base-content/70">Optionele geavanceerde configuratie opties voor ervaren gebruikers.</p>
+    <p class="mb-6 text-base-content/70">Optionele geavanceerde configuratie opties voor ervaren gebruikers. Deze instellingen beïnvloeden hoe AI agents zich gedragen en waar contextbestanden worden opgeslagen.</p>
 
     <form hx-post="/api/setup/step/advanced" hx-target="#wizard-content" hx-swap="innerHTML">
         {% for hidden in hiddenFields %}
@@ -16,33 +16,56 @@
                     </svg>
                     AAPF Framework
                 </h3>
-                <p class="text-sm text-base-content/70 mb-4">Enable AAPF framework for disciplined AI agent behavior</p>
+
+                <div class="alert alert-info mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <h4 class="font-semibold">Wat is het AAPF Framework?</h4>
+                        <p class="text-sm">Het AAPF (Autonomous Agent Programming Framework) framework zorgt voor gestructureerd en voorspelbaar gedrag van AI agents. Het bevat doctrine (kernprincipes), directives (communicatie richtlijnen), playbooks (workflow templates) en enhancements (geavanceerde features).</p>
+                    </div>
+                </div>
+
+                <p class="text-sm text-base-content/70 mb-4">Schakel het AAPF framework in voor meer gestructureerd en voorspelbaar gedrag van AI agents. Dit is vooral nuttig voor complexe projecten waar consistentie belangrijk is.</p>
 
                 <div class="form-control">
                     <label class="label cursor-pointer justify-start gap-4">
                         <input type="checkbox" name="framework" value="true" class="checkbox checkbox-primary" />
-                        <span class="label-text">Enable AAPF Framework</span>
+                        <span class="label-text font-medium">Enable AAPF Framework</span>
                     </label>
                 </div>
 
                 <div id="framework-options" class="mt-4 space-y-2 hidden">
                     <p class="text-sm font-medium mb-2">Framework Components:</p>
-                    <label class="label cursor-pointer justify-start gap-4">
-                        <input type="checkbox" name="framework_doctrine" value="true" class="checkbox checkbox-sm" checked />
-                        <span class="label-text text-sm">Doctrine</span>
-                    </label>
-                    <label class="label cursor-pointer justify-start gap-4">
-                        <input type="checkbox" name="framework_directives" value="true" class="checkbox checkbox-sm" checked />
-                        <span class="label-text text-sm">Directives</span>
-                    </label>
-                    <label class="label cursor-pointer justify-start gap-4">
-                        <input type="checkbox" name="framework_playbooks" value="true" class="checkbox checkbox-sm" checked />
-                        <span class="label-text text-sm">Playbooks</span>
-                    </label>
-                    <label class="label cursor-pointer justify-start gap-4">
-                        <input type="checkbox" name="framework_enhancements" value="true" class="checkbox checkbox-sm" />
-                        <span class="label-text text-sm">Enhancements</span>
-                    </label>
+                    <div class="space-y-2">
+                        <label class="label cursor-pointer justify-start gap-4">
+                            <input type="checkbox" name="framework_doctrine" value="true" class="checkbox checkbox-sm" checked />
+                            <div class="flex-1">
+                                <span class="label-text text-sm font-medium">Doctrine</span>
+                                <p class="text-xs text-base-content/60">Kernprincipes en operationele doctrine voor AI agents</p>
+                            </div>
+                        </label>
+                        <label class="label cursor-pointer justify-start gap-4">
+                            <input type="checkbox" name="framework_directives" value="true" class="checkbox checkbox-sm" checked />
+                            <div class="flex-1">
+                                <span class="label-text text-sm font-medium">Directives</span>
+                                <p class="text-xs text-base-content/60">Communicatie richtlijnen en best practices</p>
+                            </div>
+                        </label>
+                        <label class="label cursor-pointer justify-start gap-4">
+                            <input type="checkbox" name="framework_playbooks" value="true" class="checkbox checkbox-sm" checked />
+                            <div class="flex-1">
+                                <span class="label-text text-sm font-medium">Playbooks</span>
+                                <p class="text-xs text-base-content/60">Herbruikbare workflow templates voor veelvoorkomende taken</p>
+                            </div>
+                        </label>
+                        <label class="label cursor-pointer justify-start gap-4">
+                            <input type="checkbox" name="framework_enhancements" value="true" class="checkbox checkbox-sm" />
+                            <div class="flex-1">
+                                <span class="label-text text-sm font-medium">Enhancements</span>
+                                <p class="text-xs text-base-content/60">Geavanceerde features en optimalisaties (optioneel)</p>
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,13 +79,25 @@
                     </svg>
                     Context Directory
                 </h3>
-                <p class="text-sm text-base-content/70 mb-4">Custom directory for AI context files (optional)</p>
+
+                <div class="alert alert-info mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <h4 class="font-semibold">Wat zijn AI context bestanden?</h4>
+                        <p class="text-sm">AI context bestanden bevatten project-specifieke informatie die AI agents gebruiken om beter te begrijpen hoe jouw project werkt. Dit kunnen coding standards, architectuur documentatie, of custom patterns zijn die agents moeten kennen.</p>
+                    </div>
+                </div>
+
+                <p class="text-sm text-base-content/70 mb-4">Specificeer een aangepaste directory waar AI context bestanden worden opgeslagen. Standaard wordt <code class="bg-base-300 px-1 py-0.5 rounded">.project/ai</code> gebruikt. Je kunt dit aanpassen als je een andere locatie prefereert of als je meerdere context directories wilt gebruiken.</p>
 
                 <div class="form-control">
                     <label class="label">
-                        <span class="label-text">Context Directory Path</span>
+                        <span class="label-text font-medium">Context Directory Path</span>
                     </label>
                     <input type="text" name="contextDir" placeholder=".project/ai" value=".project/ai" class="input input-bordered w-full" />
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/60">Relatief pad vanaf project root (bijv. .project/ai of docs/ai-context)</span>
+                    </label>
                 </div>
             </div>
         </div>
@@ -101,6 +136,7 @@
             const css = Array.from(form.querySelectorAll('input[name="css"]')).map(i => i.value)
             const js = Array.from(form.querySelectorAll('input[name="js"]')).map(i => i.value)
             const devtools = Array.from(form.querySelectorAll('input[name="devtools"]')).map(i => i.value)
+            const editors = Array.from(form.querySelectorAll('input[name="editors"]:checked')).map(i => i.value)
 
             const params = new URLSearchParams()
             params.append('setupType', 'extended')
@@ -109,6 +145,7 @@
             css.forEach(c => params.append('css', c))
             js.forEach(j => params.append('js', j))
             devtools.forEach(dt => params.append('devtools', dt))
+            editors.forEach(ed => params.append('editors', ed))
 
             htmx.ajax('GET', `/api/setup/step/editors?${params.toString()}`, {
                 target: '#wizard-content',
