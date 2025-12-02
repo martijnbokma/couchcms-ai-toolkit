@@ -1,5 +1,5 @@
 <nav class="relative mb-8 py-6" id="progress-indicator" hx-swap-oob="true">
-    <!-- Progress Bar -->
+    <!-- Progress Bar - positioned to align with center of circles -->
     <div class="absolute top-8 left-0 right-0 flex items-center">
         <div class="flex h-0.5 w-full items-center overflow-hidden rounded-full bg-base-300">
             <div
@@ -18,9 +18,9 @@
         {% for step in steps %}
         <li class="flex flex-col {% if loop.first %}items-start{% elif loop.last %}items-end{% else %}items-center flex-1{% endif %}">
             <div class="group relative flex flex-col {% if loop.first %}items-start{% elif loop.last %}items-end{% else %}items-center{% endif %}">
-                <!-- Bullet with number/icon -->
+                <!-- Bullet with number/icon - perfectly centered on the line -->
                 <div
-                    class="relative z-10 flex size-8 items-center justify-center rounded-full font-semibold text-sm transition-all duration-300 {% if step.isCompleted %}bg-primary text-primary-content shadow-lg shadow-primary/30{% elif step.isActive %}border-2 border-primary bg-base-100 text-primary shadow-lg shadow-primary/20{% else %}bg-base-300 text-base-content/50{% endif %}"
+                    class="relative z-10 flex size-8 items-center justify-center rounded-full font-semibold text-sm transition-all duration-300 -mt-[15px] {% if step.isCompleted %}bg-primary text-primary-content shadow-lg shadow-primary/30{% elif step.isActive %}border-2 border-primary bg-base-100 text-primary shadow-lg shadow-primary/20{% else %}bg-base-300 text-base-content/50{% endif %}"
                 >
                     {% if step.isCompleted %}
                     <svg
