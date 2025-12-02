@@ -36,7 +36,7 @@ import {
     deepMerge
 } from './lib/index.js'
 import { findProjectFile, resolveToolkitPath } from './utils/utils.js'
-import { normalizeEditorConfig, getSelectedEditorIds, validateEditorConfig } from './lib/editor-utils.js'
+import { normalizeEditorConfig, getSelectedEditorIds, validateEditorConfig, isEditorSelected } from './lib/editor-utils.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 

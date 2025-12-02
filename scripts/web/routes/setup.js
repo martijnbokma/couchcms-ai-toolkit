@@ -32,7 +32,13 @@ export function setupRoutes(projectDir) {
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
     <style>
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .step {
+            transition: all 0.3s ease;
+        }
+        .card {
+            transition: all 0.2s ease;
         }
     </style>
 </head>
@@ -99,19 +105,20 @@ export function setupRoutes(projectDir) {
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-4xl mx-auto">
         <!-- Progress indicator -->
-        <div class="steps steps-horizontal w-full mb-8">
+        <div class="steps steps-horizontal w-full mb-8" id="progress-indicator" hx-swap-oob="true">
             <div class="step step-primary" id="step-1">Project Info</div>
             <div class="step" id="step-2">Complexity</div>
             <div class="step" id="step-3">Frontend</div>
-            <div class="step" id="step-4">Modules</div>
-            <div class="step" id="step-5">Review</div>
+            <div class="step" id="step-4">Review</div>
         </div>
 
         <!-- Wizard content -->
         <div class="card bg-base-100 shadow-xl">
             <div class="card-body" id="wizard-content">
-                <div hx-get="/api/setup/step/project" hx-trigger="load" hx-swap="innerHTML">
-                    <span class="loading loading-spinner loading-lg"></span>
+                <div hx-get="/api/setup/step/project" hx-trigger="load" hx-swap="innerHTML" hx-target="#wizard-content">
+                    <div class="flex justify-center items-center py-8">
+                        <span class="loading loading-spinner loading-lg"></span>
+                    </div>
                 </div>
             </div>
         </div>
