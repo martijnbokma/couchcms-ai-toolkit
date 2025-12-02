@@ -91,93 +91,13 @@ export function apiRoutes(projectDir) {
             }))
         }
 
-        const stepContent = html`
-<div>
-    <h2 class="text-2xl font-bold mb-4">Frontend Frameworks</h2>
-    <p class="mb-6 text-base-content/70">Select the CSS and JavaScript frameworks you want to use.</p>
-
-    <form hx-post="/api/setup/step/frontend" hx-target="#wizard-content" hx-swap="innerHTML">
-        <input type="hidden" name="projectName" value="${projectName}" />
-        <input type="hidden" name="projectDescription" value="${projectDescription}" />
-        <input type="hidden" name="complexity" value="${complexity}" />
-
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">CSS Framework</h3>
-            <div class="grid gap-3">
-                <label class="card bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border-2 border-transparent hover:border-primary/20">
-                    <div class="card-body">
-                        <div class="flex items-start gap-4">
-                            <input type="checkbox" name="css" value="tailwindcss" class="checkbox checkbox-primary mt-1" checked />
-                            <div class="flex-1">
-                                <h4 class="card-title text-base font-semibold mb-1">TailwindCSS</h4>
-                                <p class="text-sm text-base-content/70">Utility-first CSS framework</p>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-
-                <label class="card bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border-2 border-transparent hover:border-primary/20">
-                    <div class="card-body">
-                        <div class="flex items-start gap-4">
-                            <input type="checkbox" name="css" value="daisyui" class="checkbox checkbox-primary mt-1" />
-                            <div class="flex-1">
-                                <h4 class="card-title text-base font-semibold mb-1">daisyUI</h4>
-                                <p class="text-sm text-base-content/70">Component library for TailwindCSS</p>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-            </div>
-        </div>
-
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">JavaScript Framework</h3>
-            <div class="grid gap-3">
-                <label class="card bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border-2 border-transparent hover:border-primary/20">
-                    <div class="card-body">
-                        <div class="flex items-start gap-4">
-                            <input type="checkbox" name="js" value="alpinejs" class="checkbox checkbox-primary mt-1" checked />
-                            <div class="flex-1">
-                                <h4 class="card-title text-base font-semibold mb-1">Alpine.js</h4>
-                                <p class="text-sm text-base-content/70">Lightweight reactive JavaScript</p>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-
-                <label class="card bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border-2 border-transparent hover:border-primary/20">
-                    <div class="card-body">
-                        <div class="flex items-start gap-4">
-                            <input type="checkbox" name="js" value="typescript" class="checkbox checkbox-primary mt-1" />
-                            <div class="flex-1">
-                                <h4 class="card-title text-base font-semibold mb-1">TypeScript</h4>
-                                <p class="text-sm text-base-content/70">Type-safe JavaScript</p>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-            </div>
-        </div>
-
-        <div class="card-actions justify-between mt-6">
-            <button type="button" class="btn btn-outline" onclick="history.back()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Back
-            </button>
-            <button type="submit" class="btn btn-primary btn-lg">
-                Next: Review
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
-    </form>
-</div>
-        `
-
-        return c.html(wrapStepWithProgress(3, stepContent))
+        const html = await wrapStepWithProgress(
+            c.renderTemplate,
+            3,
+            'steps/frontend.html',
+            { projectName, projectDescription, complexity }
+        )
+        return c.html(html)
     })
 
     // Handle frontend selection
