@@ -1,0 +1,140 @@
+{
+  "nested-pages": {
+    "type": "content",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Hierarchical page structures for navigation, menus, and breadcrumbs in CouchCMS",
+    "promptTriggers": {
+      "keywords": [
+        "menu",
+        "navigation",
+        "nav",
+        "nested",
+        "hierarchy",
+        "hierarchical",
+        "breadcrumb",
+        "breadcrumbs",
+        "sitemap",
+        "dropdown menu",
+        "submenu",
+        "parent page",
+        "child page",
+        "page tree"
+      ],
+      "intentPatterns": [
+        "(create|build|implement|add|setup).*?(menu|navigation|nav)",
+        "(create|build|implement|add|setup).*?(breadcrumb|breadcrumbs)",
+        "(setup|configure|enable).*?(nested.*?pages?|hierarchical.*?pages?)",
+        "(multi-level|dropdown|hierarchical).*?(menu|navigation)",
+        "(parent|child).*?page.*?relationship",
+        "site.*?(structure|hierarchy|organization)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/menu*.php",
+        "**/menu*.html",
+        "**/nav*.php",
+        "**/nav*.html",
+        "**/navigation*.php",
+        "**/navigation*.html",
+        "**/pages.php",
+        "**/index.php",
+        "**/header*.php",
+        "**/header*.html",
+        "**/snippets/menu.html",
+        "**/snippets/navigation.html",
+        "**/layouts/nav*.html",
+        "**/layouts/menu*.html"
+      ],
+      "contentPatterns": [
+        "nested_pages='1'",
+        "nested_pages=\"1\"",
+        "<cms:nested_pages",
+        "<cms:menu",
+        "<cms:nested_crumbs",
+        "k_is_active",
+        "k_is_pointer",
+        "k_level",
+        "k_menu_text",
+        "k_crumb_",
+        "Points to another page",
+        "Masquerades",
+        "show_in_menu"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "nested_pages.*?=.*?['\"]1['\"]",
+        "message": "✓ Nested pages enabled in template",
+        "type": "success"
+      },
+      {
+        "pattern": "clonable.*?=.*?['\"]1['\"]",
+        "message": "✓ Template is clonable (required for nested pages)",
+        "type": "success"
+      },
+      {
+        "pattern": "<cms:menu\\s+masterpage",
+        "message": "✓ Menu tag properly configured with masterpage parameter",
+        "type": "success"
+      }
+    ],
+    "rules": [
+      "Always set both clonable='1' AND nested_pages='1' in template tag",
+      "Use <cms:menu masterpage='index.php' /> for automatic menu generation",
+      "Use <cms:nested_crumbs masterpage='index.php' /> for breadcrumbs (NOT <cms:breadcrumbs />)",
+      "Check k_is_active variable to highlight current menu items and their parents",
+      "Limit navigation depth to 3-4 levels for optimal user experience",
+      "Use pointer pages (not duplicate content) to link external sections in menu",
+      "Masquerade method requires Pretty URLs enabled and works only in index.php",
+      "Folders don't work with nested_pages='1' - use hierarchy instead",
+      "Uncheck 'Mark as selected for all pages below' on home pointer page",
+      "Use k_level variable to control menu indentation and styling"
+    ],
+    "commonPatterns": [
+      {
+        "name": "Basic nested pages template setup",
+        "code": "<cms:template title='Pages' clonable='1' nested_pages='1'>\n    <cms:editable name='content' type='richtext' />\n</cms:template>"
+      },
+      {
+        "name": "Simple menu generation",
+        "code": "<cms:menu masterpage='index.php' />"
+      },
+      {
+        "name": "Custom styled menu with depth limit",
+        "code": "<cms:menu masterpage='index.php' menu_class='nav-main' depth='3' />"
+      },
+      {
+        "name": "Breadcrumb navigation",
+        "code": "<cms:nested_crumbs masterpage='index.php'>\n    <a href=\"<cms:show k_crumb_link />\">\n        <cms:show k_crumb_text />\n    </a>\n    <cms:if k_crumb_is_last='0'> &raquo; </cms:if>\n</cms:nested_crumbs>"
+      },
+      {
+        "name": "Conditional active menu styling",
+        "code": "<li class=\"<cms:if k_is_active>active</cms:if>\">\n    <a href=\"<cms:show k_page_link />\">\n        <cms:show k_menu_text />\n    </a>\n</li>"
+      }
+    ],
+    "antiPatterns": [
+      {
+        "pattern": "<cms:breadcrumbs />",
+        "message": "Use <cms:nested_crumbs /> for nested pages, not <cms:breadcrumbs />",
+        "severity": "error"
+      },
+      {
+        "pattern": "<cms:folders.*?>",
+        "message": "Folders don't work with nested_pages='1' - use nested hierarchy instead",
+        "severity": "warning"
+      },
+      {
+        "pattern": "nested_pages='1'.*?(?!clonable)",
+        "message": "nested_pages='1' requires clonable='1' in the same template tag",
+        "severity": "error"
+      },
+      {
+        "pattern": "<cms:menu(?!.*masterpage)",
+        "message": "cms:menu requires masterpage parameter",
+        "severity": "error"
+      }
+    ]
+  }
+}
