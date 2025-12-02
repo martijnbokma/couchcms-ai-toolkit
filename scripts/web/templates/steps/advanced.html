@@ -4,7 +4,7 @@
         <p class="text-sm text-base-content/60">Optional advanced configuration options for experienced users. These settings affect how AI agents behave and where context files are stored.</p>
     </div>
 
-    <form hx-post="/api/setup/step/advanced" hx-target="#wizard-content" hx-swap="innerHTML">
+    <form hx-post="/api/setup/step/advanced" hx-target="#wizard-content" hx-swap="innerHTML" onsubmit="return handleAdvancedSubmit(event)">
         {% for hidden in hiddenFields %}
         <input type="hidden" name="{{ hidden.name }}" value="{{ hidden.value }}" />
         {% endfor %}
@@ -16,10 +16,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    AAPF Framework
+                    <span>AAPF Framework</span>
+                    <button type="button" onclick="toggleInfo('aapf-info')" class="ml-auto btn btn-circle btn-sm btn-ghost text-info hover:bg-info/10 tooltip tooltip-left" data-tip="More information about AAPF Framework" aria-label="Show more information about AAPF Framework">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </button>
                 </h3>
 
-                <div class="alert alert-info mb-4">
+                <div id="aapf-info" class="alert alert-info mb-4 hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div class="flex-1">
                         <h4 class="font-semibold mb-1">What is the AAPF Framework?</h4>
@@ -31,7 +34,7 @@
 
                 <div class="form-control">
                     <label class="label cursor-pointer justify-start gap-4">
-                        <input type="checkbox" name="framework" value="true" class="checkbox checkbox-primary rounded-xl" {% if framework %}checked{% endif %} />
+                        <input type="checkbox" name="framework" value="true" class="checkbox checkbox-primary rounded-xl" {% if framework %}checked{% endif %} onchange="updateFrameworkVisibility()" />
                         <span class="label-text font-medium text-base-content">Enable AAPF Framework</span>
                     </label>
                 </div>
@@ -79,10 +82,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
-                    Context Directory
+                    <span>Context Directory</span>
+                    <button type="button" onclick="toggleInfo('context-info')" class="ml-auto btn btn-circle btn-sm btn-ghost text-info hover:bg-info/10 tooltip tooltip-left" data-tip="More information about Context Directory" aria-label="Show more information about Context Directory">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </button>
                 </h3>
 
-                <div class="alert alert-info mb-4">
+                <div id="context-info" class="alert alert-info mb-4 hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div class="flex-1">
                         <h4 class="font-semibold mb-1">What are AI context files?</h4>
@@ -121,6 +127,14 @@
     </form>
 
     <script>
+        // Toggle info box visibility
+        function toggleInfo(infoId) {
+            const infoBox = document.getElementById(infoId)
+            if (infoBox) {
+                infoBox.classList.toggle('hidden')
+            }
+        }
+
         // Toggle framework options visibility on load and change
         function updateFrameworkVisibility() {
             const checkbox = document.querySelector('input[name="framework"]')
@@ -135,6 +149,24 @@
 
         // Run on change
         document.querySelector('input[name="framework"]')?.addEventListener('change', updateFrameworkVisibility)
+
+        // Handle form submission to ensure all data is included
+        function handleAdvancedSubmit(event) {
+            // Let HTMX handle the submission normally
+            // This function is just for validation if needed
+            return true
+        }
+
+        // Add HTMX error handling
+        document.body.addEventListener('htmx:responseError', function(event) {
+            console.error('HTMX Error:', event.detail)
+            alert('Er is een fout opgetreden bij het verzenden van het formulier. Probeer het opnieuw.')
+        })
+
+        document.body.addEventListener('htmx:sendError', function(event) {
+            console.error('HTMX Send Error:', event.detail)
+            alert('Er is een fout opgetreden bij het verzenden van het formulier. Controleer je internetverbinding.')
+        })
 
         // Back button handler - go back to editors step
         document.querySelector('button[onclick="goBack()"]')?.addEventListener('click', function(e) {

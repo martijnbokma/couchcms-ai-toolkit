@@ -1239,6 +1239,9 @@ async function sync() {
             0
         )
         console.log()
+
+        // Exit successfully
+        process.exit(0)
     } catch (error) {
         handleError(error, 'Sync Process')
 
