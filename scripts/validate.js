@@ -40,7 +40,11 @@ async function validate() {
     }
 
     console.log(`📄 Found: ${configPath}`)
-    const projectDir = dirname(configPath)
+    // If config is in .project/standards.md, projectDir should be parent directory
+    let projectDir = dirname(configPath)
+    if (projectDir.endsWith('.project')) {
+        projectDir = dirname(projectDir)
+    }
 
     // Parse configuration file
     let config

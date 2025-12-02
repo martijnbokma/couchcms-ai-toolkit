@@ -407,7 +407,12 @@ async function init() {
 
     if (confirmed) {
         printProgress('Cleaning existing files...', 2)
-        cleanGeneratedFiles(projectDir, true)
+        // Convert selectedEditors array to object format for cleanup function
+        const editorsConfig = selectedEditors.reduce((acc, editor) => {
+            acc[editor] = true
+            return acc
+        }, {})
+        cleanGeneratedFiles(projectDir, true, editorsConfig)
         printSuccess('Cleaned existing files', 2)
     }
     console.log()

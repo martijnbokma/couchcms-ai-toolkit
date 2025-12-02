@@ -19,7 +19,7 @@
 import matter from 'gray-matter'
 import { parse as parseYaml } from 'yaml'
 import Handlebars from 'handlebars'
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, copyFileSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, copyFileSync, rmSync } from 'fs'
 import { join, dirname, resolve } from 'path'
 
 import {
@@ -961,6 +961,53 @@ async function loadToolkitResources(config, toolkitPath, projectDir) {
 }
 
 /**
+ * Clean up unused editor directories
+ * @param {string} projectDir - Project root directory
+ * @param {object|Array} editorsConfig - Editors configuration
+ * @returns {void}
+ */
+function cleanupUnusedEditorDirs(projectDir, editorsConfig) {
+    // Determine which editors are selected
+    let selectedEditors = []
+    if (Array.isArray(editorsConfig)) {
+        selectedEditors = editorsConfig
+    } else if (typeof editorsConfig === 'object' && editorsConfig !== null) {
+        selectedEditors = Object.entries(editorsConfig)
+            .filter(([_, enabled]) => enabled === true)
+            .map(([editorId]) => editorId)
+    }
+
+    // Map editors to their directories
+    const editorDirs = {
+        cursor: ['.cursor/rules', '.cursor/commands', '.cursor'],
+        claude: ['.claude/skills', '.claude/hooks', '.claude/rules', '.claude'],
+        windsurf: ['.windsurf'],
+        kiro: ['.kiro/steering', '.kiro'],
+        copilot: ['.github'],
+        tabnine: ['.tabnine/guidelines', '.tabnine'],
+        codewhisperer: ['.codewhisperer'],
+    }
+
+    // Remove directories for unselected editors
+    for (const [editorId, dirs] of Object.entries(editorDirs)) {
+        if (!selectedEditors.includes(editorId)) {
+            // Remove directories for this editor (in reverse order to handle nested dirs)
+            for (const dir of dirs.reverse()) {
+                const dirPath = join(projectDir, dir)
+                if (existsSync(dirPath)) {
+                    try {
+                        rmSync(dirPath, { recursive: true, force: true })
+                        console.log(`🗑️  Removed: ${dir} (editor '${editorId}' not selected)`)
+                    } catch (error) {
+                        // Silently fail - directory might be in use or already removed
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
  * Generate all configuration files
  * @param {object} config - Project configuration
  * @param {object} mergedConfig - Merged configuration
@@ -1019,30 +1066,43 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
         process.exit(1)
     }
 
-    // Sync Cursor rules
-    try {
-        syncCursorRules(toolkitPath, projectDir, mergedConfig)
-    } catch (error) {
-        console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
+    // Sync Cursor rules (only if Cursor is selected)
+    const editors = config.editors || {}
+    const isCursorSelected = Array.isArray(editors)
+        ? editors.includes('cursor')
+        : editors.cursor === true
+
+    if (isCursorSelected) {
+        try {
+            syncCursorRules(toolkitPath, projectDir, mergedConfig)
+        } catch (error) {
+            console.warn(`⚠️  Failed to sync Cursor rules: ${error.message}`)
+        }
     }
 
-    // Generate Claude Code configuration (always creates .claude directory)
-    try {
-        const moduleList = config.modules || ['couchcms-core']
-        // Support both old format (config.name) and new format (config.project.name)
-        const projectName = config.project?.name || config.name || 'Unnamed Project'
-        const skillRulesCount = generateClaudeCodeConfig(toolkitPath, projectDir, moduleList, {
-            ...mergedConfig,
-            name: projectName,
-        })
-        // Use simple console.log since generateAllConfigurations is not async
-        // Terminal utilities are used in the main sync() function instead
-        console.log(`✅ Generated: .claude/ directory structure`)
-        if (skillRulesCount > 0) {
-            console.log(`🤖 Claude Code: ${skillRulesCount} skill-rules configured`)
+    // Generate Claude Code configuration (only if Claude is selected)
+    const isClaudeSelected = Array.isArray(editors)
+        ? editors.includes('claude')
+        : editors.claude === true
+
+    if (isClaudeSelected) {
+        try {
+            const moduleList = config.modules || ['couchcms-core']
+            // Support both old format (config.name) and new format (config.project.name)
+            const projectName = config.project?.name || config.name || 'Unnamed Project'
+            const skillRulesCount = generateClaudeCodeConfig(toolkitPath, projectDir, moduleList, {
+                ...mergedConfig,
+                name: projectName,
+            })
+            // Use simple console.log since generateAllConfigurations is not async
+            // Terminal utilities are used in the main sync() function instead
+            console.log(`✅ Generated: .claude/ directory structure`)
+            if (skillRulesCount > 0) {
+                console.log(`🤖 Claude Code: ${skillRulesCount} skill-rules configured`)
+            }
+        } catch (error) {
+            console.warn(`⚠️  Failed to generate Claude Code config: ${error.message}`)
         }
-    } catch (error) {
-        console.warn(`⚠️  Failed to generate Claude Code config: ${error.message}`)
     }
 }
 
@@ -1082,6 +1142,9 @@ async function sync() {
         console.log()
 
         generateAllConfigurations(config, mergedConfig, modules, agents, projectContext, projectRules, toolkitPath, projectDir, configFilePath)
+
+        // Clean up unused editor directories
+        cleanupUnusedEditorDirs(projectDir, config.editors || {})
 
         // Display success summary
         printBox(

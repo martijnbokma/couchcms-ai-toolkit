@@ -282,8 +282,9 @@ export async function selectContextDirectory(simpleMode) {
  * Clean generated files and directories
  * @param {string} projectDir - Project root directory
  * @param {boolean} confirmed - Whether user confirmed the cleanup
+ * @param {object|null} editorsConfig - Editors configuration object (optional)
  */
-export function cleanGeneratedFiles(projectDir, confirmed = false) {
+export function cleanGeneratedFiles(projectDir, confirmed = false, editorsConfig = null) {
     if (!confirmed) {
         console.log('⚠️  Cleanup skipped (not confirmed)')
         return
@@ -396,7 +397,49 @@ export function cleanGeneratedFiles(projectDir, confirmed = false) {
         }
     }
 
-    // Remove empty directories
+    // Determine which editors are selected
+    let selectedEditors = []
+    if (editorsConfig) {
+        if (Array.isArray(editorsConfig)) {
+            selectedEditors = editorsConfig
+        } else if (typeof editorsConfig === 'object') {
+            selectedEditors = Object.entries(editorsConfig)
+                .filter(([_, enabled]) => enabled === true)
+                .map(([editorId]) => editorId)
+        }
+    }
+
+    // Map editors to their directories
+    const editorDirs = {
+        cursor: ['.cursor/rules', '.cursor/commands', '.cursor'],
+        claude: ['.claude/skills', '.claude/hooks', '.claude/rules', '.claude'],
+        windsurf: ['.windsurf'],
+        kiro: ['.kiro/steering', '.kiro'],
+        copilot: ['.github'],
+        tabnine: ['.tabnine/guidelines', '.tabnine'],
+        codewhisperer: ['.codewhisperer'],
+    }
+
+    // Remove directories for unselected editors
+    for (const [editorId, dirs] of Object.entries(editorDirs)) {
+        if (!selectedEditors.includes(editorId)) {
+            // Remove directories for this editor (in reverse order to handle nested dirs)
+            for (const dir of dirs.reverse()) {
+                const dirPath = join(projectDir, dir)
+                if (existsSync(dirPath)) {
+                    try {
+                        rmSync(dirPath, { recursive: true, force: true })
+                        removedCount++
+                        console.log(`  🗑️  Removed directory: ${dir} (editor '${editorId}' not selected)`)
+                    } catch (error) {
+                        console.warn(`  ⚠️  Failed to remove ${dir}: ${error.message}`)
+                    }
+                }
+            }
+        }
+    }
+
+    // Remove empty directories (for selected editors, clean up empty subdirs)
     const dirsToCheck = [
         '.tabnine/guidelines',
         '.tabnine',
@@ -415,6 +458,7 @@ export function cleanGeneratedFiles(projectDir, confirmed = false) {
     ]
 
     // Remove empty directories (in reverse order to handle nested dirs)
+    // Only remove if the editor is not selected (already handled above) or if it's empty
     for (const dir of dirsToCheck.reverse()) {
         const dirPath = join(projectDir, dir)
         if (existsSync(dirPath)) {
