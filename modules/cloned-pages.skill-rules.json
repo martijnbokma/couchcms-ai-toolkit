@@ -1,0 +1,226 @@
+{
+  "cloned-pages": {
+    "type": "content",
+    "enforcement": "require",
+    "priority": "critical",
+    "description": "Creating multiple dynamic pages from single templates - foundation for blogs, portfolios, and content systems",
+    "promptTriggers": {
+      "keywords": [
+        "clone",
+        "cloned",
+        "cloned pages",
+        "clonable",
+        "blog",
+        "portfolio",
+        "multiple pages",
+        "dynamic pages",
+        "page view",
+        "list view",
+        "cms:pages",
+        "k_page_title",
+        "k_page_link"
+      ],
+      "intentPatterns": [
+        "(create|build|make).*?(blog|portfolio|news|products)",
+        "(multiple|many|several).*?pages?.*?(from|using).*?template",
+        "(clone|cloned).*?pages?",
+        "how.*?create.*?(blog|portfolio|news)",
+        "(list|show|display).*?(all|multiple).*?pages?",
+        "make.*?template.*?clonable",
+        "(page|list).*?view"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/blog*.php",
+        "**/news*.php",
+        "**/portfolio*.php",
+        "**/products*.php",
+        "**/articles*.php",
+        "**/posts*.php",
+        "**/*list*.php"
+      ],
+      "contentPatterns": [
+        "clonable='1'",
+        "clonable=\"1\"",
+        "<cms:pages",
+        "k_is_page",
+        "k_is_list",
+        "k_page_title",
+        "k_page_link",
+        "k_page_name",
+        "k_page_id",
+        "k_page_date",
+        "<cms:paginator"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "clonable.*?=.*?['\"]1['\"]",
+        "message": "✓ Template is clonable (can create multiple pages)",
+        "type": "success"
+      },
+      {
+        "pattern": "<cms:if\\s+k_is_(page|list)",
+        "message": "✓ View detection implemented (page vs list)",
+        "type": "success"
+      },
+      {
+        "pattern": "<cms:pages",
+        "message": "✓ Using cms:pages to list cloned pages",
+        "type": "success"
+      },
+      {
+        "pattern": "paginate=['\"]1['\"]",
+        "message": "✓ Pagination enabled for large listings",
+        "type": "success"
+      }
+    ],
+    "rules": [
+      "CRITICAL: Add clonable='1' to template tag to enable cloning",
+      "CRITICAL: Must visit template as admin after making it clonable",
+      "CRITICAL: Always implement view detection (k_is_page vs k_is_list)",
+      "Template becomes 'schizophrenic' - represents multiple pages OR listing view",
+      "Template has NO data of its own once clonable - data belongs to cloned pages",
+      "Use <cms:pages> in list view to display cloned pages",
+      "Use k_is_page to show single page content",
+      "Use k_is_list to show listing of pages",
+      "Page properties: k_page_title, k_page_name, k_page_link, k_page_id, k_page_date",
+      "Pretty URLs: Update .htaccess after making template clonable",
+      "Use thumbnails in listings, not full-size images",
+      "Add pagination for listings with many pages",
+      "Use excerpts in listings, not full content",
+      "Default page automatically created with existing content"
+    ],
+    "commonPatterns": [
+      {
+        "name": "Make template clonable",
+        "code": "<cms:template title='Blog' clonable='1'>\n    <cms:editable name='content' type='richtext' />\n</cms:template>"
+      },
+      {
+        "name": "Basic view detection",
+        "code": "<cms:if k_is_page>\n    <!-- Single page -->\n    <h1><cms:show k_page_title /></h1>\n    <cms:show content />\n<cms:else />\n    <!-- List of pages -->\n    <cms:pages>\n        <h2><a href=\"<cms:show k_page_link />\"><cms:show k_page_title /></a></h2>\n    </cms:pages>\n</cms:if>"
+      },
+      {
+        "name": "List pages with pagination",
+        "code": "<cms:pages limit='10' paginate='1'>\n    <article>\n        <h2><a href=\"<cms:show k_page_link />\"><cms:show k_page_title /></a></h2>\n        <time><cms:date k_page_date format='F j, Y' /></time>\n        <cms:show excerpt />\n    </article>\n</cms:pages>\n<cms:paginator />"
+      },
+      {
+        "name": "Blog template complete",
+        "code": "<cms:template title='Blog' clonable='1'>\n    <cms:editable name='featured_image' type='image' />\n    <cms:editable name='content' type='richtext' />\n</cms:template>\n\n<cms:if k_is_page>\n    <h1><cms:show k_page_title /></h1>\n    <cms:show content />\n<cms:else />\n    <cms:pages limit='10' paginate='1'>\n        <h2><cms:show k_page_title /></h2>\n    </cms:pages>\n    <cms:paginator />\n</cms:if>"
+      },
+      {
+        "name": "Portfolio grid",
+        "code": "<cms:if k_is_list>\n    <div class=\"grid grid-cols-3 gap-4\">\n        <cms:pages>\n            <a href=\"<cms:show k_page_link />\">\n                <img src=\"<cms:thumbnail featured_image width='400' />\" />\n                <h3><cms:show k_page_title /></h3>\n            </a>\n        </cms:pages>\n    </div>\n</cms:if>"
+      },
+      {
+        "name": "Custom ordering",
+        "code": "<cms:pages orderby='publish_date' order='desc' limit='10'>\n    <h2><cms:show k_page_title /></h2>\n</cms:pages>"
+      },
+      {
+        "name": "Filter by folder",
+        "code": "<cms:pages folder='tutorials' limit='10'>\n    <h2><cms:show k_page_title /></h2>\n</cms:pages>"
+      },
+      {
+        "name": "Show only published",
+        "code": "<cms:pages show_future_entries='0'>\n    <h2><cms:show k_page_title /></h2>\n</cms:pages>"
+      }
+    ],
+    "antiPatterns": [
+      {
+        "pattern": "<cms:template(?!.*clonable).*?>.*<cms:pages",
+        "message": "WARNING: Using cms:pages without clonable='1' - template must be clonable",
+        "severity": "error"
+      },
+      {
+        "pattern": "clonable=['\"]1['\"](?![\\s\\S]*<cms:if\\s+k_is_(page|list))",
+        "message": "CRITICAL: Clonable template without view detection - add k_is_page/k_is_list check",
+        "severity": "error"
+      },
+      {
+        "pattern": "<cms:if\\s+k_is_list(?![\\s\\S]{0,500}<cms:pages)",
+        "message": "WARNING: k_is_list detected but no cms:pages tag found - how will you list pages?",
+        "severity": "warning"
+      },
+      {
+        "pattern": "<cms:pages(?!.*limit=)",
+        "message": "WARNING: cms:pages without limit - could load thousands of pages",
+        "severity": "warning"
+      },
+      {
+        "pattern": "<cms:pages.*limit=['\"]\\d{3,}['\"]",
+        "message": "WARNING: Very high limit on cms:pages - consider pagination instead",
+        "severity": "warning"
+      },
+      {
+        "pattern": "<cms:pages(?![\\s\\S]{0,200}paginate)",
+        "message": "SUGGESTION: Add paginate='1' to cms:pages for better UX with many pages",
+        "severity": "info"
+      }
+    },
+    "pageVariables": {
+      "page_info": [
+        "k_page_title",
+        "k_page_name",
+        "k_page_id",
+        "k_page_link",
+        "k_page_date",
+        "k_page_modification_date",
+        "k_publish_date",
+        "k_is_published"
+      ],
+      "folder_info": [
+        "k_page_folderid",
+        "k_page_foldername",
+        "k_page_foldertitle",
+        "k_page_folderlink"
+      ],
+      "pagination": [
+        "k_paginated_top",
+        "k_paginated_bottom",
+        "k_paginator_required",
+        "k_page_count",
+        "k_total_pages"
+      ]
+    },
+    "useCases": {
+      "blog": {
+        "description": "Blog posts with categories and archives",
+        "features": ["clonable='1'", "folders", "archives", "pagination", "comments"],
+        "example": "blog.php with date-based archives and category folders"
+      },
+      "portfolio": {
+        "description": "Portfolio items with project categories",
+        "features": ["clonable='1'", "folders", "image galleries", "grid layout"],
+        "example": "portfolio.php with project categories and image showcases"
+      },
+      "products": {
+        "description": "Product catalog with categories and search",
+        "features": ["clonable='1'", "folders", "search_type fields", "pagination"],
+        "example": "products.php with price, SKU, and stock status"
+      },
+      "news": {
+        "description": "News articles with date archives",
+        "features": ["clonable='1'", "archives", "folders", "featured posts"],
+        "example": "news.php with breaking news and category sections"
+      },
+      "team": {
+        "description": "Team member profiles",
+        "features": ["clonable='1'", "image uploads", "social links"],
+        "example": "team.php with bio, photo, and contact info"
+      }
+    },
+    "cmsPageParameters": {
+      "limit": "Maximum pages to show (default: no limit)",
+      "paginate": "Enable pagination (paginate='1')",
+      "orderby": "Sort field (publish_date, page_title, weight, custom field)",
+      "order": "Sort direction (asc or desc)",
+      "folder": "Filter by folder name",
+      "show_future_entries": "Show unpublished pages (0 or 1)",
+      "masterpage": "Specify template (if querying from different template)",
+      "start_on": "Start date for filtering",
+      "stop_before": "End date for filtering",
+      "custom_field": "Filter by custom field value"
+    }
+  }
+}
