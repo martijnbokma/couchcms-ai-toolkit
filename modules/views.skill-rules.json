@@ -1,0 +1,193 @@
+{
+  "views": {
+    "type": "content",
+    "enforcement": "require",
+    "priority": "critical",
+    "description": "Template view detection and handling (page, list, folder, archive, home views) in CouchCMS",
+    "promptTriggers": {
+      "keywords": [
+        "view",
+        "views",
+        "page view",
+        "list view",
+        "folder view",
+        "archive view",
+        "home view",
+        "k_is_page",
+        "k_is_list",
+        "k_is_folder",
+        "k_is_archive",
+        "k_is_home",
+        "clonable",
+        "template variables",
+        "view detection"
+      ],
+      "intentPatterns": [
+        "(detect|check|determine).*?view",
+        "(page|list|folder|archive|home).*?view",
+        "what.*?view.*?(am i|is this|current)",
+        "(available|access).*?variables",
+        "clonable.*?template",
+        "list.*?pages?",
+        "(show|display).*(single|one).*?page",
+        "(show|display).*(list|all).*?pages?"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/*.php",
+        "**/blog*.php",
+        "**/portfolio*.php",
+        "**/news*.php",
+        "**/articles*.php",
+        "**/*list*.php",
+        "**/templates/*.php"
+      ],
+      "contentPatterns": [
+        "clonable='1'",
+        "clonable=\"1\"",
+        "<cms:if k_is_page",
+        "<cms:if k_is_list",
+        "<cms:if k_is_folder",
+        "<cms:if k_is_archive",
+        "<cms:if k_is_home",
+        "k_page_title",
+        "k_page_name",
+        "k_folder_name",
+        "k_archive_date",
+        "<cms:pages"
+      ]
+    },
+    "preflightChecks": [
+      {
+        "pattern": "clonable.*?=.*?['\"]1['\"]",
+        "message": "✓ Template is clonable (views enabled)",
+        "type": "success"
+      },
+      {
+        "pattern": "<cms:if\\s+k_is_(page|list|folder|archive|home)",
+        "message": "✓ View detection implemented",
+        "type": "success"
+      },
+      {
+        "pattern": "<cms:pages",
+        "message": "✓ Using cms:pages for listing content",
+        "type": "success"
+      }
+    },
+    "rules": [
+      "CRITICAL: Always detect view with k_is_page/k_is_list before accessing variables",
+      "Editable region contents ONLY available in page view (k_is_page='1')",
+      "Use k_is_list for any listing (home, folder, or archive)",
+      "k_page_title, k_page_name only available in page view",
+      "k_folder_* variables only available in folder view (k_is_folder='1')",
+      "k_archive_* variables only available in archive view (k_is_archive='1')",
+      "Template must be clonable='1' for views to work",
+      "Use <cms:pages> in list views to access page data",
+      "Use <cms:dump_all /> to debug available variables",
+      "k_is_home='1' means list view that is NOT folder or archive"
+    ],
+    "commonPatterns": [
+      {
+        "name": "Basic view detection (page vs list)",
+        "code": "<cms:if k_is_page>\n    <!-- Show single page -->\n    <h1><cms:show k_page_title /></h1>\n    <cms:show content />\n<cms:else />\n    <!-- Show list of pages -->\n    <cms:pages>\n        <h2><a href=\"<cms:show k_page_link />\"><cms:show k_page_title /></a></h2>\n    </cms:pages>\n</cms:if>"
+      },
+      {
+        "name": "Comprehensive view detection (all views)",
+        "code": "<cms:if k_is_page>\n    <!-- Single page -->\n    <h1><cms:show k_page_title /></h1>\n<cms:else />\n    <cms:if k_is_folder>\n        <!-- Folder listing -->\n        <h1><cms:show k_folder_title /></h1>\n        <cms:pages folder=k_folder_name>\n    </cms:if>\n    <cms:if k_is_archive>\n        <!-- Archive listing -->\n        <h1><cms:date k_archive_date format='F Y' /></h1>\n        <cms:pages start_on=k_archive_date stop_before=k_next_archive_date>\n    </cms:if>\n    <cms:if k_is_home>\n        <!-- Home listing -->\n        <h1>All Posts</h1>\n        <cms:pages>\n    </cms:if>\n            <h2><a href=\"<cms:show k_page_link />\"><cms:show k_page_title /></a></h2>\n        </cms:pages>\n    </cms:if>\n</cms:if>"
+      },
+      {
+        "name": "Clonable template setup",
+        "code": "<cms:template title='Blog' clonable='1'>\n    <cms:editable name='content' type='richtext' />\n</cms:template>"
+      },
+      {
+        "name": "Debug view variables",
+        "code": "<h3>Debug: Current View</h3>\n<ul>\n    <li>k_is_page: <cms:show k_is_page /></li>\n    <li>k_is_list: <cms:show k_is_list /></li>\n    <li>k_is_home: <cms:show k_is_home /></li>\n    <li>k_is_folder: <cms:show k_is_folder /></li>\n    <li>k_is_archive: <cms:show k_is_archive /></li>\n</ul>\n<cms:dump_all />"
+      },
+      {
+        "name": "Folder view with folder variable",
+        "code": "<cms:if k_is_folder>\n    <h1>Category: <cms:show k_folder_title /></h1>\n    <p><cms:show k_folder_pagecount /> posts in this category</p>\n    <cms:pages folder=k_folder_name>\n        <h2><cms:show k_page_title /></h2>\n    </cms:pages>\n</cms:if>"
+      },
+      {
+        "name": "Archive view with date variables",
+        "code": "<cms:if k_is_archive>\n    <h1>Posts from <cms:date k_archive_date format='F Y' /></h1>\n    <cms:pages start_on=k_archive_date stop_before=k_next_archive_date>\n        <article>\n            <h2><cms:show k_page_title /></h2>\n            <time><cms:show k_page_date /></time>\n        </article>\n    </cms:pages>\n</cms:if>"
+      }
+    ],
+    "antiPatterns": [
+      {
+        "pattern": "k_page_title(?![^<]*</cms:pages>)(?![^<]*<cms:if\\s+k_is_page)",
+        "message": "k_page_title only available in page view or within <cms:pages> loop",
+        "severity": "error"
+      },
+      {
+        "pattern": "k_folder_(?:name|title)(?![^<]*<cms:if\\s+k_is_folder)",
+        "message": "k_folder_* variables only available in folder view (check k_is_folder first)",
+        "severity": "error"
+      },
+      {
+        "pattern": "k_archive_date(?![^<]*<cms:if\\s+k_is_archive)",
+        "message": "k_archive_date only available in archive view (check k_is_archive first)",
+        "severity": "error"
+      },
+      {
+        "pattern": "<cms:template(?!.*clonable)",
+        "message": "Template should have clonable='1' if you want to use views",
+        "severity": "warning"
+      },
+      {
+        "pattern": "<cms:show\\s+content\\s*/>(?![^<]*<cms:if\\s+k_is_page)(?![^<]*</cms:pages>)",
+        "message": "Editable regions (like 'content') only available in page view or within <cms:pages>",
+        "severity": "error"
+      }
+    ],
+    "variableReference": {
+      "allViews": [
+        "k_page_link",
+        "k_admin_link",
+        "k_site_link",
+        "k_template_name",
+        "k_template_title",
+        "k_template_link"
+      ],
+      "pageView": [
+        "k_is_page",
+        "k_page_title",
+        "k_page_name",
+        "k_page_id",
+        "k_page_date",
+        "k_page_modification_date",
+        "k_comments_count",
+        "k_page_folderid",
+        "k_page_foldername",
+        "k_page_foldertitle"
+      ],
+      "listView": [
+        "k_is_list",
+        "k_is_home"
+      ],
+      "folderView": [
+        "k_is_list",
+        "k_is_folder",
+        "k_folder_id",
+        "k_folder_name",
+        "k_folder_title",
+        "k_folder_link",
+        "k_folder_pagecount",
+        "k_folder_totalpagecount"
+      ],
+      "archiveView": [
+        "k_is_list",
+        "k_is_archive",
+        "k_archive_date",
+        "k_next_archive_date",
+        "k_archive_link",
+        "k_day",
+        "k_month",
+        "k_year",
+        "k_is_day",
+        "k_is_month",
+        "k_is_year"
+      ]
+    }
+  }
+}
