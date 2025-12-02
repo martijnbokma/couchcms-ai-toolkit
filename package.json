@@ -9,6 +9,7 @@
         "bun": ">=1.0.0"
     },
     "scripts": {
+        "toolkit": "bun scripts/toolkit.js",
         "install-toolkit": "bun scripts/install.js",
         "sync": "bun scripts/sync.js",
         "sync:watch": "bun scripts/sync.js --watch",

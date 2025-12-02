@@ -66,7 +66,7 @@ export class FileSystemError extends ToolkitError {
 }
 
 /**
- * Handle and display errors consistently
+ * Handle and display errors consistently with actionable solutions
  * @param {Error} error - Error to handle
  * @param {string} [context] - Context where error occurred
  */
@@ -94,11 +94,21 @@ export function handleError(error, context) {
     // Display solution if available
     if (solution) {
         try {
-            console.log(formatSolution(solution))
+            const formatted = formatSolution(solution)
+            console.log(formatted)
+
+            // Show quick fix command prominently if available
+            if (solution.quickFix) {
+                console.log(`\n⚡ Quick Fix Command:`)
+                console.log(`   ${solution.quickFix}\n`)
+            }
         } catch {
             // Fallback if formatSolution fails
             if (solution.solution) {
                 console.log(`\n💡 Solution: ${solution.solution}`)
+            }
+            if (solution.quickFix) {
+                console.log(`\n⚡ Quick Fix: ${solution.quickFix}`)
             }
         }
     }

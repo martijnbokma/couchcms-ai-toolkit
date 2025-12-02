@@ -11,42 +11,46 @@ import { homedir } from 'os'
 
 /**
  * Detect toolkit path automatically
- * Checks in order:
+ * Checks multiple common locations in order:
  * 1. ./ai-toolkit-shared (submodule in current project)
- * 2. ~/couchcms-ai-toolkit (home directory installation)
- * 3. Current directory if toolkit structure detected
+ * 2. ../ai-toolkit-shared (parent directory)
+ * 3. ~/couchcms-ai-toolkit (home directory installation)
+ * 4. ~/.couchcms-ai-toolkit (alternative home location)
+ * 5. Current directory if toolkit structure detected
+ * 6. ../couchcms-ai-toolkit (parent directory alternative)
  *
  * @param {string} projectDir - Project root directory
  * @returns {string|null} - Detected toolkit path (relative) or null if not found
  */
 export function detectToolkitPath(projectDir) {
-    // Check 1: Submodule in project directory
-    const submodulePath = join(projectDir, 'ai-toolkit-shared')
-    if (existsSync(submodulePath)) {
-        const hasToolkitStructure =
-            existsSync(join(submodulePath, 'modules')) &&
-            existsSync(join(submodulePath, 'scripts')) &&
-            existsSync(join(submodulePath, 'templates'))
+    const searchPaths = [
+        // Check 1: Submodule in project directory
+        { path: join(projectDir, 'ai-toolkit-shared'), relative: './ai-toolkit-shared' },
+        // Check 2: Parent directory
+        { path: join(projectDir, '..', 'ai-toolkit-shared'), relative: '../ai-toolkit-shared' },
+        // Check 3: Home directory installation
+        { path: join(homedir(), 'couchcms-ai-toolkit'), relative: '~/couchcms-ai-toolkit' },
+        // Check 4: Alternative home location
+        { path: join(homedir(), '.couchcms-ai-toolkit'), relative: '~/.couchcms-ai-toolkit' },
+        // Check 5: Parent directory alternative
+        { path: join(projectDir, '..', 'couchcms-ai-toolkit'), relative: '../couchcms-ai-toolkit' }
+    ]
 
-        if (hasToolkitStructure) {
-            return './ai-toolkit-shared'
+    // Check each path
+    for (const { path: searchPath, relative: relPath } of searchPaths) {
+        if (existsSync(searchPath)) {
+            const hasToolkitStructure =
+                existsSync(join(searchPath, 'modules')) &&
+                existsSync(join(searchPath, 'scripts')) &&
+                existsSync(join(searchPath, 'templates'))
+
+            if (hasToolkitStructure) {
+                return relPath
+            }
         }
     }
 
-    // Check 2: Home directory installation
-    const homePath = join(homedir(), 'couchcms-ai-toolkit')
-    if (existsSync(homePath)) {
-        const hasToolkitStructure =
-            existsSync(join(homePath, 'modules')) &&
-            existsSync(join(homePath, 'scripts')) &&
-            existsSync(join(homePath, 'templates'))
-
-        if (hasToolkitStructure) {
-            return '~/couchcms-ai-toolkit'
-        }
-    }
-
-    // Check 3: Current directory (if running from toolkit directory)
+    // Check 6: Current directory (if running from toolkit directory)
     const currentDir = process.cwd()
     const hasToolkitStructure =
         existsSync(join(currentDir, 'modules')) &&

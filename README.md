@@ -75,9 +75,29 @@ This installs the required packages:
 
 ## 🚀 Quick Start
 
-### Quick Install (3 steps)
+### Unified Command (Recommended)
 
-Get started in under a minute:
+**New:** Use the unified `toolkit` command for all operations:
+
+```bash
+# 1. Add toolkit as submodule
+git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
+
+# 2. Install and setup (automatic dependency installation)
+bun run toolkit install
+```
+
+The unified command will:
+- ✅ Automatically install dependencies
+- ✅ Guide you through setup with clear options
+- ✅ Create your configuration file
+
+**Setup Options:**
+- **Easy** (1 minute, 2 questions) - Quick setup with recommended defaults
+- **Medium** (3 minutes, 5 questions) - Choose CSS and JS frameworks
+- **Comprehensive** (5 minutes, 8+ questions) - Full control over all options
+
+### Alternative: Manual Setup
 
 ```bash
 # 1. Add toolkit as submodule
@@ -87,16 +107,10 @@ git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-too
 cd ai-toolkit-shared && bun install && cd ..
 
 # 3. Run setup wizard
-bun ai-toolkit-shared/scripts/create-standards.js
-```
-
-**New: Simple Standards Creator** - Answer a few simple questions and the wizard automatically creates your configuration. Perfect for beginners!
-
-**Alternative: Advanced Setup**
-```bash
-# Run the advanced setup wizard
-# This provides full control over modules, agents, and configuration
-bun ai-toolkit-shared/scripts/init.js
+bun run toolkit setup
+# Or use legacy commands:
+# bun ai-toolkit-shared/scripts/create-standards.js
+# bun ai-toolkit-shared/scripts/init.js
 
 # The wizard will guide you through:
 # - Project name and description
@@ -114,14 +128,37 @@ bun ai-toolkit-shared/scripts/init.js
 
 **Result:** Configuration file (`.project/standards.md`) and all IDE configs (`.cursorrules`, `.claude/`, etc.) are generated automatically.
 
-### One-Command Install
+### Unified Command (Recommended)
+
+**New:** Use the unified `toolkit` command:
+
+```bash
+# 1. Add toolkit as submodule
+git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
+
+# 2. Install and setup (unified command)
+bun run toolkit install
+```
+
+The unified command automatically:
+- ✅ Installs dependencies
+- ✅ Guides you through setup
+- ✅ Creates configuration file
+- ✅ Generates AI configs
+
+**Setup options:**
+- **Easy** (1 min, 2 questions) - Quick setup with defaults
+- **Medium** (3 min, 5 questions) - Choose CSS and JS frameworks
+- **Comprehensive** (5 min, 8+ questions) - Full control
+
+### Legacy: One-Command Install Script
 
 ```bash
 # 1. Install toolkit
 curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/install.sh | bash
 
 # 2. Run setup wizard
-cd ai-toolkit-shared && bun run init
+bun run toolkit install
 ```
 
 The install script automatically:
@@ -129,7 +166,9 @@ The install script automatically:
 - ✅ Installs dependencies (bun/npm)
 - ✅ Cleans up any previous installation artifacts
 
-Then run `init.js` to configure your project and generate AI configs.
+Then run `toolkit install` to configure your project and generate AI configs.
+
+📖 **[Start Here](docs/START-HERE.md)** - Single entry point with clear decision tree
 
 📖 **[See all installation methods](docs/INSTALLATION-METHODS.md)** - Bash, Bun, Manual, Git Clone
 
@@ -221,8 +260,12 @@ Key terms used throughout this documentation:
 
 ### 🚀 Start Here
 
+**👉 [START HERE](docs/START-HERE.md)** - Single entry point with clear decision tree
+
 | Guide | Description | Time |
 |-------|-------------|------|
+| **[Start Here](docs/START-HERE.md)** | **Single entry point - start here!** | 2 min |
+| **[Quick Start Beginner](docs/QUICK-START-BEGINNER.md)** | Absolute beginner guide with exact steps | 5 min |
 | **[Simple Setup](docs/SIMPLE-SETUP.md)** | Simple wizard for beginners | 2 min |
 | **[Setup Comparison](docs/SETUP-COMPARISON.md)** | Compare Simple vs Advanced setup | 3 min |
 | **[Quick Start](docs/QUICK-START.md)** | Installation in 5 minutes | 5 min |
@@ -286,10 +329,67 @@ agents:
 
 ## 🎯 Commands
 
-### Setup & Configuration
+### Unified Command (Recommended)
+
+**New:** Use the unified `toolkit` command for all operations:
 
 ```bash
+# First-time installation and setup
+bun run toolkit install
 
+# Configure or reconfigure project
+bun run toolkit setup
+
+# Generate AI configs from standards.md
+bun run toolkit sync
+
+# Validate configuration
+bun run toolkit validate
+
+# Check installation status
+bun run toolkit health
+
+# Browse modules/agents
+bun run toolkit browse
+
+# Change setup complexity
+bun run toolkit reconfigure
+
+# Show help
+bun run toolkit help
+```
+
+**Options:**
+```bash
+# Specify complexity
+bun run toolkit setup --complexity=easy
+bun run toolkit setup --complexity=medium
+bun run toolkit setup --complexity=comprehensive
+
+# Show all options (temporary override)
+bun run toolkit setup --show-all
+```
+
+### Legacy Commands (Still Work)
+
+```bash
+# Simple setup wizard (recommended for beginners)
+bun ai-toolkit-shared/scripts/create-standards.js
+
+# Advanced setup (first time)
+bun ai-toolkit-shared/scripts/init.js
+
+# Health check
+bun ai-toolkit-shared/scripts/health.js
+
+# Generate/update AI configs
+bun ai-toolkit-shared/scripts/sync.js
+
+# Watch mode - auto-sync on config changes
+bun ai-toolkit-shared/scripts/sync.js --watch
+```
+
+**Note:** Legacy commands still work, but use `toolkit` commands for the best experience.
 
 ### Dependencies
 
@@ -300,32 +400,7 @@ The toolkit requires the following Node.js packages:
 - **handlebars** (^4.7.8) - Template engine for generating AI configuration files
 - **fast-check** (^3.15.0) (development) - Testing framework for generating random test cases
 
-These are automatically installed when you run `bun install` in the toolkit directory.
-
-# Simple setup wizard (recommended for beginners)
-bun ai-toolkit-shared/scripts/create-standards.js
-# or: cd ai-toolkit-shared && bun run create
-
-# Advanced setup (first time) - with auto-detection!
-bun ai-toolkit-shared/scripts/init.js
-# or: cd ai-toolkit-shared && bun run init
-
-# Health check - validate installation and check for updates
-bun ai-toolkit-shared/scripts/health.js
-# or: cd ai-toolkit-shared && bun run health
-
-# Reinstall toolkit - update and regenerate configs
-bun ai-toolkit-shared/scripts/reinstall.js
-# or: cd ai-toolkit-shared && bun run reinstall
-# Skip confirmation: bun ai-toolkit-shared/scripts/reinstall.js --force
-
-# Generate/update AI configs
-bun ai-toolkit-shared/scripts/sync.js
-# or: cd ai-toolkit-shared && bun run sync
-
-# Watch mode - auto-sync on config changes
-bun ai-toolkit-shared/scripts/sync.js --watch
-# or: cd ai-toolkit-shared && bun run sync:watch
+**These are automatically installed** when you run `bun run toolkit install` or `bun install` in the toolkit directory.
 
 # Interactive module browser
 bun ai-toolkit-shared/scripts/browse.js          # Browse modules

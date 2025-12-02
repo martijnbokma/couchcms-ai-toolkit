@@ -372,3 +372,52 @@ export function printSummary(title, items, indent = 0) {
     })
     console.log()
 }
+
+/**
+ * Simple spinner for async operations
+ * @param {string} message - Message to show
+ * @param {Function} fn - Async function to run
+ * @returns {Promise<any>} Result of the function
+ */
+export async function withSpinner(message, fn) {
+    const spinnerChars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+    let frame = 0
+    let interval
+
+    const startSpinner = () => {
+        process.stdout.write(`\r${spinnerChars[frame]} ${message}`)
+        frame = (frame + 1) % spinnerChars.length
+    }
+
+    interval = setInterval(startSpinner, 100)
+    process.stdout.write(`\r${spinnerChars[0]} ${message}`)
+
+    try {
+        const result = await fn()
+        clearInterval(interval)
+        process.stdout.write(`\r${terminal.clearLine}✅ ${message}\n`)
+        return result
+    } catch (error) {
+        clearInterval(interval)
+        process.stdout.write(`\r${terminal.clearLine}❌ ${message} - Failed\n`)
+        throw error
+    }
+}
+
+/**
+ * Progress bar for multi-step processes
+ * @param {string} label - Progress label
+ * @param {number} current - Current step
+ * @param {number} total - Total steps
+ */
+export function showProgressBar(label, current, total) {
+    const percentage = Math.round((current / total) * 100)
+    const barWidth = 30
+    const filled = Math.round((current / total) * barWidth)
+    const empty = barWidth - filled
+    const bar = '█'.repeat(filled) + '░'.repeat(empty)
+    process.stdout.write(`\r${label}: [${bar}] ${percentage}% (${current}/${total})`)
+    if (current === total) {
+        process.stdout.write('\n')
+    }
+}

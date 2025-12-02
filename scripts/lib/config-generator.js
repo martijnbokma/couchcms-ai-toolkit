@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, readdirSync
 import { join } from 'path'
 import { ToolkitError } from './errors.js'
 import { prompt, confirm } from './prompts.js'
+import { editorsArrayToYaml, validateEditorConfig, getSelectedEditorIds } from './editor-utils.js'
 
 /**
  * Determine config file path
@@ -45,30 +46,15 @@ function replaceTemplateVariables(template, variables) {
 
     // Replace editors list - set selected editors to true, others to false
     if (variables.selectedEditors && Array.isArray(variables.selectedEditors)) {
-        const editorDefaults = {
-            cursor: false,
-            windsurf: false,
-            zed: false,
-            copilot: false,
-            claude: false,
-            codewhisperer: false,
-            kiro: false,
-            antigravity: false,
-            jules: false,
-            roocode: false,
-            'vscode-ai': false,
-            tabnine: false,
-            agent: false,
+        // Validate editor configuration
+        const validation = validateEditorConfig(variables.selectedEditors)
+        if (!validation.valid) {
+            console.warn(`⚠️  Editor configuration validation warnings:`)
+            validation.errors.forEach(error => console.warn(`   - ${error}`))
         }
 
-        // Set selected editors to true
-        variables.selectedEditors.forEach(editor => {
-            editorDefaults[editor] = true
-        })
-
-        const editorsYaml = Object.entries(editorDefaults)
-            .map(([key, value]) => `    ${key}: ${value}`)
-            .join('\n')
+        // Convert to YAML format using utility function
+        const editorsYaml = editorsArrayToYaml(variables.selectedEditors)
 
         result = result.replace(
             /editors:\n(?:    [^\n]+\n?)+/g,
@@ -397,17 +383,8 @@ export function cleanGeneratedFiles(projectDir, confirmed = false, editorsConfig
         }
     }
 
-    // Determine which editors are selected
-    let selectedEditors = []
-    if (editorsConfig) {
-        if (Array.isArray(editorsConfig)) {
-            selectedEditors = editorsConfig
-        } else if (typeof editorsConfig === 'object') {
-            selectedEditors = Object.entries(editorsConfig)
-                .filter(([_, enabled]) => enabled === true)
-                .map(([editorId]) => editorId)
-        }
-    }
+    // Use utility function to get selected editors consistently
+    const selectedEditors = getSelectedEditorIds(editorsConfig)
 
     // Map editors to their directories
     const editorDirs = {

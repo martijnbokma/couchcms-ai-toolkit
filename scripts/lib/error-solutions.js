@@ -77,12 +77,13 @@ export const ERROR_SOLUTIONS = {
             message: 'Configuration file not found',
             solution: 'Create .project/standards.md file',
             solutionSteps: [
-                'Run: bun ai-toolkit-shared/scripts/create-standards.js',
-                'Or run: bun ai-toolkit-shared/scripts/init.js',
+                'Run: bun run toolkit install',
+                'Or run: bun run toolkit setup',
                 'This will create the configuration file for you'
             ],
-            docs: 'docs/GETTING-STARTED.md',
-            explanation: 'The toolkit requires a standards.md configuration file to work.'
+            quickFix: 'bun run toolkit install',
+            docs: 'docs/START-HERE.md',
+            explanation: 'The toolkit requires a .project/standards.md configuration file to work.'
         }
     },
     MODULE_INVALID: {
@@ -90,10 +91,11 @@ export const ERROR_SOLUTIONS = {
             message: 'Invalid module name',
             solution: 'Check module name spelling',
             solutionSteps: [
-                'Run: bun ai-toolkit-shared/scripts/browse.js to see available modules',
+                'Run: bun run toolkit browse --modules to see available modules',
                 'Common mistakes: tailwind → tailwindcss, alpine → alpinejs',
-                'Update standards.md with correct module name'
+                'Update .project/standards.md with correct module name'
             ],
+            quickFix: 'bun run toolkit browse --modules',
             docs: 'docs/TROUBLESHOOTING.md#module-x-not-found',
             explanation: 'Module names must match exactly. Use the browse command to see all available modules.'
         }
@@ -103,10 +105,11 @@ export const ERROR_SOLUTIONS = {
             message: 'Invalid agent name',
             solution: 'Check agent name spelling',
             solutionSteps: [
-                'Run: bun ai-toolkit-shared/scripts/browse.js --agents to see available agents',
+                'Run: bun run toolkit browse --agents to see available agents',
                 'Common mistakes: couchcms-core → couchcms',
-                'Update standards.md with correct agent name'
+                'Update .project/standards.md with correct agent name'
             ],
+            quickFix: 'bun run toolkit browse --agents',
             docs: 'docs/TROUBLESHOOTING.md#agent-x-not-found',
             explanation: 'Agent names must match exactly. Use the browse command to see all available agents.'
         }
@@ -216,6 +219,12 @@ export function formatSolution(solution) {
 
     if (solution.explanation) {
         output += `\n   ${solution.explanation}\n`
+    }
+
+    // Show quick fix command if available
+    if (solution.quickFix) {
+        output += `\n   ⚡ Quick Fix:\n`
+        output += `   ${solution.quickFix}\n`
     }
 
     if (solution.solutionSteps && solution.solutionSteps.length > 0) {

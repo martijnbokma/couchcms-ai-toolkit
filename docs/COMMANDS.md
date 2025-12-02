@@ -4,643 +4,641 @@ Complete reference for all toolkit commands.
 
 ## Overview
 
-The toolkit provides three main commands:
+**New:** Use the unified `toolkit` command for all operations. This is the recommended way to interact with the toolkit.
 
-| Command    | Purpose                                     |
-| ---------- | ------------------------------------------- |
-| `init`     | Interactive setup wizard for new projects   |
-| `validate` | Validate project configuration & compliance |
-| `sync`     | Generate/update AI configuration files      |
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `toolkit install` | First-time installation and setup | `bun run toolkit install` |
+| `toolkit setup` | Configure or reconfigure project | `bun run toolkit setup` |
+| `toolkit sync` | Generate/update AI configuration files | `bun run toolkit sync` |
+| `toolkit validate` | Validate project configuration & compliance | `bun run toolkit validate` |
+| `toolkit health` | Check installation status | `bun run toolkit health` |
+| `toolkit browse` | Browse available modules/agents | `bun run toolkit browse` |
+| `toolkit reconfigure` | Change setup complexity preference | `bun run toolkit reconfigure` |
+| `toolkit help` | Show help message | `bun run toolkit help` |
 
-## bun run init
-
-Interactive setup wizard that guides you through initial project configuration.
-
-### Usage
-
-```bash
-# From your project root
-bun ai-toolkit-shared/scripts/init.js
-```text
-
-### What It Does
-
-The wizard will:
-
-1. **Check for existing configuration**
-    - Detects if `standards.md` already exists
-    - Asks if you want to overwrite (defaults to No)
-
-2. **Gather project information**
-    - Project name
-    - Project description
-
-3. **Configure toolkit location**
-    - Option 1: Git submodule (recommended)
-    - Option 2: Home directory clone
-
-4. **Select modules**
-    - Shows all available modules with descriptions
-    - `couchcms-core` is always included
-    - Interactive yes/no for each optional module
-
-5. **Select AI agents**
-    - Shows all available agents with descriptions
-    - Interactive yes/no for each agent
-
-6. **Create context directory** (optional)
-    - Asks if you want `.project/ai/` for detailed context
-    - Creates directory and template `context.md` if yes
-
-7. **Generate standards.md**
-    - Creates fully configured `standards.md` (or `.project/standards.md`)
-    - Includes all your selections
-
-8. **Run initial sync**
-    - Automatically generates AI configurations
-    - Creates `.cursorrules`, `CLAUDE.md`, `AGENTS.md`, etc.
-
-### Example Session
-
-```bash
-$ bun ai-toolkit-shared/scripts/init.js
-
-🚀 CouchCMS AI Toolkit - Interactive Setup
-
-Let's set up your project configuration...
-
-Project name [my-project]: matters-student-hub
-Project description [My CouchCMS project]: Student portfolio platform
-
-📦 How do you want to use the toolkit?
-  1. As a git submodule (recommended)
-  2. 📝 Cloned in home directory
-Choice [1-2] [1]: 1
-
-📚 Select modules to include:
-   ✓ couchcms-core - Core CouchCMS patterns (always included)
-   Include tailwindcss? (TailwindCSS 4 patterns) [Y/n]: y
-   Include daisyui? (daisyUI 5 components) [Y/n]: y
-   Include alpinejs? (Alpine.js integration) [Y/n]: y
-   Include typescript? (TypeScript standards) [Y/n]: y
-   Include databound-forms? (DataBound Forms) [Y/n]: y
-
-🤖 Select AI agents to include:
-   Include couchcms? (Core CouchCMS development) [Y/n]: y
-   Include databound-forms? (Forms and CRUD) [Y/n]: y
-   Include alpinejs? (Alpine.js development) [Y/n]: y
-   Include tailwindcss? (TailwindCSS styling) [Y/n]: y
-   Include typescript? (TypeScript development) [Y/n]: y
-
-📋 Create project context directory? [Y/n]: y
-
-📝 Generating standards.md...
-✅ Created: .project/standards.md
-✅ Created: .project/ai/
-✅ Created: .project/ai/context.md
-
-🔄 Running initial sync...
-
-✨ Setup complete!
-
-Next steps:
-
-  1. Review and customize .project/standards.md
-  2. 📝 Add project-specific details to .project/ai/context.md
-  3. 🚀 Run "bun run sync" to generate AI configurations
-  4. 🔍 Run "bun run validate" to check setup
-
-Happy coding! 🎉
-```
-
-### Options
-
-The wizard is fully interactive - no command-line flags needed.
-
-### When to Use
-
-- Setting up a brand new project
-- Adding toolkit to an existing project
-- Recreating configuration after corruption
-
-### Notes
-
-- Safe to run multiple times (asks before overwriting)
-- Creates all necessary directories automatically
-- Runs sync automatically at the end
+**Legacy commands** (still work, but use `toolkit` instead):
+- `init` → Use `toolkit setup` or `toolkit install`
+- `create-standards` → Use `toolkit setup` or `toolkit install`
 
 ---
 
-## bun run validate
+## bun run toolkit install
 
-Validates your project configuration and checks compliance with toolkit standards.
+**Purpose:** First-time installation and setup
 
-### Usage
+**When to use:**
+- Setting up toolkit for the first time
+- New project
+- After adding toolkit as git submodule
 
+**Usage:**
 ```bash
-# From your project root
-bun ai-toolkit-shared/scripts/validate.js
-```yaml
+bun run toolkit install
+```
 
-### What It Checks
+**What it does:**
+1. ✅ Checks and installs dependencies automatically
+2. ✅ Shows setup complexity menu (Easy/Medium/Comprehensive)
+3. ✅ Guides you through project setup
+4. ✅ Creates `.project/standards.md` configuration file
+5. ✅ Generates all AI editor configs
 
-1. **Configuration File Existence**
-    - Checks if `standards.md` exists
-    - Validates file is readable
-
-2. **YAML Frontmatter**
-    - Validates YAML syntax
-    - Checks required fields (`name`, `toolkit`, `modules`)
-
-3. **Toolkit Path**
-    - Verifies toolkit directory exists
-    - Checks if path is accessible
-
-4. **Module References**
-    - Validates all modules exist in toolkit
-    - Warns about non-existent modules
-    - Confirms `couchcms-core` is included
-
-5. **Agent References**
-    - Validates all agents exist in toolkit
-    - Warns about non-existent agents
-
-6. **Generated Files**
-    - Checks if `.cursorrules` exists
-    - Checks if `CLAUDE.md` exists
-    - Checks if `AGENTS.md` exists
-    - Warns if files are missing
-
-7. **Custom Paths** (if configured)
-    - Validates custom path configurations
-    - Checks if directories exist
-
-### Output Examples
-
-#### Successful Validation
-
+**Options:**
 ```bash
-$ bun ai-toolkit-shared/scripts/validate.js
+# Specify complexity directly
+bun run toolkit install --complexity=easy
+bun run toolkit install --complexity=medium
+bun run toolkit install --complexity=comprehensive
+
+# Show all options regardless of complexity
+bun run toolkit install --show-all
+```
+
+**Example Session:**
+```bash
+$ bun run toolkit install
+
+🚀 CouchCMS AI Toolkit - Installation
+
+🔄 Checking dependencies...
+✅ Dependencies installed
+
+======================================================================
+  What kind of setup do you want?
+======================================================================
+
+  1. Makkelijk (Easy)
+     → Quick setup: 1 minute, 2 questions
+     → Includes: All CouchCMS modules/agents (automatic)
+     → Includes: TailwindCSS + Alpine.js (recommended defaults)
+     → Perfect for: Getting started quickly
+
+  2. Gemiddeld (Medium)
+     → Balanced setup: 3 minutes, 5 questions
+     → Includes: All CouchCMS modules/agents (automatic)
+     → Choose: CSS framework (TailwindCSS, daisyUI, custom)
+     → Choose: JS framework (Alpine.js, TypeScript, none)
+     → Perfect for: Most projects
+
+  3. Uitgebreid (Comprehensive)
+     → Full setup: 5 minutes, 8+ questions
+     → Includes: All CouchCMS modules/agents (automatic)
+     → Choose: All frontend frameworks and tools
+     → Choose: Advanced configuration (framework, context directory)
+     → Perfect for: Complete control
+
+Choice [1-3]: 1
+
+✅ Selected: Makkelijk (Easy)
+ℹ️  Starting Makkelijk (Easy) setup...
+
+======================================================================
+  CouchCMS Modules & Agents (Automatic)
+======================================================================
+ℹ️  Including all CouchCMS modules and agents automatically...
+  Modules: 11 (always included)
+  Agents: 16 (always included)
+✅ CouchCMS components will be included automatically
+
+======================================================================
+  Project Information
+======================================================================
+
+Project name [my-project]: my-blog
+Project description [A CouchCMS web application]: A blog about web development
+
+🔄 Selecting frontend frameworks...
+ℹ️  Using recommended CSS framework: tailwindcss
+ℹ️  Using recommended JS framework: alpinejs
+✅ Selected: tailwindcss
+✅ Selected: alpinejs
+
+🔄 Detecting toolkit path...
+✅ Toolkit path: ./ai-toolkit-shared
+
+🔄 Generating configuration file...
+✅ Created: .project/
+✅ Created: .project/standards.md
+
+🔄 Running initial sync...
+✅ Sync completed successfully
+
+======================================================================
+  ✅ Setup Complete!
+======================================================================
+
+✅ Your CouchCMS AI Toolkit is now configured!
+
+📦 Included Components:
+   • CouchCMS Modules: 11 (automatic)
+   • Frontend Modules: 2 (selected)
+   • Agents: 18 total
+
+📝 Configuration:
+   • File: .project/standards.md
+   • Complexity: easy
+
+🚀 Next Steps:
+   1. Review your configuration: .project/standards.md
+   2. Run sync to generate configs: toolkit sync
+   3. Start developing with AI assistance!
+
+💡 Useful Commands:
+   • toolkit sync       - Generate configs from standards.md
+   • toolkit validate   - Check configuration
+   • toolkit health    - Check installation status
+   • toolkit reconfigure - Change setup complexity
+```
+
+**Key Features:**
+- ✅ Automatic dependency installation
+- ✅ All CouchCMS modules/agents included automatically
+- ✅ Clear, concrete setup options
+- ✅ Progressive disclosure (can access more options anytime)
+
+---
+
+## bun run toolkit setup
+
+**Purpose:** Configure or reconfigure your project
+
+**When to use:**
+- Reconfiguring existing project
+- Changing frontend frameworks
+- Adding/removing modules or agents
+- Updating project information
+
+**Usage:**
+```bash
+bun run toolkit setup
+```
+
+**Options:**
+```bash
+# Use specific complexity
+bun run toolkit setup --complexity=easy
+bun run toolkit setup --complexity=medium
+bun run toolkit setup --complexity=comprehensive
+
+# Show all options (temporary override)
+bun run toolkit setup --show-all
+```
+
+**What it does:**
+1. Checks for existing configuration
+2. Uses stored complexity preference (or asks if none)
+3. Guides through setup based on complexity
+4. Updates `.project/standards.md`
+5. Optionally runs sync to update configs
+
+**Example:**
+```bash
+$ bun run toolkit setup
+
+⚙️  CouchCMS AI Toolkit - Project Setup
+
+🔄 Checking dependencies...
+✅ Dependencies ready
+
+Current setup complexity: Makkelijk (Easy)
+
+[Shows complexity menu if no preference stored]
+
+[Continues with setup flow...]
+```
+
+---
+
+## bun run toolkit reconfigure
+
+**Purpose:** Change your setup complexity preference
+
+**When to use:**
+- Want to switch from Easy to Medium or Comprehensive
+- Want to access more frontend options
+- Want to simplify your setup
+
+**Usage:**
+```bash
+bun run toolkit reconfigure
+```
+
+**What it does:**
+1. Shows current complexity preference
+2. Lets you choose new complexity
+3. Saves preference to `.toolkit-preference`
+4. Optionally runs setup with new complexity
+
+**Example:**
+```bash
+$ bun run toolkit reconfigure
+
+🔄 CouchCMS AI Toolkit - Reconfigure
+
+ℹ️  Current setup complexity: Makkelijk (Easy)
+
+Choose new setup complexity:
+[Shows complexity menu]
+
+✅ Updated preference to: Gemiddeld (Medium)
+Run setup with new complexity? [Y/n]: y
+
+[Continues with setup...]
+```
+
+---
+
+## bun run toolkit sync
+
+**Purpose:** Generate AI editor configs from `.project/standards.md`
+
+**When to use:**
+- After editing `.project/standards.md`
+- After adding/removing modules or agents
+- To update all editor configurations
+- Regularly to keep configs in sync
+
+**Usage:**
+```bash
+bun run toolkit sync
+```
+
+**Watch mode** (auto-sync on file changes):
+```bash
+bun run toolkit sync --watch
+# or
+bun run sync:watch
+```
+
+**What it generates:**
+- `.cursorrules` - Cursor AI configuration
+- `.cursor/rules/*.mdc` - Context-aware MDC rules
+- `CLAUDE.md` - Claude Code memory file
+- `.claude/skills/*.md` - Claude Code skills
+- `.claude/settings.json` - Claude Code settings
+- `.github/copilot-instructions.md` - GitHub Copilot
+- `.windsurf/rules.md` - Windsurf AI
+- `.kiro/steering/*.md` - Kiro steering files
+- And more...
+
+**Example:**
+```bash
+$ bun run toolkit sync
+
+🔄 Generating AI configurations...
+
+📝 Reading configuration: .project/standards.md
+✅ Configuration loaded
+
+📦 Loading modules...
+✅ Loaded 13 modules
+
+🤖 Loading agents...
+✅ Loaded 19 agents
+
+📝 Generating editor configs...
+✅ Generated: .cursorrules
+✅ Generated: .cursor/rules/couchcms.mdc
+✅ Generated: .cursor/rules/tailwindcss.mdc
+✅ Generated: CLAUDE.md
+✅ Generated: .claude/skills/couchcms-core.md
+✅ Generated: .claude/settings.json
+✅ Generated: .github/copilot-instructions.md
+✅ Generated: .windsurf/rules.md
+
+✨ Sync completed successfully!
+```
+
+---
+
+## bun run toolkit validate
+
+**Purpose:** Validate project configuration and check compliance
+
+**When to use:**
+- After setup to verify everything is correct
+- After editing `.project/standards.md`
+- To check for configuration errors
+- To see compliance score
+
+**Usage:**
+```bash
+bun run toolkit validate
+```
+
+**What it checks:**
+1. ✅ Configuration file exists (`.project/standards.md`)
+2. ✅ YAML syntax is valid
+3. ✅ Toolkit path is correct and accessible
+4. ✅ All modules exist in toolkit
+5. ✅ All agents exist in toolkit
+6. ✅ Generated files exist (optional check)
+7. ✅ Configuration compliance (0-100% score)
+
+**Example Output:**
+```bash
+$ bun run toolkit validate
 
 🔍 CouchCMS AI Toolkit - Validation
 
 📄 Found: .project/standards.md
 🛠️  Toolkit: ./ai-toolkit-shared
-📚 Modules: couchcms-core, tailwindcss, daisyui, alpinejs, typescript
-🤖 Agents: couchcms, databound-forms, alpinejs, tailwindcss
-
+📚 Modules: 13 (couchcms-core, tailwindcss, daisyui, alpinejs, ...)
+🤖 Agents: 19 (couchcms, tailwindcss, alpinejs, ...)
 
 📊 Compliance Score: 100/100 (100%)
 
 ✅ Validation passed - All checks OK!
 ```
 
-#### Validation with Warnings
-
+**With Warnings:**
 ```bash
-$ bun ai-toolkit-shared/scripts/validate.js
+$ bun run toolkit validate
 
 🔍 CouchCMS AI Toolkit - Validation
 
 📄 Found: .project/standards.md
 🛠️  Toolkit: ./ai-toolkit-shared
-📚 Modules: couchcms-core, tailwindcss, vue
-🤖 Agents: couchcms, nonexistent-agent
+📚 Modules: 12 (couchcms-core, tailwindcss, invalid-module)
+🤖 Agents: 18 (couchcms, invalid-agent)
 
 ⚠️  Warnings:
-  - Module 'vue' not found in toolkit
-  - Agent 'nonexistent-agent' not found in toolkit
+  - Module 'invalid-module' not found in toolkit
+  - Agent 'invalid-agent' not found in toolkit
   - Generated file '.cursorrules' not found (run sync)
 
-📊 Compliance Score: 70/100 (70%)
+📊 Compliance Score: 85/100 (85%)
 
-⚠️  Validation passed with warnings
-```bash
-
-#### Validation Failure
-
-```bash
-$ bun ai-toolkit-shared/scripts/validate.js
-
-🔍 CouchCMS AI Toolkit - Validation
-
-❌ Error: No configuration file found
-
-Create a standards.md file to use the toolkit.
-💡 Tip: Use .project/standards.md for the recommended location.
+⚠️  Validation completed with warnings
 ```
-
-### Compliance Score
-
-The validation provides a compliance score (0-100%):
-
-- **100%**: Perfect configuration, no issues
-- **80-99%**: Minor warnings (missing generated files, etc.)
-- **60-79%**: Some invalid references
-- **< 60%**: Major configuration issues
-
-### When to Use
-
-- After creating or modifying `standards.md`
-- Before committing configuration changes
-- When troubleshooting AI configuration issues
-- As part of CI/CD pipeline
-- When setting up on a new machine
-
-### Exit Codes
-
-- `0`: Validation passed (with or without warnings)
-- `1`: Validation failed (critical errors)
-
-### Troubleshooting Tips
-
-If validation fails:
-
-1. **Check YAML syntax**
-
-    ```bash
-    # Look for missing quotes, colons, indentation
-    cat .project/standards.md
-    ```
-
-2. **Verify module names**
-
-    ```bash
-    # List available modules
-    ls ai-toolkit-shared/modules/
-    ```
-
-3. **Check toolkit path**
-
-    ```bash
-    # Should exist and be accessible
-    ls ai-toolkit-shared/
-    ```
-
-4. **Run sync to generate files**
-    ```bash
-    bun ai-toolkit-shared/scripts/sync.js
-    ```
 
 ---
 
-## bun run sync
+## bun run toolkit health
 
-Generates AI configuration files from your `standards.md` (or `.project/standards.md`) and toolkit modules.
+**Purpose:** Check toolkit installation and status
 
-### Usage
+**When to use:**
+- Verify installation is correct
+- Check if dependencies are installed
+- See what modules/agents are available
+- Troubleshoot installation issues
 
+**Usage:**
 ```bash
-# From your project root
-bun ai-toolkit-shared/scripts/sync.js
-```yaml
-
-### What It Generates
-
-1. **`.cursorrules`**
-    - Cursor AI assistant configuration
-    - Combines modules, agents, and project rules
-    - Auto-generated (do not edit manually)
-
-2. **`CLAUDE.md`**
-    - Claude AI assistant configuration
-    - Same content as `.cursorrules` in markdown format
-    - For Claude Desktop or API usage
-
-3. **`AGENTS.md`**
-    - Universal AI agent documentation
-    - Platform-agnostic reference
-    - Can be used with any AI assistant
-
-4. **`.github/copilot-instructions.md`**
-    - GitHub Copilot configuration
-    - Workspace-specific instructions
-
-5. **`.cursor/rules/*.mdc`**
-    - Auto-loading Cursor rules
-    - Triggered by file type/glob patterns
-    - Provides context-specific guidance
-
-### Process Flow
-
-```text
-standards.md
-    ↓
-1. Read configuration (YAML frontmatter)
-2. 📝 Read project rules (Markdown body)
-    ↓
-3. 📝 Load selected modules
-    ↓
-4. 📝 Load selected agents
-    ↓
-5. 📝 Load project context (if context.md exists)
-    ↓
-6. 📝 Combine all content
-    ↓
-7. 📝 Generate output files
-    ↓
-✅ Done!
+bun run toolkit health
 ```
 
-### Example Output
+**What it checks:**
+1. ✅ Toolkit directory structure
+2. ✅ Dependencies installed (`node_modules/`)
+3. ✅ Configuration file exists
+4. ✅ Modules available
+5. ✅ Agents available
+6. ✅ Toolkit path is correct
 
+**Example Output:**
 ```bash
-$ bun ai-toolkit-shared/scripts/sync.js
+$ bun run toolkit health
 
-🔄 CouchCMS AI Toolkit - Sync
+💚 CouchCMS AI Toolkit - Health Check
 
-📄 Reading: .project/standards.md
-🛠️  Toolkit: ./ai-toolkit-shared
+✅ Toolkit structure is valid
+✅ Dependencies installed
+✅ Configuration file found: .project/standards.md
+✅ Modules available: 15
+✅ Agents available: 23
+✅ Toolkit path: ./ai-toolkit-shared
 
-📦 Loading modules:
-  ✓ couchcms-core (v1.0)
-  ✓ tailwindcss (v1.0)
-  ✓ daisyui (v1.0)
-  ✓ alpinejs (v1.0)
-  ✓ typescript (v1.0)
-
-🤖 Loading agents:
-  ✓ couchcms
-  ✓ databound-forms
-  ✓ tailwindcss
-
-📝 Loading project context:
-  ✓ .project/ai/context.md
-
-✍️  Generating configurations:
-  ✓ .cursorrules (1,245 lines)
-  ✓ CLAUDE.md (1,245 lines)
-  ✓ AGENTS.md (1,320 lines)
-  ✓ .github/copilot-instructions.md (856 lines)
-  ✓ .cursor/rules/refactor-html.mdc
-  ✓ .cursor/rules/refactor-typescript.mdc
-  ✓ .cursor/rules/refactor-css.mdc
-  ✓ .cursor/rules/refactor-forms.mdc
-
-✅ Sync complete!
-```yaml
-
-### When to Run
-
-Run sync after:
-
-- Initial project setup
-- Changing modules in `standards.md`
-- Adding/removing agents in `standards.md`
-- Updating toolkit (`git pull`)
-- Modifying project context files (if using `context.md`)
-- Changing any configuration in `standards.md`
-
-### Errors & Warnings
-
-#### Missing Toolkit
-
-```bash
-❌ Error: Toolkit not found at './ai-toolkit-shared'
-
-Troubleshooting:
-  1. Check toolkit path in standards.md (or .project/standards.md)
-  2. 📝 For submodule: cd ai-toolkit-shared && git pull
-  3. ✅ For home dir: verify ~/couchcms-ai-toolkit exists
+🎉 All checks passed! Your toolkit is ready to use.
 ```
 
-#### Invalid Module
-
+**With Issues:**
 ```bash
-⚠️  Warning: Module 'nonexistent' not found
-  - Check module name spelling
-  - Available: couchcms-core, tailwindcss, daisyui, alpinejs, typescript, databound-forms
-```text
+$ bun run toolkit health
 
-#### Missing Configuration File
+💚 CouchCMS AI Toolkit - Health Check
 
-```bash
-❌ Error: No configuration file found
+✅ Toolkit structure is valid
+❌ Dependencies not installed
+   Fix: cd ai-toolkit-shared && bun install && cd ..
+✅ Configuration file found: .project/standards.md
+✅ Modules available: 15
+✅ Agents available: 23
 
-Run setup wizard:
-# Interactive setup wizard
-  bun ai-toolkit-shared/scripts/init.js
-
-💡 Tip: Use .project/standards.md for the recommended location.
+⚠️  Some issues found. See above for fixes.
 ```
 
-### Advanced Usage
+---
 
-#### Dry Run (Check without Writing)
+## bun run toolkit browse
 
+**Purpose:** Browse available modules and agents interactively
+
+**When to use:**
+- See what modules are available
+- See what agents are available
+- Learn about module/agent descriptions
+- Find module/agent names for configuration
+
+**Usage:**
 ```bash
-# Preview what would be generated
-bun ai-toolkit-shared/scripts/sync.js --dry-run
-```bash
+# Browse all
+bun run toolkit browse
 
-#### Force Regeneration
+# Browse modules only
+bun run toolkit browse --modules
 
-```bash
-# Regenerate even if files exist
-bun ai-toolkit-shared/scripts/sync.js --force
+# Browse agents only
+bun run toolkit browse --agents
 ```
 
-#### Specific Output Only
-
+**Example:**
 ```bash
-# Generate only .cursorrules
-bun ai-toolkit-shared/scripts/sync.js --only=cursorrules
-```yaml
+$ bun run toolkit browse --modules
 
-_(Note: Advanced flags may not be implemented yet - check script for current options)_
+📚 Available Modules:
+
+1. couchcms-core
+   Core CouchCMS patterns, templates, and security standards
+   [Always included]
+
+2. tailwindcss
+   TailwindCSS 4 patterns and best practices
+
+3. daisyui
+   daisyUI 5 components and theming
+
+4. alpinejs
+   Alpine.js patterns and CouchCMS integration
+
+[... more modules ...]
+
+Press Enter to continue...
+```
+
+---
+
+## bun run toolkit help
+
+**Purpose:** Show help message with all commands
+
+**Usage:**
+```bash
+bun run toolkit help
+# or
+bun run toolkit
+```
+
+**Output:**
+```
+CouchCMS AI Toolkit - Unified CLI
+
+Usage:
+  toolkit [subcommand] [options]
+
+Subcommands:
+  install          Install toolkit (first-time setup)
+  setup            Configure project (progressive disclosure based on complexity)
+  reconfigure      Change complexity preference and reconfigure
+  sync             Generate configs from standards.md
+  validate         Check configuration
+  health           Check installation status
+  browse           Browse modules/agents interactively
+  update           Update toolkit
+  help             Show this help message
+
+Options:
+  --complexity=<level>    Setup complexity: easy, medium, comprehensive
+  --show-all              Show all options (temporary override)
+
+Examples:
+  toolkit install                    # First-time installation
+  toolkit setup                      # Configure project
+  toolkit setup --complexity=easy    # Quick setup
+  toolkit reconfigure                # Change complexity preference
+  toolkit sync                       # Generate configs
+  toolkit health                     # Check installation
+
+For more information, see: docs/START-HERE.md
+```
+
+---
+
+## Setup Complexity Options
+
+All setup commands support three complexity levels:
+
+### Easy (Makkelijk)
+- **Time:** 1 minute
+- **Questions:** 2 (project name, description)
+- **CouchCMS:** All modules/agents included automatically
+- **Frontend:** TailwindCSS + Alpine.js (recommended defaults)
+- **Perfect for:** Getting started quickly
+
+### Medium (Gemiddeld)
+- **Time:** 3 minutes
+- **Questions:** 5 (project info + CSS choice + JS choice)
+- **CouchCMS:** All modules/agents included automatically
+- **Frontend:** Choose CSS framework, choose JS framework
+- **Perfect for:** Most projects, want to choose frameworks
+
+### Comprehensive (Uitgebreid)
+- **Time:** 5 minutes
+- **Questions:** 8+ (all frontend options + advanced config)
+- **CouchCMS:** All modules/agents included automatically
+- **Frontend:** All options (CSS, JS, advanced configuration)
+- **Perfect for:** Complete control over frontend setup
+
+**Important:** All CouchCMS modules and agents are **always included** regardless of complexity choice.
+
+---
+
+## Legacy Commands
+
+These commands still work but are deprecated. Use `toolkit` commands instead:
+
+| Legacy | New Equivalent |
+|--------|----------------|
+| `bun ai-toolkit-shared/scripts/init.js` | `bun run toolkit setup` |
+| `bun ai-toolkit-shared/scripts/create-standards.js` | `bun run toolkit install` |
+| `bun ai-toolkit-shared/scripts/sync.js` | `bun run toolkit sync` |
+| `bun ai-toolkit-shared/scripts/validate.js` | `bun run toolkit validate` |
+| `bun ai-toolkit-shared/scripts/health.js` | `bun run toolkit health` |
+| `bun ai-toolkit-shared/scripts/browse.js` | `bun run toolkit browse` |
 
 ---
 
 ## Common Workflows
 
-### Initial Setup
-
+### First-Time Setup
 ```bash
-# 1. Run wizard
-bun ai-toolkit-shared/scripts/init.js
+# 1. Add toolkit
+git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 
-# 2. Validate configuration
-bun ai-toolkit-shared/scripts/validate.js
+# 2. Install and setup
+bun run toolkit install
 
-# 3. Customize standards.md (optional)
-code .project/standards.md
-
-# 4. Re-sync after changes
-bun ai-toolkit-shared/scripts/sync.js
+# 3. Verify
+bun run toolkit health
 ```
 
-### Updating Configuration
-
+### Update Configuration
 ```bash
-# 1. Edit standards.md
-code .project/standards.md
+# 1. Edit .project/standards.md manually
+# or run setup again
+bun run toolkit setup
 
-# 2. Validate changes
-bun ai-toolkit-shared/scripts/validate.js
+# 2. Generate new configs
+bun run toolkit sync
 
-# 3. Regenerate configurations
-bun ai-toolkit-shared/scripts/sync.js
-```bash
-
-### Updating Toolkit
-
-```bash
-# 1. Pull latest toolkit
-cd ai-toolkit-shared
-git pull origin master
-bun install
-cd ..
-
-# 2. Validate compatibility
-bun ai-toolkit-shared/scripts/validate.js
-
-# 3. Regenerate with new toolkit
-bun ai-toolkit-shared/scripts/sync.js
+# 3. Validate
+bun run toolkit validate
 ```
 
-### Troubleshooting
-
+### Change Complexity
 ```bash
-# 1. Validate to find issues
-bun ai-toolkit-shared/scripts/validate.js
+# Change from Easy to Medium
+bun run toolkit reconfigure
 
-# 2. Fix issues in standards.md
-code .project/standards.md
+# Or use setup with complexity flag
+bun run toolkit setup --complexity=medium
+```
 
-# 3. Validate again
-bun ai-toolkit-shared/scripts/validate.js
+### Daily Usage
+```bash
+# After editing standards.md
+bun run toolkit sync
 
-# 4. Sync when valid
-bun ai-toolkit-shared/scripts/sync.js
-```yaml
-
----
-
-## Integration with CI/CD
-
-### GitHub Actions Example
-
-```yaml
-name: Validate AI Config
-description: 'Brief description of your project'
-
-on: [push, pull_request]
-
-jobs:
-    validate:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  submodules: recursive
-
-            - uses: oven-sh/setup-bun@v1
-
-            - name: Install toolkit dependencies
-              run: cd ai-toolkit-shared && bun install
-
-            - name: Validate configuration
-              run: bun ai-toolkit-shared/scripts/validate.js
-
-            - name: Check sync is up to date
-              run: |
-                  bun ai-toolkit-shared/scripts/sync.js
-                  git diff --exit-code .cursorrules CLAUDE.md AGENTS.md
+# Check everything is OK
+bun run toolkit validate
 ```
 
 ---
 
-## bun run reinstall
+## Command Options
 
-Reinstalls/updates the toolkit configuration. Useful for updating to the latest toolkit version, fixing broken configurations, or applying new defaults.
+### Complexity Options
+- `--complexity=easy` - Quick setup with defaults
+- `--complexity=medium` - Choose frameworks
+- `--complexity=comprehensive` - All options
 
-### Usage
-
-```bash
-# From your project root
-bun ai-toolkit-shared/scripts/reinstall.js
-
-# Skip confirmation prompt
-bun ai-toolkit-shared/scripts/reinstall.js --force
-```
-
-### What It Does
-
-The reinstall script performs these steps:
-
-1. **Updates toolkit** - Pulls latest changes from git repository
-2. **Updates dependencies** - Runs `bun install` or `npm install`
-3. **Checks configuration** - Detects existing `standards.md` or `config.yaml`
-4. **Regenerates AI configs** - Runs `sync.js` to regenerate all editor configs
-   - If no config exists, runs `init.js` setup wizard instead
-5. **Verifies installation** - Runs `health.js` to check everything is working
-
-### When to Use
-
-Use `reinstall.js` when:
-
-- ✅ **Updating toolkit** - After pulling latest changes from git
-- ✅ **Fixing broken configs** - When AI configs are out of sync or corrupted
-- ✅ **Applying new defaults** - After toolkit updates that add new features
-- ✅ **Recovering from errors** - When sync or validation fails
-
-### Important Notes
-
-- ⚠️ **Your `standards.md` is NOT modified** - Only AI configs are regenerated
-- ⚠️ **Confirmation required** - Script asks for confirmation if config exists (unless `--force`)
-- ✅ **Safe to run** - Won't delete or modify your project configuration
-
-### Example Output
-
-```bash
-$ bun ai-toolkit-shared/scripts/reinstall.js
-
-🔄 CouchCMS AI Toolkit - Reinstall
-
-🔄 Step 1: Updating toolkit...
-  ✅ Toolkit updated
-
-📚 Step 2: Updating dependencies...
-  ✅ Dependencies updated
-
-⚠️  Existing configuration found.
-   This will regenerate all AI configs from your standards.md.
-   Your standards.md will NOT be modified.
-Continue? [y/N]: y
-
-🔄 Step 3: Regenerating AI configs...
-  ✅ Configs regenerated
-
-✅ Step 4: Verifying installation...
-  ✅ Everything looks good! 🎉
-
-✅ Reinstall complete!
-
-Summary:
-  ✅ Toolkit updated to latest version
-  ✅ Dependencies updated
-  ✅ AI configs regenerated
-  ✅ Installation verified
-
-Next steps:
-  1. Check your AI assistant (Cursor, Claude, etc.)
-  2. Verify configs are working
-  3. Edit .project/standards.md if needed
-```
-
-### Comparison with Other Commands
-
-| Command | Purpose | Modifies standards.md | Updates toolkit |
-|---------|---------|----------------------|-----------------|
-| `reinstall.js` | Full reinstall + update | ❌ No | ✅ Yes |
-| `sync.js` | Regenerate AI configs | ❌ No | ❌ No |
-| `update.js` | Check for updates | ❌ No | ⚠️ Optional |
-| `init.js` | Initial setup | ✅ Yes | ❌ No |
+### Other Options
+- `--show-all` - Show all options (temporary override)
+- `--watch` - Watch mode for sync (auto-sync on changes)
+- `--modules` - Filter browse to modules only
+- `--agents` - Filter browse to agents only
 
 ---
 
-## See Also
+## Getting Help
 
-- [Getting Started Guide](GETTING-STARTED.md)
-- [Configuration Options](CONFIG-FILES.md)
-- [Troubleshooting](TROUBLESHOOTING.md)
+- **Start Here:** [docs/START-HERE.md](START-HERE.md) - Decision tree
+- **Quick Start:** [docs/QUICK-START-BEGINNER.md](QUICK-START-BEGINNER.md) - Step-by-step guide
+- **Concepts:** [docs/CONCEPTS.md](CONCEPTS.md) - Understanding modules, agents, etc.
+- **Troubleshooting:** [docs/TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Fix issues
+
+---
+
+**Ready to start?** Run `bun run toolkit install` now! 🚀

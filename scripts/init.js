@@ -408,10 +408,9 @@ async function init() {
     if (confirmed) {
         printProgress('Cleaning existing files...', 2)
         // Convert selectedEditors array to object format for cleanup function
-        const editorsConfig = selectedEditors.reduce((acc, editor) => {
-            acc[editor] = true
-            return acc
-        }, {})
+        // Use normalizeEditorConfig for consistent handling
+        const { normalizeEditorConfig } = await import('./lib/editor-utils.js')
+        const editorsConfig = normalizeEditorConfig(selectedEditors)
         cleanGeneratedFiles(projectDir, true, editorsConfig)
         printSuccess('Cleaned existing files', 2)
     }

@@ -36,6 +36,7 @@ import {
     deepMerge
 } from './lib/index.js'
 import { findProjectFile, resolveToolkitPath } from './utils/utils.js'
+import { normalizeEditorConfig, getSelectedEditorIds, validateEditorConfig } from './lib/editor-utils.js'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 
@@ -460,34 +461,31 @@ function generateEditorConfigs(toolkitPath, projectDir, templateData, config) {
         agent: { template: 'agent.template.md', output: 'AGENT.md', dir: projectDir },
     }
 
-    // Get selected editors from config
-    // Support both array format: editors: [cursor, claude]
-    // and object format: editors: { cursor: true, claude: true }
-    const editors = config.editors || {}
-    let selectedEditors = []
+    // Get selected editors from config using normalized utility function
+    // This ensures consistent handling regardless of config format (array or object)
+    const editorsConfig = config.editors || {}
 
-    if (Array.isArray(editors)) {
-        // Array format: [cursor, claude]
-        selectedEditors = editors
-    } else if (typeof editors === 'object') {
-        // Object format: { cursor: true, claude: true }
-        selectedEditors = Object.entries(editors)
-            .filter(([_, enabled]) => enabled === true)
-            .map(([editorId]) => editorId)
+    // Validate editor configuration
+    const validation = validateEditorConfig(editorsConfig)
+    if (!validation.valid) {
+        console.warn(`⚠️  Editor configuration validation warnings:`)
+        validation.errors.forEach(error => console.warn(`   - ${error}`))
     }
+
+    // Get selected editor IDs using utility function
+    const selectedEditors = getSelectedEditorIds(editorsConfig)
 
     // Only generate templates for explicitly selected editors
     // If no editors are selected, skip template generation (user chose "none")
-    const editorsToGenerate = selectedEditors.length > 0
-        ? selectedEditors
-        : []
-
-    if (editorsToGenerate.length === 0) {
+    if (selectedEditors.length === 0) {
         // Use simple console.log since this function is not async
         console.log('ℹ️  No editor templates selected - skipping template generation')
         console.log('   💡 Tip: Edit .project/standards.md and set editors to true, then run sync again')
         return 0
     }
+
+    // Log which editors will be generated (for transparency)
+    console.log(`📝 Generating configs for ${selectedEditors.length} editor(s): ${selectedEditors.join(', ')}`)
 
     // Build templateMap from selected editors only
     const templateMap = {}
@@ -967,15 +965,8 @@ async function loadToolkitResources(config, toolkitPath, projectDir) {
  * @returns {void}
  */
 function cleanupUnusedEditorDirs(projectDir, editorsConfig) {
-    // Determine which editors are selected
-    let selectedEditors = []
-    if (Array.isArray(editorsConfig)) {
-        selectedEditors = editorsConfig
-    } else if (typeof editorsConfig === 'object' && editorsConfig !== null) {
-        selectedEditors = Object.entries(editorsConfig)
-            .filter(([_, enabled]) => enabled === true)
-            .map(([editorId]) => editorId)
-    }
+    // Use utility function to get selected editors consistently
+    const selectedEditors = getSelectedEditorIds(editorsConfig)
 
     // Map editors to their directories
     const editorDirs = {
@@ -1051,10 +1042,8 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
         if (generatedCount === 0) {
             console.warn('⚠️  No editor configs generated - templates may be missing or no editors selected')
         } else {
-            const editors = config.editors || {}
-            const selectedEditors = Object.entries(editors)
-                .filter(([_, enabled]) => enabled === true)
-                .map(([editorId]) => editorId)
+            // Use utility function for consistent editor ID extraction
+            const selectedEditors = getSelectedEditorIds(config.editors || {})
             if (selectedEditors.length > 0) {
                 console.log(`📝 Generated configs for: ${selectedEditors.join(', ')}`)
             }
@@ -1067,10 +1056,9 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
     }
 
     // Sync Cursor rules (only if Cursor is selected)
-    const editors = config.editors || {}
-    const isCursorSelected = Array.isArray(editors)
-        ? editors.includes('cursor')
-        : editors.cursor === true
+    // Use utility function for consistent editor checking
+    const editorsConfig = config.editors || {}
+    const isCursorSelected = isEditorSelected(editorsConfig, 'cursor')
 
     if (isCursorSelected) {
         try {
@@ -1081,9 +1069,8 @@ function generateAllConfigurations(config, mergedConfig, modules, agents, projec
     }
 
     // Generate Claude Code configuration (only if Claude is selected)
-    const isClaudeSelected = Array.isArray(editors)
-        ? editors.includes('claude')
-        : editors.claude === true
+    // Use utility function for consistent editor checking
+    const isClaudeSelected = isEditorSelected(editorsConfig, 'claude')
 
     if (isClaudeSelected) {
         try {

@@ -211,6 +211,43 @@ Usage: `@tailwindcss style this component`
 [More agents...]
 ```text
 
+### Hooks System
+
+Claude Code supports hooks that run at specific points in the workflow:
+
+**Available Hooks:**
+
+- **UserPromptSubmit** - Runs before Claude processes your prompt
+  - `skill-activation.js` - Auto-suggests relevant skills based on prompt keywords
+
+- **PostToolUse** - Runs after Claude uses a tool
+  - `post-edit-tracker.sh` - Tracks edited files for build checks
+
+- **Stop** - Runs when Claude finishes a response
+  - `preflight-check.sh` - Validates changes for common issues
+
+**Example Skill Activation:**
+
+```
+You: "create a new template with cms:editable fields"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 SKILL ACTIVATION CHECK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴 Use **couchcms-core** skill
+   CouchCMS template engine patterns and best practices
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Pre-flight Checks:**
+
+When Claude Code finishes a response, `preflight-check.sh` validates:
+
+- CouchCMS: `<cms:` tags in HTML comments (CRITICAL)
+- CouchCMS: Paired `<cms:else>` tags (ERROR)
+- TypeScript: `any` type usage (WARNING)
+- TypeScript: `console.log` statements (INFO)
+
 ### Customization
 
 Skills are generated from your active modules. To customize:
@@ -219,6 +256,53 @@ Skills are generated from your active modules. To customize:
 2. 📝 Or add custom content to `standards.md`
 3. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
 4. 📝 Skills are automatically regenerated
+
+**Customizing Hooks:**
+
+Hooks are copied from the toolkit during sync. To customize:
+
+1. Edit hooks in `ai-toolkit-shared/.claude/hooks/`
+2. Or modify hooks in your project's `.claude/hooks/` (will be overwritten on sync)
+3. Make hooks executable: `chmod +x .claude/hooks/*.sh`
+
+**Modifying Skill Triggers:**
+
+Edit the corresponding `modules/*.skill-rules.json` in the toolkit, then run `sync.js`.
+
+### Testing Hooks
+
+**Test skill activation:**
+```bash
+node .claude/hooks/skill-activation.js "create a template"
+```
+
+**Test preflight checks:**
+```bash
+# Track some test files
+echo "$(date +%Y%m%d_%H%M%S)|test.php" >> .claude/edit-tracker.log
+
+# Run checks
+bash .claude/hooks/preflight-check.sh
+```
+
+### Troubleshooting
+
+**Hooks not running?**
+
+1. Check hooks are executable: `chmod +x .claude/hooks/*.sh`
+2. Verify `settings.json` has correct hook paths
+3. Check Claude Code is using this project directory
+
+**Wrong skills suggested?**
+
+1. Run `sync.js` to regenerate `skill-rules.json`
+2. Check your modules in `standards.md`
+3. Test hook directly: `node .claude/hooks/skill-activation.js "your prompt"`
+
+**Preflight checks not catching issues?**
+
+1. Check `edit-tracker.log` exists and has entries
+2. Verify the file patterns in `preflight-check.sh` match your files
 
 ---
 

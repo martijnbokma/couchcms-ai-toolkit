@@ -354,3 +354,27 @@ export function listAvailableAgents(toolkitPath) {
         return []
     }
 }
+
+/**
+ * Auto-include all CouchCMS modules and agents (DRY principle)
+ * This function ensures all CouchCMS components are always included
+ *
+ * @param {string} toolkitPath - Path to toolkit root
+ * @returns {Promise<Object>} Object with couchcmsModules and couchcmsAgents arrays
+ */
+export async function getAutoIncludedCouchCMS(toolkitPath) {
+    // Import from option-organizer to get the lists
+    const { getCouchCMSModules, getCouchCMSAgents } = await import('./option-organizer.js')
+
+    // Verify modules and agents exist in toolkit
+    const availableModules = listAvailableModules(toolkitPath)
+    const availableAgents = listAvailableAgents(toolkitPath)
+
+    const couchcmsModules = getCouchCMSModules().filter(m => availableModules.includes(m))
+    const couchcmsAgents = getCouchCMSAgents().filter(a => availableAgents.includes(a))
+
+    return {
+        modules: couchcmsModules,
+        agents: couchcmsAgents
+    }
+}
