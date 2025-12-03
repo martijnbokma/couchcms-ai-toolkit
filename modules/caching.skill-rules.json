@@ -1,0 +1,327 @@
+{
+  "autoActivation": {
+    "triggers": [
+      "cache",
+      "caching",
+      "K_USE_CACHE",
+      "no_cache",
+      "cms:no_cache",
+      "performance",
+      "slow loading",
+      "optimization",
+      "static pages",
+      "cache invalidation",
+      "nc=1",
+      "couch/cache",
+      "K_CACHE_OPCODES",
+      "page speed"
+    ],
+    "filePatterns": [
+      "**/config.php",
+      "**/header.php",
+      "**/*.php"
+    ],
+    "contentPatterns": [
+      "K_USE_CACHE",
+      "<cms:no_cache",
+      "K_CACHE_OPCODES",
+      "K_CACHE_SETTINGS",
+      "_invalidate_cache"
+    ]
+  },
+  "commonPatterns": {
+    "enableCache": {
+      "pattern": "define( 'K_USE_CACHE', 1 );",
+      "description": "Enable page caching in config.php"
+    },
+    "disableCacheForPage": {
+      "pattern": "<cms:no_cache />",
+      "description": "Exclude specific page from caching"
+    },
+    "bypassCacheURL": {
+      "pattern": "page.php?nc=1",
+      "description": "Bypass cache via querystring"
+    },
+    "invalidateCacheManually": {
+      "pattern": "<cms:db_persist _mode='edit' _masterpage=k_template_name _page_id=k_page_id _invalidate_cache='1' />",
+      "description": "Manually invalidate cache"
+    },
+    "ajaxDynamicContent": {
+      "pattern": "<cms:if \"<cms:is_ajax />\">\n   <cms:set data=\"<cms:gpc 'param' method='post' />\" />\n   <cms:abort msg=response />\n</cms:if>",
+      "description": "Handle dynamic content on cached page via AJAX"
+    },
+    "randomWithCache": {
+      "pattern": "<cms:add_querystring link qs=\"orderby=random&rnd=<cms:date format='His' />\" />",
+      "description": "Add unique parameter for random content with cache"
+    },
+    "dynamicCSS": {
+      "pattern": "<?php require_once('couch/cms.php'); ?>\n<cms:content_type 'text/css' />\n/* CSS with Couch tags */\n<?php COUCH::invoke(); ?>",
+      "description": "Make CSS file cacheable with Couch processing"
+    },
+    "dynamicJS": {
+      "pattern": "<?php require_once('couch/cms.php'); ?>\n<cms:content_type 'application/javascript' />\n// JS with Couch tags\n<?php COUCH::invoke(); ?>",
+      "description": "Make JavaScript file cacheable with Couch processing"
+    },
+    "verifyCacheActive": {
+      "pattern": "<!-- Cached page -->",
+      "description": "Check HTML source for cache indicator comment"
+    },
+    "querystringStrategy": {
+      "pattern": "<a href=\"?pg=2&limit=10\">Page 2</a>",
+      "description": "Include relevant parameters in URL for proper caching"
+    }
+  },
+  "antiPatterns": {
+    "cacheNotEnabled": {
+      "pattern": "define( 'K_USE_CACHE', 0 );",
+      "issue": "Cache disabled - pages generated dynamically every request",
+      "fix": "Set K_USE_CACHE to 1 in config.php"
+    },
+    "testingWhileLoggedIn": {
+      "pattern": "Testing cache while logged in as admin",
+      "issue": "Cache automatically bypassed for logged-in users",
+      "fix": "Log out or use different browser/incognito mode"
+    },
+    "randomWithoutUniqueURL": {
+      "pattern": "<cms:pages orderby='random' /><!-- Without unique URL parameter -->",
+      "issue": "Same random results every time due to cache",
+      "fix": "Add unique URL parameter: ?rnd=<cms:random_name />"
+    },
+    "paginateWithRandom": {
+      "pattern": "<cms:pages orderby='random' paginate='1' />",
+      "issue": "Paginate uses seed that prevents true randomization",
+      "fix": "Remove paginate='1' when using orderby='random'"
+    },
+    "missingCacheFolderPermissions": {
+      "pattern": "couch/cache/ folder not writable",
+      "issue": "Cache files cannot be created",
+      "fix": "chmod 777 couch/cache/"
+    },
+    "dynamicContentWithoutAJAX": {
+      "pattern": "<cms:date format='H:i:s' /><!-- On cached page -->",
+      "issue": "Dynamic content cached as static value",
+      "fix": "Load via AJAX with POST or nc=1"
+    },
+    "incompleteQuerystring": {
+      "pattern": "?pg=5<!-- Missing limit parameter -->",
+      "issue": "Different display options serve same cached content",
+      "fix": "Include all relevant parameters: ?pg=5&limit=10"
+    },
+    "deletingSettingsKeys": {
+      "pattern": "Deleting readable keys from couch_settings",
+      "issue": "May break CouchCMS configuration",
+      "fix": "Only delete MD5 hash keys, keep readable keys"
+    },
+    "noCacheEverywhere": {
+      "pattern": "<cms:no_cache /><!-- In every template -->",
+      "issue": "Defeats purpose of caching entirely",
+      "fix": "Use selectively for truly dynamic pages only"
+    }
+  },
+  "parameterReference": {
+    "K_USE_CACHE": {
+      "location": "couch/config.php",
+      "values": "0 or 1",
+      "description": "Enable/disable page caching",
+      "default": "0"
+    },
+    "K_CACHE_PURGE_INTERVAL": {
+      "location": "couch/config.php",
+      "values": "Number (hours)",
+      "description": "How often to run purge routine",
+      "default": "24"
+    },
+    "K_MAX_CACHE_AGE": {
+      "location": "couch/config.php",
+      "values": "Number (days)",
+      "description": "Maximum age before cache file deleted",
+      "default": "7"
+    },
+    "K_CACHE_OPCODES": {
+      "location": "couch/header.php",
+      "values": "0 or 1",
+      "description": "Cache compiled snippets/functions",
+      "default": "1"
+    },
+    "K_CACHE_SETTINGS": {
+      "location": "couch/header.php",
+      "values": "0 or 1",
+      "description": "Cache settings in database",
+      "default": "1"
+    },
+    "_invalidate_cache": {
+      "location": "cms:db_persist parameter",
+      "values": "0 or 1",
+      "description": "Invalidate cache when saving",
+      "usage": "Programmatic cache invalidation"
+    }
+  },
+  "bestPractices": {
+    "whenToCache": [
+      "Blog posts and articles",
+      "Product pages (infrequently updated)",
+      "Static content pages",
+      "Archive pages",
+      "News listings"
+    ],
+    "whenNotToCache": [
+      "User dashboards",
+      "Shopping carts",
+      "Real-time data displays",
+      "Personalized content",
+      "Admin panels (auto-bypassed)"
+    ],
+    "performance": [
+      "Enable caching in production",
+      "Monitor couch/cache/ folder size",
+      "Use AJAX for dynamic sections",
+      "Design URLs to include relevant parameters",
+      "Set appropriate purge intervals"
+    ],
+    "development": [
+      "Disable cache during development (K_USE_CACHE=0)",
+      "Use nc=1 querystring for testing",
+      "Stay logged in (cache auto-bypassed)",
+      "Clear cache when testing changes"
+    ],
+    "urlDesign": [
+      "Include all display options in querystring",
+      "Use meaningful parameter names",
+      "Keep URLs consistent",
+      "Document querystring parameters"
+    ],
+    "dynamicContent": [
+      "Use AJAX for user-specific content",
+      "Load real-time data after page load",
+      "Keep majority of page cacheable",
+      "Minimize dynamic sections"
+    ]
+  },
+  "cacheConditions": {
+    "required": [
+      "K_USE_CACHE = 1 in config.php",
+      "couch/cache/ folder writable (777)",
+      "User not logged in",
+      "Frontend page (not admin)",
+      "Request method not POST",
+      "URL doesn't contain nc=1",
+      "cms:no_cache not in template",
+      "Website not offline"
+    ],
+    "bypass": [
+      "User logged in (admin/super-admin)",
+      "Registered users (with Extended Users)",
+      "POST request (forms)",
+      "nc=1 in querystring",
+      "cms:no_cache tag used",
+      "Website offline (K_SITE_OFFLINE=1)"
+    ]
+  },
+  "integrationPatterns": {
+    "ajaxViewCounter": {
+      "pattern": "<!-- Cached page -->\n<span id=\"views\">Loading...</span>\n<script>\nfetch('?nc=1&action=views&id=<cms:show k_page_id />', {method:'POST'})\n.then(r=>r.text()).then(v=>document.getElementById('views').innerHTML=v);\n</script>\n<cms:if \"<cms:is_ajax />\"><cms:abort msg='1234' /></cms:if>",
+      "description": "Load view count dynamically on cached page"
+    },
+    "alpineWithCache": {
+      "pattern": "<!-- Cached page -->\n<div x-data=\"{ open: false }\">\n   <button x-on:click=\"open = !open\">Toggle</button>\n   <div x-show=\"open\">Content</div>\n</div>",
+      "description": "Alpine.js works perfectly with cached pages"
+    },
+    "tailwindDynamic": {
+      "pattern": "<!-- Load data-theme from cookie via JS -->\n<html data-theme=\"light\" id=\"app\">\n<script>\nconst theme = localStorage.getItem('theme') || 'light';\ndocument.getElementById('app').setAttribute('data-theme', theme);\n</script>",
+      "description": "Dynamic theme switching on cached page"
+    },
+    "apiDataLoading": {
+      "pattern": "<div id=\"products\"></div>\n<script>\nfetch('<cms:show k_site_link />api/products.php')\n.then(r=>r.json())\n.then(data=>{\n   document.getElementById('products').innerHTML = \n      data.map(p=>`<div>${p.name}</div>`).join('');\n});\n</script>",
+      "description": "Load dynamic API data on cached page"
+    }
+  },
+  "troubleshooting": {
+    "cacheNotWorking": [
+      "Check K_USE_CACHE = 1 in config.php",
+      "Verify couch/cache/ folder exists",
+      "Set permissions on couch/cache/ to 777",
+      "Log out of admin panel",
+      "Remove cms:no_cache if present",
+      "View source for '<!-- Cached page -->' comment"
+    ],
+    "filesNotAppearing": [
+      "Check folder permissions: chmod 777 couch/cache/",
+      "Verify web server can write to folder",
+      "Check disk space on server",
+      "View source: shows 'Generated' or 'Cached'?"
+    ],
+    "contentNotUpdating": [
+      "Edit any page in admin",
+      "Click Save to invalidate cache",
+      "Wait for cache to regenerate on next visit",
+      "Or add ?nc=1 to URL to bypass"
+    ],
+    "aggressiveBrowserCaching": [
+      "Add no-cache headers in config.php for admin",
+      "Clear browser cache manually",
+      "Test in incognito mode",
+      "Check server cache headers"
+    ],
+    "sameContentDifferentRequests": [
+      "Include parameters in querystring",
+      "Example: ?limit=10 vs ?limit=25",
+      "Each unique URL creates separate cache",
+      "Document querystring parameters"
+    ],
+    "randomNotRandom": [
+      "Add unique URL parameter with random value",
+      "Use rnd=<cms:date format='His' />",
+      "Or rnd=<cms:random_name />",
+      "Remove paginate='1' from random queries"
+    ]
+  },
+  "quickReference": {
+    "enable": "K_USE_CACHE = 1 in config.php",
+    "disable": "K_USE_CACHE = 0 in config.php",
+    "bypass": "Add ?nc=1 to URL",
+    "excludePage": "<cms:no_cache />",
+    "invalidate": "Save any page in admin",
+    "verify": "View source for <!-- Cached page -->",
+    "location": "couch/cache/ folder",
+    "permissions": "chmod 777 couch/cache/"
+  },
+  "useCases": {
+    "perfectForCache": [
+      "Blog with articles updated occasionally",
+      "News website with archive pages",
+      "Product catalog (slow-changing inventory)",
+      "Documentation sites",
+      "Portfolio websites",
+      "Company about/contact pages"
+    ],
+    "partialCache": [
+      "E-commerce (cache products, AJAX cart)",
+      "Social network (cache timeline, AJAX interactions)",
+      "Dashboard (cache layout, AJAX data)",
+      "Forums (cache threads, AJAX replies)"
+    ],
+    "noCache": [
+      "Real-time chat applications",
+      "Stock tickers / live data",
+      "User-specific dashboards",
+      "Shopping cart pages",
+      "Payment processing pages"
+    ]
+  },
+  "performanceImpact": {
+    "withCache": [
+      "Page load: 10-50ms (static file)",
+      "No database queries",
+      "No PHP processing",
+      "Minimal server load",
+      "Can handle 1000s requests/second"
+    ],
+    "withoutCache": [
+      "Page load: 200-1000ms+ (dynamic)",
+      "Database queries on every request",
+      "Full PHP processing",
+      "Higher server load",
+      "Limited requests/second"
+    ]
+  }
+}
