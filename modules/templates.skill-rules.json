@@ -1,0 +1,222 @@
+{
+  "autoActivation": {
+    "triggers": [
+      "template",
+      "extends",
+      "blocks",
+      "embed",
+      "snippet",
+      "layout",
+      "base template",
+      "template inheritance",
+      "template structure",
+      "cms:template",
+      "cms:extends",
+      "cms:block",
+      "cms:embed",
+      "COUCH::invoke",
+      "require_once couch"
+    ],
+    "filePatterns": [
+      "**/*.php",
+      "**/layouts/*.html",
+      "**/snippets/*.html",
+      "**/partials/*.html",
+      "**/components/*.html"
+    ],
+    "contentPatterns": [
+      "<cms:template",
+      "<cms:extends",
+      "<cms:block",
+      "<cms:embed",
+      "<?php require_once.*couch/cms\\.php",
+      "COUCH::invoke\\(\\)",
+      "clonable='[01]'",
+      "routable='[01]'"
+    ]
+  },
+  "commonPatterns": {
+    "basicTemplate": {
+      "pattern": "<?php require_once('couch/cms.php'); ?>\n<cms:template title='' clonable='1'>\n    <!-- Editable regions -->\n</cms:template>\n<!-- Content -->\n<?php COUCH::invoke(); ?>",
+      "description": "Basic CouchCMS template structure"
+    },
+    "templateWithInheritance": {
+      "pattern": "<?php require_once('couch/cms.php'); ?>\n<cms:extends 'layouts/base.html' />\n<cms:block 'templates'>\n    <cms:template title='' clonable='1'>\n        <!-- Editable regions -->\n    </cms:template>\n</cms:block>\n<cms:block 'content'>\n    <!-- Page content -->\n</cms:block>\n<?php COUCH::invoke(); ?>",
+      "description": "Template using extends/blocks inheritance"
+    },
+    "baseLayout": {
+      "pattern": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <cms:block 'head'>\n        <meta charset=\"UTF-8\">\n        <title><cms:block 'title' /></title>\n    </cms:block>\n</head>\n<body>\n    <cms:block 'content' />\n</body>\n</html>",
+      "description": "Base layout template with blocks"
+    },
+    "embedSnippet": {
+      "pattern": "<cms:embed 'snippets/header.html' />",
+      "description": "Embed a reusable snippet"
+    },
+    "embedWithParams": {
+      "pattern": "<cms:embed 'snippets/card.html' title='Hello' description='World' />",
+      "description": "Embed snippet with parameters"
+    },
+    "accessEmbedParams": {
+      "pattern": "<h2><cms:show title /></h2>\n<p><cms:show description /></p>",
+      "description": "Access parameters in embedded snippet"
+    },
+    "nestedBlocks": {
+      "pattern": "<cms:block 'sidebar'>\n    <cms:block 'sidebar_top' />\n    <cms:block 'sidebar_bottom' />\n</cms:block>",
+      "description": "Nested blocks for granular inheritance"
+    },
+    "conditionalBlock": {
+      "pattern": "<cms:block 'meta_tags'>\n    <cms:if k_is_page>\n        <meta property=\"og:title\" content=\"<cms:show k_page_title />\" />\n    </cms:block>\n</cms:if>",
+      "description": "Conditional content in blocks"
+    }
+  },
+  "antiPatterns": {
+    "missingPHPHooks": {
+      "pattern": "Missing require_once or COUCH::invoke in .php file",
+      "issue": "Template won't be processed by CouchCMS",
+      "fix": "Add <?php require_once('couch/cms.php'); ?> at top and <?php COUCH::invoke(); ?> at bottom"
+    },
+    "wrongExtensionForExtends": {
+      "pattern": "<cms:extends 'base.php' />",
+      "issue": "Extended files should use .html extension",
+      "fix": "Use <cms:extends 'layouts/base.html' />"
+    },
+    "missingTemplatesBlock": {
+      "pattern": "cms:template outside cms:block when using extends",
+      "issue": "Template definitions must be in 'templates' block",
+      "fix": "Wrap <cms:template> in <cms:block 'templates'>"
+    },
+    "hardcodedPaths": {
+      "pattern": "src='/images/logo.png'",
+      "issue": "Paths may break if CouchCMS is in subdirectory",
+      "fix": "Use <cms:show k_site_link />images/logo.png"
+    },
+    "duplicateBlockNames": {
+      "pattern": "Multiple blocks with same name",
+      "issue": "Block name collision causes unexpected behavior",
+      "fix": "Use unique block names throughout hierarchy"
+    },
+    "embedWithoutExtension": {
+      "pattern": "<cms:embed 'header' />",
+      "issue": "Missing file extension",
+      "fix": "<cms:embed 'snippets/header.html' />"
+    },
+    "closingBlockTag": {
+      "pattern": "<cms:block 'content'></cms:block>",
+      "issue": "Blocks should be self-closing when empty",
+      "fix": "<cms:block 'content' />"
+    }
+  },
+  "parameterReference": {
+    "cms:template": {
+      "title": "Human-readable template name (Admin Panel)",
+      "clonable": "0 or 1 - Enable multiple pages from this template",
+      "routable": "0 or 1 - Enable pretty URLs for cloned pages",
+      "executable": "0 or 1 - Allow PHP execution (default 1)",
+      "hidden": "0 or 1 - Hide from template list",
+      "order": "Number - Sort order in Admin Panel",
+      "nested_pages": "0 or 1 - Enable hierarchical page structure",
+      "gallery": "0 or 1 - Enable photo gallery features",
+      "dynamic_folders": "0 or 1 - Auto-create folders from field",
+      "commentable": "0 or 1 - Enable comments system"
+    },
+    "cms:extends": {
+      "layout": "Path to parent template (relative to site root or snippets folder)"
+    },
+    "cms:block": {
+      "name": "Unique identifier for the block (required)",
+      "description": "Optional block description"
+    },
+    "cms:embed": {
+      "snippet": "Path to snippet file (first parameter, required)",
+      "custom_params": "Any additional params become variables in snippet"
+    }
+  },
+  "bestPractices": {
+    "organization": [
+      "layouts/ for base templates (base.html, blog-layout.html)",
+      "snippets/ for reusable components (header.html, footer.html)",
+      "partials/ for page sections (hero.html, testimonials.html)",
+      "components/ for UI elements (card.html, button.html)"
+    ],
+    "naming": [
+      "Use descriptive block names: 'hero_section' not 'block1'",
+      "Prefix related blocks: 'sidebar_top', 'sidebar_bottom'",
+      "Keep snippet names lowercase with hyphens: 'blog-card.html'"
+    ],
+    "inheritance": [
+      "Create 1-2 base layouts for site-wide structure",
+      "Use blocks for every section that might change",
+      "Keep layouts focused (don't mix blog/shop layouts)",
+      "Document available blocks in layout files"
+    ],
+    "snippets": [
+      "Keep snippets small and focused (single responsibility)",
+      "Pass data via parameters rather than global variables",
+      "Document required parameters in snippet comments",
+      "Use consistent parameter naming across snippets"
+    ],
+    "performance": [
+      "Avoid deep nesting (3 levels max recommended)",
+      "Cache frequently used snippets with <cms:cache>",
+      "Minimize database queries in embedded snippets",
+      "Use <cms:capture> for complex reusable content"
+    ]
+  },
+  "integrationPatterns": {
+    "tailwindWithExtends": {
+      "pattern": "<cms:block 'head'>\n    <cms:block 'parent' />\n    <link href=\"<cms:show k_site_link />css/output.css\" rel=\"stylesheet\">\n</cms:block>",
+      "description": "Add Tailwind to child template while preserving parent head"
+    },
+    "alpineComponent": {
+      "pattern": "<cms:embed 'components/dropdown.html'\n    x_data=\"{ open: false }\"\n    button_text=\"Menu\"\n/>",
+      "description": "Pass Alpine.js directives as snippet parameters"
+    },
+    "daisyUITheme": {
+      "pattern": "<html lang=\"en\" data-theme=\"<cms:show theme_name />\">",
+      "description": "Dynamic daisyUI theme from CouchCMS variable"
+    }
+  },
+  "troubleshooting": {
+    "blankPage": [
+      "Check PHP hooks are present (require_once and COUCH::invoke)",
+      "Verify file extension is .php for template files",
+      "Check PHP error logs for syntax errors"
+    ],
+    "extendsNotWorking": [
+      "Ensure extended file uses .html extension",
+      "Check file path is correct (relative to site root or snippets/)",
+      "Verify <cms:extends /> is at top of file (before other tags)"
+    ],
+    "blockNotShowing": [
+      "Confirm block name matches exactly (case-sensitive)",
+      "Check for duplicate block names in hierarchy",
+      "Verify parent template has <cms:block 'name' /> placeholder"
+    ],
+    "embedNotFound": [
+      "Check file exists in snippets/ folder or specified path",
+      "Verify file extension is included in path",
+      "Use <cms:show k_site_link /> for absolute paths if needed"
+    ],
+    "templateNotInAdmin": [
+      "Visit template URL in browser to register with CouchCMS",
+      "Check hidden='0' parameter",
+      "Verify <cms:template> tag is properly closed"
+    ]
+  },
+  "quickReference": {
+    "fileTypes": {
+      ".php": "Template files (processed by CouchCMS, need PHP hooks)",
+      ".html": "Layout/snippet files (extended/embedded, no PHP hooks needed)"
+    },
+    "requiredStructure": {
+      "templateFile": "<?php require_once('couch/cms.php'); ?> ... <?php COUCH::invoke(); ?>",
+      "layoutFile": "HTML with <cms:block> placeholders, no PHP hooks",
+      "snippetFile": "HTML fragment, access params with <cms:show param_name />"
+    },
+    "blockBehavior": {
+      "empty": "<cms:block 'name' /> - Outputs child content or nothing",
+      "withDefault": "<cms:block 'name'>Default</cms:block> - Outputs child or default",
+      "parent": "<cms:block 'parent' /> - Inside block, outputs parent's content"
+    }
+  }
+}
