@@ -49,8 +49,10 @@
                 editorsCheckboxes.forEach(ed => params.append('editors', ed))
             }
 
-            // Get advanced options (if extended and target step is 4 or later)
-            if (setupType === 'extended' && stepNum >= 4) {
+            // Get advanced options (if extended and we're on advanced step OR going to step 4+)
+            // Check if we're currently on the advanced step by looking for advanced form fields
+            const isOnAdvancedStep = form.querySelector('input[name="framework"]') !== null || form.querySelector('input[name="contextDir"]') !== null
+            if (setupType === 'extended' && (isOnAdvancedStep || stepNum >= 4)) {
                 const framework = form.querySelector('input[name="framework"]')?.checked || false
                 const frameworkDoctrine = form.querySelector('input[name="framework_doctrine"]')?.checked || false
                 const frameworkDirectives = form.querySelector('input[name="framework_directives"]')?.checked || false

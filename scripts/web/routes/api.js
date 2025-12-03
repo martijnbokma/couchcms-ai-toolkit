@@ -79,6 +79,15 @@ function createHiddenFields(data) {
     if (data.css) data.css.forEach(c => fields.push({ name: 'css', value: c }))
     if (data.js) data.js.forEach(j => fields.push({ name: 'js', value: j }))
     if (data.editors) data.editors.forEach(e => fields.push({ name: 'editors', value: e }))
+    // Advanced options
+    if (data.framework === 'true') {
+        fields.push({ name: 'framework', value: 'true' })
+        if (data.framework_doctrine === 'true') fields.push({ name: 'framework_doctrine', value: 'true' })
+        if (data.framework_directives === 'true') fields.push({ name: 'framework_directives', value: 'true' })
+        if (data.framework_playbooks === 'true') fields.push({ name: 'framework_playbooks', value: 'true' })
+        if (data.framework_enhancements === 'true') fields.push({ name: 'framework_enhancements', value: 'true' })
+    }
+    if (data.contextDir) fields.push({ name: 'contextDir', value: data.contextDir })
     return fields
 }
 
@@ -220,8 +229,30 @@ export function apiRoutes(projectDir) {
         const js = parseArrayValue(query, 'js')
         const editors = parseArrayValue(query, 'editors')
 
+        // Parse advanced options if present (for back navigation from advanced step)
+        const framework = query.framework === 'true'
+        const frameworkConfig = framework ? {
+            enabled: true,
+            doctrine: query.framework_doctrine === 'true',
+            directives: query.framework_directives === 'true',
+            playbooks: query.framework_playbooks === 'true',
+            enhancements: query.framework_enhancements === 'true'
+        } : false
+        const contextDir = query.contextDir || DEFAULT_CONTEXT_DIR
+
         const { popular: popularEditors, other: otherEditors } = getEditorsGrouped(editors)
         const stepNumber = defaults.setupType === SETUP_TYPES.SIMPLE ? 2 : 3
+
+        // Create hidden fields including advanced data if present
+        const hiddenFieldsData = { ...defaults, css, js, editors }
+        if (framework) {
+            hiddenFieldsData.framework = 'true'
+            if (frameworkConfig.doctrine) hiddenFieldsData.framework_doctrine = 'true'
+            if (frameworkConfig.directives) hiddenFieldsData.framework_directives = 'true'
+            if (frameworkConfig.playbooks) hiddenFieldsData.framework_playbooks = 'true'
+            if (frameworkConfig.enhancements) hiddenFieldsData.framework_enhancements = 'true'
+        }
+        if (contextDir) hiddenFieldsData.contextDir = contextDir
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -233,7 +264,7 @@ export function apiRoutes(projectDir) {
                 editors,
                 popularEditors,
                 otherEditors,
-                hiddenFields: createHiddenFields({ ...defaults, css, js, editors })
+                hiddenFields: createHiddenFields(hiddenFieldsData)
             }
         )
         return c.html(html)
@@ -397,6 +428,17 @@ export function apiRoutes(projectDir) {
             }))
         } else {
             // Extended: editors → advanced
+            // Parse advanced options from hidden fields if present (for back navigation)
+            const framework = body.framework === 'true'
+            const frameworkConfig = framework ? {
+                enabled: true,
+                doctrine: body.framework_doctrine === 'true',
+                directives: body.framework_directives === 'true',
+                playbooks: body.framework_playbooks === 'true',
+                enhancements: body.framework_enhancements === 'true'
+            } : false
+            const contextDir = body.contextDir || DEFAULT_CONTEXT_DIR
+
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
                 4,
@@ -405,6 +447,8 @@ export function apiRoutes(projectDir) {
                     ...defaults,
                     frontend: { css: cssFrameworks, js: jsFrameworks },
                     editors: selectedEditors,
+                    framework: frameworkConfig,
+                    contextDir,
                     hiddenFields: createHiddenFields({ ...defaults, css: cssFrameworks, js: jsFrameworks, editors: selectedEditors })
                 }
             )
