@@ -1,0 +1,347 @@
+{
+  "autoActivation": {
+    "triggers": [
+      "array",
+      "arrays",
+      "json",
+      "is_json",
+      "as_json",
+      "multi-level variables",
+      "dotted notation",
+      "cms:each",
+      "escape_json",
+      "is_array",
+      "array_count",
+      "arr_count",
+      "arr_key_exists",
+      "arr_val_exists",
+      "cms:get",
+      "cms:put",
+      "nested data",
+      "data structure",
+      "JSON validation"
+    ],
+    "filePatterns": [
+      "**/*.php",
+      "**/*.html"
+    ],
+    "contentPatterns": [
+      "is_json='1'",
+      "as_json='1'",
+      "<cms:each",
+      "<cms:is_array",
+      "<cms:array_count",
+      "<cms:arr_count",
+      "<cms:arr_key_exists",
+      "<cms:arr_val_exists",
+      "<cms:escape_json",
+      "\\[\\s*\\{.*\\}\\s*\\]",
+      "\\{.*:.*\\}"
+    ]
+  },
+  "commonPatterns": {
+    "createArray": {
+      "pattern": "<cms:set myarray='[]' is_json='1' />",
+      "description": "Initialize empty array"
+    },
+    "createObject": {
+      "pattern": "<cms:set myobject='{\"key\":\"value\"}' is_json='1' />",
+      "description": "Create object with JSON"
+    },
+    "captureJSON": {
+      "pattern": "<cms:capture into='data' is_json='1'>\n{\n   \"key\" : \"value\"\n}\n</cms:capture>",
+      "description": "Capture JSON data into variable"
+    },
+    "dotNotation": {
+      "pattern": "<cms:show myarray.level1.level2 />",
+      "description": "Access nested values with dot notation"
+    },
+    "autoIndex": {
+      "pattern": "<cms:set myarray.='value' />",
+      "description": "Auto-indexed array append (trailing dot)"
+    },
+    "showAsJSON": {
+      "pattern": "<cms:show myarray as_json='1' />",
+      "description": "Display array as JSON string"
+    },
+    "eachLoop": {
+      "pattern": "<cms:each myarray as='item'>\n   <cms:show item.key />\n</cms:each>",
+      "description": "Iterate through array"
+    },
+    "checkIsArray": {
+      "pattern": "<cms:if \"<cms:is_array myvar />\">",
+      "description": "Check if variable is array"
+    },
+    "countElements": {
+      "pattern": "<cms:array_count myarray />",
+      "description": "Count array elements"
+    },
+    "keyExists": {
+      "pattern": "<cms:if \"<cms:arr_key_exists myarray 'key' />\">",
+      "description": "Check if key exists in array"
+    },
+    "valueExists": {
+      "pattern": "<cms:if \"<cms:arr_val_exists myarray 'value' />\">",
+      "description": "Check if value exists in array"
+    },
+    "dynamicGet": {
+      "pattern": "<cms:get \"myarray.<cms:show index />\" />",
+      "description": "Get value with dynamic key"
+    },
+    "dynamicPut": {
+      "pattern": "<cms:put var=\"myarray.<cms:show key />\" value='data' scope='parent' />",
+      "description": "Set value with dynamic key"
+    },
+    "escapeJSON": {
+      "pattern": "<cms:escape_json><cms:show variable /></cms:escape_json>",
+      "description": "Escape string for JSON inclusion"
+    },
+    "nestedLoop": {
+      "pattern": "<cms:each outer>\n   <cms:if \"<cms:is_array item />\">\n      <cms:each item>\n         <cms:show key /> - <cms:show item />\n      </cms:each>\n   </cms:if>\n</cms:each>",
+      "description": "Nested array iteration"
+    },
+    "arrayOfObjects": {
+      "pattern": "<cms:set items='[\n   {\"id\":\"1\", \"name\":\"First\"},\n   {\"id\":\"2\", \"name\":\"Second\"}\n]' is_json='1' />",
+      "description": "Create array of objects"
+    },
+    "multiWordKey": {
+      "pattern": "<cms:get \"person.First Name\" />",
+      "description": "Access multi-word keys with cms:get"
+    }
+  },
+  "antiPatterns": {
+    "invalidJSON": {
+      "pattern": "<cms:set arr='{ invalid json }' is_json='1' />",
+      "issue": "Invalid JSON syntax will not set variable",
+      "fix": "Validate JSON at https://jsonlint.com/ before use: <cms:set arr='{\"valid\":\"json\"}' is_json='1' />"
+    },
+    "missingIsJson": {
+      "pattern": "<cms:set arr='{\"key\":\"value\"}' />",
+      "issue": "JSON string stored as string, not array",
+      "fix": "Add is_json='1' parameter: <cms:set arr='{\"key\":\"value\"}' is_json='1' />"
+    },
+    "wrongScopeInLoop": {
+      "pattern": "<cms:each items><cms:set items.key='value' /></cms:each>",
+      "issue": "Changes not persisting outside loop",
+      "fix": "Use cms:put with scope='parent': <cms:put var='items.key' value='value' scope='parent' />"
+    },
+    "multiWordKeyWithShow": {
+      "pattern": "<cms:show person.First Name />",
+      "issue": "Multi-word keys don't work with cms:show",
+      "fix": "Use cms:get with quotes: <cms:get \"person.First Name\" />"
+    },
+    "hardcodedIndexes": {
+      "pattern": "{\"0\":\"value\", \"1\":\"value2\"}",
+      "issue": "Manual indexes in arrays - error prone",
+      "fix": "Use auto-indexing: <cms:set arr='[]' is_json='1' /><cms:set arr.='value' />"
+    },
+    "noJSONValidation": {
+      "pattern": "Using complex JSON without validation",
+      "issue": "Silent failures when JSON is invalid",
+      "fix": "Always validate complex JSON strings before use"
+    },
+    "scopeMismatch": {
+      "pattern": "<cms:capture into='data'>...</cms:capture><cms:set data.key='value' />",
+      "issue": "capture is global by default, set is local",
+      "fix": "Match scopes: <cms:set data.key='value' scope='global' />"
+    },
+    "unescapedDynamicContent": {
+      "pattern": "{\"comment\":\"<cms:show user_input />\"}",
+      "issue": "User input with quotes breaks JSON",
+      "fix": "Use escape_json: {\"comment\":<cms:escape_json><cms:show user_input /></cms:escape_json>}"
+    },
+    "directJSONInSet": {
+      "pattern": "<cms:set arr='<cms:show '{\"key\":\"value\"}' />' is_json='1' />",
+      "issue": "Confusing nested quotes",
+      "fix": "Use cms:capture for complex JSON with embedded tags"
+    }
+  },
+  "parameterReference": {
+    "is_json": {
+      "values": "0 or 1",
+      "description": "Parse value as JSON and create array/object",
+      "usedWith": ["cms:set", "cms:capture", "cms:put"]
+    },
+    "as_json": {
+      "values": "0 or 1",
+      "description": "Output variable as JSON string",
+      "usedWith": ["cms:show", "cms:get"]
+    },
+    "scope": {
+      "values": "local, parent, global",
+      "description": "Variable scope (important in loops)",
+      "usedWith": ["cms:set", "cms:put", "cms:capture"]
+    },
+    "as": {
+      "values": "variable_name",
+      "description": "Alias for current item in loop",
+      "usedWith": ["cms:each"]
+    },
+    "sep": {
+      "values": "separator character",
+      "description": "Separator for string-to-array conversion",
+      "usedWith": ["cms:each"]
+    }
+  },
+  "bestPractices": {
+    "initialization": [
+      "Always initialize arrays with '[]' and is_json='1'",
+      "Initialize objects before adding keys",
+      "Use cms:capture for complex multi-line JSON"
+    ],
+    "validation": [
+      "Validate JSON syntax before deployment (jsonlint.com)",
+      "Test with cms:show as_json='1' to debug structure",
+      "Use cms:is_array to verify variable type before iteration"
+    ],
+    "performance": [
+      "Build arrays outside loops when possible",
+      "Use direct notation (arr.key=val) instead of JSON strings for simple updates",
+      "Cache complex array transformations"
+    ],
+    "scope": [
+      "Watch your scope - capture defaults to global, set to local",
+      "Always specify scope='parent' when modifying from within loops",
+      "Use scope='global' for site-wide configuration arrays"
+    ],
+    "escaping": [
+      "Use cms:escape_json for any user-generated content",
+      "Use cms:capture instead of cms:set to avoid quote escaping",
+      "Prefer direct notation (safe) over JSON strings (needs escaping)"
+    ],
+    "organization": [
+      "Use meaningful key names (not just numbers)",
+      "Document expected array structure in comments",
+      "Keep array depth under 3-4 levels for maintainability"
+    ],
+    "debugging": [
+      "Use <cms:show varname as_json='1' /> to inspect arrays",
+      "Check <cms:array_count> to verify elements added",
+      "Use <cms:arr_key_exists> before accessing keys"
+    ]
+  },
+  "integrationPatterns": {
+    "shoppingCart": {
+      "pattern": "<cms:each cart_items as='item'>\n   <div class=\"card bg-base-100\">\n      <h3><cms:show item.name /></h3>\n      <p>$<cms:show item.price /> × <cms:show item.qty /></p>\n   </div>\n</cms:each>",
+      "description": "Display cart items with Tailwind/daisyUI"
+    },
+    "i18n": {
+      "pattern": "<cms:set lang='<cms:get_cookie \"lang\" default=\"en\" />' />\n<cms:get \"translations.<cms:show lang />.welcome\" />",
+      "description": "Multi-language translation system"
+    },
+    "alpineState": {
+      "pattern": "<div x-data='<cms:show initial_state as_json=\"1\" />'>\n   <span x-text=\"user.name\"></span>\n</div>",
+      "description": "Pass CouchCMS array to Alpine.js"
+    },
+    "dynamicConfig": {
+      "pattern": "<cms:set config='\n{\n   \"site\":{\"name\":\"Site\",\"email\":\"info@site.com\"},\n   \"social\":{\"twitter\":\"@site\"}\n}\n' is_json='1' />\n<cms:show config.site.email />",
+      "description": "Site-wide configuration object"
+    },
+    "buildResultSet": {
+      "pattern": "<cms:set results='[]' is_json='1' />\n<cms:pages masterpage='products.php'>\n   <cms:set results.='{\"id\":\"<cms:show k_page_id />\",\"title\":\"<cms:show k_page_title />\"}' is_json='1' />\n</cms:pages>",
+      "description": "Build array from cms:pages query"
+    },
+    "menuBuilder": {
+      "pattern": "<cms:set menu='[]' is_json='1' />\n<cms:set menu.='{\"label\":\"Home\",\"url\":\"/\"}' is_json='1' />\n<ul class=\"menu\">\n   <cms:each menu as='item'>\n      <li><a href=\"<cms:show item.url />\"><cms:show item.label /></a></li>\n   </cms:each>\n</ul>",
+      "description": "Dynamic menu generation"
+    }
+  },
+  "troubleshooting": {
+    "variableNotSetting": [
+      "Validate JSON syntax with online validator",
+      "Check for unescaped quotes in values",
+      "Ensure is_json='1' parameter is present",
+      "Test with simple JSON first: {\"test\":\"value\"}"
+    ],
+    "emptyOutput": [
+      "Use cms:show varname as_json='1' to inspect",
+      "Check if key exists with cms:arr_key_exists",
+      "Verify dot notation path is correct",
+      "Check scope - variable might be in different scope"
+    ],
+    "changesNotPersisting": [
+      "Use scope='parent' in loops",
+      "Match scope between capture and set operations",
+      "Use cms:put instead of cms:set for dynamic keys",
+      "Verify you're modifying the right variable instance"
+    ],
+    "multiWordKeyIssues": [
+      "Use cms:get with quotes instead of cms:show",
+      "Use cms:put instead of cms:set for multi-word keys",
+      "Consider using underscore instead of spaces in keys"
+    ],
+    "nestedLoopProblems": [
+      "Check if item is array with cms:is_array before looping",
+      "Use different variable names (item1, item2) in nested loops",
+      "Use cms:dump to inspect loop variables",
+      "Verify parent scope access with scope='parent'"
+    ]
+  },
+  "quickReference": {
+    "createArray": "cms:set arr='[]' is_json='1'",
+    "createObject": "cms:set obj='{\"key\":\"val\"}' is_json='1'",
+    "accessValue": "cms:show arr.key.subkey",
+    "autoIndex": "cms:set arr.='value'",
+    "showJSON": "cms:show arr as_json='1'",
+    "iterate": "cms:each arr as='item'",
+    "checkArray": "cms:is_array arr",
+    "countItems": "cms:array_count arr",
+    "keyExists": "cms:arr_key_exists arr 'key'",
+    "dynamicGet": "cms:get \"arr.<cms:show var />\"",
+    "dynamicSet": "cms:put var=\"arr.key\" value='val' scope='parent'",
+    "escapeJSON": "cms:escape_json content"
+  },
+  "relatedTags": {
+    "setters": [
+      "cms:set - Set variable with is_json='1'",
+      "cms:capture - Capture content as JSON",
+      "cms:put - Set with dynamic/quoted keys"
+    ],
+    "getters": [
+      "cms:show - Display with dot notation",
+      "cms:get - Retrieve with dynamic/quoted keys"
+    ],
+    "iteration": [
+      "cms:each - Loop through arrays"
+    ],
+    "helpers": [
+      "cms:is_array - Check if array",
+      "cms:array_count / cms:arr_count - Count elements",
+      "cms:arr_key_exists - Check key exists",
+      "cms:arr_val_exists - Check value exists",
+      "cms:escape_json - Escape for JSON"
+    ],
+    "conditionals": [
+      "cms:if - Use with array conditions",
+      "cms:else - Array fallbacks"
+    ]
+  },
+  "useCases": {
+    "dataStructures": [
+      "Shopping cart items",
+      "Multi-language translations",
+      "Site configuration",
+      "Navigation menus",
+      "Product catalogs",
+      "User preferences"
+    ],
+    "apiIntegration": [
+      "Parse JSON API responses",
+      "Build API request payloads",
+      "Store API data for caching",
+      "Transform data structures"
+    ],
+    "stateManagement": [
+      "Alpine.js state initialization",
+      "Form wizard step data",
+      "Filter/search parameters",
+      "User session data"
+    ],
+    "contentOrganization": [
+      "Group related editable regions",
+      "Store repeatable content blocks",
+      "Build dynamic forms",
+      "Organize metadata"
+    ]
+  }
+}
