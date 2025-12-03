@@ -1,11 +1,11 @@
 <div>
-    <header class="mb-4 sm:mb-6">
-        <h2 class="text-xl sm:text-2xl font-semibold mb-1 text-base-content">Project Information</h2>
-        <p class="text-xs sm:text-sm text-base-content/60">Let's start by gathering basic information about your project.</p>
-    </header>
+    {% set sectionTitle = 'Project Information' %}
+    {% set sectionDescription = "Let's start by gathering basic information about your project." %}
+    {% include "partials/section-header.html" %}
 
     <form hx-post="/api/setup/step/project" hx-target="#wizard-content" hx-swap="innerHTML" aria-label="Project information form">
         <input type="hidden" name="setupType" value="{{ setupType or 'simple' }}" />
+        {% include "partials/hidden-fields.html" %}
 
         <div class="form-control mb-4 sm:mb-6">
             <label for="projectName" class="label py-1 sm:py-2">
@@ -38,17 +38,12 @@
             >{{ projectDescription or 'A CouchCMS web application' }}</textarea>
         </div>
 
-        <div class="flex justify-end mt-4 sm:mt-6">
-            <button type="submit" class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-primary-content transition-colors bg-primary rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:bg-primary/90 gap-2 cursor-pointer">
-                {% if setupType == 'simple' %}
-                Next: Editors
-                {% else %}
-                Next: Frontend Frameworks
-                {% endif %}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
+        {% if setupType == 'simple' %}
+        {% set nextButtonLabel = 'Next: Editors' %}
+        {% else %}
+        {% set nextButtonLabel = 'Next: Frontend Frameworks' %}
+        {% endif %}
+        {% set showBackButton = false %}
+        {% include "partials/form-navigation.html" %}
     </form>
 </div>

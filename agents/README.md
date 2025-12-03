@@ -4,18 +4,37 @@ Combined AI agents with Quick Reference + Deep Dive structure.
 
 ## Agent Organization
 
-Agents are organized into subdirectories for better clarity:
+Agents are organized into subdirectories to clearly distinguish between **core required technologies** and **optional enhancement technologies**:
 
-- **`core/`** - CouchCMS-specific agents (always included automatically)
-  - `couchcms`, `databound-forms`, `custom-routes`, `views`, `folders`, `archives`
-  - `relationships`, `repeatable-regions`, `search`, `pagination`, `comments`
-  - `nested-pages`, `photo-gallery`, `rss-feeds`, `on-page-editing`, `users`
+### ⚡ Core Agents (`core/`) - Always Available
 
-- **`frontend/`** - Frontend framework agents (optional, user chooses)
-  - `tailwindcss`, `alpinejs`, `typescript`, `admin-panel-theming`
+**CouchCMS agents are always included automatically** and are part of the core system:
 
-- **`dev-tools/`** - Development tool agents (optional)
-  - `bun`, `git`, `mysql`
+- **Foundation**: `couchcms` - Core CouchCMS development
+- **Content Management**: `folders`, `archives`, `relationships`, `repeatable-regions`, `nested-pages`
+- **Navigation**: `search`, `pagination`, `custom-routes`, `views`
+- **User Features**: `users`, `comments`
+- **Forms**: `databound-forms`
+- **Advanced**: `photo-gallery`, `rss-feeds`, `on-page-editing`
+
+**These agents are automatically available** - you don't need to configure them in `standards.md`.
+
+### 🎨 Optional Frontend Agents (`frontend/`) - Choose What You Need
+
+**Frontend agents are optional** and can be added per project:
+
+- **Styling**: `tailwindcss`, `admin-panel-theming`
+- **Interactivity**: `alpinejs`, `typescript`
+
+**Note**: CouchCMS works perfectly without these agents. Only add them if you use the corresponding technologies.
+
+### 🛠️ Optional Dev Tool Agents (`dev-tools/`) - Development Tools
+
+**Development tool agents are optional** and can be added per project:
+
+- `bun` - Bun runtime and build tools
+- `git` - Git version control
+- `mysql` - Database operations
 
 The agent loader automatically searches these subdirectories, so agent names remain the same.
 

@@ -1,13 +1,10 @@
 <div>
-    <div class="mb-4 sm:mb-6">
-        <h2 class="text-xl sm:text-2xl font-semibold mb-1 text-base-content">Editors & Tools</h2>
-        <p class="text-xs sm:text-sm text-base-content/60">Select which editors and AI tools you use. Configuration files will only be generated for selected tools.</p>
-    </div>
+    {% set sectionTitle = 'Editors & Tools' %}
+    {% set sectionDescription = 'Select which editors and AI tools you use. Configuration files will only be generated for selected tools.' %}
+    {% include "partials/section-header.html" %}
 
     <form hx-post="/api/setup/step/editors" hx-target="#wizard-content" hx-swap="innerHTML">
-        {% for hidden in hiddenFields %}
-        <input type="hidden" name="{{ hidden.name }}" value="{{ hidden.value }}" />
-        {% endfor %}
+        {% include "partials/hidden-fields.html" %}
 
         <!-- Popular Editors -->
         <div class="mb-4 sm:mb-6">
@@ -62,24 +59,13 @@
             </button>
         </div>
 
-        <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-4 sm:mt-6">
-            <button type="button" class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors bg-base-100 rounded-full border border-base-300 hover:bg-base-200 focus:outline-none gap-2 cursor-pointer" onclick="goBack()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
-                Back
-            </button>
-            <button type="submit" class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-primary-content transition-colors bg-primary rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:bg-primary/90 gap-2 cursor-pointer">
-                {% if setupType == 'simple' %}
-                Next: Review
-                {% else %}
-                Next: Advanced Options
-                {% endif %}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
+        {% if setupType == 'simple' %}
+        {% set nextButtonLabel = 'Next: Review' %}
+        {% else %}
+        {% set nextButtonLabel = 'Next: Advanced Options' %}
+        {% endif %}
+        {% set showBackButton = true %}
+        {% include "partials/form-navigation.html" %}
     </form>
 
     <script>
@@ -88,39 +74,6 @@
         }
         function deselectAllEditors() {
             document.querySelectorAll('input[name="editors"]').forEach(cb => cb.checked = false)
-        }
-
-        // Back button handler
-        function goBack() {
-            const setupType = '{{ setupType }}'
-            const form = document.querySelector('form')
-            if (!form) return
-
-            const projectName = form.querySelector('input[name="projectName"]')?.value || 'my-project'
-            const projectDescription = form.querySelector('input[name="projectDescription"]')?.value || 'A CouchCMS web application'
-
-            let backRoute
-            if (setupType === 'simple') {
-                backRoute = `/api/setup/step/project?setupType=simple&projectName=${encodeURIComponent(projectName)}&projectDescription=${encodeURIComponent(projectDescription)}`
-            } else {
-                // Get frontend data from hidden fields
-                const css = Array.from(form.querySelectorAll('input[name="css"]')).map(i => i.value).filter(v => v)
-                const js = Array.from(form.querySelectorAll('input[name="js"]')).map(i => i.value).filter(v => v)
-
-                const params = new URLSearchParams()
-                params.append('setupType', 'extended')
-                params.append('projectName', projectName)
-                params.append('projectDescription', projectDescription)
-                css.forEach(c => params.append('css', c))
-                js.forEach(j => params.append('js', j))
-
-                backRoute = `/api/setup/step/frontend?${params.toString()}`
-            }
-
-            htmx.ajax('GET', backRoute, {
-                target: '#wizard-content',
-                swap: 'innerHTML'
-            })
         }
     </script>
 </div>

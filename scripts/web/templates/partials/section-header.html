@@ -1,0 +1,8 @@
+{# Reusable section header pattern
+   Expects: sectionTitle and sectionDescription variables in context #}
+<div class="mb-4 sm:mb-6">
+    <h2 class="text-xl sm:text-2xl font-semibold mb-1 text-base-content">{{ sectionTitle or title or 'Section Title' }}</h2>
+    {% if sectionDescription or description %}
+    <p class="text-xs sm:text-sm text-base-content/60">{{ sectionDescription or description }}</p>
+    {% endif %}
+</div>

@@ -1,9 +1,13 @@
 #!/usr/bin/env bun
 /**
- * CouchCMS AI Toolkit - Add Script to package.json
+ * CouchCMS AI Toolkit - Add Script to package.json (Optional Utility)
  *
  * Standalone script to add toolkit script to package.json
  * Safe: Only adds if it doesn't exist, preserves all existing scripts
+ *
+ * NOTE: This is an optional utility. The setup wizard (toolkit install/setup)
+ * automatically offers to add this script during setup. You only need this
+ * standalone script if you want to add it manually without running setup.
  *
  * Usage:
  *   bun ai-toolkit-shared/scripts/add-toolkit-script.js

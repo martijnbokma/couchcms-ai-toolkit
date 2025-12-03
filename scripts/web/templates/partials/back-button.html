@@ -1,23 +1,35 @@
+{#
+    Back button handler
+    Note: For wizard pages, goBack() is defined in wizard-scripts.html
+    This file is included in base.html for non-wizard pages that might need a back button
+#}
 <script>
     /**
-     * Universal back button handler
-     * Uses HTMX to navigate back with form data preservation
+     * Universal back button handler (fallback for non-wizard pages)
+     * For wizard pages, use the centralized goBack() from wizard-scripts.html
      */
-    function goBack(backRoute, formData = {}) {
-        // Get all form data from current form
-        const form = document.querySelector('form')
-        if (form) {
-            const formDataObj = new FormData(form)
-            for (const [key, value] of formDataObj.entries()) {
-                formData[key] = value
+    if (typeof goBack === 'undefined') {
+        function goBack(backRoute, formData = {}) {
+            // Get all form data from current form
+            const form = document.querySelector('form')
+            if (form) {
+                const formDataObj = new FormData(form)
+                for (const [key, value] of formDataObj.entries()) {
+                    formData[key] = value
+                }
+            }
+
+            // Use HTMX to navigate back
+            if (backRoute) {
+                htmx.ajax('POST', backRoute, {
+                    target: '#wizard-content',
+                    swap: 'innerHTML',
+                    values: formData
+                })
+            } else {
+                // Fallback to browser history
+                history.back()
             }
         }
-
-        // Use HTMX to navigate back
-        htmx.ajax('POST', backRoute, {
-            target: '#wizard-content',
-            swap: 'innerHTML',
-            values: formData
-        })
     }
 </script>

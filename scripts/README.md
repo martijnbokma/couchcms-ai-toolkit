@@ -63,7 +63,9 @@ scripts/
 ├── lib/                                          # Shared libraries
 ├── maintenance/                                  # Module maintenance scripts
 ├── utils/                                        # Utility scripts
-└── git-flow/                                     # Git workflow scripts
+├── dev/                                          # Developer utilities
+├── git-flow/                                     # Git workflow scripts
+└── web/                                          # Web server for browser setup
 ```
 
 ## Subdirectories
@@ -96,10 +98,28 @@ Utility scripts for development and workflow:
 
 See [utils/README.md](utils/README.md) for details.
 
+### `dev/`
+Developer utility scripts for toolkit contributors:
+- Testing different toolkit branches
+- Development workflow helpers
+
+See [dev/README.md](dev/README.md) for details.
+
 ### `git-flow/`
 Git workflow automation scripts for feature, hotfix, and release branches.
 
 See [git-flow/README.md](git-flow/README.md) for details.
+
+### `web/`
+Browser-based setup wizard using Hono web server.
+
+See [web/README.md](web/README.md) for details.
+
+## Optional Utilities
+
+- **`add-toolkit-script.js`** - Standalone script to add toolkit script to package.json
+  - Note: The setup wizard automatically offers to add this during setup
+  - Only needed if you want to add it manually without running setup
 
 ## For Developers
 
@@ -109,6 +129,7 @@ If you're developing the toolkit itself:
 2. **lib/** contains reusable modules - add new functionality here
 3. **maintenance/** is for one-off fixes and analysis
 4. **utils/** is for development helpers
+5. **dev/** contains developer utilities for testing and debugging
 
 ## Adding New Scripts
 

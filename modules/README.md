@@ -4,14 +4,28 @@ Knowledge modules provide AI assistants with framework-specific patterns and bes
 
 ## Module Organization
 
-Modules are organized into subdirectories for better clarity:
+Modules are organized into subdirectories to clearly distinguish between **core required technologies** and **optional enhancement technologies**:
 
-- **`core/`** - CouchCMS-specific modules (always included automatically)
-  - `couchcms-core`, `databound-forms`, `custom-routes`, `folders`, `archives`
-  - `relationships`, `repeatable-regions`, `search`, `pagination`, `comments`, `users`
+### ⚡ Core Modules (`core/`) - Always Required
 
-- **`frontend/`** - Frontend framework modules (optional, user chooses)
-  - `tailwindcss`, `daisyui`, `alpinejs`, `typescript`
+**CouchCMS modules are always included automatically** and are part of the core system:
+
+- **Foundation**: `couchcms-core` - Core CouchCMS patterns and security
+- **Content Management**: `folders`, `archives`, `relationships`, `repeatable-regions`
+- **Navigation**: `search`, `pagination`, `custom-routes`
+- **User Features**: `users`, `comments`
+- **Forms**: `databound-forms`
+
+**These modules are automatically loaded** - you don't need to configure them in `standards.md`.
+
+### 🎨 Optional Frontend Modules (`frontend/`) - Choose What You Need
+
+**Frontend modules are optional** and can be added per project:
+
+- **Styling**: `tailwindcss`, `daisyui` (requires TailwindCSS)
+- **Interactivity**: `alpinejs`, `typescript`
+
+**Note**: CouchCMS works perfectly without these modules. Only add them if you need them.
 
 The module loader automatically searches these subdirectories, so module names remain the same.
 

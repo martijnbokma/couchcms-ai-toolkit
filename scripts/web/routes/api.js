@@ -5,20 +5,23 @@
  */
 
 import { Hono } from 'hono'
-import { wrapStepWithProgress, getProgressIndicatorData, getPreviousStepRoute } from './helpers.js'
-import { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents, getMatchingAgents } from '../../lib/option-organizer.js'
+import {
+    wrapStepWithProgress,
+    getProgressIndicatorData,
+    SETUP_TYPES
+} from './helpers.js'
+import {
+    getCouchCMSModules,
+    getCouchCMSAgents,
+    getCompleteModules,
+    getCompleteAgents,
+    getMatchingAgents
+} from '../../lib/option-organizer.js'
 import { getAvailableEditors } from '../../lib/prompts.js'
 import { getToolkitRootCached } from '../../lib/paths.js'
+import { debug } from '../../lib/logger.js'
 import { existsSync, readdirSync, statSync } from 'fs'
 import { join } from 'path'
-
-/**
- * Constants
- */
-const SETUP_TYPES = {
-    SIMPLE: 'simple',
-    EXTENDED: 'extended'
-}
 
 const DEFAULT_PROJECT_NAME = 'my-project'
 const DEFAULT_PROJECT_DESCRIPTION = 'A CouchCMS web application'
@@ -47,13 +50,13 @@ function parseArrayValue(data, key) {
     // When parseBody({ all: true }) is used, fields with multiple values are already arrays
     if (Array.isArray(data[key])) {
         const filtered = data[key].filter(v => v != null && v !== '' && v !== 'undefined')
-        console.log(`[parseArrayValue] Found array for '${key}':`, filtered)
+        debug(`[parseArrayValue] Found array for '${key}':`, filtered)
         return filtered
     }
 
     // Check if it's a single value
     if (data[key] != null && data[key] !== '' && data[key] !== 'undefined') {
-        console.log(`[parseArrayValue] Found single value for '${key}':`, data[key])
+        debug(`[parseArrayValue] Found single value for '${key}':`, data[key])
         return [data[key]]
     }
 
@@ -79,10 +82,68 @@ function parseArrayValue(data, key) {
     if (values.length > 0) {
         console.log(`[parseArrayValue] Collected ${values.length} values for '${key}' via fallback:`, values)
     } else {
-        console.log(`[parseArrayValue] No values found for '${key}'`)
+        debug(`[parseArrayValue] No values found for '${key}'`)
     }
 
     return values
+}
+
+/**
+ * Normalize editors to always be an array
+ * @param {string|string[]|undefined} editors - Editors value
+ * @returns {string[]} Array of editor IDs
+ */
+function normalizeEditorsArray(editors) {
+    if (Array.isArray(editors)) {
+        return editors.filter(e => e != null && e !== '' && e !== 'undefined')
+    }
+    if (editors != null && editors !== '' && editors !== 'undefined') {
+        return [editors]
+    }
+    return []
+}
+
+/**
+ * Parse framework configuration from request data
+ * @param {Object} data - Query parameters or form body
+ * @returns {Object|false} Framework config object or false if disabled
+ */
+function parseFrameworkConfig(data) {
+    const framework = data.framework === 'true'
+    if (!framework) {
+        return false
+    }
+
+    return {
+        enabled: true,
+        doctrine: data.framework_doctrine === 'true',
+        directives: data.framework_directives === 'true',
+        playbooks: data.framework_playbooks === 'true',
+        enhancements: data.framework_enhancements === 'true'
+    }
+}
+
+/**
+ * Parse form data from query or body
+ * @param {Object} data - Query parameters or form body
+ * @param {Object} options - Options
+ * @param {string} [options.setupType] - Override setup type
+ * @returns {Object} Parsed form data
+ */
+function parseFormData(data, options = {}) {
+    const defaults = getProjectDefaults(data)
+    if (options.setupType) {
+        defaults.setupType = options.setupType
+    }
+
+    return {
+        ...defaults,
+        css: parseArrayValue(data, 'css'),
+        js: parseArrayValue(data, 'js'),
+        editors: normalizeEditorsArray(parseArrayValue(data, 'editors')),
+        framework: parseFrameworkConfig(data),
+        contextDir: data.contextDir || DEFAULT_CONTEXT_DIR
+    }
 }
 
 /**
@@ -92,38 +153,71 @@ function parseArrayValue(data, key) {
  */
 function createHiddenFields(data) {
     const fields = []
-    if (data.projectName) fields.push({ name: 'projectName', value: data.projectName })
-    if (data.projectDescription) fields.push({ name: 'projectDescription', value: data.projectDescription })
-    if (data.setupType) fields.push({ name: 'setupType', value: data.setupType })
+
+    // Project info
+    if (data.projectName) {
+        fields.push({ name: 'projectName', value: data.projectName })
+    }
+    if (data.projectDescription) {
+        fields.push({ name: 'projectDescription', value: data.projectDescription })
+    }
+    if (data.setupType) {
+        fields.push({ name: 'setupType', value: data.setupType })
+    }
+
+    // Frontend selections
     if (data.css && Array.isArray(data.css)) {
         data.css.forEach(c => fields.push({ name: 'css', value: c }))
     }
     if (data.js && Array.isArray(data.js)) {
         data.js.forEach(j => fields.push({ name: 'js', value: j }))
     }
-    // Handle editors - ensure it's an array and has values
-    if (data.editors) {
-        const editorsArray = Array.isArray(data.editors) ? data.editors : [data.editors]
-        console.log('[createHiddenFields] Creating hidden fields for editors:', editorsArray)
-        editorsArray.forEach(e => {
+
+    // Editors
+    if (data.editors && data.editors.length > 0) {
+        data.editors.forEach(e => {
             if (e != null && e !== '' && e !== 'undefined') {
                 fields.push({ name: 'editors', value: e })
             }
         })
-        console.log('[createHiddenFields] Created', fields.filter(f => f.name === 'editors').length, 'editor hidden fields')
-    } else {
-        console.log('[createHiddenFields] No editors data provided')
     }
-    // Advanced options
-    if (data.framework === 'true') {
+
+    // Framework options
+    if (data.framework && data.framework !== false) {
         fields.push({ name: 'framework', value: 'true' })
-        if (data.framework_doctrine === 'true') fields.push({ name: 'framework_doctrine', value: 'true' })
-        if (data.framework_directives === 'true') fields.push({ name: 'framework_directives', value: 'true' })
-        if (data.framework_playbooks === 'true') fields.push({ name: 'framework_playbooks', value: 'true' })
-        if (data.framework_enhancements === 'true') fields.push({ name: 'framework_enhancements', value: 'true' })
+        if (data.framework.doctrine) {
+            fields.push({ name: 'framework_doctrine', value: 'true' })
+        }
+        if (data.framework.directives) {
+            fields.push({ name: 'framework_directives', value: 'true' })
+        }
+        if (data.framework.playbooks) {
+            fields.push({ name: 'framework_playbooks', value: 'true' })
+        }
+        if (data.framework.enhancements) {
+            fields.push({ name: 'framework_enhancements', value: 'true' })
+        }
     }
-    if (data.contextDir) fields.push({ name: 'contextDir', value: data.contextDir })
+
+    // Context directory
+    if (data.contextDir) {
+        fields.push({ name: 'contextDir', value: data.contextDir })
+    }
+
     return fields
+}
+
+/**
+ * Get default project values from query or body
+ * @param {Object} queryOrBody - Query parameters or form body
+ * @returns {Object} Default project values
+ */
+function getProjectDefaults(queryOrBody) {
+    return {
+        projectName: queryOrBody.projectName || DEFAULT_PROJECT_NAME,
+        projectDescription: queryOrBody.projectDescription || DEFAULT_PROJECT_DESCRIPTION,
+        setupType: queryOrBody.setupType || DEFAULT_SETUP_TYPE
+    }
 }
 
 /**
@@ -135,12 +229,32 @@ function createHiddenFields(data) {
 function createFrontendOptions(selectedCss = [], selectedJs = []) {
     return {
         css: [
-            { id: FRONTEND_MODULES.CSS[0], name: 'TailwindCSS', description: 'Utility-first CSS framework', selected: selectedCss.includes(FRONTEND_MODULES.CSS[0]) },
-            { id: FRONTEND_MODULES.CSS[1], name: 'daisyUI', description: 'Component library for TailwindCSS', selected: selectedCss.includes(FRONTEND_MODULES.CSS[1]) }
+            {
+                id: FRONTEND_MODULES.CSS[0],
+                name: 'TailwindCSS',
+                description: 'Utility-first CSS framework',
+                selected: selectedCss.includes(FRONTEND_MODULES.CSS[0])
+            },
+            {
+                id: FRONTEND_MODULES.CSS[1],
+                name: 'daisyUI',
+                description: 'Component library for TailwindCSS',
+                selected: selectedCss.includes(FRONTEND_MODULES.CSS[1])
+            }
         ],
         js: [
-            { id: FRONTEND_MODULES.JS[0], name: 'Alpine.js', description: 'Lightweight reactive JavaScript', selected: selectedJs.includes(FRONTEND_MODULES.JS[0]) },
-            { id: FRONTEND_MODULES.JS[1], name: 'TypeScript', description: 'Type-safe JavaScript', selected: selectedJs.includes(FRONTEND_MODULES.JS[1]) }
+            {
+                id: FRONTEND_MODULES.JS[0],
+                name: 'Alpine.js',
+                description: 'Lightweight reactive JavaScript',
+                selected: selectedJs.includes(FRONTEND_MODULES.JS[0])
+            },
+            {
+                id: FRONTEND_MODULES.JS[1],
+                name: 'TypeScript',
+                description: 'Type-safe JavaScript',
+                selected: selectedJs.includes(FRONTEND_MODULES.JS[1])
+            }
         ]
     }
 }
@@ -160,19 +274,6 @@ function getEditorsGrouped(selectedEditors = []) {
         other: allEditors
             .filter(e => !POPULAR_EDITOR_IDS.includes(e.id))
             .map(e => ({ ...e, selected: selectedEditors.includes(e.id) }))
-    }
-}
-
-/**
- * Get default project values from query or body
- * @param {Object} queryOrBody - Query parameters or form body
- * @returns {Object} Default project values
- */
-function getProjectDefaults(queryOrBody) {
-    return {
-        projectName: queryOrBody.projectName || DEFAULT_PROJECT_NAME,
-        projectDescription: queryOrBody.projectDescription || DEFAULT_PROJECT_DESCRIPTION,
-        setupType: queryOrBody.setupType || DEFAULT_SETUP_TYPE
     }
 }
 
@@ -222,24 +323,23 @@ export function apiRoutes(projectDir) {
 
     // Get step content (project info) - detects setupType from query
     app.get('/setup/step/project', async (c) => {
-        const query = c.req.query()
-        const defaults = getProjectDefaults(query)
+        const formData = parseFormData(c.req.query())
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             1,
             'steps/project.html',
-            defaults
+            {
+                ...formData,
+                hiddenFields: createHiddenFields(formData)
+            }
         )
         return c.html(html)
     })
 
     // GET route for frontend step (for back navigation)
     app.get('/setup/step/frontend', async (c) => {
-        const query = c.req.query()
-        const defaults = getProjectDefaults(query)
-        const css = parseArrayValue(query, 'css')
-        const js = parseArrayValue(query, 'js')
+        const formData = parseFormData(c.req.query(), { setupType: SETUP_TYPES.EXTENDED })
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -247,10 +347,10 @@ export function apiRoutes(projectDir) {
             'steps/frontend.html',
             {
                 setupType: SETUP_TYPES.EXTENDED,
-                ...defaults,
-                frontend: { css, js },
-                frontendOptions: createFrontendOptions(css, js),
-                hiddenFields: createHiddenFields({ ...defaults, setupType: SETUP_TYPES.EXTENDED })
+                ...formData,
+                frontend: { css: formData.css, js: formData.js },
+                frontendOptions: createFrontendOptions(formData.css, formData.js),
+                hiddenFields: createHiddenFields(formData)
             }
         )
         return c.html(html)
@@ -258,48 +358,20 @@ export function apiRoutes(projectDir) {
 
     // GET route for editors step (for back navigation) - Handles both simple and extended paths
     app.get('/setup/step/editors', async (c) => {
-        const query = c.req.query()
-        const defaults = getProjectDefaults(query)
-        const css = parseArrayValue(query, 'css')
-        const js = parseArrayValue(query, 'js')
-        const editors = parseArrayValue(query, 'editors')
-
-        // Parse advanced options if present (for back navigation from advanced step)
-        const framework = query.framework === 'true'
-        const frameworkConfig = framework ? {
-            enabled: true,
-            doctrine: query.framework_doctrine === 'true',
-            directives: query.framework_directives === 'true',
-            playbooks: query.framework_playbooks === 'true',
-            enhancements: query.framework_enhancements === 'true'
-        } : false
-        const contextDir = query.contextDir || DEFAULT_CONTEXT_DIR
-
-        const { popular: popularEditors, other: otherEditors } = getEditorsGrouped(editors)
-        const stepNumber = defaults.setupType === SETUP_TYPES.SIMPLE ? 2 : 3
-
-        // Create hidden fields including advanced data if present
-        const hiddenFieldsData = { ...defaults, css, js, editors }
-        if (framework) {
-            hiddenFieldsData.framework = 'true'
-            if (frameworkConfig.doctrine) hiddenFieldsData.framework_doctrine = 'true'
-            if (frameworkConfig.directives) hiddenFieldsData.framework_directives = 'true'
-            if (frameworkConfig.playbooks) hiddenFieldsData.framework_playbooks = 'true'
-            if (frameworkConfig.enhancements) hiddenFieldsData.framework_enhancements = 'true'
-        }
-        if (contextDir) hiddenFieldsData.contextDir = contextDir
+        const formData = parseFormData(c.req.query())
+        const { popular: popularEditors, other: otherEditors } = getEditorsGrouped(formData.editors)
+        const stepNumber = formData.setupType === SETUP_TYPES.SIMPLE ? 2 : 3
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             stepNumber,
             'steps/editors.html',
             {
-                ...defaults,
-                frontend: { css, js },
-                editors,
+                ...formData,
+                frontend: { css: formData.css, js: formData.js },
                 popularEditors,
                 otherEditors,
-                hiddenFields: createHiddenFields(hiddenFieldsData)
+                hiddenFields: createHiddenFields(formData)
             }
         )
         return c.html(html)
@@ -307,42 +379,20 @@ export function apiRoutes(projectDir) {
 
     // GET route for advanced step (for back navigation)
     app.get('/setup/step/advanced', async (c) => {
-        const query = c.req.query()
-        const defaults = getProjectDefaults({ ...query, setupType: SETUP_TYPES.EXTENDED })
-        const css = parseArrayValue(query, 'css')
-        const js = parseArrayValue(query, 'js')
-        const editors = parseArrayValue(query, 'editors')
+        const formData = parseFormData(c.req.query(), { setupType: SETUP_TYPES.EXTENDED })
 
-        console.log('[Advanced GET] Query params:', Object.keys(query))
-        console.log('[Advanced GET] Editors from query:', editors)
-
-        // Parse framework config from query params
-        const framework = query.framework === 'true'
-        const frameworkConfig = framework ? {
-            enabled: true,
-            doctrine: query.framework_doctrine === 'true',
-            directives: query.framework_directives === 'true',
-            playbooks: query.framework_playbooks === 'true',
-            enhancements: query.framework_enhancements === 'true'
-        } : false
-
-        const contextDir = query.contextDir || DEFAULT_CONTEXT_DIR
-
-        // Ensure editors is an array
-        const editorsArray = Array.isArray(editors) ? editors : (editors ? [editors] : [])
-        console.log('[Advanced GET] Editors array for template:', editorsArray)
+        debug('[Advanced GET] Query params:', Object.keys(c.req.query()))
+        debug('[Advanced GET] Editors from query:', formData.editors)
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             4,
             'steps/advanced.html',
             {
-                ...defaults,
-                frontend: { css, js },
-                editors: editorsArray,
-                framework: frameworkConfig,
-                contextDir,
-                hiddenFields: createHiddenFields({ ...defaults, css, js, editors: editorsArray })
+                ...formData,
+                frontend: { css: formData.css, js: formData.js },
+                framework: formData.framework,
+                hiddenFields: createHiddenFields(formData)
             }
         )
         return c.html(html)
@@ -351,23 +401,22 @@ export function apiRoutes(projectDir) {
     // Handle project info submission - routes based on setupType
     app.post('/setup/step/project', async (c) => {
         const body = await c.req.parseBody({ all: true })
-        const defaults = getProjectDefaults(body)
+        const formData = parseFormData(body)
 
-        // Route to next step based on setup type
-        if (defaults.setupType === SETUP_TYPES.SIMPLE) {
-            return c.html(await renderSimpleEditorsStep(c.renderTemplate, defaults))
+        if (formData.setupType === SETUP_TYPES.SIMPLE) {
+            return c.html(await renderSimpleEditorsStep(c.renderTemplate, formData))
         } else {
-            return c.html(await renderExtendedFrontendStep(c.renderTemplate, defaults))
+            return c.html(await renderExtendedFrontendStep(c.renderTemplate, formData))
         }
     })
 
     /**
      * Render editors step for simple setup flow
      * @param {Function} renderTemplate - Template render function
-     * @param {Object} defaults - Project defaults
+     * @param {Object} formData - Parsed form data
      * @returns {Promise<string>} HTML content
      */
-    async function renderSimpleEditorsStep(renderTemplate, defaults) {
+    async function renderSimpleEditorsStep(renderTemplate, formData) {
         const editors = getAvailableEditors()
         const popularEditors = editors
             .filter(e => POPULAR_EDITOR_IDS.includes(e.id))
@@ -376,17 +425,28 @@ export function apiRoutes(projectDir) {
             .filter(e => !POPULAR_EDITOR_IDS.includes(e.id))
             .map(e => ({ ...e, selected: false }))
 
+        // Update selected state from form data
+        const selectedEditors = formData.editors || []
+        const popularWithSelection = popularEditors.map(e => ({
+            ...e,
+            selected: selectedEditors.includes(e.id)
+        }))
+        const otherWithSelection = otherEditors.map(e => ({
+            ...e,
+            selected: selectedEditors.includes(e.id)
+        }))
+
         return await wrapStepWithProgress(
             renderTemplate,
             2,
             'steps/editors.html',
             {
                 setupType: SETUP_TYPES.SIMPLE,
-                ...defaults,
-                editors: [], // Empty on first load
-                popularEditors,
-                otherEditors,
-                hiddenFields: createHiddenFields(defaults)
+                ...formData,
+                editors: selectedEditors,
+                popularEditors: popularWithSelection,
+                otherEditors: otherWithSelection,
+                hiddenFields: createHiddenFields(formData)
             }
         )
     }
@@ -394,14 +454,15 @@ export function apiRoutes(projectDir) {
     /**
      * Render frontend step for extended setup flow
      * @param {Function} renderTemplate - Template render function
-     * @param {Object} defaults - Project defaults
+     * @param {Object} formData - Parsed form data
      * @returns {Promise<string>} HTML content
      */
-    async function renderExtendedFrontendStep(renderTemplate, defaults) {
-        const frontendOptions = createFrontendOptions(
-            [FRONTEND_MODULES.CSS[0]], // Default: tailwindcss
-            [FRONTEND_MODULES.JS[0]]  // Default: alpinejs
-        )
+    async function renderExtendedFrontendStep(renderTemplate, formData) {
+        // Use defaults if not provided
+        const css = formData.css.length > 0 ? formData.css : [FRONTEND_MODULES.CSS[0]]
+        const js = formData.js.length > 0 ? formData.js : [FRONTEND_MODULES.JS[0]]
+
+        const frontendOptions = createFrontendOptions(css, js)
 
         return await wrapStepWithProgress(
             renderTemplate,
@@ -409,10 +470,14 @@ export function apiRoutes(projectDir) {
             'steps/frontend.html',
             {
                 setupType: SETUP_TYPES.EXTENDED,
-                ...defaults,
-                frontend: { css: [FRONTEND_MODULES.CSS[0]], js: [FRONTEND_MODULES.JS[0]] },
+                ...formData,
+                frontend: { css, js },
                 frontendOptions,
-                hiddenFields: createHiddenFields({ ...defaults, setupType: SETUP_TYPES.EXTENDED })
+                hiddenFields: createHiddenFields({
+                    ...formData,
+                    css,
+                    js
+                })
             }
         )
     }
@@ -424,15 +489,15 @@ export function apiRoutes(projectDir) {
     // Handle frontend selection (Extended path)
     app.post('/setup/step/frontend', async (c) => {
         const body = await c.req.parseBody({ all: true })
-        const defaults = getProjectDefaults({ ...body, setupType: SETUP_TYPES.EXTENDED })
-        const cssFrameworks = parseArrayValue(body, 'css')
-        const jsFrameworks = parseArrayValue(body, 'js')
+        const formData = parseFormData(body, { setupType: SETUP_TYPES.EXTENDED })
 
         // Next: editors & tools (combined step)
         const { popular: popularEditors, other: otherEditors } = getEditorsGrouped([])
         // Default cursor selected
         popularEditors.forEach(e => {
-            if (e.id === DEFAULT_SELECTED_EDITOR) e.selected = true
+            if (e.id === DEFAULT_SELECTED_EDITOR) {
+                e.selected = true
+            }
         })
 
         const html = await wrapStepWithProgress(
@@ -440,12 +505,11 @@ export function apiRoutes(projectDir) {
             3,
             'steps/editors.html',
             {
-                ...defaults,
-                frontend: { css: cssFrameworks, js: jsFrameworks },
-                editors: [],
+                ...formData,
+                frontend: { css: formData.css, js: formData.js },
                 popularEditors,
                 otherEditors,
-                hiddenFields: createHiddenFields({ ...defaults, css: cssFrameworks, js: jsFrameworks })
+                hiddenFields: createHiddenFields(formData)
             }
         )
         return c.html(html)
@@ -454,48 +518,27 @@ export function apiRoutes(projectDir) {
     // Handle editors & tools selection (both paths)
     app.post('/setup/step/editors', async (c) => {
         const body = await c.req.parseBody({ all: true })
-        const defaults = getProjectDefaults(body)
-        const selectedEditors = parseArrayValue(body, 'editors')
-        const cssFrameworks = parseArrayValue(body, 'css')
-        const jsFrameworks = parseArrayValue(body, 'js')
+        const formData = parseFormData(body)
 
-        if (defaults.setupType === SETUP_TYPES.SIMPLE) {
+        if (formData.setupType === SETUP_TYPES.SIMPLE) {
             // Simple: editors → review
             return c.html(await getReviewStep(c.renderTemplate, {
-                ...defaults,
-                editors: selectedEditors,
+                ...formData,
                 frontend: { css: [], js: [] },
                 framework: false,
                 contextDir: DEFAULT_CONTEXT_DIR
             }))
         } else {
             // Extended: editors → advanced
-            // Parse advanced options from hidden fields if present (for back navigation)
-            const framework = body.framework === 'true'
-            const frameworkConfig = framework ? {
-                enabled: true,
-                doctrine: body.framework_doctrine === 'true',
-                directives: body.framework_directives === 'true',
-                playbooks: body.framework_playbooks === 'true',
-                enhancements: body.framework_enhancements === 'true'
-            } : false
-            const contextDir = body.contextDir || DEFAULT_CONTEXT_DIR
-
-            // Ensure selectedEditors is an array
-            const editorsArray = Array.isArray(selectedEditors) ? selectedEditors : (selectedEditors ? [selectedEditors] : [])
-            console.log('[Editors POST] Selected editors array:', editorsArray)
-
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
                 4,
                 'steps/advanced.html',
                 {
-                    ...defaults,
-                    frontend: { css: cssFrameworks, js: jsFrameworks },
-                    editors: editorsArray,
-                    framework: frameworkConfig,
-                    contextDir,
-                    hiddenFields: createHiddenFields({ ...defaults, css: cssFrameworks, js: jsFrameworks, editors: editorsArray })
+                    ...formData,
+                    frontend: { css: formData.css, js: formData.js },
+                    framework: formData.framework,
+                    hiddenFields: createHiddenFields(formData)
                 }
             )
             return c.html(html)
@@ -505,55 +548,18 @@ export function apiRoutes(projectDir) {
     // Handle advanced options (Extended path only)
     app.post('/setup/step/advanced', async (c) => {
         try {
-            // Use 'all: true' to get all values for fields with same name (like multiple editors)
             const body = await c.req.parseBody({ all: true })
-            const defaults = getProjectDefaults({ ...body, setupType: SETUP_TYPES.EXTENDED })
-            const cssFrameworks = parseArrayValue(body, 'css')
-            const jsFrameworks = parseArrayValue(body, 'js')
+            const formData = parseFormData(body, { setupType: SETUP_TYPES.EXTENDED })
 
-            // Debug: Log raw body data for editors
-            console.log('[Advanced POST] Raw body.editors:', body.editors)
-            console.log('[Advanced POST] Type of body.editors:', typeof body.editors)
-            console.log('[Advanced POST] Is array?', Array.isArray(body.editors))
-            console.log('[Advanced POST] All body keys:', Object.keys(body))
-            console.log('[Advanced POST] All editor-related entries:', Object.entries(body).filter(([k]) => k.includes('editor')))
-
-            // Parse editors - with parseBody({ all: true }), editors will be an array if multiple values exist
-            let editors = parseArrayValue(body, 'editors')
-            console.log('[Advanced POST] Parsed editors:', editors)
-            console.log('[Advanced POST] Parsed editors type:', typeof editors)
-            console.log('[Advanced POST] Parsed editors is array?', Array.isArray(editors))
-
-            const framework = body.framework === 'true'
-            const contextDir = body.contextDir || DEFAULT_CONTEXT_DIR
-
-            const frameworkConfig = framework ? {
-                enabled: true,
-                doctrine: body.framework_doctrine === 'true',
-                directives: body.framework_directives === 'true',
-                playbooks: body.framework_playbooks === 'true',
-                enhancements: body.framework_enhancements === 'true'
-            } : false
-
-            // Ensure editors is always an array
-            let editorsArray = []
-            if (Array.isArray(editors)) {
-                editorsArray = editors.filter(e => e != null && e !== '' && e !== 'undefined')
-            } else if (editors != null && editors !== '' && editors !== 'undefined') {
-                editorsArray = [editors]
-            }
-
-            console.log('[Advanced POST] Final editors array for review step:', editorsArray)
-            console.log('[Advanced POST] Final editors array length:', editorsArray.length)
+            debug('[Advanced POST] Parsed form data:', {
+                editors: formData.editors,
+                framework: formData.framework,
+                css: formData.css,
+                js: formData.js
+            })
 
             // Next: review
-            return c.html(await getReviewStep(c.renderTemplate, {
-                ...defaults,
-                frontend: { css: cssFrameworks, js: jsFrameworks },
-                editors: editorsArray,
-                framework: frameworkConfig,
-                contextDir
-            }))
+            return c.html(await getReviewStep(c.renderTemplate, formData))
         } catch (error) {
             console.error('Error in /setup/step/advanced:', error)
             return c.html(`<div class="alert alert-error"><p>Error: ${error.message}</p></div>`, 500)
@@ -562,35 +568,33 @@ export function apiRoutes(projectDir) {
 
     // Generate configuration
     app.post('/setup/generate', async (c) => {
-        const body = await c.req.parseBody({ all: true })
-        const defaults = getProjectDefaults(body)
-        const cssFrameworks = parseArrayValue(body, 'css')
-        const jsFrameworks = parseArrayValue(body, 'js')
-        const editors = parseArrayValue(body, 'editors')
-
-        // Parse framework config
-        const frameworkConfig = body.framework === 'true' ? {
-            doctrine: body.framework_doctrine === 'true',
-            directives: body.framework_directives === 'true',
-            playbooks: body.framework_playbooks === 'true',
-            enhancements: body.framework_enhancements === 'true'
-        } : false
-
-        const contextDir = body.contextDir || DEFAULT_CONTEXT_DIR
-
         try {
+            const body = await c.req.parseBody({ all: true })
+            const formData = parseFormData(body)
+
             await generateConfiguration(projectDir, {
-                ...defaults,
-                cssFrameworks,
-                jsFrameworks,
-                editors,
-                frameworkConfig,
-                contextDir
+                projectName: formData.projectName,
+                projectDescription: formData.projectDescription,
+                setupType: formData.setupType,
+                // For SIMPLE setup, ensure empty arrays (no frontend frameworks)
+                // For EXTENDED setup, use selected frameworks or empty if none selected
+                cssFrameworks: formData.setupType === SETUP_TYPES.SIMPLE ? [] : (formData.css || []),
+                jsFrameworks: formData.setupType === SETUP_TYPES.SIMPLE ? [] : (formData.js || []),
+                editors: formData.editors || [],
+                frameworkConfig: formData.setupType === SETUP_TYPES.SIMPLE || formData.framework === false
+                    ? false
+                    : {
+                        doctrine: formData.framework?.doctrine || false,
+                        directives: formData.framework?.directives || false,
+                        playbooks: formData.framework?.playbooks || false,
+                        enhancements: formData.framework?.enhancements || false
+                    },
+                contextDir: formData.contextDir || (formData.setupType === SETUP_TYPES.SIMPLE ? '.project' : 'config/context')
             })
 
             // Update progress to show completion
-            const finalStep = defaults.setupType === SETUP_TYPES.SIMPLE ? 3 : 5
-            const progressData = getProgressIndicatorData(finalStep, defaults.setupType)
+            const finalStep = formData.setupType === SETUP_TYPES.SIMPLE ? 3 : 5
+            const progressData = getProgressIndicatorData(finalStep, formData.setupType)
             const progressHtml = await c.renderTemplate('partials/progress-indicator.html', progressData)
             const successHtml = await c.renderTemplate('steps/success.html', {})
             return c.html(progressHtml + '\n' + successHtml)
@@ -609,7 +613,12 @@ export function apiRoutes(projectDir) {
     async function generateConfiguration(projectDir, config) {
         // Import required modules
         const { checkAndInstallDependencies } = await import('../../lib/dependency-checker.js')
-        const { getCouchCMSModules, getCouchCMSAgents, getCompleteModules, getCompleteAgents } = await import('../../lib/option-organizer.js')
+        const {
+            getCouchCMSModules,
+            getCouchCMSAgents,
+            getCompleteModules,
+            getCompleteAgents
+        } = await import('../../lib/option-organizer.js')
         const { detectToolkitPath } = await import('../../lib/toolkit-detector.js')
         const { determineConfigPath, generateStandardsFile } = await import('../../lib/config-generator.js')
         const { runInitialSync } = await import('../../lib/sync-runner.js')
@@ -623,7 +632,12 @@ export function apiRoutes(projectDir) {
         // Step 2: Build module and agent lists
         const couchcmsModules = getCouchCMSModules()
         const couchcmsAgents = getCouchCMSAgents()
-        const frontendModules = [...config.cssFrameworks, ...config.jsFrameworks]
+
+        // For SIMPLE setup, explicitly exclude frontend frameworks
+        // For EXTENDED setup, use selected frameworks (or empty if none selected)
+        const frontendModules = config.setupType === SETUP_TYPES.SIMPLE
+            ? []
+            : [...(config.cssFrameworks || []), ...(config.jsFrameworks || [])]
         const allModules = getCompleteModules(frontendModules)
 
         // Get matching frontend agents for selected modules
@@ -636,7 +650,10 @@ export function apiRoutes(projectDir) {
         const toolkitPath = detectToolkitPath(projectDir) || './ai-toolkit-shared'
 
         // Step 4: Determine config path
-        const { configPath, configDir } = await determineConfigPath(projectDir, config.setupType === SETUP_TYPES.SIMPLE)
+        const { configPath, configDir } = await determineConfigPath(
+            projectDir,
+            config.setupType === SETUP_TYPES.SIMPLE
+        )
 
         // Step 5: Generate standards.md
         await generateStandardsFile({
@@ -660,7 +677,6 @@ export function apiRoutes(projectDir) {
     return app
 }
 
-
 /**
  * Scan directory for markdown files (excluding README)
  * @param {string} dirPath - Directory path to scan
@@ -669,7 +685,9 @@ export function apiRoutes(projectDir) {
  */
 function scanMarkdownFiles(dirPath, excludeNames = []) {
     const files = []
-    if (!existsSync(dirPath)) return files
+    if (!existsSync(dirPath)) {
+        return files
+    }
 
     try {
         const entries = readdirSync(dirPath)
@@ -731,11 +749,15 @@ function getCouchCMSItemsFromToolkit() {
     // Fallback to hardcoded values if scanning found nothing
     if (couchcmsModules.length === 0) {
         const fallback = getCouchCMSModules()
-        if (fallback.length > 0) couchcmsModules = fallback
+        if (fallback.length > 0) {
+            couchcmsModules = fallback
+        }
     }
     if (couchcmsAgents.length === 0) {
         const fallback = getCouchCMSAgents()
-        if (fallback.length > 0) couchcmsAgents = fallback
+        if (fallback.length > 0) {
+            couchcmsAgents = fallback
+        }
     }
 
     return { couchcmsModules, couchcmsAgents }
@@ -758,10 +780,9 @@ async function getReviewStep(renderTemplate, data) {
         contextDir = DEFAULT_CONTEXT_DIR
     } = data
 
-    // Ensure editors is always an array
-    const editorsArray = Array.isArray(editors) ? editors : (editors ? [editors] : [])
-    console.log('[Review Step] Editors array:', editorsArray)
-    console.log('[Review Step] Editors length:', editorsArray.length)
+    const editorsArray = normalizeEditorsArray(editors)
+    debug('[Review Step] Editors array:', editorsArray)
+    debug('[Review Step] Editors length:', editorsArray.length)
 
     const { couchcmsModules, couchcmsAgents } = getCouchCMSItemsFromToolkit()
     const finalStep = setupType === SETUP_TYPES.SIMPLE ? 3 : 5

@@ -1,0 +1,6 @@
+{# Reusable hidden fields loop #}
+{% if hiddenFields %}
+{% for hidden in hiddenFields %}
+<input type="hidden" name="{{ hidden.name }}" value="{{ hidden.value }}" />
+{% endfor %}
+{% endif %}

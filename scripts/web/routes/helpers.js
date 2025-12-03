@@ -13,35 +13,56 @@ const SETUP_TYPES = {
 }
 
 /**
+ * Step definitions for simple setup flow
+ * @type {StepDefinition[]}
+ */
+const SIMPLE_STEPS = [
+    { num: 1, label: 'Project Info', route: 'project' },
+    { num: 2, label: 'Editors', route: 'editors' },
+    { num: 3, label: 'Review', route: 'review' }
+]
+
+/**
+ * Step definitions for extended setup flow
+ * @type {StepDefinition[]}
+ */
+const EXTENDED_STEPS = [
+    { num: 1, label: 'Project Info', route: 'project' },
+    { num: 2, label: 'Frontend', route: 'frontend' },
+    { num: 3, label: 'Editors & Tools', route: 'editors' },
+    { num: 4, label: 'Advanced', route: 'advanced' },
+    { num: 5, label: 'Review', route: 'review' }
+]
+
+/**
+ * Step descriptions for simple setup flow
+ * @type {Record<number, string>}
+ */
+const SIMPLE_STEP_DESCRIPTIONS = {
+    1: 'Project name and description',
+    2: 'Select editors and AI tools',
+    3: 'Review and generate configuration'
+}
+
+/**
+ * Step descriptions for extended setup flow
+ * @type {Record<number, string>}
+ */
+const EXTENDED_STEP_DESCRIPTIONS = {
+    1: 'Project name and description',
+    2: 'CSS and JavaScript frameworks',
+    3: 'Editors and AI tools',
+    4: 'Advanced options and framework',
+    5: 'Review and generate configuration'
+}
+
+/**
  * Step definition type
  * @typedef {Object} StepDefinition
  * @property {number} num - Step number
  * @property {string} label - Step label
  * @property {string} route - Step route name
  */
-
-/**
- * Get step definitions for a setup type
- * @param {string} setupType - 'simple' or 'extended'
- * @returns {StepDefinition[]} Step definitions
- */
-export function getStepDefinitions(setupType) {
-    if (setupType === SETUP_TYPES.SIMPLE) {
-        return [
-            { num: 1, label: 'Project Info', route: 'project' },
-            { num: 2, label: 'Editors', route: 'editors' },
-            { num: 3, label: 'Review', route: 'review' }
-        ]
-    } else {
-        return [
-            { num: 1, label: 'Project Info', route: 'project' },
-            { num: 2, label: 'Frontend', route: 'frontend' },
-            { num: 3, label: 'Editors & Tools', route: 'editors' },
-            { num: 4, label: 'Advanced', route: 'advanced' },
-            { num: 5, label: 'Review', route: 'review' }
-        ]
-    }
-}
 
 /**
  * Step data with state information
@@ -67,6 +88,54 @@ export function getStepDefinitions(setupType) {
  */
 
 /**
+ * Get step definitions for a setup type
+ * @param {string} setupType - 'simple' or 'extended'
+ * @returns {StepDefinition[]} Step definitions
+ */
+export function getStepDefinitions(setupType) {
+    return setupType === SETUP_TYPES.SIMPLE ? SIMPLE_STEPS : EXTENDED_STEPS
+}
+
+/**
+ * Get step descriptions for a setup type
+ * @param {string} setupType - 'simple' or 'extended'
+ * @returns {Record<number, string>} Step descriptions by step number
+ */
+function getStepDescriptions(setupType) {
+    return setupType === SETUP_TYPES.SIMPLE ? SIMPLE_STEP_DESCRIPTIONS : EXTENDED_STEP_DESCRIPTIONS
+}
+
+/**
+ * Calculate progress percentage
+ * @param {number} currentStep - Current step number
+ * @param {number} totalSteps - Total number of steps
+ * @returns {number} Progress percentage (0-100)
+ */
+function calculateProgressPercentage(currentStep, totalSteps) {
+    return Math.round((currentStep / totalSteps) * 100)
+}
+
+/**
+ * Create step data with state information
+ * @param {StepDefinition} step - Step definition
+ * @param {number} currentStep - Current step number
+ * @param {Record<number, string>} descriptions - Step descriptions by step number
+ * @returns {StepData} Step data with state
+ */
+function createStepData(step, currentStep, descriptions) {
+    return {
+        num: step.num,
+        label: step.label,
+        route: step.route,
+        description: descriptions[step.num] || '',
+        isActive: step.num === currentStep,
+        isCompleted: step.num < currentStep,
+        isFuture: step.num > currentStep,
+        isClickable: true // All steps are clickable - users can navigate forward and backward freely
+    }
+}
+
+/**
  * Generate progress indicator data for Nunjucks template
  * @param {number} currentStep - Current step number
  * @param {string} setupType - 'simple' or 'extended'
@@ -75,41 +144,10 @@ export function getStepDefinitions(setupType) {
 export function getProgressIndicatorData(currentStep, setupType = SETUP_TYPES.SIMPLE) {
     const steps = getStepDefinitions(setupType)
     const totalSteps = steps.length
-    const progressPercentage = Math.round((currentStep / totalSteps) * 100)
+    const progressPercentage = calculateProgressPercentage(currentStep, totalSteps)
+    const descriptions = getStepDescriptions(setupType)
 
-    const stepDescriptions = {
-        [SETUP_TYPES.SIMPLE]: {
-            1: 'Project name and description',
-            2: 'Select editors and AI tools',
-            3: 'Review and generate configuration'
-        },
-        [SETUP_TYPES.EXTENDED]: {
-            1: 'Project name and description',
-            2: 'CSS and JavaScript frameworks',
-            3: 'Editors and AI tools',
-            4: 'Advanced options and framework',
-            5: 'Review and generate configuration'
-        }
-    }
-
-    const descriptions = stepDescriptions[setupType] || {}
-
-    const stepsData = steps.map((step) => {
-        const isActive = step.num === currentStep
-        const isCompleted = step.num < currentStep
-        const isFuture = step.num > currentStep
-
-        return {
-            num: step.num,
-            label: step.label,
-            route: step.route,
-            description: descriptions[step.num] || '',
-            isActive,
-            isCompleted,
-            isFuture,
-            isClickable: true // All steps are clickable - users can navigate forward and backward freely
-        }
-    })
+    const stepsData = steps.map(step => createStepData(step, currentStep, descriptions))
 
     return {
         steps: stepsData,
@@ -128,11 +166,29 @@ export function getProgressIndicatorData(currentStep, setupType = SETUP_TYPES.SI
  */
 export function getPreviousStepRoute(currentRoute, setupType = SETUP_TYPES.SIMPLE) {
     const steps = getStepDefinitions(setupType)
-    const currentIndex = steps.findIndex(s => s.route === currentRoute)
+    const currentIndex = steps.findIndex(step => step.route === currentRoute)
 
     if (currentIndex > 0) {
         return steps[currentIndex - 1].route
     }
+
+    return null
+}
+
+/**
+ * Get next step route
+ * @param {string} currentRoute - Current route name
+ * @param {string} setupType - 'simple' or 'extended'
+ * @returns {string|null} Next step route or null
+ */
+export function getNextStepRoute(currentRoute, setupType = SETUP_TYPES.SIMPLE) {
+    const steps = getStepDefinitions(setupType)
+    const currentIndex = steps.findIndex(step => step.route === currentRoute)
+
+    if (currentIndex >= 0 && currentIndex < steps.length - 1) {
+        return steps[currentIndex + 1].route
+    }
+
     return null
 }
 
@@ -152,5 +208,10 @@ export async function wrapStepWithProgress(renderTemplate, stepNumber, stepTempl
 
     // HTMX will handle the out-of-band swap for the progress indicator
     // The content goes to #wizard-content, progress indicator goes to #progress-indicator
-    return progressHtml + '\n' + stepHtml
+    return `${progressHtml}\n${stepHtml}`
 }
+
+/**
+ * Export setup types for use in other modules
+ */
+export { SETUP_TYPES }

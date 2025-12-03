@@ -2,98 +2,341 @@
     /**
      * Shared wizard navigation functions
      * Used across all wizard steps for consistent behavior
+     *
+     * CRITICAL: This system ensures ALL selections are preserved throughout the entire wizard,
+     * even when navigating multiple steps forward or backward.
      */
 
     /**
+     * Wizard State Management using sessionStorage
+     * Single source of truth for all wizard selections
+     */
+    const WizardState = {
+        STORAGE_KEY: 'couchcms-wizard-state',
+
+        /**
+         * Save complete wizard state to sessionStorage
+         * @param {Object} state - Complete wizard state object
+         */
+        save(state) {
+            try {
+                sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(state))
+                console.log('[WizardState.save] Saved state:', state)
+            } catch (error) {
+                console.error('[WizardState.save] Error saving state:', error)
+            }
+        },
+
+        /**
+         * Load complete wizard state from sessionStorage
+         * @returns {Object} Complete wizard state or empty object
+         */
+        load() {
+            try {
+                const stored = sessionStorage.getItem(this.STORAGE_KEY)
+                if (stored) {
+                    const state = JSON.parse(stored)
+                    console.log('[WizardState.load] Loaded state:', state)
+                    return state
+                }
+            } catch (error) {
+                console.error('[WizardState.load] Error loading state:', error)
+            }
+            return {}
+        },
+
+        /**
+         * Update specific fields in wizard state
+         * Merges updates with existing state
+         * @param {Object} updates - Fields to update
+         */
+        update(updates) {
+            const current = this.load()
+            const updated = { ...current, ...updates }
+            this.save(updated)
+            return updated
+        },
+
+        /**
+         * Clear wizard state
+         */
+        clear() {
+            try {
+                sessionStorage.removeItem(this.STORAGE_KEY)
+                console.log('[WizardState.clear] Cleared state')
+            } catch (error) {
+                console.error('[WizardState.clear] Error clearing state:', error)
+            }
+        },
+
+        /**
+         * Sync state from hidden fields in current form
+         * CRITICAL: This ensures state is always in sync with what the server rendered
+         * This is called after HTMX swaps content to sync state from server-rendered hidden fields
+         */
+        syncFromHiddenFields() {
+            const form = document.querySelector('form')
+            if (!form) {
+                console.log('[WizardState.syncFromHiddenFields] No form found')
+                return
+            }
+
+            const existingState = this.load()
+            const syncedState = { ...existingState }
+
+            // Sync project info
+            const projectNameInput = form.querySelector('input[name="projectName"][type="hidden"]')
+            if (projectNameInput && projectNameInput.value) {
+                syncedState.projectName = projectNameInput.value
+            }
+
+            const projectDescriptionInput = form.querySelector('input[name="projectDescription"][type="hidden"]')
+            if (projectDescriptionInput && projectDescriptionInput.value) {
+                syncedState.projectDescription = projectDescriptionInput.value
+            }
+
+            // Sync setup type
+            const setupTypeInput = form.querySelector('input[name="setupType"][type="hidden"]')
+            if (setupTypeInput && setupTypeInput.value) {
+                syncedState.setupType = setupTypeInput.value
+            }
+
+            // Sync CSS selections from hidden fields
+            const cssHidden = Array.from(form.querySelectorAll('input[name="css"][type="hidden"]'))
+                .map(i => i.value)
+                .filter(v => v && v !== 'undefined' && v !== '')
+            if (cssHidden.length > 0) {
+                syncedState.css = cssHidden
+                console.log('[WizardState.syncFromHiddenFields] Synced CSS:', cssHidden)
+            }
+
+            // Sync JS selections from hidden fields
+            const jsHidden = Array.from(form.querySelectorAll('input[name="js"][type="hidden"]'))
+                .map(i => i.value)
+                .filter(v => v && v !== 'undefined' && v !== '')
+            if (jsHidden.length > 0) {
+                syncedState.js = jsHidden
+                console.log('[WizardState.syncFromHiddenFields] Synced JS:', jsHidden)
+            }
+
+            // Sync editor selections from hidden fields
+            const editorsHidden = Array.from(form.querySelectorAll('input[name="editors"][type="hidden"]'))
+                .map(i => i.value)
+                .filter(v => v && v !== 'undefined' && v !== '')
+            if (editorsHidden.length > 0) {
+                syncedState.editors = editorsHidden
+                console.log('[WizardState.syncFromHiddenFields] Synced editors:', editorsHidden)
+            }
+
+            // Sync advanced options
+            const frameworkHidden = form.querySelector('input[name="framework"][type="hidden"]')
+            if (frameworkHidden && frameworkHidden.value === 'true') {
+                syncedState.framework = 'true'
+                const doctrine = form.querySelector('input[name="framework_doctrine"][type="hidden"]')
+                if (doctrine && doctrine.value === 'true') syncedState.framework_doctrine = 'true'
+                const directives = form.querySelector('input[name="framework_directives"][type="hidden"]')
+                if (directives && directives.value === 'true') syncedState.framework_directives = 'true'
+                const playbooks = form.querySelector('input[name="framework_playbooks"][type="hidden"]')
+                if (playbooks && playbooks.value === 'true') syncedState.framework_playbooks = 'true'
+                const enhancements = form.querySelector('input[name="framework_enhancements"][type="hidden"]')
+                if (enhancements && enhancements.value === 'true') syncedState.framework_enhancements = 'true'
+            }
+
+            const contextDirInput = form.querySelector('input[name="contextDir"][type="hidden"]')
+            if (contextDirInput && contextDirInput.value) {
+                syncedState.contextDir = contextDirInput.value
+            }
+
+            // Only update if we found new data
+            if (JSON.stringify(syncedState) !== JSON.stringify(existingState)) {
+                this.save(syncedState)
+                console.log('[WizardState.syncFromHiddenFields] State synced and saved:', syncedState)
+            }
+        },
+
+        /**
+         * Collect all form data from current form
+         * CRITICAL: Always preserves existing state - only updates fields that exist in current form
+         * This ensures selections are never lost when navigating multiple steps
+         * @returns {Object} Complete form data object with all previous selections preserved
+         */
+        collectFormData() {
+            // Always start with existing state to preserve all previous selections
+            const existingState = this.load()
+            const formData = { ...existingState }
+
+            const form = document.querySelector('form')
+            if (form) {
+                // Project info (always available if form exists)
+                const projectNameInput = form.querySelector('input[name="projectName"]:not([type="hidden"])')
+                if (projectNameInput && projectNameInput.value) {
+                    formData.projectName = projectNameInput.value
+                }
+
+                const projectDescriptionInput = form.querySelector('textarea[name="projectDescription"]') || form.querySelector('input[name="projectDescription"]:not([type="hidden"])')
+                if (projectDescriptionInput && projectDescriptionInput.value) {
+                    formData.projectDescription = projectDescriptionInput.value
+                }
+
+                // Setup type
+                const setupTypeInput = form.querySelector('input[name="setupType"]:not([type="hidden"])')
+                if (setupTypeInput && setupTypeInput.value) {
+                    formData.setupType = setupTypeInput.value
+                }
+
+                // Frontend selections (CSS and JS) - only update if fields exist in form
+                const cssFields = form.querySelectorAll('input[name="css"]:not([type="hidden"])')
+                if (cssFields.length > 0) {
+                    const cssCheckboxes = Array.from(form.querySelectorAll('input[name="css"][type="checkbox"]:checked'))
+                        .map(i => i.value)
+                        .filter(v => v && v !== 'undefined' && v !== '')
+                    if (cssCheckboxes.length > 0) {
+                        formData.css = cssCheckboxes
+                    } else {
+                        // If checkboxes exist but none checked, clear selection
+                        formData.css = []
+                    }
+                }
+                // If no CSS fields in form, preserve existing state (don't delete)
+
+                const jsFields = form.querySelectorAll('input[name="js"]:not([type="hidden"])')
+                if (jsFields.length > 0) {
+                    const jsCheckboxes = Array.from(form.querySelectorAll('input[name="js"][type="checkbox"]:checked'))
+                        .map(i => i.value)
+                        .filter(v => v && v !== 'undefined' && v !== '')
+                    if (jsCheckboxes.length > 0) {
+                        formData.js = jsCheckboxes
+                    } else {
+                        formData.js = []
+                    }
+                }
+
+                // Editor selections - only update if fields exist in form
+                const editorsFields = form.querySelectorAll('input[name="editors"]:not([type="hidden"])')
+                if (editorsFields.length > 0) {
+                    const editorsCheckboxes = Array.from(form.querySelectorAll('input[name="editors"][type="checkbox"]:checked'))
+                        .map(i => i.value)
+                        .filter(v => v && v !== 'undefined' && v !== '')
+                    if (editorsCheckboxes.length > 0) {
+                        formData.editors = editorsCheckboxes
+                    } else {
+                        formData.editors = []
+                    }
+                }
+
+                // Advanced options - only update if framework checkbox exists in form
+                const frameworkCheckbox = form.querySelector('input[name="framework"]:not([type="hidden"])')
+                if (frameworkCheckbox) {
+                    const framework = frameworkCheckbox.checked || false
+                    if (framework) {
+                        formData.framework = 'true'
+                        formData.framework_doctrine = form.querySelector('input[name="framework_doctrine"]:not([type="hidden"])')?.checked || false ? 'true' : undefined
+                        formData.framework_directives = form.querySelector('input[name="framework_directives"]:not([type="hidden"])')?.checked || false ? 'true' : undefined
+                        formData.framework_playbooks = form.querySelector('input[name="framework_playbooks"]:not([type="hidden"])')?.checked || false ? 'true' : undefined
+                        formData.framework_enhancements = form.querySelector('input[name="framework_enhancements"]:not([type="hidden"])')?.checked || false ? 'true' : undefined
+                    } else {
+                        // Only clear if framework checkbox exists and is unchecked
+                        delete formData.framework
+                        delete formData.framework_doctrine
+                        delete formData.framework_directives
+                        delete formData.framework_playbooks
+                        delete formData.framework_enhancements
+                    }
+                }
+
+                const contextDirInput = form.querySelector('input[name="contextDir"]:not([type="hidden"])')
+                if (contextDirInput && contextDirInput.value) {
+                    formData.contextDir = contextDirInput.value
+                }
+            }
+
+            // Ensure setupType is always set
+            if (!formData.setupType) {
+                formData.setupType = 'simple'
+            }
+
+            console.log('[WizardState.collectFormData] Collected form data (preserving existing state):', formData)
+            return formData
+        },
+
+        /**
+         * Convert state object to URLSearchParams
+         * CRITICAL: Always merges with existing state to ensure nothing is lost
+         * @param {Object} state - State object (optional, will load from storage if not provided)
+         * @returns {URLSearchParams} URL parameters with all selections
+         */
+        toURLParams(state) {
+            const params = new URLSearchParams()
+
+            // Always merge with existing state to ensure nothing is lost
+            const existingState = this.load()
+            const stateToUse = { ...existingState, ...(state || {}) }
+
+            console.log('[WizardState.toURLParams] Merged state:', stateToUse)
+
+            // Always include setup type
+            params.append('setupType', stateToUse.setupType || 'simple')
+
+            // Project info
+            if (stateToUse.projectName) params.append('projectName', stateToUse.projectName)
+            if (stateToUse.projectDescription) params.append('projectDescription', stateToUse.projectDescription)
+
+            // Frontend selections - always include if they exist in state
+            if (stateToUse.css && Array.isArray(stateToUse.css) && stateToUse.css.length > 0) {
+                stateToUse.css.forEach(c => params.append('css', c))
+            }
+            if (stateToUse.js && Array.isArray(stateToUse.js) && stateToUse.js.length > 0) {
+                stateToUse.js.forEach(j => params.append('js', j))
+            }
+
+            // Editor selections - always include if they exist in state
+            if (stateToUse.editors && Array.isArray(stateToUse.editors) && stateToUse.editors.length > 0) {
+                stateToUse.editors.forEach(ed => params.append('editors', ed))
+            }
+
+            // Advanced options
+            if (stateToUse.framework === 'true') {
+                params.append('framework', 'true')
+                if (stateToUse.framework_doctrine === 'true') params.append('framework_doctrine', 'true')
+                if (stateToUse.framework_directives === 'true') params.append('framework_directives', 'true')
+                if (stateToUse.framework_playbooks === 'true') params.append('framework_playbooks', 'true')
+                if (stateToUse.framework_enhancements === 'true') params.append('framework_enhancements', 'true')
+            }
+            if (stateToUse.contextDir) params.append('contextDir', stateToUse.contextDir)
+
+            console.log('[WizardState.toURLParams] Final URL params:', params.toString())
+            return params
+        }
+    }
+
+    /**
      * Navigate to a specific step in the wizard
-     * Collects current form data to preserve state
+     * Collects current form data to preserve state and saves to sessionStorage
+     * CRITICAL: Always preserves existing state, even when navigating from steps without forms
      */
     function navigateToStep(stepNum, route, setupType) {
-        console.log('Navigating to step', stepNum, 'route:', route, 'setupType:', setupType)
+        console.log('[navigateToStep] Navigating to step', stepNum, 'route:', route, 'setupType:', setupType)
 
-        // Collect current form data from the page
-        const form = document.querySelector('form')
-        const params = new URLSearchParams()
+        // CRITICAL: Always save current form state BEFORE navigating
+        const currentFormData = WizardState.collectFormData()
+        WizardState.update(currentFormData)
 
-        params.append('setupType', setupType || 'simple')
+        // Load the updated state (which includes all previous selections)
+        const stateToSend = WizardState.load()
 
-        if (form) {
-            // Always get project info (available from step 1)
-            const projectName = form.querySelector('input[name="projectName"]')?.value || 'my-project'
-            const projectDescription = form.querySelector('input[name="projectDescription"]')?.value || 'A CouchCMS web application'
-            params.append('projectName', projectName)
-            params.append('projectDescription', projectDescription)
-
-            // Get frontend selections (if extended and target step is 2 or later, OR if we're going back)
-            // Always collect frontend data if we're on extended setup and have frontend fields
-            const hasFrontendFields = form.querySelector('input[name="css"]') !== null || form.querySelector('input[name="js"]') !== null
-            if (setupType === 'extended' && (stepNum >= 2 || hasFrontendFields)) {
-                // Try to get from hidden fields first
-                const cssHidden = Array.from(form.querySelectorAll('input[name="css"][type="hidden"]')).map(i => i.value).filter(v => v)
-                const jsHidden = Array.from(form.querySelectorAll('input[name="js"][type="hidden"]')).map(i => i.value).filter(v => v)
-
-                // If no hidden fields, try checkboxes
-                const cssCheckboxes = cssHidden.length > 0 ? cssHidden : Array.from(form.querySelectorAll('input[name="css"][type="checkbox"]:checked')).map(i => i.value).filter(v => v)
-                const jsCheckboxes = jsHidden.length > 0 ? jsHidden : Array.from(form.querySelectorAll('input[name="js"][type="checkbox"]:checked')).map(i => i.value).filter(v => v)
-
-                cssCheckboxes.forEach(c => params.append('css', c))
-                jsCheckboxes.forEach(j => params.append('js', j))
-            }
-
-            // Get editor selections
-            // For simple: step 2+, for extended: step 3+
-            const editorsStep = setupType === 'simple' ? 2 : 3
-            // Check if we're on advanced step (step 4) - it always has editors in hidden fields
-            const isOnAdvancedStep = form.querySelector('input[name="framework"]') !== null
-
-            // Always collect editors if:
-            // 1. Going to editors step or later, OR
-            // 2. Currently on advanced step (going back), OR
-            // 3. Form has editors fields (hidden or checkboxes)
-            if (stepNum >= editorsStep || isOnAdvancedStep || form.querySelector('input[name="editors"]') !== null) {
-                // Try hidden fields first (for back navigation from advanced step)
-                const editorsHidden = Array.from(form.querySelectorAll('input[name="editors"][type="hidden"]')).map(i => i.value).filter(v => v)
-                // Then try checkboxes (for editors step itself)
-                const editorsCheckboxes = editorsHidden.length > 0 ? editorsHidden : Array.from(form.querySelectorAll('input[name="editors"][type="checkbox"]:checked')).map(i => i.value).filter(v => v)
-
-                console.log('Collecting editors data:', { editorsHidden, editorsCheckboxes, isOnAdvancedStep })
-                editorsCheckboxes.forEach(ed => params.append('editors', ed))
-            }
-
-            // Get advanced options (if extended and we're on advanced step OR going to step 4+)
-            // Check if we're currently on the advanced step by looking for advanced form fields
-            const isOnAdvancedStep = form.querySelector('input[name="framework"]') !== null
-            if (setupType === 'extended' && (isOnAdvancedStep || stepNum >= 4)) {
-                const framework = form.querySelector('input[name="framework"]')?.checked || false
-                const frameworkDoctrine = form.querySelector('input[name="framework_doctrine"]')?.checked || false
-                const frameworkDirectives = form.querySelector('input[name="framework_directives"]')?.checked || false
-                const frameworkPlaybooks = form.querySelector('input[name="framework_playbooks"]')?.checked || false
-                const frameworkEnhancements = form.querySelector('input[name="framework_enhancements"]')?.checked || false
-                const contextDir = 'config/context' // Fixed path for consistency
-
-                if (framework) {
-                    params.append('framework', 'true')
-                    if (frameworkDoctrine) params.append('framework_doctrine', 'true')
-                    if (frameworkDirectives) params.append('framework_directives', 'true')
-                    if (frameworkPlaybooks) params.append('framework_playbooks', 'true')
-                    if (frameworkEnhancements) params.append('framework_enhancements', 'true')
-                }
-                params.append('contextDir', contextDir)
-            }
-        } else {
-            // If no form, try to get data from URL params
-            const urlParams = new URLSearchParams(window.location.search)
-            urlParams.forEach((value, key) => {
-                if (key !== 'step' && key !== 'route') {
-                    params.append(key, value)
-                }
-            })
+        // Override setupType if explicitly provided
+        if (setupType) {
+            stateToSend.setupType = setupType
+            WizardState.save(stateToSend)
         }
+
+        // Convert state to URL parameters
+        const params = WizardState.toURLParams(stateToSend)
 
         // Navigate to the step
         const url = `/api/setup/step/${route}?${params.toString()}`
-        console.log('HTMX request URL:', url)
-        console.log('Params:', params.toString())
+        console.log('[navigateToStep] HTMX request URL:', url)
+        console.log('[navigateToStep] State being sent:', stateToSend)
 
         htmx.ajax('GET', url, {
             target: '#wizard-content',
@@ -102,7 +345,7 @@
                 'HX-Request': 'true'
             }
         }).catch(error => {
-            console.error('HTMX navigation error:', error)
+            console.error('[navigateToStep] HTMX navigation error:', error)
             alert('Error navigating to step ' + stepNum + '. Please try again.')
         })
     }
@@ -110,25 +353,138 @@
     /**
      * Universal back button handler
      * Uses HTMX to navigate back with form data preservation
+     * This is the centralized implementation - step-specific goBack() functions should call this
      */
-    function goBack(backRoute, formData = {}) {
-        // Get all form data from current form
-        const form = document.querySelector('form')
-        if (form) {
-            const formDataObj = new FormData(form)
-            for (const [key, value] of formDataObj.entries()) {
-                formData[key] = value
+    function goBack(backRoute = null) {
+        // CRITICAL: Save current form state before navigating back
+        const currentFormData = WizardState.collectFormData()
+        WizardState.update(currentFormData)
+
+        // If no route provided, determine it from setupType and current step
+        if (!backRoute) {
+            const setupType = currentFormData.setupType || 'simple'
+            const form = document.querySelector('form')
+            const formAction = form?.getAttribute('hx-post') || ''
+
+            // Determine back route based on current step
+            if (formAction.includes('/step/advanced')) {
+                backRoute = setupType === 'simple'
+                    ? '/api/setup/step/project'
+                    : '/api/setup/step/editors'
+            } else if (formAction.includes('/step/editors')) {
+                backRoute = setupType === 'simple'
+                    ? '/api/setup/step/project'
+                    : '/api/setup/step/frontend'
+            } else if (formAction.includes('/step/frontend')) {
+                backRoute = '/api/setup/step/project'
+            } else if (formAction.includes('/step/complexity')) {
+                backRoute = '/api/setup/step/project'
+            } else if (formAction.includes('/step/review')) {
+                backRoute = setupType === 'simple'
+                    ? '/api/setup/step/editors'
+                    : '/api/setup/step/advanced'
+            } else {
+                // Default fallback
+                backRoute = '/api/setup/step/project'
             }
         }
 
-        // Use HTMX to navigate back
-        if (backRoute) {
-            htmx.ajax('POST', backRoute, {
-                target: '#wizard-content',
-                swap: 'innerHTML',
-                values: formData
+        // Use HTMX to navigate back with state
+        const params = WizardState.toURLParams(currentFormData)
+        htmx.ajax('GET', `${backRoute}?${params.toString()}`, {
+            target: '#wizard-content',
+            swap: 'innerHTML'
+        })
+    }
+
+    /**
+     * Restore form selections from saved state
+     * Called after HTMX swaps content to restore checkbox states
+     */
+    function restoreFormSelections() {
+        const state = WizardState.load()
+        if (!state || Object.keys(state).length === 0) {
+            console.log('[restoreFormSelections] No state to restore')
+            return
+        }
+
+        const form = document.querySelector('form')
+        if (!form) {
+            console.log('[restoreFormSelections] No form found')
+            return
+        }
+
+        console.log('[restoreFormSelections] Restoring state:', state)
+
+        // Restore project info
+        const projectNameInput = form.querySelector('input[name="projectName"]:not([type="hidden"])')
+        if (projectNameInput && state.projectName) {
+            projectNameInput.value = state.projectName
+        }
+        const projectDescriptionInput = form.querySelector('textarea[name="projectDescription"]') || form.querySelector('input[name="projectDescription"]:not([type="hidden"])')
+        if (projectDescriptionInput && state.projectDescription) {
+            projectDescriptionInput.value = state.projectDescription
+        }
+
+        // Restore CSS selections
+        if (state.css && Array.isArray(state.css)) {
+            state.css.forEach(cssId => {
+                const checkbox = form.querySelector(`input[name="css"][value="${cssId}"]:not([type="hidden"])`)
+                if (checkbox) {
+                    checkbox.checked = true
+                }
             })
         }
+
+        // Restore JS selections
+        if (state.js && Array.isArray(state.js)) {
+            state.js.forEach(jsId => {
+                const checkbox = form.querySelector(`input[name="js"][value="${jsId}"]:not([type="hidden"])`)
+                if (checkbox) {
+                    checkbox.checked = true
+                }
+            })
+        }
+
+        // Restore editor selections
+        if (state.editors && Array.isArray(state.editors)) {
+            state.editors.forEach(editorId => {
+                const checkbox = form.querySelector(`input[name="editors"][value="${editorId}"]:not([type="hidden"])`)
+                if (checkbox) {
+                    checkbox.checked = true
+                }
+            })
+        }
+
+        // Restore advanced options
+        if (state.framework === 'true') {
+            const frameworkCheckbox = form.querySelector('input[name="framework"]:not([type="hidden"])')
+            if (frameworkCheckbox) {
+                frameworkCheckbox.checked = true
+                // Trigger visibility update if function exists
+                if (typeof updateFrameworkVisibility === 'function') {
+                    updateFrameworkVisibility()
+                }
+            }
+            if (state.framework_doctrine === 'true') {
+                const checkbox = form.querySelector('input[name="framework_doctrine"]:not([type="hidden"])')
+                if (checkbox) checkbox.checked = true
+            }
+            if (state.framework_directives === 'true') {
+                const checkbox = form.querySelector('input[name="framework_directives"]:not([type="hidden"])')
+                if (checkbox) checkbox.checked = true
+            }
+            if (state.framework_playbooks === 'true') {
+                const checkbox = form.querySelector('input[name="framework_playbooks"]:not([type="hidden"])')
+                if (checkbox) checkbox.checked = true
+            }
+            if (state.framework_enhancements === 'true') {
+                const checkbox = form.querySelector('input[name="framework_enhancements"]:not([type="hidden"])')
+                if (checkbox) checkbox.checked = true
+            }
+        }
+
+        console.log('[restoreFormSelections] Form selections restored')
     }
 
     /**
@@ -144,29 +500,42 @@
         alert('An error occurred while submitting the form. Please check your internet connection.')
     })
 
-    // Debug: Log all HTMX events for troubleshooting
+    // Save form state before HTMX form submissions
     document.body.addEventListener('htmx:beforeRequest', function(event) {
-        console.log('HTMX beforeRequest:', event.detail)
+        console.log('[htmx:beforeRequest] Event triggered')
+
+        // If this is a form submission, save state first
+        if (event.detail.elt && event.detail.elt.tagName === 'FORM') {
+            const formData = WizardState.collectFormData()
+            WizardState.update(formData)
+            console.log('[htmx:beforeRequest] Saved state before form submission:', formData)
+        }
     })
 
-    document.body.addEventListener('htmx:afterRequest', function(event) {
-        console.log('HTMX afterRequest:', event.detail)
-    })
-
-    document.body.addEventListener('htmx:beforeSwap', function(event) {
-        console.log('HTMX beforeSwap:', event.detail)
-    })
-
+    // CRITICAL: Sync state from hidden fields and restore selections after HTMX swap
+    // This is the SINGLE event listener for afterSwap to avoid conflicts
     document.body.addEventListener('htmx:afterSwap', function(event) {
-        console.log('HTMX afterSwap - Content swapped successfully')
+        console.log('[htmx:afterSwap] Content swapped successfully')
+
+        // Step 1: Sync state from server-rendered hidden fields
+        // This ensures state is always in sync with what the server rendered
+        setTimeout(() => {
+            WizardState.syncFromHiddenFields()
+        }, 10)
+
+        // Step 2: Restore form selections from synced state
+        setTimeout(() => {
+            restoreFormSelections()
+        }, 50)
     })
 
     // Make functions available globally
     window.navigateToStep = navigateToStep
     window.goBack = goBack
+    window.WizardState = WizardState
+    window.restoreFormSelections = restoreFormSelections
 
     // Fallback: Add event listeners to all step buttons as backup
-    // This ensures navigation works even if onclick fails
     document.addEventListener('DOMContentLoaded', function() {
         // Re-bind click handlers after HTMX swaps
         document.body.addEventListener('htmx:afterSwap', function() {
@@ -203,6 +572,12 @@
                 navigateToStep(stepNum, route, setupType)
             })
         })
+
+        // Initial restore on page load
+        setTimeout(() => {
+            WizardState.syncFromHiddenFields()
+            restoreFormSelections()
+        }, 100)
     })
 
     function handleStepClick(e) {

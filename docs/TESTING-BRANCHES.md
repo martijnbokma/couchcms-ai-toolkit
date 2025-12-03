@@ -179,12 +179,14 @@ cd ..
 
 Maak een handig script voor snel switchen:
 
-### `scripts/test-branch.sh`
+### `scripts/dev/test-branch.sh`
+
+**Note:** This is a developer utility script located in `scripts/dev/` for toolkit contributors.
 
 ```bash
 #!/bin/bash
 
-# Usage: ./scripts/test-branch.sh [branch-name]
+# Usage: ./scripts/dev/test-branch.sh [branch-name]
 
 BRANCH=${1:-develop}
 SUBMODULE="ai-toolkit-shared"
@@ -219,9 +221,9 @@ echo "  cd ${SUBMODULE} && git checkout master"
 
 **Gebruik:**
 ```bash
-chmod +x scripts/test-branch.sh
-./scripts/test-branch.sh develop
-./scripts/test-branch.sh feature/new-feature
+chmod +x scripts/dev/test-branch.sh
+./scripts/dev/test-branch.sh develop
+./scripts/dev/test-branch.sh feature/new-feature
 ```
 
 ---

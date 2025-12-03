@@ -8,38 +8,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
     {% block head %}{% endblock %}
-    <style>
-        /* Mesh background wrapper - requires custom CSS */
-        .mesh-bg {
-            position: relative;
-            background-color: hsl(var(--b1));
-        }
-        .mesh-bg::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://cdn.devdojo.com/images/september2021/mesh-bg.jpeg');
-            background-size: cover;
-            opacity: 0.2;
-            pointer-events: none;
-        }
-        .mesh-bg > * {
-            position: relative;
-            z-index: 1;
-        }
-        /* Hide scrollbar but keep functionality */
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-    </style>
+    {% include "partials/common-styles.html" %}
 </head>
-<body class="bg-base-100 min-h-screen">
+<body class="min-h-screen">
+    <!-- Background Pattern - Applied to all pages -->
+    <div class="fixed inset-0 overflow-hidden -z-10">
+        <div class="absolute top-0 h-full w-full bg-[#f8f9ff]">
+            <div class="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(173,109,244,0.3)] opacity-40 blur-[80px]"></div>
+        </div>
+    </div>
+
     {% block content %}{% endblock %}
     {% include "partials/back-button.html" %}
 </body>

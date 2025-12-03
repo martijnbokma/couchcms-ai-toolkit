@@ -1,8 +1,7 @@
 <div>
-    <div class="mb-4 sm:mb-6">
-        <h2 class="text-xl sm:text-2xl font-semibold mb-1 text-base-content">Review Configuration</h2>
-        <p class="text-xs sm:text-sm text-base-content/60">Review your settings before generating the configuration.</p>
-    </div>
+    {% set sectionTitle = 'Review Configuration' %}
+    {% set sectionDescription = 'Review your settings before generating the configuration.' %}
+    {% include "partials/section-header.html" %}
 
     <div class="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
         <!-- Project Information -->
@@ -157,6 +156,12 @@
         {% if framework.enhancements %}<input type="hidden" name="framework_enhancements" value="true" />{% endif %}
         {% endif %}
         <input type="hidden" name="contextDir" value="config/context" />
+        {% else %}
+        {# Simple setup: explicitly pass empty arrays to ensure no frontend frameworks are included #}
+        <input type="hidden" name="css" value="" />
+        <input type="hidden" name="js" value="" />
+        <input type="hidden" name="framework" value="false" />
+        <input type="hidden" name="contextDir" value=".project" />
         {% endif %}
 
         {% for editor in editors %}
@@ -178,60 +183,4 @@
             </button>
         </div>
     </form>
-
-    <script>
-        function goBack() {
-            const setupType = '{{ setupType }}'
-            const projectName = '{{ projectName }}'
-            const projectDescription = '{{ projectDescription }}'
-
-            let params = new URLSearchParams({
-                setupType,
-                projectName,
-                projectDescription
-            })
-
-            if (setupType === 'extended') {
-                // Add frontend, editors to params
-                {% if frontend.css %}
-                {% for css in frontend.css %}
-                params.append('css', '{{ css }}')
-                {% endfor %}
-                {% endif %}
-                {% if frontend.js %}
-                {% for js in frontend.js %}
-                params.append('js', '{{ js }}')
-                {% endfor %}
-                {% endif %}
-                {% if editors %}
-                {% for editor in editors %}
-                params.append('editors', '{{ editor }}')
-                {% endfor %}
-                {% endif %}
-                {% if framework %}
-                params.append('framework', 'true')
-                {% if framework.doctrine %}params.append('framework_doctrine', 'true'){% endif %}
-                {% if framework.directives %}params.append('framework_directives', 'true'){% endif %}
-                {% if framework.playbooks %}params.append('framework_playbooks', 'true'){% endif %}
-                {% if framework.enhancements %}params.append('framework_enhancements', 'true'){% endif %}
-                {% endif %}
-                params.append('contextDir', 'config/context')
-
-                htmx.ajax('GET', `/api/setup/step/advanced?${params.toString()}`, {
-                    target: '#wizard-content',
-                    swap: 'innerHTML'
-                })
-            } else {
-                // Simple: review → editors
-                {% for editor in editors %}
-                params.append('editors', '{{ editor }}')
-                {% endfor %}
-
-                htmx.ajax('GET', `/api/setup/step/editors?${params.toString()}`, {
-                    target: '#wizard-content',
-                    swap: 'innerHTML'
-                })
-            }
-        }
-    </script>
 </div>

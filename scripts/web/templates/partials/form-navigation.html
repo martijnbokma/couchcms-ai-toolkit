@@ -1,0 +1,22 @@
+{# Reusable form navigation buttons (Back/Next)
+   Expects: showBackButton (boolean) and nextButtonLabel variables in context #}
+<div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-4 sm:mt-6">
+    {% if showBackButton !== false and showBack !== false %}
+    <button type="button" class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors bg-base-100 rounded-full border border-base-300 hover:bg-base-200 focus:outline-none gap-2 cursor-pointer" onclick="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back
+    </button>
+    {% else %}
+    <div></div>
+    {% endif %}
+    {% if nextButtonLabel or nextLabel %}
+    <button type="submit" class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-primary-content transition-colors bg-primary rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:bg-primary/90 gap-2 cursor-pointer">
+        {{ nextButtonLabel or nextLabel }}
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+    {% endif %}
+</div>

@@ -144,14 +144,58 @@ This document serves as the **single source of truth** for all coding standards,
 - **Ownership Validation**: Use `snippets/filters/owns_{content}.html` for ownership validation
 - **CSRF Protection**: Implement CSRF protection for all forms
 
-## Technology Hierarchy
+### 5. Core vs Optional Technologies
 
-1. **CouchCMS**: Content management, templates, data persistence
-2. **Design System**: Single source of truth for visual styling and UI components
-3. **TailwindCSS v4 + daisyUI**: Styling foundation with content-aware colors
-4. **Alpine.js**: Lightweight UI interactions (toggles, modals, forms)
-5. **TypeScript**: Complex logic, validation, API integration
-6. **Bun**: Package manager and build tool for asset processing
+**Critical Distinction**: This project distinguishes between **core required technologies** and **optional enhancement technologies**.
+
+- **Core System (CouchCMS)**: Always required, automatically included, cannot be removed
+  - All CouchCMS functionality is part of the core system
+  - CouchCMS modules and agents are always available
+  - This is the foundation that everything builds upon
+
+- **Optional Technologies**: Can be added or removed based on project needs
+  - Frontend frameworks (TailwindCSS, Alpine.js, TypeScript, daisyUI)
+  - Development tools (Bun, etc.)
+  - These enhance functionality but are not required for CouchCMS to work
+
+**When in doubt**: Use CouchCMS patterns first. Only add optional technologies when they provide clear value.
+
+## Technology Stack
+
+### Core System (Always Required)
+
+**CouchCMS** is the core content management system and is always required for this project.
+
+- **CouchCMS**: Content management, templates, data persistence, authentication, and all CMS functionality
+  - All CouchCMS modules are automatically included (forms, users, search, comments, pagination, etc.)
+  - All CouchCMS agents are automatically available
+  - This is the foundation - everything else builds on top
+
+### Optional Frontend Technologies
+
+These technologies enhance the frontend experience but are **optional** and can be added or removed based on project needs:
+
+- **TailwindCSS v4**: Utility-first CSS framework for styling
+- **daisyUI**: Component library built on TailwindCSS (requires TailwindCSS)
+- **Alpine.js**: Lightweight JavaScript framework for UI interactions
+- **TypeScript**: Type-safe JavaScript for complex logic and validation
+
+**Note**: Projects can use CouchCMS without any of these frontend technologies, or mix and match as needed.
+
+### Optional Development Tools
+
+- **Bun**: Package manager and build tool for asset processing (optional, can use npm/yarn instead)
+- **Design System**: Single source of truth for visual styling and UI components (if applicable)
+
+### Technology Priority Order
+
+When implementing features, follow this priority:
+
+1. **CouchCMS first**: Use CouchCMS patterns and features for content management
+2. **Design System**: Reference design system for visual consistency (if available)
+3. **Frontend frameworks**: Use TailwindCSS/daisyUI for styling, Alpine.js for interactions
+4. **TypeScript**: Use for complex logic that goes beyond Alpine.js capabilities
+5. **Build tools**: Use Bun or other tools for asset processing
 
 ## Naming Conventions
 
@@ -197,12 +241,22 @@ These are the configured paths for this project:
 ### Universal Rules for All AI Agents
 
 1. **Always Reference Standards**: Before generating any code, reference this standards.md file
-2. **Follow Project Hierarchy**: Respect the technology stack order defined above
-3. **Maintain Consistency**: Use established patterns and naming conventions
-4. **Validate Against Modules**: Check relevant technology modules for specific patterns
-5. **{{standards.language}} Only**: Never use other languages in code, comments, or website content
-6. **Document Changes**: Explain significant architectural decisions
-7. **Test Thoroughly**: Ensure code works in the project context
+2. **Core First**: Always use CouchCMS patterns first - it's the core system and always available
+3. **Optional Technologies**: Only use optional technologies (TailwindCSS, Alpine.js, TypeScript) when explicitly enabled in project modules
+4. **Follow Project Hierarchy**: Respect the technology stack priority order defined above
+5. **Maintain Consistency**: Use established patterns and naming conventions
+6. **Validate Against Modules**: Check relevant technology modules for specific patterns
+7. **{{standards.language}} Only**: Never use other languages in code, comments, or website content
+8. **Document Changes**: Explain significant architectural decisions
+9. **Test Thoroughly**: Ensure code works in the project context
+
+### Technology Selection Guidelines
+
+- **CouchCMS**: Always available - use for all content management, templates, data operations
+- **TailwindCSS/daisyUI**: Only use if `tailwindcss` or `daisyui` modules are enabled
+- **Alpine.js**: Only use if `alpinejs` module is enabled
+- **TypeScript**: Only use if `typescript` module is enabled
+- **Check modules list**: Verify which optional technologies are enabled before using them
 
 ## Quality Checklist
 
