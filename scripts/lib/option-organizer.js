@@ -138,10 +138,10 @@ function getCategorizedFromStandards() {
         },
         agents: {
             core: ['couchcms', 'databound-forms', 'custom-routes'],
-            frontend: ['alpinejs', 'tailwindcss', 'typescript'],
+            frontend: ['alpinejs', 'tailwindcss', 'typescript', 'admin-panel-theming'],
             contentManagement: ['views', 'folders', 'archives', 'relationships', 'repeatable-regions', 'search', 'pagination', 'comments', 'nested-pages', 'photo-gallery', 'rss-feeds', 'on-page-editing'],
             userFeatures: ['users'],
-            developmentTools: ['bun', 'git', 'mysql', 'admin-panel-theming']
+            developmentTools: ['bun', 'git', 'mysql']
         }
     }
 }
@@ -389,7 +389,8 @@ function getAgentDescription(name) {
     const descriptions = {
         'tailwindcss': 'TailwindCSS styling',
         'alpinejs': 'Alpine.js development',
-        'typescript': 'TypeScript development'
+        'typescript': 'TypeScript development',
+        'admin-panel-theming': 'Admin panel customization'
     }
     return descriptions[name] || `AI agent for ${name}`
 }
@@ -401,8 +402,7 @@ function getDevToolDescription(name) {
     const descriptions = {
         'bun': 'Bun runtime and build tooling',
         'git': 'Git version control',
-        'mysql': 'Database operations',
-        'admin-panel-theming': 'Admin panel customization'
+        'mysql': 'Database operations'
     }
     return descriptions[name] || `Development tool: ${name}`
 }

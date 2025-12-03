@@ -1,12 +1,12 @@
-# The Autonomous Agent Prompting Framework - Attribution & Sync
+# CADS Framework (CouchCMS AI Development Standards) - Attribution & Sync
 
 ## Original Work
 
-This framework is based on the **Autonomous Agent Prompting Framework (AAPF)** by **aashari**.
+CADS (CouchCMS AI Development Standards) is based on the **Autonomous Agent Prompting Framework (AAPF)** by **aashari**, adapted and enhanced specifically for CouchCMS development.
 
 **Original Source**: https://gist.github.com/aashari/07cc9c1b6c0debbeb4f4d94a3a81339e
 
-The framework provides a disciplined, evidence-first prompting system designed to elevate AI agents from simple command executors to autonomous principal engineers.
+The original AAPF framework provides a disciplined, evidence-first prompting system designed to elevate AI agents from simple command executors to autonomous principal engineers. CADS extends this foundation with CouchCMS-specific knowledge, patterns, and quality assurance.
 
 ## Credits
 
@@ -16,7 +16,7 @@ The framework provides a disciplined, evidence-first prompting system designed t
 
 ## Philosophy
 
-The AAPF framework embodies five foundational principles:
+CADS (and the original AAPF framework) embodies five foundational principles:
 
 1. **Research-First, Always** - Never act on assumption
 2. **Extreme Ownership** - End-to-end system responsibility
@@ -24,17 +24,32 @@ The AAPF framework embodies five foundational principles:
 4. **Unyielding Precision & Safety** - Respect for operational environment
 5. **Metacognitive Self-Improvement** - Systematic learning and evolution
 
+## CADS Enhancements for CouchCMS
+
+CADS extends AAPF with CouchCMS-specific capabilities:
+
+- **CouchCMS Pattern Recognition** - Automatic understanding of CouchCMS templates, tags, and conventions
+- **Security-First Checks** - Pre-flight validation of CouchCMS-specific security issues (HTML comments, self-closing tags)
+- **Framework Integration** - Deep integration with CouchCMS modules (DataBound Forms, Custom Routes, Folders, etc.)
+- **Smart Agent Selection** - Automatic selection of appropriate CouchCMS agents based on file types and tasks
+- **Quality Assurance** - CouchCMS-specific pre-flight checks and validation
+
 ## Sync Status
 
-This is an **adapted and enhanced version** of the AAPF framework, integrated with the CouchCMS AI Toolkit.
+CADS is an **adapted and enhanced version** of the AAPF framework, specifically integrated with the CouchCMS AI Toolkit.
 
 ### Framework Evolution
 
-The framework has been significantly enhanced and integrated:
+CADS has been significantly enhanced and integrated:
 
 - **Original Source**: Based on AAPF by aashari
 - **Current Status**: Fully integrated with CouchCMS AI Toolkit
-- **Enhancements**: Smart Operations, project standards integration, comprehensive playbooks
+- **Enhancements**:
+  - CouchCMS-specific pre-flight checks
+  - Smart Operations with CouchCMS pattern recognition
+  - Project standards integration
+  - Comprehensive playbooks with CouchCMS examples
+  - Automatic agent/module selection for CouchCMS tasks
 
 ### Last Major Update
 

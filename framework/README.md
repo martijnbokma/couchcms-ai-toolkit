@@ -1,12 +1,12 @@
-# The Autonomous Agent Prompting Framework (AAPF)
+# CADS Framework (CouchCMS AI Development Standards)
 
-A disciplined, evidence-first prompting framework designed to elevate AI agents from simple command executors to **Autonomous Principal Engineers**.
+A disciplined, evidence-first framework designed to elevate AI agents from simple command executors to **Autonomous Principal Engineers** working on CouchCMS projects.
 
 **Philosophy:** Autonomy through discipline. Trust through verification.
 
-This framework is not just a collection of prompts; it is a complete operational system for managing AI agents. It enforces a rigorous workflow of reconnaissance, planning, safe execution, and self-improvement, ensuring every action the agent takes is deliberate, verifiable, and aligned with senior engineering best practices.
+CADS (CouchCMS AI Development Standards) is not just a collection of prompts; it is a complete operational system for managing AI agents in CouchCMS development. It enforces a rigorous workflow of reconnaissance, planning, safe execution, and self-improvement, ensuring every action the agent takes is deliberate, verifiable, and aligned with CouchCMS best practices and senior engineering standards.
 
-**Integration:** This framework is fully integrated with the CouchCMS AI Toolkit, providing enhanced productivity through Smart Operations, automatic context loading, and comprehensive quality assurance.
+**Integration:** CADS is fully integrated with the CouchCMS AI Toolkit, providing enhanced productivity through Smart Operations, automatic context loading, CouchCMS-specific pre-flight checks, and comprehensive quality assurance.
 
 ---
 
@@ -117,79 +117,197 @@ This framework is built on five foundational principles:
 
 ---
 
-## How to Use This Framework
+## How to Use CADS in Your CouchCMS Project
 
-### Typical Session Workflow
+### Quick Start for CouchCMS Developers
 
-1. **Initiate with a Playbook:**
-   - Copy the full text of the appropriate playbook (e.g., `playbooks/request.md`)
-   - Replace the placeholder line at the top with your specific, high-level goal
-   - **(Optional)** If you need specific behavior, append directive content to the end
-   - Paste the entire combined text into the chat
+**Step 1: Enable CADS in Your Project**
 
-2. **Observe Disciplined Execution:**
-   - The agent will announce its operational phase (Reconnaissance, Planning, etc.)
-   - It will perform non-destructive research first, presenting a digest of findings (≤ 200 lines)
-   - It will execute its plan incrementally, providing verifiable evidence
-   - It will run quality gates autonomously and fix any failures
-   - It will conclude with a mandatory zero-trust self-audit
-
-3. **Review the Final Report:**
-   - The agent provides a structured final report with status markers
-   - All evidence is transparently available in the chat log
-   - Workspace is left clean (no unsolicited files)
-
-4. **Close the Loop with a Retro:**
-   - Once satisfied, use `playbooks/retro.md` or run `/retro` command
-   - The agent will analyze the session and propose updates to doctrine/standards
-   - Durable lessons are integrated into the framework
-
-### Integration with CouchCMS AI Toolkit
-
-The framework is automatically integrated when enabled in your project configuration:
-
-**Configuration Options:**
-
+During setup (via wizard or CLI), enable CADS:
 ```yaml
-# In standards.md or project.md
-
-# Minimal: Only doctrine + directives (always active)
-framework:
-  doctrine: true
-  directives: true
-
-# Standard: Include playbooks
-framework:
-  doctrine: true
-  directives: true
-  playbooks: true
-
-# Full: Everything including enhancements
-framework: true  # or
-framework:
-  doctrine: true
-  directives: true
-  playbooks: true
-  enhancements: true
+# In your standards.md
+framework: true
 ```
 
-**Automatic Integration:**
+Or enable specific components:
+```yaml
+framework:
+  doctrine: true      # Core principles (always recommended)
+  directives: true    # Communication guidelines (always recommended)
+  playbooks: true      # Structured workflows (recommended)
+  enhancements: true   # Smart Operations (optional, advanced)
+```
 
-When enabled, the framework is automatically integrated into all AI configurations via the sync script:
+**Step 2: Sync Your Configuration**
 
-- `.cursorrules` - Cursor AI configuration
-- `CLAUDE.md` - Claude AI configuration
-- `.github/copilot-instructions.md` - GitHub Copilot configuration
-- `.codewhisperer/rules.md` - CodeWhisperer configuration
-- `.tabnine/guidelines/` - Tabnine configuration
-- `.windsurf/rules.md` - Windsurf configuration
-
-**Sync Command:**
+After enabling, sync to apply CADS to all AI tools:
 ```bash
 bun scripts/sync.js
 ```
 
-This ensures all AI agents have consistent access to the framework.
+This updates:
+- `.cursorrules` (Cursor AI)
+- `CLAUDE.md` (Claude AI)
+- `.github/copilot-instructions.md` (GitHub Copilot)
+- And other AI tool configurations
+
+**Step 3: Start Using CADS**
+
+### Typical Session Workflow
+
+1. **For New Features (CouchCMS Example):**
+   ```
+   "Create a blog listing page with pagination"
+   ```
+   The agent will:
+   - Investigate your existing CouchCMS templates
+   - Check for existing pagination patterns
+   - Create templates following CouchCMS conventions
+   - Use proper `<cms:pages>` tags with pagination
+   - Ensure security (no `<cms:` tags in HTML comments)
+
+2. **For Bug Fixes:**
+   ```
+   "Fix the form submission error in contact.php"
+   ```
+   The agent will:
+   - Investigate the DataBound Form implementation
+   - Check CSRF tokens and validation
+   - Test ownership filters if needed
+   - Verify CouchCMS security patterns
+
+3. **For Refactoring:**
+   ```
+   "Refactor the product listing to use repeatable regions"
+   ```
+   The agent will:
+   - Analyze current template structure
+   - Plan migration to repeatable regions
+   - Update all related templates
+   - Maintain backward compatibility
+
+### CouchCMS-Specific Features
+
+**Pre-Flight Checks:**
+- ✅ Detects `<cms:` tags in HTML comments (critical security issue)
+- ✅ Validates `<cms:else />` self-closing syntax
+- ✅ Checks Alpine.js syntax (full `x-on:click` not `@click`)
+- ✅ Verifies daisyUI semantic colors (not hardcoded colors)
+- ✅ Ensures proper template structure
+
+**Smart Context Loading:**
+- `*.php` files → Automatically loads `@couchcms` agent
+- `snippets/forms/*.html` → Loads `@databound-forms` + `@couchcms`
+- `snippets/components/*.html` → Loads `@couchcms` + `@alpinejs`
+- `assets/css/*.css` → Loads `@tailwindcss` + `@daisyui`
+
+**Example: Creating a CouchCMS Template**
+
+Just ask:
+```
+"Create a blog post template with featured image, author, and publish date"
+```
+
+CADS will:
+1. **Reconnaissance:** Check existing blog templates, layout structure
+2. **Plan:** Design template with proper CouchCMS editable regions
+3. **Execute:** Create template with:
+   - Proper `<cms:template>` structure
+   - `<cms:editable>` fields for content
+   - Security checks (no tags in comments)
+   - Alpine.js integration (full syntax)
+   - daisyUI components (semantic colors)
+4. **Verify:** Run pre-flight checks, test template
+5. **Report:** Show what was created and why
+
+### Using Playbooks (Advanced)
+
+For complex tasks, use structured playbooks:
+
+1. **Copy a playbook** (e.g., `framework/playbooks/request.md`)
+2. **Replace the placeholder** with your CouchCMS task:
+   ```
+   Create a user profile page with editable fields for name, bio, and avatar image.
+   Include ownership checks so users can only edit their own profiles.
+   ```
+3. **Paste into chat** - The agent follows the structured workflow
+
+### Common CouchCMS Tasks with CADS
+
+**Creating a DataBound Form:**
+```
+"Create a contact form with name, email, message fields and spam protection"
+```
+→ Agent uses `@databound-forms` knowledge, creates proper CSRF handling
+
+**Adding Search:**
+```
+"Add search functionality to the blog"
+```
+→ Agent uses `@search` knowledge, implements MySQL fulltext search
+
+**Setting up Custom Routes:**
+```
+"Create clean URLs for blog posts: /blog/post-name"
+```
+→ Agent uses `@custom-routes` knowledge, sets up routing
+
+**Building a Photo Gallery:**
+```
+"Create a photo gallery with batch upload and EXIF data"
+```
+→ Agent uses `@photo-gallery` knowledge, implements proper image handling
+
+### What CADS Does for CouchCMS Development
+
+**Automatic CouchCMS Pattern Recognition:**
+- Recognizes CouchCMS template structure
+- Understands `<cms:pages>`, `<cms:show>`, `<cms:editable>` patterns
+- Knows DataBound Forms, custom routes, folders, archives
+- Applies CouchCMS security rules automatically
+
+**Quality Assurance:**
+- Pre-flight checks catch CouchCMS-specific errors before code is written
+- Validates template syntax and structure
+- Ensures proper Alpine.js integration (full syntax required)
+- Checks daisyUI semantic color usage
+
+**Smart Agent Selection:**
+- Automatically selects the right CouchCMS agents for each task
+- Loads relevant knowledge modules based on file types
+- Coordinates multiple agents for complex features
+
+**Example Workflow:**
+
+You: "Add a comment system to blog posts"
+
+CADS Process:
+1. **Reconnaissance:**
+   - Checks existing blog templates
+   - Looks for comment patterns
+   - Reviews `@comments` module knowledge
+
+2. **Planning:**
+   - Plans comment form integration
+   - Designs moderation workflow
+   - Considers spam protection
+
+3. **Execution:**
+   - Creates comment form snippet
+   - Adds comment listing to blog template
+   - Implements moderation interface
+   - Adds CAPTCHA if needed
+
+4. **Verification:**
+   - Tests comment submission
+   - Verifies CSRF protection
+   - Checks ownership filters
+   - Validates CouchCMS patterns
+
+5. **Report:**
+   - Shows what was created
+   - Explains CouchCMS patterns used
+   - Lists security measures implemented
 
 ---
 
@@ -218,37 +336,120 @@ This ensures all AI agents have consistent access to the framework.
 
 ---
 
-## Quick Start
+## Quick Start Guide
 
-### For New Users
+### For New CouchCMS Developers
 
-1. **Enable Framework:**
-   ```yaml
-   # In your standards.md or project.md
-   framework: true
-   ```
+**1. Enable CADS During Setup**
 
-2. **Sync Configurations:**
-   ```bash
-   bun scripts/sync.js
-   ```
+Via Web Wizard:
+- Choose "Extended" setup
+- In Step 4 (Advanced Options), enable "CADS Framework"
+- Select components: Doctrine, Directives, Playbooks (recommended)
 
-3. **Start with a Playbook:**
-   - Feature request? Use `playbooks/request.md`
-   - Bug fix? Use `playbooks/refresh.md`
-   - Session reflection? Use `playbooks/retro.md`
+Via CLI:
+```bash
+# When prompted about framework:
+Enable CADS framework? (y/N): y
+```
 
-4. **Use Smart Operations:**
-   - Try `/fix @file` for quick fixes
-   - Use `/quick` mode for experienced users
-   - Use `/verbose` mode for learning
+**2. Your First CADS Task**
 
-### For Experienced Users
+Try a simple request:
+```
+"Create a contact page with a form"
+```
 
-- **Quick Mode:** Enable with `/quick` for minimal output
-- **Slash Commands:** Use `/fix`, `/refactor`, `/review` for instant actions
-- **Intent Detection:** Natural language automatically triggers appropriate actions
-- **Pre-Flight Checks:** Automatic quality scanning before code changes
+Watch CADS:
+- Investigate your project structure
+- Check existing form patterns
+- Create DataBound Form following CouchCMS conventions
+- Add proper security (CSRF, validation)
+- Use daisyUI components with semantic colors
+
+**3. Common CouchCMS Tasks**
+
+**Template Creation:**
+```
+"Create a product detail page template"
+```
+
+**Form Handling:**
+```
+"Add a newsletter signup form"
+```
+
+**Content Organization:**
+```
+"Create an archive page for blog posts by year"
+```
+
+**Search:**
+```
+"Add search to the site header"
+```
+
+### For Experienced CouchCMS Developers
+
+**Quick Mode:**
+```
+/quick
+"Fix the pagination bug in blog.php"
+```
+→ Minimal output, maximum efficiency
+
+**Slash Commands:**
+```
+/fix snippets/forms/contact.html
+/refactor templates/blog.php
+/review snippets/components/card.html
+```
+
+**Intent Detection:**
+Just describe what you need:
+```
+"Add user authentication to the admin section"
+```
+→ CADS automatically:
+- Selects `@users` and `@couchcms` agents
+- Loads authentication module knowledge
+- Plans proper access control implementation
+
+### Real-World CouchCMS Example
+
+**Task:** "Create a blog with categories, tags, and author pages"
+
+**CADS Execution:**
+
+1. **Reconnaissance Phase:**
+   - Analyzes existing templates
+   - Checks for category/tag patterns
+   - Reviews user module for author info
+
+2. **Planning Phase:**
+   - Plans blog listing template
+   - Designs category archive pages
+   - Structures tag pages
+   - Plans author profile pages
+
+3. **Execution Phase:**
+   - Creates `blog.php` template with `<cms:pages>`
+   - Implements category filtering
+   - Adds tag relationships
+   - Creates author archive using relationships
+   - Uses proper CouchCMS patterns throughout
+
+4. **Verification Phase:**
+   - Tests all templates
+   - Verifies relationships work correctly
+   - Checks pagination
+   - Validates security
+
+5. **Report:**
+   - Lists all created files
+   - Explains CouchCMS patterns used
+   - Shows relationships configured
+   - Provides next steps
 
 ---
 

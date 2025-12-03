@@ -87,8 +87,35 @@ framework: false                # AAPF framework
 #   directives: true
 #   playbooks: true
 
-context: ".project/ai"          # Context directory (optional)
+context: "config/context"       # Context directory (optional - see below)
 ```yaml
+
+#### Context Directory (Optional)
+
+The \`context\` field specifies a directory for additional project documentation organized by topic. **Most projects don't need this** - keep everything in \`standards.md\` for simplicity.
+
+**When to use:**
+- Your \`standards.md\` exceeds 1000 lines
+- You have extensive architecture or domain documentation
+- Multiple team members maintain different aspects of documentation
+- You want to separate configuration from detailed documentation
+
+**Best practices:**
+- ✅ Start with everything in \`standards.md\`
+- ✅ Organize context files by topic (architecture.md, patterns.md, workflows.md)
+- ✅ Keep \`standards.md\` focused on configuration and core rules
+- ❌ Don't create context files prematurely
+- ❌ Don't duplicate information between files
+
+**Example structure:**
+\`\`\`
+config/
+├── standards.md          # Configuration and core rules
+└── context/              # Detailed documentation (optional)
+    ├── architecture.md   # System architecture
+    ├── patterns.md      # Coding patterns
+    └── workflows.md     # Development workflows
+\`\`\`
 
 #### 2. Markdown Body (Rules & Documentation)
 
@@ -102,15 +129,18 @@ The Markdown section contains your project-specific rules:
 
 This content is included in generated AI configurations, giving AI assistants context about your project.
 
+**Tip:** If this section grows beyond 1000 lines, consider moving detailed documentation to \`config/context/\` files and keeping only essential rules in \`standards.md\`.
+
 ### Location
 
 The toolkit looks for `standards.md` in this order:
 
-1. `standards.md` (root directory) ⭐ **Recommended**
-2. 📝 `.project/standards.md` (legacy location)
-3. 📝 `docs/standards.md` (alternative location)
+1. `config/standards.md` ⭐ **Recommended** (visible in Finder, organized)
+2. 📝 `.project/standards.md` (backward compatibility)
+3. 📝 `docs/standards.md` (legacy location)
+4. 📝 `standards.md` (root, legacy location)
 
-**Best Practice:** Keep it in the root directory for easy access.
+**Best Practice:** Use `config/standards.md` for better visibility and organization. The `config/` directory keeps your root clean while remaining easily accessible.
 
 ---
 
@@ -147,7 +177,7 @@ framework: false                # AAPF framework (default: false)
 #   playbooks: true
 #   enhancements: false
 
-context: ".project/ai"          # Context directory (optional)
+context: "config/context"       # Context directory (optional)
 
 editors:                        # Target editors (optional)
   - cursor                      # Default: all editors
@@ -404,15 +434,90 @@ This checks:
 
 ---
 
+## Context Directory - When and How to Use
+
+### What is it?
+
+The context directory (`config/context/`) allows you to organize extensive project documentation into separate files by topic. AI agents automatically read these files to understand your project's architecture, patterns, workflows, and domain knowledge.
+
+### When to use it?
+
+**Most projects don't need this.** Start with everything in `config/standards.md`.
+
+Use `config/context/` when:
+
+1. **Large projects** - Your `standards.md` exceeds 1000 lines and becomes hard to navigate
+2. **Team collaboration** - Multiple team members need to maintain different aspects of documentation
+3. **Complex projects** - You have extensive architecture, domain knowledge, or integration documentation
+4. **Better organization** - You want to separate configuration (`standards.md`) from detailed documentation
+
+### Best Practices
+
+#### ✅ DO:
+
+- **Start simple** - Begin with everything in `config/standards.md`
+- **Organize by topic** - Create separate files for different concerns (architecture, patterns, workflows)
+- **Keep it focused** - Each file should cover one main topic
+- **Use clear names** - Name files descriptively (`architecture.md`, `api-patterns.md`)
+- **Keep standards.md lean** - Move detailed documentation to context files, keep configuration in `standards.md`
+
+#### ❌ DON'T:
+
+- **Don't create prematurely** - Only create context files when `standards.md` becomes unwieldy
+- **Don't duplicate** - Don't repeat information between `standards.md` and context files
+- **Don't over-organize** - Too many small files are harder to navigate than one larger file
+- **Don't mix concerns** - Keep configuration separate from documentation
+
+### Example Structure
+
+```
+config/
+├── standards.md          # Configuration and core rules (keep this lean)
+└── context/              # Detailed documentation (only if needed)
+    ├── README.md         # Explains the structure
+    ├── architecture.md   # System architecture and design decisions
+    ├── patterns.md       # Common coding patterns and conventions
+    ├── workflows.md      # Development workflows and processes
+    ├── domain.md         # Domain-specific knowledge and business rules
+    └── integrations.md   # External integrations and APIs
+```
+
+### How it works
+
+1. AI agents automatically read all files in `config/context/`
+2. Files are included in generated editor configurations (CLAUDE.md, .cursorrules, etc.)
+3. You can reference specific context files in prompts: "See config/context/architecture.md"
+4. Changes are picked up automatically when you run `sync`
+
+### Migration Guide
+
+**When to migrate:**
+
+Consider creating context files when:
+- `config/standards.md` exceeds 1000 lines
+- You find yourself scrolling a lot to find specific information
+- Team members ask "where is X documented?"
+- You want to separate "what to do" (standards.md) from "how it works" (context/)
+
+**How to migrate:**
+
+1. Create `config/context/` directory
+2. Move detailed documentation sections from `standards.md` to appropriate context files
+3. Keep only essential configuration and core rules in `standards.md`
+4. Update `context` field in `standards.md` frontmatter: `context: "config/context"`
+5. Run `sync` to regenerate configurations
+
+---
+
 ## Common Questions
 
 ### Q: Where should I put standards.md?
 
-**Answer:** In your project root directory. This is the simplest and most discoverable location.
+**Answer:** Use `config/standards.md` (recommended - visible in Finder). The toolkit also checks `.project/standards.md` and `docs/standards.md` for backward compatibility.
 
-### Q: Can I use a different location?
+### Q: Do I need a context directory?
 
-**Answer:** Yes, the toolkit also checks `.project/standards.md` and `docs/standards.md`, but root is recommended.
+**Answer:** Most projects don't need it. Start with everything in `config/standards.md`. Only create context files when your `standards.md` exceeds 1000 lines or you need better organization for team collaboration.
 
 ### Q: What if I have multiple projects?
 

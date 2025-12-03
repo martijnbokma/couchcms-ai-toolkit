@@ -23,7 +23,7 @@ const SETUP_TYPES = {
 const DEFAULT_PROJECT_NAME = 'my-project'
 const DEFAULT_PROJECT_DESCRIPTION = 'A CouchCMS web application'
 const DEFAULT_SETUP_TYPE = SETUP_TYPES.SIMPLE
-const DEFAULT_CONTEXT_DIR = '.project/ai'
+const DEFAULT_CONTEXT_DIR = 'config/context'
 
 const POPULAR_EDITOR_IDS = ['cursor', 'claude', 'copilot']
 const DEFAULT_SELECTED_EDITOR = 'cursor'
@@ -36,6 +36,7 @@ const FRONTEND_MODULES = {
 /**
  * Parse array values from query parameters or form body
  * Handles both array format and multiple inputs with same name
+ * When using parseBody({ all: true }), Hono returns arrays for fields with multiple values
  * @param {Object} data - Query parameters or form body
  * @param {string} key - Key to extract array values for
  * @returns {string[]} Array of unique values
@@ -43,24 +44,42 @@ const FRONTEND_MODULES = {
 function parseArrayValue(data, key) {
     const values = []
 
-    // Check if it's already an array
+    // When parseBody({ all: true }) is used, fields with multiple values are already arrays
     if (Array.isArray(data[key])) {
-        return data[key].filter(v => v != null && v !== '')
+        const filtered = data[key].filter(v => v != null && v !== '' && v !== 'undefined')
+        console.log(`[parseArrayValue] Found array for '${key}':`, filtered)
+        return filtered
     }
 
     // Check if it's a single value
-    if (data[key] != null && data[key] !== '') {
+    if (data[key] != null && data[key] !== '' && data[key] !== 'undefined') {
+        console.log(`[parseArrayValue] Found single value for '${key}':`, data[key])
         return [data[key]]
     }
 
-    // Collect all values with this key (handles multiple inputs with same name)
+    // Fallback: Collect all values with this key (handles edge cases)
     // Also handles keys like 'css[0]', 'css[1]', etc.
     for (const [k, v] of Object.entries(data)) {
         if (k === key || k.startsWith(`${key}[`) || k.startsWith(`${key}.`)) {
-            if (v != null && v !== '' && !values.includes(v)) {
-                values.push(v)
+            if (v != null && v !== '' && v !== 'undefined') {
+                // Handle both string and array values
+                if (Array.isArray(v)) {
+                    v.forEach(item => {
+                        if (item != null && item !== '' && item !== 'undefined' && !values.includes(item)) {
+                            values.push(item)
+                        }
+                    })
+                } else if (!values.includes(v)) {
+                    values.push(v)
+                }
             }
         }
+    }
+
+    if (values.length > 0) {
+        console.log(`[parseArrayValue] Collected ${values.length} values for '${key}' via fallback:`, values)
+    } else {
+        console.log(`[parseArrayValue] No values found for '${key}'`)
     }
 
     return values
@@ -76,9 +95,25 @@ function createHiddenFields(data) {
     if (data.projectName) fields.push({ name: 'projectName', value: data.projectName })
     if (data.projectDescription) fields.push({ name: 'projectDescription', value: data.projectDescription })
     if (data.setupType) fields.push({ name: 'setupType', value: data.setupType })
-    if (data.css) data.css.forEach(c => fields.push({ name: 'css', value: c }))
-    if (data.js) data.js.forEach(j => fields.push({ name: 'js', value: j }))
-    if (data.editors) data.editors.forEach(e => fields.push({ name: 'editors', value: e }))
+    if (data.css && Array.isArray(data.css)) {
+        data.css.forEach(c => fields.push({ name: 'css', value: c }))
+    }
+    if (data.js && Array.isArray(data.js)) {
+        data.js.forEach(j => fields.push({ name: 'js', value: j }))
+    }
+    // Handle editors - ensure it's an array and has values
+    if (data.editors) {
+        const editorsArray = Array.isArray(data.editors) ? data.editors : [data.editors]
+        console.log('[createHiddenFields] Creating hidden fields for editors:', editorsArray)
+        editorsArray.forEach(e => {
+            if (e != null && e !== '' && e !== 'undefined') {
+                fields.push({ name: 'editors', value: e })
+            }
+        })
+        console.log('[createHiddenFields] Created', fields.filter(f => f.name === 'editors').length, 'editor hidden fields')
+    } else {
+        console.log('[createHiddenFields] No editors data provided')
+    }
     // Advanced options
     if (data.framework === 'true') {
         fields.push({ name: 'framework', value: 'true' })
@@ -278,6 +313,9 @@ export function apiRoutes(projectDir) {
         const js = parseArrayValue(query, 'js')
         const editors = parseArrayValue(query, 'editors')
 
+        console.log('[Advanced GET] Query params:', Object.keys(query))
+        console.log('[Advanced GET] Editors from query:', editors)
+
         // Parse framework config from query params
         const framework = query.framework === 'true'
         const frameworkConfig = framework ? {
@@ -290,6 +328,10 @@ export function apiRoutes(projectDir) {
 
         const contextDir = query.contextDir || DEFAULT_CONTEXT_DIR
 
+        // Ensure editors is an array
+        const editorsArray = Array.isArray(editors) ? editors : (editors ? [editors] : [])
+        console.log('[Advanced GET] Editors array for template:', editorsArray)
+
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             4,
@@ -297,10 +339,10 @@ export function apiRoutes(projectDir) {
             {
                 ...defaults,
                 frontend: { css, js },
-                editors,
+                editors: editorsArray,
                 framework: frameworkConfig,
                 contextDir,
-                hiddenFields: createHiddenFields({ ...defaults, css, js, editors })
+                hiddenFields: createHiddenFields({ ...defaults, css, js, editors: editorsArray })
             }
         )
         return c.html(html)
@@ -308,7 +350,7 @@ export function apiRoutes(projectDir) {
 
     // Handle project info submission - routes based on setupType
     app.post('/setup/step/project', async (c) => {
-        const body = await c.req.parseBody()
+        const body = await c.req.parseBody({ all: true })
         const defaults = getProjectDefaults(body)
 
         // Route to next step based on setup type
@@ -381,7 +423,7 @@ export function apiRoutes(projectDir) {
 
     // Handle frontend selection (Extended path)
     app.post('/setup/step/frontend', async (c) => {
-        const body = await c.req.parseBody()
+        const body = await c.req.parseBody({ all: true })
         const defaults = getProjectDefaults({ ...body, setupType: SETUP_TYPES.EXTENDED })
         const cssFrameworks = parseArrayValue(body, 'css')
         const jsFrameworks = parseArrayValue(body, 'js')
@@ -411,7 +453,7 @@ export function apiRoutes(projectDir) {
 
     // Handle editors & tools selection (both paths)
     app.post('/setup/step/editors', async (c) => {
-        const body = await c.req.parseBody()
+        const body = await c.req.parseBody({ all: true })
         const defaults = getProjectDefaults(body)
         const selectedEditors = parseArrayValue(body, 'editors')
         const cssFrameworks = parseArrayValue(body, 'css')
@@ -439,6 +481,10 @@ export function apiRoutes(projectDir) {
             } : false
             const contextDir = body.contextDir || DEFAULT_CONTEXT_DIR
 
+            // Ensure selectedEditors is an array
+            const editorsArray = Array.isArray(selectedEditors) ? selectedEditors : (selectedEditors ? [selectedEditors] : [])
+            console.log('[Editors POST] Selected editors array:', editorsArray)
+
             const html = await wrapStepWithProgress(
                 c.renderTemplate,
                 4,
@@ -446,10 +492,10 @@ export function apiRoutes(projectDir) {
                 {
                     ...defaults,
                     frontend: { css: cssFrameworks, js: jsFrameworks },
-                    editors: selectedEditors,
+                    editors: editorsArray,
                     framework: frameworkConfig,
                     contextDir,
-                    hiddenFields: createHiddenFields({ ...defaults, css: cssFrameworks, js: jsFrameworks, editors: selectedEditors })
+                    hiddenFields: createHiddenFields({ ...defaults, css: cssFrameworks, js: jsFrameworks, editors: editorsArray })
                 }
             )
             return c.html(html)
@@ -459,11 +505,25 @@ export function apiRoutes(projectDir) {
     // Handle advanced options (Extended path only)
     app.post('/setup/step/advanced', async (c) => {
         try {
-            const body = await c.req.parseBody()
+            // Use 'all: true' to get all values for fields with same name (like multiple editors)
+            const body = await c.req.parseBody({ all: true })
             const defaults = getProjectDefaults({ ...body, setupType: SETUP_TYPES.EXTENDED })
             const cssFrameworks = parseArrayValue(body, 'css')
             const jsFrameworks = parseArrayValue(body, 'js')
-            const editors = parseArrayValue(body, 'editors')
+
+            // Debug: Log raw body data for editors
+            console.log('[Advanced POST] Raw body.editors:', body.editors)
+            console.log('[Advanced POST] Type of body.editors:', typeof body.editors)
+            console.log('[Advanced POST] Is array?', Array.isArray(body.editors))
+            console.log('[Advanced POST] All body keys:', Object.keys(body))
+            console.log('[Advanced POST] All editor-related entries:', Object.entries(body).filter(([k]) => k.includes('editor')))
+
+            // Parse editors - with parseBody({ all: true }), editors will be an array if multiple values exist
+            let editors = parseArrayValue(body, 'editors')
+            console.log('[Advanced POST] Parsed editors:', editors)
+            console.log('[Advanced POST] Parsed editors type:', typeof editors)
+            console.log('[Advanced POST] Parsed editors is array?', Array.isArray(editors))
+
             const framework = body.framework === 'true'
             const contextDir = body.contextDir || DEFAULT_CONTEXT_DIR
 
@@ -475,11 +535,22 @@ export function apiRoutes(projectDir) {
                 enhancements: body.framework_enhancements === 'true'
             } : false
 
+            // Ensure editors is always an array
+            let editorsArray = []
+            if (Array.isArray(editors)) {
+                editorsArray = editors.filter(e => e != null && e !== '' && e !== 'undefined')
+            } else if (editors != null && editors !== '' && editors !== 'undefined') {
+                editorsArray = [editors]
+            }
+
+            console.log('[Advanced POST] Final editors array for review step:', editorsArray)
+            console.log('[Advanced POST] Final editors array length:', editorsArray.length)
+
             // Next: review
             return c.html(await getReviewStep(c.renderTemplate, {
                 ...defaults,
                 frontend: { css: cssFrameworks, js: jsFrameworks },
-                editors,
+                editors: editorsArray,
                 framework: frameworkConfig,
                 contextDir
             }))
@@ -491,7 +562,7 @@ export function apiRoutes(projectDir) {
 
     // Generate configuration
     app.post('/setup/generate', async (c) => {
-        const body = await c.req.parseBody()
+        const body = await c.req.parseBody({ all: true })
         const defaults = getProjectDefaults(body)
         const cssFrameworks = parseArrayValue(body, 'css')
         const jsFrameworks = parseArrayValue(body, 'js')
@@ -687,6 +758,11 @@ async function getReviewStep(renderTemplate, data) {
         contextDir = DEFAULT_CONTEXT_DIR
     } = data
 
+    // Ensure editors is always an array
+    const editorsArray = Array.isArray(editors) ? editors : (editors ? [editors] : [])
+    console.log('[Review Step] Editors array:', editorsArray)
+    console.log('[Review Step] Editors length:', editorsArray.length)
+
     const { couchcmsModules, couchcmsAgents } = getCouchCMSItemsFromToolkit()
     const finalStep = setupType === SETUP_TYPES.SIMPLE ? 3 : 5
 
@@ -699,7 +775,7 @@ async function getReviewStep(renderTemplate, data) {
             projectName,
             projectDescription,
             frontend,
-            editors,
+            editors: editorsArray,
             framework,
             contextDir,
             couchcmsModules,

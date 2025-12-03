@@ -60,10 +60,10 @@ function loadProjectConfig(projectDir) {
     const configYamlPath = join(projectDir, 'config.yaml')
     if (existsSync(configYamlPath)) {
         console.warn(`\n⚠️  Found deprecated config.yaml file`)
-        console.warn(`   The toolkit now uses .project/standards.md as the standard configuration file.`)
+        console.warn(`   The toolkit now uses config/standards.md as the recommended configuration file.`)
         console.warn(`   Please migrate your configuration:`)
         console.warn(`   \n   bun ai-toolkit-shared/scripts/migrate.js\n`)
-        console.warn(`   Or manually move your configuration to .project/standards.md\n`)
+        console.warn(`   Or manually move your configuration to config/standards.md\n`)
     }
 
     // Load from standards.md format (only supported format)
@@ -106,20 +106,36 @@ function loadProjectConfig(projectDir) {
 /**
  * Find standards.md in project directory
  *
- * Only checks .project/standards.md (standardized location)
- * If found in old locations, shows migration message
+ * Checks locations in priority order:
+ * 1. config/standards.md (recommended - visible in Finder)
+ * 2. .project/standards.md (backward compatibility)
+ * 3. docs/standards.md (legacy)
+ * 4. standards.md (root, legacy)
  *
  * @param {string} projectDir - Project root directory
  * @returns {string|null} - Path to standards.md or null
  */
 function findStandardsMd(projectDir) {
-    // Standard location: .project/standards.md
-    const standardPath = join(projectDir, '.project', 'standards.md')
-    if (existsSync(standardPath)) {
-        return standardPath
+    // Primary location: config/standards.md (visible, organized)
+    const primaryPath = join(projectDir, 'config', 'standards.md')
+    if (existsSync(primaryPath)) {
+        return primaryPath
     }
 
-    // Check old locations and show migration message if found
+    // Backward compatibility: .project/standards.md
+    const legacyPath = join(projectDir, '.project', 'standards.md')
+    if (existsSync(legacyPath)) {
+        if (!migrationWarningShown) {
+            console.warn(`\n⚠️  Found configuration in legacy location: .project/standards.md`)
+            console.warn(`   The toolkit now uses config/standards.md as the recommended location.`)
+            console.warn(`   Consider migrating for better visibility:`)
+            console.warn(`   \n   mkdir -p config && mv .project/standards.md config/standards.md\n`)
+            migrationWarningShown = true
+        }
+        return legacyPath
+    }
+
+    // Check other legacy locations
     const oldLocations = [
         { path: join(projectDir, 'docs', 'standards.md'), name: 'docs/standards.md' },
         { path: join(projectDir, 'standards.md'), name: 'standards.md' }
@@ -130,20 +146,20 @@ function findStandardsMd(projectDir) {
             // Only show warning once per process to avoid duplicate messages
             if (!migrationWarningShown) {
                 console.warn(`\n⚠️  Found configuration in old location: ${oldLoc.name}`)
-                console.warn(`   The toolkit now uses .project/standards.md as the standard location.`)
-                console.warn(`   Please move your configuration file:`)
-                console.warn(`   \n   mv ${oldLoc.name} .project/standards.md\n`)
+                console.warn(`   The toolkit now uses config/standards.md as the recommended location.`)
+                console.warn(`   Please migrate your configuration file:`)
+                console.warn(`   \n   mkdir -p config && mv ${oldLoc.name} config/standards.md\n`)
                 migrationWarningShown = true
             }
-            // Auto-migrate: copy to .project/standards.md if it doesn't exist
-            const targetPath = join(projectDir, '.project', 'standards.md')
+            // Auto-migrate: copy to config/standards.md if it doesn't exist
+            const targetPath = join(projectDir, 'config', 'standards.md')
             if (!existsSync(targetPath)) {
-                const targetDir = join(projectDir, '.project')
+                const targetDir = join(projectDir, 'config')
                 if (!existsSync(targetDir)) {
                     mkdirSync(targetDir, { recursive: true })
                 }
                 copyFileSync(oldLoc.path, targetPath)
-                console.log(`✅ Auto-migrated: ${oldLoc.name} → .project/standards.md`)
+                console.log(`✅ Auto-migrated: ${oldLoc.name} → config/standards.md`)
                 return targetPath
             }
             // Still return the old path for now to maintain compatibility

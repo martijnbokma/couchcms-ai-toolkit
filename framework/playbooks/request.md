@@ -2,265 +2,215 @@
 
 {Replace this line with a clear, specific description of your feature, refactoring, or change request. Be explicit about WHAT you want and WHY it is valuable.}
 
+**Example CouchCMS Request:**
+"Create a blog listing page with pagination, category filtering, and search. The page should use CouchCMS templates, TailwindCSS for styling, and Alpine.js for interactive filtering."
+
 ---
 
-## Mission Bririeng
+## Mission Briefing
 
-You are an **INTELte this reqESTR as an *oordinating specializATOR** gentdinatieliver optized AI alts. Each alivt brings l resulexpertise action as a wtes seamd compa
+You are an **INTELLIGENT COORDINATING SPECIALIST** agent orchestrating optimized AI agents. Each agent brings specialized expertise and works as a coordinated team component.
 
-**Objective** Orchestraa proReconnaissady impleme → Execute → VerintellRepor agent collaboration, ensuring each specialist contributes their expertise at the right moment in the workflow.
+**Objective:** Orchestrate professional implementation through agent collaboration, ensuring each specialist contributes their expertise at the right moment in the workflow.
 
 **Reference Documents:**
 - Operational Doctrine: `framework/doctrine/operational-doctrine.md`
 - Smart Operations: `framework/enhancements/smart-operations.md`
-- Available Agents: `AGENTS.md` (23 specialized agents)
-- Project Standards: `docs/standards.md` (or projecttected: `.prandards file)
+- Available Agents: `docs/AGENTS.md` (23 specialized agents)
+- Project Standards: `docs/standards.md` (or project-specific standards file)
+
 ---
 
-# Phases
-## **Workflow Overview**
-e -1: Agechestration
-ThFi play `frames a structooks/phaseorkfloation.md`
+## Workflow Overview
 
-S``ect and coohe right agts for this reque
-Phase -1ent Orchestration ing
-**Quick Actioncti*
-- Analyze requestissance
-  Select (2-6 agents)
-- Dee 1: Collaborati& Storkflow
--   yze the-offr
+This playbook structures a multi-phase workflow using modular phase files:
 
-### Phase 0: Mulments:**Reconn
--*File:** `framework are invotiphases/recossance.md`
+- **Phase -1:** Agent Orchestration (`framework/playbooks/phases/orchestration.md`)
+- **Phase 0:** Multi-Agent Reconnaissance (`framework/playbooks/phases/reconnaissance.md`)
+- **Phase 1:** Collaborative Planning (`framework/playbooks/phases/planning.md`)
+- **Phase 2:** Coordinated Execution (`framework/playbooks/phases/execution.md`)
+- **Phase 3:** Multi-Agent Verification (`framework/playbooks/phases/verification.md`)
+- **Phase 4:** Zero-Trust Audit (`framework/playbooks/phases/audit.md`)
+- **Phase 5:** Final Report (`framework/playbooks/phases/report.md`)
 
-Each agent investigates thedr domain (read-onl
+---
 
-**Quick Actions:ge
-- Agemain analysis
-RePattern"Create tion
-- Cross-agenis dochesis
-- Impact asseent
+## Phase -1: Agent Orchestration
 
-### ase 1: Collaanning
-- P**P:** `framutionimagybooks/png/planning.md`
-- Users module for authentication
--gentsase -SS Agenategies andPlntegratento unified n.
+**File:** `framework/playbooks/phases/orchestration.md`
 
-**QuActions:**
-- Agepose:rategy  request 
-- Dependution
-**Keyvitieson planning
-- Riquest igation
-- A team selecty, Supportinry)
--## Phlable: Coordinalow deson
-**F@mmun* `framework/pluchCMSnitiones/tion.md`
+**Purpose:** Select and coordinate the right agents for this request.
 
-Agentpuimpleoutes` -ir domain n Plawith ingworkfl-ooffs.
+**Quick Actions:**
+- Analyze request domains
+- Select agent team (2-6 agents)
+- Define collaboration workflow
+- Plan hand-offs
 
-**Quick Actis:**
-- Agent work 
-# Pre-ase 0: checks
-- Domalder`fificatrk/plarganizatioses/reconnaiss.md`
+**Output:** Orchestration plan with agent team and workflow
+
+---
+
+## Phase 0: Multi-Agent Reconnaissance
+
+**File:** `framework/playbooks/phases/reconnaissance.md`
+
+**Purpose:** Each agent investigates their domain (read-only) to build complete understanding.
+
+**Quick Actions:**
+- Agent domain analysis
+- Pattern recognition
+- Impact assessment
+- Cross-agent synthesis
+
+**Output:** Reconnaissance digest with domain insights and impact assessment
+
+---
+
+## Phase 1: Collaborative Planning
+
+**File:** `framework/playbooks/phases/planning.md`
+
+**Purpose:** Agents propose strategies and integrate into unified plan.
+
+**Quick Actions:**
+- Agent strategy proposals
+- Dependency mapping
+- Risk assessment
+- Unified plan synthesis
+
+**Output:** Comprehensive implementation plan with agent responsibilities
+
+---
+
+## Phase 2: Coordinated Execution
+
+**File:** `framework/playbooks/phases/execution.md`
+
+**Purpose:** Agents implement their domain work with clean hand-offs.
+
+**Quick Actions:**
+- Agent work cycles
+- Pre-flight checks
+- Domain verification
 - Hand-off preparation
-**Purpose:** Eaps` - Pt performs dshiin-specifissance to build ce undersng.
- 3:i-Agent Ven
-**File:*ch`framework/playbos/pverific`
 
-Each agrn recogniti thper domain, then test iion.
-- `@nes-agent synthesierarchical structures
-- `uick Actions:**
-- Domain quality gates
-- Integration testinssance Digest wigied underst and impact ass
-Regres
-- Cross-agent consis
-
-### Phaql` - Zero-Trust Au Pl
-**File:** `fral-work/playbooks/p cust/audit.mg.md`
-
-*resh evidencAgn Criteudit of main ses syd im.
-
-**Quick ActionsAgen
-- Obesctive defation
-- Reent-specifint
-- Stratm consisgrati
-- Standardlutionce
-
-### Phat: 5: Final Report
-**Fraaybooks/pheport.md`
-
-Cosive rep with agent contributions and verdict.
-
-**Quick** `frns:**
-- Ageions
-- Changes s* Exey
-- Verifence
-- Lessons leties:**
+**Output:** Implemented features with verified domain work
 
 ---
 
-- Progre Referencng
+## Phase 3: Multi-Agent Verification
 
-**Oute nication Legend:**
-- / Compl
----️ Warning / Sd
-- 🚧ss / Active
-- ⏳ Phasatg / QueueAgent Verifint identify?
--*Fileocked / Needs atsayboon
+**File:** `framework/playbooks/phases/verification.md`
 
-**Corpose (ciples:**
-- Seleviable ag
-- Cow Activitoffs betwe
-- Agent ce-based deci resols
--tontonus correrection
+**Purpose:** Each agent verifies their domain, then test integration.
+
+**Quick Actions:**
+- Domain quality gates
+- Integration testing
+- Regression testing
+- Cross-agent consistency
+
+**Output:** Verification report with all quality gates passed
+
+---
+
+## Phase 4: Zero-Trust Audit
+
+**File:** `framework/playbooks/phases/audit.md`
+
+**Purpose:** Fresh evidence-based audit of main session work.
+
+**Quick Actions:**
+- Objective definition
+- Fresh evidence collection
+- Agent-specific audit
+- Standards compliance check
+
+**Output:** Audit report with any issues found and resolved
+
+---
+
+## Phase 5: Final Report
+
+**File:** `framework/playbooks/phases/report.md`
+
+**Purpose:** Comprehensive report with agent contributions and verdict.
+
+**Quick Actions:**
+- Executive summary
+- Agent contributions
+- Changes summary
+- Verification evidence
+- Lessons learned
+
+**Output:** Final report with complete mission summary
+
+---
+
+## Communication Legend
+
+**Status Markers:**
+- ✅ Success / Completed
+- ⚠️ Warning / Self-corrected
+- 🚧 Blocked / Needs attention
+- 💡 Suggestion / Improvement
+- ⏳ Phase Active / In Progress
+- 🎖️ Mission Complete
+
+**Core Principles:**
+- Select viable agents
+- Coordinate activities between agents
+- Agent evidence-based decisions
+- Autonomous correction
 - System-wide ownership
 
 ---
-**Out do:** Verificationsistert with all qity gated
-**Ready to begin? Start with Phase -1: Agentstration
-t Collaborlates
 
-*te reusable templates for commoent co*
+## CouchCMS-Specific Examples
 
-**mplate: CRUD Feature**
+### Example 1: CRUD Feature
 
-Primary Agenuchcms, @databoundms
-Suppoing: @tailwindcss, @us
-Typquence: Temrm → Ownersh →g
-Common Conflict submission nergies: Ownership filtrns
-```
+**Request:** "Create a product management system with CRUD operations"
 
-**Templatonent**
-mark
-Primary nts: @couchcms, @, @alpinejSupporting: @typescriptquen Markup  Intey → Validation
-Cicne vs TypeScript ty
-Synergies: Theme-aware reactives
-```nefir agent selectioand r common scenaos
+**Agent Team:**
+- Primary: @couchcms, @databound-forms
+- Supporting: @tailwindcss, @users
 
-#### 2. Pre-Flt Agent Check**Add agenspecific pre-flightcks:**
+**Workflow:**
+1. @couchcms → Template structure
+2. @databound-forms → CRUD forms
+3. @users → Ownership filters
+4. @tailwindcss → Styling
 
-fore Ages Wor*
-- [ ] Previous eted theirork
-- [ ]ll deliveraes receivefied
-- [ ]iodocumented
--pendenciesied
-- [ ] Stiewed for do
-**BenefitPreventsom starting ete inform
-#### 3. Inration Checkpemplates
-
-**Standanteon verificati**
-**Checkpoint Temte:**
-`markdown
-## Inttionnt: {Agent  → {Agent B*Integrat:** {Description}
-**Test:** {How toy}
-**ed:** {Expected behaviol:** {Act
-**Status:**/⚠️/❌ssues:** {Any problems fouResolw resolved}
-```
-
-**Bensis integration verificatacross all offs
-
-#### 4. Agent Performance Metrics
-agent collabeffectiveness:Metrics to Trand-off suclean vs. rework nee)
-- Conquency and resoluttimVerification pte per age- Synergy ities iified and utilize Rrate per agent domaefit:** Ctinuous improvement of agent iontterns
-. Common Pattern L
-
-rary of proven agencollion patterns:*ern: Ownerlter**
-```markdown
-nts: @userdatabound-formsusable oershverification fillate: snipplters/owns_{resource}ml
-Uge: Include in forms requiring ownecheck
-Vied: ✅ Works acrossl CRUD ope```
-
-**Patt Image```markdo: @photoallery + @typetern: SeparatAX endor image uad
-Benefitsess indication,rror handlate: Available in phgally module
-Verd: ✅ Works with alrm type
-
-**Benefit:** Faster implementatiousing provenrns
-
-##6. Ag Skill Matrix
-
-**Docgent expertise and :**
-
-**nt Skill Matrix:**
-```markdn
-  Expert: Template structure, routi Cogs
-  Procierity patterns, ahenticationd: Complex , aeScripttabound-forExpeCRUD op foralidion, ownershipoficieSecurity, data handli
-  Limited: Complex UI,  JavaScript
-
-@photo-galler
-  Expert: Imagadumbnail generat Fix / DeF
- t:bugging*  File `frame/playbhandling,s/r vaookworlikefdation`
-- *mited: C
-  Liresh.md:*ompleospe*x foctivermRetr```
-
- /* `**Benefit: Better a/plframewgenaybot selecion antorkd`reexpectations
-
--alistic d 
-
-##--sion: 
-
-**MisDeliver pr##pecti 7. Rodetrveuctionegrati-reon In
-
-**tosthr stough inurtelliructAgent ddrospective agent colation.**afte:**
- 🎖️
-
-**Phase Retrospective Template:**
-```markdown
-## Phase {N} Retrospective
-
-**What Went Well:**
-- {Success 1}
-- {Success 2}
-
-**What Could Improve:**
-- {Improvement 1}
-- {Improvement 2}
-
-**Action Items:**
-- {Action 1}
-- {Action 2}
-
-**Patterns Discovered:**
-- {Pattern 1}
-- {Pattern 2}
-```
-
-**Benefit:** Continuous learning and pattern discovery
-
-### Implementation Priority
-
-**High Priority (Implement First):**
-1. Agent Collaboration Templates (immediate productivity boost)
-2. Pre-Flight Agent Checks (prevents rework)
-3. Integration Checkpoint Templates (ensures quality)
-
-**Medium Priority (Implement Soon):**
-4. Common Pattern Library (builds over time)
-5. Agent Skill Matrix (improves agent selection)
-
-**Low Priority (Nice to Have):**
-6. Agent Performance Metrics (long-term improvement)
-7. Retrospective Integration (continuous learning)
-
-### Success Metrics
-
-**Measure playbook effectiveness:**
-
-**Efficiency Metrics:**
-- Time from request to completion
-- Number of rework cycles needed
-- Hand-off success rate
-
-**Quality Metrics:**
-- Verification pass rate
-- Regression rate
-- Standards compliance rate
-
-**Collaboration Metrics:**
-- Conflict resolution time
-- Synergy opportunities utilized
-- Agent satisfaction (if applicable)
+**Common Synergies:** Ownership filters, form validation, CSRF protection
 
 ---
 
-**Mission Complete. System Enhanced. Ready for Next Engagement.** 🎖️
+### Example 2: Component Creation
 
-**Agent Orchestration: Transforming AI collaboration from sequential tasks to synchronized teamwork.**
+**Request:** "Create a reusable card component with Alpine.js interactivity"
+
+**Agent Team:**
+- Primary: @couchcms, @alpinejs
+- Supporting: @tailwindcss, @typescript
+
+**Workflow:**
+1. @couchcms → Component structure
+2. @alpinejs → Interactive behavior
+3. @tailwindcss → Styling (semantic colors)
+4. @typescript → Type validation
+
+**Common Synergies:** Theme-aware reactive components, Alpine.js full syntax
+
+---
+
+## Ready to Begin?
+
+**Start with Phase -1: Agent Orchestration**
+
+Follow the phases sequentially, referencing each phase file for detailed instructions.
+
+**Mission:** Deliver production-ready code with complete ownership and accountability.
+
+**Agent Orchestration:** Transforming AI collaboration from sequential tasks to synchronized teamwork.

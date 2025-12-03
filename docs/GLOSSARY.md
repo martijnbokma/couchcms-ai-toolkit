@@ -12,12 +12,36 @@ A specialized AI assistant focused on a specific development domain. For example
 ## C
 
 ### Configuration File
-The `standards.md` file (located at `.project/standards.md`) that contains your project configuration. This file uses YAML frontmatter for settings and Markdown for project-specific rules. It's the "single source of truth" - all AI configurations are generated from this file.
+The `standards.md` file (located at `config/standards.md` by default) that contains your project configuration. This file uses YAML frontmatter for settings and Markdown for project-specific rules. It's the "single source of truth" - all AI configurations are generated from this file.
 
 **See also:** [Standards.md](#standardsmd), [YAML Frontmatter](#yaml-frontmatter)
 
 ### Context Directory
-An optional directory (`.project/ai/`) for extensive project documentation. Only needed if your `standards.md` body exceeds 1000 lines. For most projects, you don't need a context directory - just add all rules to the `standards.md` body.
+An optional directory (`config/context/`) for extensive project documentation organized by topic.
+
+**Purpose:** Helps AI agents understand your project by providing detailed documentation separated from configuration.
+
+**When to use:**
+- Your `standards.md` exceeds 1000 lines
+- You have extensive architecture or domain documentation
+- Multiple team members maintain different aspects of documentation
+- You want to separate configuration from detailed documentation
+
+**Best practices:**
+- Start with everything in `standards.md` - most projects don't need context files
+- Organize by topic: `architecture.md`, `patterns.md`, `workflows.md`, etc.
+- Keep `standards.md` focused on configuration and core rules
+- Don't create context files prematurely - only when `standards.md` becomes unwieldy
+
+**Example structure:**
+```
+config/
+├── standards.md          # Configuration and core rules
+└── context/              # Detailed documentation (optional)
+    ├── architecture.md   # System architecture
+    ├── patterns.md      # Coding patterns
+    └── workflows.md     # Development workflows
+```
 
 ## F
 

@@ -107,7 +107,7 @@ export function getProgressIndicatorData(currentStep, setupType = SETUP_TYPES.SI
             isActive,
             isCompleted,
             isFuture,
-            isClickable: step.num <= currentStep // Can navigate to completed or current steps
+            isClickable: true // All steps are clickable - users can navigate forward and backward freely
         }
     })
 

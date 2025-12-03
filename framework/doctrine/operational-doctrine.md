@@ -391,12 +391,85 @@ All work must comply with project standards:
 - **Accessibility:** WCAG 2.1 AA compliance for all UI changes
 - **Security:** Follow security best practices and pre-flight checks
 
+### CouchCMS-Specific Standards
+
+When working with CouchCMS projects, enforce these critical patterns:
+
+**Template Structure:**
+```php
+<?php require_once('couch/cms.php'); ?>
+<cms:extends 'layouts/base.html' />
+<cms:block 'templates'>
+ <cms:template title='Template Name' clonable='1' routable='1'>
+ <cms:editable name='field_name' label='Field Label' type='text' />
+ </cms:template>
+</cms:block>
+<cms:block 'content'>
+ <!-- Content here -->
+</cms:block>
+<?php COUCH::invoke(); ?>
+```
+
+**Security Rules (MANDATORY):**
+- ❌ **NEVER** use `<cms:` in HTML comments (will execute and crash)
+- ✅ Use `[cms:` syntax in comments instead
+- ❌ **NEVER** use `<cms:else></cms:else>` (will fail)
+- ✅ Use `<cms:else />` (self-closing)
+
+**Alpine.js Integration:**
+- ✅ Use full syntax: `x-on:click` not `@click`
+- ✅ Use full syntax: `x-bind:class` not `:class`
+- Shorthand breaks CouchCMS parsing
+
+**Styling:**
+- ✅ Use daisyUI semantic colors: `bg-base-100`, `text-base-content`
+- ❌ Avoid hardcoded colors: `bg-white`, `text-black`
+- Theme-aware colors ensure proper dark mode support
+
+**Example: Creating a CouchCMS Component**
+
+**Reconnaissance:**
+- Check existing component patterns in `snippets/components/`
+- Review layout structure in `snippets/layouts/`
+- Identify Alpine.js usage patterns
+- Check daisyUI component usage
+
+**Planning:**
+- Plan component structure following CouchCMS conventions
+- Design Alpine.js integration (full syntax)
+- Plan daisyUI component usage (semantic colors)
+- Consider template inheritance if reusable
+
+**Execution:**
+```html
+<!-- snippets/components/card.html -->
+<div class="card bg-base-100 shadow-xl" x-data="{ open: false }">
+ <div class="card-body">
+ <h2 class="card-title text-base-content">Title</h2>
+ <p class="text-base-content/70">Description</p>
+ <button x-on:click="open = !open" class="btn btn-primary">
+ Toggle
+ </button>
+ <div x-bind:class="open ? 'block' : 'hidden'">
+ Content
+ </div>
+ </div>
+</div>
+```
+
+**Verification:**
+- ✅ No `<cms:` tags in HTML comments
+- ✅ Alpine.js uses full syntax (`x-on:`, `x-bind:`)
+- ✅ daisyUI semantic colors used
+- ✅ Template structure follows CouchCMS patterns
+
 ### Standards Reference
 
 - **Primary Standards:** `docs/standards.md` or project-specific standards file
 - **Module Documentation:** `modules/*.md` for framework-specific patterns
 - **Agent Documentation:** `agents/*.md` for specialized guidance
 - **Pre-Flight Checks:** `preflight-checks.yaml` for automated validation
+- **CouchCMS Core:** `modules/couchcms-core.md` for CouchCMS patterns
 
 ### Standards Evolution
 

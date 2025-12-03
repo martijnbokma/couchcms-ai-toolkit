@@ -126,18 +126,18 @@ export async function generateStandardsFile(options) {
         frameworkConfig
     } = options
 
-    // Ensure we always use .project/standards.md in project root
+    // Use config/standards.md as the recommended location (visible in Finder)
     // Override configPath if it's not in the correct location
-    const finalConfigPath = join(projectDir, '.project', 'standards.md')
-    const finalConfigDir = join(projectDir, '.project')
+    const finalConfigPath = join(projectDir, 'config', 'standards.md')
+    const finalConfigDir = join(projectDir, 'config')
 
-    // Create .project directory if needed
+    // Create config directory if needed
     if (!existsSync(finalConfigDir)) {
         mkdirSync(finalConfigDir, { recursive: true })
-        console.log(`✅ Created: .project/`)
+        console.log(`✅ Created: config/`)
     }
 
-    console.log(`\n📝 Generating .project/standards.md...`)
+    console.log(`\n📝 Generating config/standards.md...`)
 
     // Load standards.md template
     const templatePath = join(toolkitRoot, 'templates', 'standards.md')
@@ -162,9 +162,9 @@ export async function generateStandardsFile(options) {
         frameworkConfig,
     })
 
-    // Write to the standardized location (.project/standards.md in project root)
+    // Write to the recommended location (config/standards.md)
     writeFileSync(finalConfigPath, standardsMd)
-    console.log(`✅ Created: .project/standards.md`)
+    console.log(`✅ Created: config/standards.md`)
 
     return finalConfigPath
 }
@@ -187,31 +187,116 @@ export async function setupContextDirectory(projectDir, projectName, contextPath
         mkdirSync(fullContextPath, { recursive: true })
         console.log(`✅ Created: ${contextPath}/`)
 
-        // Create context.md template
-        const contextMd = `---
-name: ${projectName} Context
----
+        // Create README.md in context directory explaining the structure
+        const contextReadme = `# Project Context
 
-# ${projectName} - Project Context
+This directory contains additional project context files that help AI agents understand your project better.
 
-## Content Types
+## What is this?
 
-Describe your project's content types here:
+The context directory allows you to organize extensive project documentation into separate files by topic. AI agents automatically read these files to understand your project's architecture, patterns, workflows, and domain knowledge.
 
-- **Type 1**: Description
-- **Type 2**: Description
+## Why use it?
 
-## Architecture
+**Most projects don't need this directory.** Keep everything in \`config/standards.md\` for simplicity.
 
-Describe your project's architecture:
+Use \`config/context/\` when:
 
-- Frontend: Technologies used
-- Backend: Technologies used
-- Integrations: External services
+1. **Large projects** - Your \`config/standards.md\` exceeds 1000 lines and becomes hard to navigate
+2. **Team collaboration** - Multiple team members need to maintain different aspects of documentation
+3. **Complex projects** - You have extensive architecture, domain knowledge, or integration documentation
+4. **Better organization** - You want to separate configuration (\`standards.md\`) from detailed documentation
 
-## Common Patterns
+## Best Practices
 
-Document common patterns used in this project:
+### ✅ DO:
+
+- **Start simple** - Begin with everything in \`config/standards.md\`
+- **Organize by topic** - Create separate files for different concerns (architecture, patterns, workflows)
+- **Keep it focused** - Each file should cover one main topic
+- **Use clear names** - Name files descriptively (\`architecture.md\`, \`api-patterns.md\`)
+- **Keep standards.md lean** - Move detailed documentation to context files, keep configuration in \`standards.md\`
+
+### ❌ DON'T:
+
+- **Don't create prematurely** - Only create context files when \`standards.md\` becomes unwieldy
+- **Don't duplicate** - Don't repeat information between \`standards.md\` and context files
+- **Don't over-organize** - Too many small files are harder to navigate than one larger file
+- **Don't mix concerns** - Keep configuration separate from documentation
+
+## Structure
+
+Organize context files by topic:
+
+- \`architecture.md\` - System architecture, design decisions, technology choices
+- \`patterns.md\` - Common coding patterns, conventions, and reusable solutions
+- \`workflows.md\` - Development workflows, deployment processes, team processes
+- \`domain.md\` - Domain-specific knowledge, business rules, terminology
+- \`integrations.md\` - External integrations, APIs, third-party services
+- \`testing.md\` - Testing strategies, test patterns, quality assurance
+
+## How it works
+
+1. AI agents automatically read all files in this directory
+2. Files are included in generated editor configurations (CLAUDE.md, .cursorrules, etc.)
+3. You can reference specific context files in prompts: "See config/context/architecture.md"
+4. Changes are picked up automatically when you run \`sync\`
+
+## Example Structure
+
+\`\`\`
+config/
+├── standards.md          # Configuration and core rules (keep this lean)
+└── context/              # Detailed documentation (only if needed)
+    ├── architecture.md   # System architecture
+    ├── patterns.md      # Coding patterns
+    └── workflows.md     # Development workflows
+\`\`\`
+
+## When to migrate
+
+Consider creating context files when:
+
+- \`config/standards.md\` exceeds 1000 lines
+- You find yourself scrolling a lot to find specific information
+- Team members ask "where is X documented?"
+- You want to separate "what to do" (standards.md) from "how it works" (context/)
+
+Remember: **Start with \`standards.md\` only. Add context files only when needed.**
+`
+
+        // Create example architecture.md file
+        const architectureMd = `# ${projectName} - Architecture
+
+## Overview
+
+Describe your project's architecture here.
+
+## Frontend
+
+- Technologies used
+- Key components
+- Styling approach
+
+## Backend
+
+- Technologies used
+- Key services
+- Data flow
+
+## Integrations
+
+- External services
+- APIs
+- Third-party tools
+`
+
+        // Create example patterns.md
+        const patternsMd = `# ${projectName} - Common Patterns
+
+## Coding Patterns
+
+Document common coding patterns used in this project:
 
 ### Pattern 1
 
@@ -224,8 +309,12 @@ Document common patterns used in this project:
 \`\`\`javascript
 // Example code
 \`\`\`
+`
 
-## Workflows
+        // Create example workflows.md
+        const workflowsMd = `# ${projectName} - Development Workflows
+
+## Common Workflows
 
 Document common development workflows:
 
@@ -236,8 +325,18 @@ Document common development workflows:
    - Steps...
 `
 
-        writeFileSync(join(fullContextPath, 'context.md'), contextMd)
-        console.log(`✅ Created: ${contextPath}/context.md`)
+        // Write all files
+        writeFileSync(join(fullContextPath, 'README.md'), contextReadme)
+        console.log(`✅ Created: ${contextPath}/README.md`)
+
+        writeFileSync(join(fullContextPath, 'architecture.md'), architectureMd)
+        console.log(`✅ Created: ${contextPath}/architecture.md`)
+
+        writeFileSync(join(fullContextPath, 'patterns.md'), patternsMd)
+        console.log(`✅ Created: ${contextPath}/patterns.md`)
+
+        writeFileSync(join(fullContextPath, 'workflows.md'), workflowsMd)
+        console.log(`✅ Created: ${contextPath}/workflows.md`)
     }
 }
 
@@ -254,14 +353,17 @@ export async function selectContextDirectory(simpleMode) {
 
     // Context directory (only in custom mode, and only for extensive documentation)
     console.log('\n📋 Context directory (optional):')
-    console.log('   .project/ai/context.md is ONLY for extensive project documentation (>1000 lines)')
-    console.log('   For most projects, add all rules directly to standards.md body')
-    console.log('   Use context.md only if:')
-    console.log('     - You have >1000 lines of documentation')
-    console.log('     - You want to separate config from extensive docs')
-    console.log('     - You\'re working in a team with extensive shared context')
+    console.log('   Most projects don\'t need this - keep everything in config/standards.md')
+    console.log('')
+    console.log('   Use config/context/ when:')
+    console.log('     ✓ Your standards.md exceeds 1000 lines')
+    console.log('     ✓ You have extensive architecture/domain documentation')
+    console.log('     ✓ Multiple team members maintain different documentation')
+    console.log('     ✓ You want to separate configuration from detailed docs')
+    console.log('')
+    console.log('   Best practice: Start simple, add context files only when needed')
     const useContext = await confirm('   Create project context directory? (Usually not needed)', false)
-    return useContext ? '.project/ai' : null
+    return useContext ? 'config/context' : null
 }
 
 /**

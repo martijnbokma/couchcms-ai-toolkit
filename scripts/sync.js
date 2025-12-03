@@ -865,7 +865,7 @@ modules:
   - alpinejs
 agents:
   - couchcms-agent
-context: ".project/ai"
+context: "config/context"
 paths:
   css: "src/css"        # Override default if needed
   typescript: "src/ts"  # Override default if needed

@@ -9,7 +9,7 @@
      * Collects current form data to preserve state
      */
     function navigateToStep(stepNum, route, setupType) {
-        // Don't navigate if it's the current step (check is done in progress-indicator.html)
+        console.log('Navigating to step', stepNum, 'route:', route, 'setupType:', setupType)
 
         // Collect current form data from the page
         const form = document.querySelector('form')
@@ -24,8 +24,10 @@
             params.append('projectName', projectName)
             params.append('projectDescription', projectDescription)
 
-            // Get frontend selections (if extended and target step is 2 or later)
-            if (setupType === 'extended' && stepNum >= 2) {
+            // Get frontend selections (if extended and target step is 2 or later, OR if we're going back)
+            // Always collect frontend data if we're on extended setup and have frontend fields
+            const hasFrontendFields = form.querySelector('input[name="css"]') !== null || form.querySelector('input[name="js"]') !== null
+            if (setupType === 'extended' && (stepNum >= 2 || hasFrontendFields)) {
                 // Try to get from hidden fields first
                 const cssHidden = Array.from(form.querySelectorAll('input[name="css"][type="hidden"]')).map(i => i.value).filter(v => v)
                 const jsHidden = Array.from(form.querySelectorAll('input[name="js"][type="hidden"]')).map(i => i.value).filter(v => v)
@@ -38,27 +40,36 @@
                 jsCheckboxes.forEach(j => params.append('js', j))
             }
 
-            // Get editor selections (if target step is editors step or later)
+            // Get editor selections
             // For simple: step 2+, for extended: step 3+
             const editorsStep = setupType === 'simple' ? 2 : 3
-            if (stepNum >= editorsStep) {
-                // Try hidden fields first
+            // Check if we're on advanced step (step 4) - it always has editors in hidden fields
+            const isOnAdvancedStep = form.querySelector('input[name="framework"]') !== null
+
+            // Always collect editors if:
+            // 1. Going to editors step or later, OR
+            // 2. Currently on advanced step (going back), OR
+            // 3. Form has editors fields (hidden or checkboxes)
+            if (stepNum >= editorsStep || isOnAdvancedStep || form.querySelector('input[name="editors"]') !== null) {
+                // Try hidden fields first (for back navigation from advanced step)
                 const editorsHidden = Array.from(form.querySelectorAll('input[name="editors"][type="hidden"]')).map(i => i.value).filter(v => v)
-                // Then try checkboxes
+                // Then try checkboxes (for editors step itself)
                 const editorsCheckboxes = editorsHidden.length > 0 ? editorsHidden : Array.from(form.querySelectorAll('input[name="editors"][type="checkbox"]:checked')).map(i => i.value).filter(v => v)
+
+                console.log('Collecting editors data:', { editorsHidden, editorsCheckboxes, isOnAdvancedStep })
                 editorsCheckboxes.forEach(ed => params.append('editors', ed))
             }
 
             // Get advanced options (if extended and we're on advanced step OR going to step 4+)
             // Check if we're currently on the advanced step by looking for advanced form fields
-            const isOnAdvancedStep = form.querySelector('input[name="framework"]') !== null || form.querySelector('input[name="contextDir"]') !== null
+            const isOnAdvancedStep = form.querySelector('input[name="framework"]') !== null
             if (setupType === 'extended' && (isOnAdvancedStep || stepNum >= 4)) {
                 const framework = form.querySelector('input[name="framework"]')?.checked || false
                 const frameworkDoctrine = form.querySelector('input[name="framework_doctrine"]')?.checked || false
                 const frameworkDirectives = form.querySelector('input[name="framework_directives"]')?.checked || false
                 const frameworkPlaybooks = form.querySelector('input[name="framework_playbooks"]')?.checked || false
                 const frameworkEnhancements = form.querySelector('input[name="framework_enhancements"]')?.checked || false
-                const contextDir = form.querySelector('input[name="contextDir"]')?.value || '.project/ai'
+                const contextDir = 'config/context' // Fixed path for consistency
 
                 if (framework) {
                     params.append('framework', 'true')
@@ -80,9 +91,19 @@
         }
 
         // Navigate to the step
-        htmx.ajax('GET', `/api/setup/step/${route}?${params.toString()}`, {
+        const url = `/api/setup/step/${route}?${params.toString()}`
+        console.log('HTMX request URL:', url)
+        console.log('Params:', params.toString())
+
+        htmx.ajax('GET', url, {
             target: '#wizard-content',
-            swap: 'innerHTML'
+            swap: 'innerHTML',
+            headers: {
+                'HX-Request': 'true'
+            }
+        }).catch(error => {
+            console.error('HTMX navigation error:', error)
+            alert('Error navigating to step ' + stepNum + '. Please try again.')
         })
     }
 
@@ -123,7 +144,75 @@
         alert('An error occurred while submitting the form. Please check your internet connection.')
     })
 
+    // Debug: Log all HTMX events for troubleshooting
+    document.body.addEventListener('htmx:beforeRequest', function(event) {
+        console.log('HTMX beforeRequest:', event.detail)
+    })
+
+    document.body.addEventListener('htmx:afterRequest', function(event) {
+        console.log('HTMX afterRequest:', event.detail)
+    })
+
+    document.body.addEventListener('htmx:beforeSwap', function(event) {
+        console.log('HTMX beforeSwap:', event.detail)
+    })
+
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        console.log('HTMX afterSwap - Content swapped successfully')
+    })
+
     // Make functions available globally
     window.navigateToStep = navigateToStep
     window.goBack = goBack
+
+    // Fallback: Add event listeners to all step buttons as backup
+    // This ensures navigation works even if onclick fails
+    document.addEventListener('DOMContentLoaded', function() {
+        // Re-bind click handlers after HTMX swaps
+        document.body.addEventListener('htmx:afterSwap', function() {
+            const stepButtons = document.querySelectorAll('[data-step][data-route]')
+            stepButtons.forEach(button => {
+                const stepNum = parseInt(button.getAttribute('data-step'))
+                const route = button.getAttribute('data-route')
+                const setupType = button.closest('[data-setup-type]')?.getAttribute('data-setup-type') ||
+                                 document.querySelector('[data-setup-type]')?.getAttribute('data-setup-type') ||
+                                 'extended'
+
+                // Remove existing listeners and add new one
+                button.removeEventListener('click', handleStepClick)
+                button.addEventListener('click', function(e) {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    navigateToStep(stepNum, route, setupType)
+                })
+            })
+        })
+
+        // Initial bind
+        const stepButtons = document.querySelectorAll('[data-step][data-route]')
+        stepButtons.forEach(button => {
+            const stepNum = parseInt(button.getAttribute('data-step'))
+            const route = button.getAttribute('data-route')
+            const setupType = button.closest('[data-setup-type]')?.getAttribute('data-setup-type') ||
+                             document.querySelector('[data-setup-type]')?.getAttribute('data-setup-type') ||
+                             'extended'
+
+            button.addEventListener('click', function(e) {
+                e.preventDefault()
+                e.stopPropagation()
+                navigateToStep(stepNum, route, setupType)
+            })
+        })
+    })
+
+    function handleStepClick(e) {
+        e.preventDefault()
+        e.stopPropagation()
+        const stepNum = parseInt(this.getAttribute('data-step'))
+        const route = this.getAttribute('data-route')
+        const setupType = this.closest('[data-setup-type]')?.getAttribute('data-setup-type') ||
+                         document.querySelector('[data-setup-type]')?.getAttribute('data-setup-type') ||
+                         'extended'
+        navigateToStep(stepNum, route, setupType)
+    }
 </script>

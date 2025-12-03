@@ -12,10 +12,10 @@ Agents are organized into subdirectories for better clarity:
   - `nested-pages`, `photo-gallery`, `rss-feeds`, `on-page-editing`, `users`
 
 - **`frontend/`** - Frontend framework agents (optional, user chooses)
-  - `tailwindcss`, `alpinejs`, `typescript`
+  - `tailwindcss`, `alpinejs`, `typescript`, `admin-panel-theming`
 
 - **`dev-tools/`** - Development tool agents (optional)
-  - `bun`, `git`, `mysql`, `admin-panel-theming`
+  - `bun`, `git`, `mysql`
 
 The agent loader automatically searches these subdirectories, so agent names remain the same.
 
@@ -118,6 +118,9 @@ Choose the appropriate subdirectory based on agent type:
 
    # Dev tool agent (dev-tools/)
    touch agents/dev-tools/new-agent.md
+
+   # Admin panel theming (frontend/)
+   touch agents/frontend/admin-panel-theming.md
    ```
 
 2. Follow the structure above
