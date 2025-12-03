@@ -1,0 +1,307 @@
+{
+  "autoActivation": {
+    "triggers": [
+      "pretty urls",
+      "pretty-urls",
+      "SEF urls",
+      "url rewriting",
+      "htaccess",
+      ".htaccess",
+      "mod_rewrite",
+      "gen_htaccess",
+      "K_PRETTY_URLS",
+      "k_page_link",
+      "k_site_link",
+      "broken css",
+      "broken images",
+      "relative paths",
+      "absolute paths",
+      "404 error",
+      "internal server error",
+      "seo friendly urls"
+    ],
+    "filePatterns": [
+      "**/.htaccess",
+      "**/config.php",
+      "**/*.php"
+    ],
+    "contentPatterns": [
+      "K_PRETTY_URLS",
+      "gen_htaccess",
+      "k_site_link",
+      "RewriteEngine",
+      "RewriteRule",
+      "routable='1'",
+      "<cms:link"
+    ]
+  },
+  "commonPatterns": {
+    "enablePrettyUrls": {
+      "pattern": "define( 'K_PRETTY_URLS', 1 );",
+      "description": "Enable Pretty URLs in config.php"
+    },
+    "absoluteCSS": {
+      "pattern": "<link href=\"<cms:show k_site_link />css/style.css\" rel=\"stylesheet\" />",
+      "description": "Absolute path for CSS"
+    },
+    "absoluteImage": {
+      "pattern": "<img src=\"<cms:show k_site_link />images/logo.png\" alt=\"Logo\" />",
+      "description": "Absolute path for images"
+    },
+    "absoluteJS": {
+      "pattern": "<script src=\"<cms:show k_site_link />js/app.js\"></script>",
+      "description": "Absolute path for JavaScript"
+    },
+    "routableTemplate": {
+      "pattern": "<cms:template title='Blog' clonable='1' routable='1'>",
+      "description": "Template with Pretty URLs enabled"
+    },
+    "pageLink": {
+      "pattern": "<a href=\"<cms:show k_page_link />\"><cms:show k_page_title /></a>",
+      "description": "Link using pretty URL"
+    },
+    "templateLink": {
+      "pattern": "<cms:link />",
+      "description": "Generate link to template (respects pretty URLs)"
+    },
+    "checkPrettyUrls": {
+      "pattern": "<cms:if k_pretty_urls eq '1'>",
+      "description": "Conditional check if Pretty URLs enabled"
+    },
+    "rewriteBase": {
+      "pattern": "RewriteBase /site/",
+      "description": ".htaccess RewriteBase for subdirectory"
+    },
+    "siteUrlInJS": {
+      "pattern": "const SITE_URL = '<cms:show k_site_link />';",
+      "description": "Make site URL available to JavaScript"
+    }
+  },
+  "antiPatterns": {
+    "relativeCSS": {
+      "pattern": "<link href=\"css/style.css\" rel=\"stylesheet\" />",
+      "issue": "Relative path breaks with Pretty URLs",
+      "fix": "<link href=\"<cms:show k_site_link />css/style.css\" rel=\"stylesheet\" />"
+    },
+    "relativeImage": {
+      "pattern": "<img src=\"images/logo.png\" />",
+      "issue": "Relative image path breaks with Pretty URLs",
+      "fix": "<img src=\"<cms:show k_site_link />images/logo.png\" />"
+    },
+    "relativeJS": {
+      "pattern": "<script src=\"js/app.js\"></script>",
+      "issue": "Relative script path breaks with Pretty URLs",
+      "fix": "<script src=\"<cms:show k_site_link />js/app.js\"></script>"
+    },
+    "parentRelative": {
+      "pattern": "<link href=\"../css/style.css\" />",
+      "issue": "Parent directory relative paths break",
+      "fix": "Use <cms:show k_site_link />css/style.css"
+    },
+    "enabledTooEarly": {
+      "pattern": "Enabling K_PRETTY_URLS before all templates configured",
+      "issue": "URLs break when adding templates later",
+      "fix": "Configure all clonable templates first, then enable Pretty URLs"
+    },
+    "notRegenerating": {
+      "pattern": "Adding new template without regenerating .htaccess",
+      "issue": "New template URLs don't work (404 errors)",
+      "fix": "Visit gen_htaccess.php and regenerate .htaccess after template changes"
+    },
+    "wrongHtaccessLocation": {
+      "pattern": "Placing .htaccess in /couch/ folder",
+      "issue": "Rewrite rules won't apply",
+      "fix": "Place .htaccess in website root directory"
+    },
+    "manualHtaccessEdit": {
+      "pattern": "Manually editing .htaccess rewrite rules",
+      "issue": "Rules may be incorrect or overwritten",
+      "fix": "Always regenerate with gen_htaccess.php"
+    },
+    "nonClonableTemplate": {
+      "pattern": "<cms:template title='Page' clonable='0'>",
+      "issue": "Pretty URLs don't apply to non-clonable templates",
+      "fix": "Set clonable='1' and routable='1' for Pretty URLs"
+    },
+    "hardcodedDomain": {
+      "pattern": "<img src=\"http://mysite.com/images/logo.png\" />",
+      "issue": "Hardcoded domain breaks in different environments",
+      "fix": "Use <cms:show k_site_link />images/logo.png"
+    }
+  },
+  "parameterReference": {
+    "K_PRETTY_URLS": {
+      "location": "couch/config.php",
+      "values": "0 or 1",
+      "description": "Global setting to enable/disable Pretty URLs",
+      "default": "0"
+    },
+    "routable": {
+      "location": "cms:template tag",
+      "values": "0 or 1",
+      "description": "Enable Pretty URLs for specific template",
+      "default": "1 (when clonable=1)"
+    },
+    "k_site_link": {
+      "type": "Variable",
+      "description": "Base site URL ending with slash (e.g., http://www.site.com/)",
+      "usage": "For creating absolute paths to assets"
+    },
+    "k_page_link": {
+      "type": "Variable",
+      "description": "Full URL to current page (pretty or regular depending on K_PRETTY_URLS)",
+      "usage": "For linking to pages"
+    },
+    "k_pretty_urls": {
+      "type": "Variable",
+      "description": "Returns 1 if Pretty URLs enabled, 0 if disabled",
+      "usage": "Conditional logic based on Pretty URLs status"
+    }
+  },
+  "bestPractices": {
+    "planning": [
+      "Configure ALL clonable templates before enabling Pretty URLs",
+      "Test in development/staging environment first",
+      "Keep backup of config.php and .htaccess",
+      "Document URL structure before implementation"
+    ],
+    "implementation": [
+      "Set K_PRETTY_URLS=1 in config.php",
+      "Visit gen_htaccess.php to generate rules",
+      "Copy ENTIRE content from gen_htaccess.php",
+      "Create .htaccess in website root (not /couch/)",
+      "Convert all asset paths to absolute",
+      "Test all page types (page/list/folder/archive)"
+    ],
+    "assetPaths": [
+      "Always use <cms:show k_site_link /> for assets",
+      "Never use relative paths (./css/, ../images/)",
+      "Use absolute paths from root with leading slash as alternative",
+      "Verify CSS, JS, images, fonts all use absolute paths"
+    ],
+    "maintenance": [
+      "Regenerate .htaccess when adding clonable templates",
+      "Regenerate .htaccess when renaming templates",
+      "Don't manually edit .htaccess rewrite rules",
+      "Keep .htaccess in version control (optional)"
+    ],
+    "seo": [
+      "Use descriptive page names (slugs)",
+      "Keep URLs lowercase",
+      "Use hyphens to separate words (not underscores)",
+      "Keep URLs short and meaningful",
+      "Avoid deep nesting (3-4 levels max)"
+    ],
+    "testing": [
+      "Test all page types after enabling",
+      "Check browser console for 404 errors on assets",
+      "Verify forms still submit correctly",
+      "Test on multiple browsers",
+      "Check mobile responsiveness"
+    ]
+  },
+  "integrationPatterns": {
+    "tailwindSetup": {
+      "pattern": "<link href=\"<cms:show k_site_link />css/output.css\" rel=\"stylesheet\" />",
+      "description": "Load TailwindCSS with absolute path"
+    },
+    "alpineJS": {
+      "pattern": "<script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js\"></script>",
+      "description": "CDN doesn't need path adjustment"
+    },
+    "jsApiCalls": {
+      "pattern": "const SITE_URL = '<cms:show k_site_link />';\nfetch(SITE_URL + 'api/data.php')",
+      "description": "Use k_site_link in JavaScript for API calls"
+    },
+    "dynamicAssets": {
+      "pattern": "<img src=\"<cms:show k_site_link />uploads/<cms:show image_filename />\" />",
+      "description": "Combine k_site_link with dynamic paths"
+    },
+    "conditionalPaths": {
+      "pattern": "<cms:if k_pretty_urls eq '1'>\n   <link rel=\"canonical\" href=\"<cms:show k_page_link />\" />\n</cms:if>",
+      "description": "Different logic based on Pretty URLs status"
+    }
+  },
+  "troubleshooting": {
+    "error500": [
+      "Check if mod_rewrite is enabled (visit gen_htaccess.php)",
+      "Verify .htaccess syntax is correct (regenerate)",
+      "Check .htaccess is in root directory, not /couch/",
+      "Contact hosting provider about Apache version/modules",
+      "Test without .htaccess to isolate issue"
+    ],
+    "brokenAssets": [
+      "Convert all relative paths to absolute",
+      "Use <cms:show k_site_link /> for all assets",
+      "Check browser console for 404 errors",
+      "Verify asset files actually exist at specified paths",
+      "Clear browser cache and test again"
+    ],
+    "404errors": [
+      "Regenerate .htaccess with gen_htaccess.php",
+      "Check template has routable='1'",
+      "Verify K_PRETTY_URLS=1 in config.php",
+      "Check .htaccess exists in root",
+      "Test if mod_rewrite is working"
+    ],
+    "urlsNotPretty": [
+      "Verify K_PRETTY_URLS=1 in config.php",
+      "Check .htaccess exists and has rules",
+      "Confirm template has clonable='1' routable='1'",
+      "Clear browser cache",
+      "Test in incognito/private browsing mode"
+    ],
+    "subdirectoryIssues": [
+      "Add RewriteBase /subdirectory/ to .htaccess",
+      "Regenerate .htaccess rules",
+      "Ensure k_site_link includes subdirectory",
+      "Test paths carefully"
+    ],
+    "newTemplateNotWorking": [
+      "Visit gen_htaccess.php to regenerate",
+      "Copy ALL content from page",
+      "Replace ENTIRE .htaccess file",
+      "Upload to root directory",
+      "Clear browser cache and test"
+    ]
+  },
+  "quickReference": {
+    "enable": "Set K_PRETTY_URLS=1 in couch/config.php",
+    "generate": "Visit yoursite.com/couch/gen_htaccess.php",
+    "install": "Copy all rules → Create .htaccess → Upload to root",
+    "absolutePath": "<cms:show k_site_link />path/to/file",
+    "pageLink": "<cms:show k_page_link />",
+    "templateLink": "<cms:link />",
+    "check": "<cms:show k_pretty_urls />",
+    "regenerate": "Visit gen_htaccess.php after template changes"
+  },
+  "urlPatterns": {
+    "listView": "/template/",
+    "folderView": "/template/folder-name/",
+    "pageView": "/template/folder-name/page-name.html",
+    "archiveView": "/template/YYYY/MM/",
+    "homeView": "/template/"
+  },
+  "migration": {
+    "checklist": [
+      "Backup files and database",
+      "Test on staging/development",
+      "Set K_PRETTY_URLS=1",
+      "Generate .htaccess",
+      "Upload .htaccess to root",
+      "Convert asset paths to absolute",
+      "Test all templates",
+      "Check images/CSS/JS load",
+      "Test forms",
+      "Test multiple browsers",
+      "Set up 301 redirects (optional)",
+      "Update sitemap",
+      "Update Google Search Console"
+    ],
+    "rollback": [
+      "Set K_PRETTY_URLS=0 in config.php",
+      "Remove or rename .htaccess",
+      "Site returns to querystring URLs"
+    ]
+  }
+}
