@@ -1,0 +1,301 @@
+{
+  "autoActivation": {
+    "triggers": [
+      "function",
+      "functions",
+      "cms:func",
+      "cms:call",
+      "reusable code",
+      "DRY",
+      "func",
+      "call",
+      "func_exists",
+      "func-on-demand",
+      "recursive function",
+      "function parameters",
+      "code organization"
+    ],
+    "filePatterns": [
+      "**/funcs/**/*.html",
+      "**/functions/**/*.html",
+      "**/*.php",
+      "**/*.html"
+    ],
+    "contentPatterns": [
+      "<cms:func",
+      "<cms:call",
+      "<cms:func_exists"
+    ]
+  },
+  "commonPatterns": {
+    "defineFunction": {
+      "pattern": "<cms:func 'function_name' param1='' param2=''>\n   <!-- Function body -->\n</cms:func>",
+      "description": "Define reusable function with parameters"
+    },
+    "callFunction": {
+      "pattern": "<cms:call 'function_name' />",
+      "description": "Call function with default parameters"
+    },
+    "callWithUnnamedParams": {
+      "pattern": "<cms:call 'function_name' 'value1' 'value2' />",
+      "description": "Call function with unnamed parameters (order matters)"
+    },
+    "callWithNamedParams": {
+      "pattern": "<cms:call 'function_name' param1='value1' param2='value2' />",
+      "description": "Call function with named parameters (any order)"
+    },
+    "functionSnippet": {
+      "pattern": "<cms:hide>\n   <cms:func 'function_name' param=''>\n      <!-- Function body -->\n   </cms:func>\n</cms:hide>",
+      "description": "Function wrapped in cms:hide for organization"
+    },
+    "embedFunctions": {
+      "pattern": "<cms:embed 'functions.html' />",
+      "description": "Embed snippet containing function definitions"
+    },
+    "recursiveFunction": {
+      "pattern": "<cms:func 'recursive' count='0'>\n   <cms:if count lt '10'>\n      <cms:show count />\n      <cms:call 'recursive' \"<cms:add count '1' />\" />\n   </cms:if>\n</cms:func>",
+      "description": "Recursive function with base case"
+    },
+    "checkFunctionExists": {
+      "pattern": "<cms:if \"<cms:func_exists 'function_name' />\">",
+      "description": "Check if function is defined"
+    },
+    "alertComponent": {
+      "pattern": "<cms:func 'alert' type='info' message=''>\n   <div class=\"alert alert-<cms:show type />\">\n      <cms:show message />\n   </div>\n</cms:func>",
+      "description": "Reusable alert component function"
+    },
+    "cardComponent": {
+      "pattern": "<cms:func 'card' title='' description='' image='' link='#'>\n   <div class=\"card\">\n      <cms:if image ne ''><img src=\"<cms:show image />\" /></cms:if>\n      <h3><cms:show title /></h3>\n      <p><cms:show description /></p>\n   </div>\n</cms:func>",
+      "description": "Reusable card component"
+    }
+  },
+  "antiPatterns": {
+    "missingDefaultValue": {
+      "pattern": "<cms:func 'myfunction' param>",
+      "issue": "Parameter must have default value",
+      "fix": "<cms:func 'myfunction' param=''>"
+    },
+    "callingBeforeDefining": {
+      "pattern": "<cms:call 'myfunction' />\n<!-- Later -->\n<cms:func 'myfunction'>",
+      "issue": "Function called before definition",
+      "fix": "Define function before calling, or use func-on-demand addon"
+    },
+    "wrongParameterOrder": {
+      "pattern": "<cms:func 'greet' name='' greeting=''>\n<cms:call 'greet' 'Hello' 'John' />",
+      "issue": "Unnamed params in wrong order (greeting before name)",
+      "fix": "<cms:call 'greet' 'John' 'Hello' /> or use named: <cms:call 'greet' greeting='Hello' name='John' />"
+    },
+    "noBas eCase": {
+      "pattern": "<cms:func 'recurse' count='0'>\n   <cms:call 'recurse' \"<cms:add count '1' />\" />\n</cms:func>",
+      "issue": "Recursive function without base case (infinite loop)",
+      "fix": "Add condition to stop: <cms:if count lt '10'>...recursion...</cms:if>"
+    },
+    "sideEffects": {
+      "pattern": "<cms:func 'bad_func' value=''>\n   <cms:set global_state=value scope='global' />\n</cms:func>",
+      "issue": "Function modifies global state (side effects)",
+      "fix": "Keep functions pure - return values, don't modify globals"
+    },
+    "unclearNaming": {
+      "pattern": "<cms:func 'func1' x='' y=''>",
+      "issue": "Vague function and parameter names",
+      "fix": "<cms:func 'calculate_total' price='' quantity=''>"
+    },
+    "missingEmbedForFunctions": {
+      "pattern": "<!-- Template using functions without embedding them -->",
+      "issue": "Functions not embedded before use",
+      "fix": "Add <cms:embed 'functions.html' /> at top of template"
+    },
+    "hardcodedValues": {
+      "pattern": "<cms:func 'show_price'>\n   Price: $<cms:show amount />\n</cms:func>",
+      "issue": "Hardcoded currency symbol limits reusability",
+      "fix": "<cms:func 'show_price' amount='' currency='$'>\n   <cms:show currency /><cms:show amount />\n</cms:func>"
+    }
+  },
+  "parameterReference": {
+    "cms:func": {
+      "name": "Function name (first parameter, required)",
+      "parameters": "Named parameters with default values (param='default')",
+      "description": "All parameters MUST have default values (can be empty string)"
+    },
+    "cms:call": {
+      "name": "Function name (first parameter, required)",
+      "unnamed_params": "Values passed in order matching function definition",
+      "named_params": "param='value' syntax, can be in any order",
+      "mixed": "Can mix unnamed and named parameters"
+    },
+    "cms:func_exists": {
+      "name": "Function name to check",
+      "returns": "1 if function exists, 0 if not"
+    }
+  },
+  "bestPractices": {
+    "naming": [
+      "Use descriptive, verb-based names (format_date, render_card)",
+      "Use underscores for multi-word names (format_price, validate_email)",
+      "Prefix component functions: component_card, component_button",
+      "Prefix utility functions: util_truncate, util_sanitize"
+    ],
+    "parameters": [
+      "Always provide default values for all parameters",
+      "Use empty string '' for required-but-no-default params",
+      "Order parameters from most to least commonly changed",
+      "Use named params in calls for clarity"
+    ],
+    "organization": [
+      "Group related functions in same snippet file",
+      "Wrap function definitions in <cms:hide> for comments",
+      "Create separate files for different categories (components, utilities)",
+      "Document each function with comments"
+    ],
+    "design": [
+      "Keep functions small and focused (single responsibility)",
+      "Avoid side effects - functions should be pure when possible",
+      "Return values rather than modify global state",
+      "Make functions reusable across different contexts"
+    ],
+    "recursion": [
+      "Always include a base case to stop recursion",
+      "Limit recursion depth with counter parameter",
+      "Test with small values first",
+      "Consider iteration as alternative for deep recursion"
+    ],
+    "documentation": [
+      "Document purpose, parameters, and examples",
+      "Include usage examples in comments",
+      "Note any side effects or limitations",
+      "Keep documentation close to function definition"
+    ]
+  },
+  "integrationPatterns": {
+    "daisyUIButton": {
+      "pattern": "<cms:func 'btn' text='Click' variant='primary' size='md' type='button'>\n   <button type=\"<cms:show type />\" class=\"btn btn-<cms:show variant /> btn-<cms:show size />\">\n      <cms:show text />\n   </button>\n</cms:func>",
+      "description": "daisyUI button component function"
+    },
+    "tailwindCard": {
+      "pattern": "<cms:func 'tw_card' title='' content='' variant='default'>\n   <div class=\"bg-base-100 rounded-box shadow-xl p-6\">\n      <h3 class=\"text-xl font-bold\"><cms:show title /></h3>\n      <p class=\"mt-2\"><cms:show content /></p>\n   </div>\n</cms:func>",
+      "description": "TailwindCSS card component"
+    },
+    "alpineComponent": {
+      "pattern": "<cms:func 'alpine_toggle' label='' initial='false'>\n   <div x-data=\"{ open: <cms:show initial /> }\">\n      <button x-on:click=\"open = !open\"><cms:show label /></button>\n      <div x-show=\"open\">Content here</div>\n   </div>\n</cms:func>",
+      "description": "Alpine.js toggle component"
+    }
+  },
+  "useCases": {
+    "components": [
+      "UI components (cards, buttons, badges, alerts)",
+      "Form elements (inputs, selects, textareas)",
+      "Navigation elements (breadcrumbs, pagination)",
+      "Modal dialogs and overlays"
+    ],
+    "formatters": [
+      "Date formatting (format_date)",
+      "Price formatting (format_price, format_currency)",
+      "Text manipulation (truncate, sanitize, uppercase)",
+      "Number formatting (thousands separators, decimals)"
+    ],
+    "utilities": [
+      "Validation logic (validate_email, validate_phone)",
+      "Conditional rendering (render_if, show_when)",
+      "Default value handlers (get_or_default)",
+      "Math operations (calculate_total, calculate_discount)"
+    ],
+    "builders": [
+      "Recursive menu builders",
+      "Breadcrumb generators",
+      "Dynamic form builders",
+      "Sitemap generators"
+    ]
+  },
+  "organizationPatterns": {
+    "singleFileAllFunctions": {
+      "pattern": "snippets/functions.html - All functions in one file",
+      "use": "Small projects, few functions"
+    },
+    "categoryFiles": {
+      "pattern": "snippets/funcs-components.html, snippets/funcs-utilities.html",
+      "use": "Medium projects, organized by type"
+    },
+    "oneFilePerFunction": {
+      "pattern": "snippets/funcs/alert.html, snippets/funcs/card.html (with func-on-demand)",
+      "use": "Large projects, auto-loading"
+    },
+    "featureBasedFolders": {
+      "pattern": "snippets/shop/funcs.html, snippets/blog/funcs.html",
+      "use": "Multi-feature applications"
+    }
+  },
+  "troubleshooting": {
+    "functionNotFound": [
+      "Check function is defined before calling",
+      "Verify function name spelling (case-sensitive)",
+      "Ensure snippet containing function is embedded",
+      "Use <cms:func_exists> to check if function is available",
+      "Consider using func-on-demand addon for auto-loading"
+    ],
+    "parameterNotWorking": [
+      "Verify parameter has default value in definition",
+      "Check parameter name spelling matches exactly",
+      "Ensure unnamed params are in correct order",
+      "Use named params for clarity: param='value'"
+    ],
+    "recursionLimit": [
+      "Add base case condition to stop recursion",
+      "Check if condition logic is correct",
+      "Add counter parameter to limit depth",
+      "Test with small values first"
+    ],
+    "scopeIssues": [
+      "Pass values as function parameters (recommended)",
+      "Avoid relying on external variables",
+      "Use scope='global' only when necessary",
+      "Keep functions pure when possible"
+    ],
+    "outputAppearing": [
+      "Wrap function definitions in <cms:hide>",
+      "Don't put function definitions in visible template area",
+      "Separate definitions from calls",
+      "Use snippets for function storage"
+    ]
+  },
+  "quickReference": {
+    "define": "cms:func 'name' param1='' param2=''",
+    "call": "cms:call 'name' 'value1' 'value2'",
+    "namedCall": "cms:call 'name' param1='value1' param2='value2'",
+    "recursive": "cms:call 'self' within function body",
+    "checkExists": "cms:func_exists 'name'",
+    "hideDefinitions": "cms:hide wraps function definitions",
+    "embedFile": "cms:embed 'functions.html'"
+  },
+  "comparisonTable": {
+    "functionsVsEmbed": {
+      "functions": "Named params, defaults, recursion, must define first",
+      "embed": "Any params, no defaults, no recursion, immediate use",
+      "useCase": "Functions for reusable logic, Embed for simple includes"
+    },
+    "functionsVsTags": {
+      "functions": "CouchCMS tags, easy to create, share as snippets",
+      "tags": "PHP code, complex logic, better performance",
+      "useCase": "Functions for site-specific, Tags for core features"
+    }
+  },
+  "codeManagement": {
+    "snippetBased": [
+      "Create snippets/functions.html with all functions",
+      "Wrap in <cms:hide> for organization",
+      "Embed at top of templates",
+      "Easy to share and version control"
+    ],
+    "autoLoading": [
+      "Install func-on-demand addon",
+      "One file per function in designated folder",
+      "Auto-loads when called (no manual embed)",
+      "Best for large projects"
+    ],
+    "templateBased": [
+      "Define functions in base layout template",
+      "Inherited by all child templates",
+      "Good for site-wide components",
+      "Reduces duplicate embeds"
+    ]
+  }
+}
