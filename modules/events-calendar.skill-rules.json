@@ -1,0 +1,288 @@
+{
+  "autoActivation": {
+    "triggers": [
+      "calendar",
+      "events",
+      "cms:calendar",
+      "cms:weeks",
+      "cms:days",
+      "cms:entries",
+      "event calendar",
+      "events calendar",
+      "month grid",
+      "calendar display",
+      "show_future_entries",
+      "k_count_entries",
+      "k_calendar_date"
+    ],
+    "filePatterns": [
+      "**/events.php",
+      "**/calendar.php",
+      "**/*.php"
+    ],
+    "contentPatterns": [
+      "<cms:calendar",
+      "<cms:weeks",
+      "<cms:days",
+      "<cms:entries",
+      "show_future_entries",
+      "k_count_entries",
+      "k_calendar_date"
+    ]
+  },
+  "commonPatterns": {
+    "basicCalendar": {
+      "pattern": "<cms:calendar>\n   <cms:weeks>\n      <tr>\n         <cms:days>\n            <td><cms:show k_day /></td>\n         </cms:days>\n      </tr>\n   </cms:weeks>\n</cms:calendar>",
+      "description": "Basic calendar month grid"
+    },
+    "calendarWithTemplate": {
+      "pattern": "<cms:calendar masterpage='events.php' show_future_entries='1'>",
+      "description": "Calendar linked to events template"
+    },
+    "calendarWithDate": {
+      "pattern": "<cms:calendar date=\"<cms:gpc 'cal' />\" masterpage='events.php'>",
+      "description": "Calendar with month from querystring"
+    },
+    "monthNavigation": {
+      "pattern": "<a href=\"<cms:concat k_page_link '?cal=' k_prev_calendar_date />\">‹</a>\n<cms:date k_calendar_date format='F Y' />\n<a href=\"<cms:concat k_page_link '?cal=' k_next_calendar_date />\">›</a>",
+      "description": "Previous/next month navigation"
+    },
+    "dayWithEntries": {
+      "pattern": "<cms:days>\n   <cms:if k_count_entries>\n      <td class='has-events'>\n         <cms:show k_day />\n         <cms:entries>\n            <a href=\"<cms:show k_page_link />\"><cms:show k_page_title /></a>\n         </cms:entries>\n      </td>\n   <cms:else />\n      <td><cms:show k_day /></td>\n   </cms:if>\n</cms:days>",
+      "description": "Display day with event entries"
+    },
+    "highlightToday": {
+      "pattern": "<cms:if k_timeline_position='present'>\n   <cms:set tdclass='today' />\n<cms:else />\n   <cms:set tdclass='' />\n</cms:if>",
+      "description": "Highlight today's date"
+    },
+    "currentMonthOnly": {
+      "pattern": "<cms:if k_position='current_month'>\n   <td><cms:show k_day /></td>\n<cms:else />\n   <td class='other_month'><cms:show k_day /></td>\n</cms:if>",
+      "description": "Style current vs other month days"
+    },
+    "eventTemplate": {
+      "pattern": "<cms:template title='Events' clonable='1'>\n   <cms:editable name='desc' type='richtext' />\n   <cms:editable name='location' type='text' />\n   <cms:editable name='start_time' type='text' />\n</cms:template>",
+      "description": "Basic event template structure"
+    },
+    "multiDayEvent": {
+      "pattern": "<cms:editable name='end_date' type='text'\n   validator='regex=/(?:19|20)\\d\\d-(?:0[1-9]|1[012])-(?:0[1-9]|[12][0-9]|3[01])/'\n/>",
+      "description": "End date field for multi-day events"
+    },
+    "linkToDailyArchive": {
+      "pattern": "<a href=\"<cms:link masterpage='events.php' year=k_year month=k_month day=k_day />\">",
+      "description": "Link to daily archive view"
+    }
+  },
+  "antiPatterns": {
+    "weeksOutsideCalendar": {
+      "pattern": "<cms:weeks><!-- Outside calendar tag -->",
+      "issue": "cms:weeks only works within cms:calendar",
+      "fix": "Nest weeks inside calendar: <cms:calendar><cms:weeks>..."
+    },
+    "daysOutsideWeeks": {
+      "pattern": "<cms:calendar><cms:days>",
+      "issue": "cms:days only works within cms:weeks",
+      "fix": "Nest days inside weeks: <cms:calendar><cms:weeks><cms:days>..."
+    },
+    "entriesOutsideDays": {
+      "pattern": "<cms:weeks><cms:entries>",
+      "issue": "cms:entries only works within cms:days",
+      "fix": "Nest entries inside days: <cms:weeks><cms:days><cms:entries>..."
+    },
+    "missingShowFutureEntries": {
+      "pattern": "<cms:calendar masterpage='events.php'><!-- Missing show_future_entries -->",
+      "issue": "Future events won't appear on calendar",
+      "fix": "<cms:calendar masterpage='events.php' show_future_entries='1'>"
+    },
+    "noMasterpage": {
+      "pattern": "<cms:if k_count_entries><!-- Without masterpage in calendar -->",
+      "issue": "k_count_entries and cms:entries require masterpage",
+      "fix": "Add masterpage parameter: <cms:calendar masterpage='events.php'>"
+    },
+    "inefficientEntries": {
+      "pattern": "<cms:entries><!-- Loading all custom fields -->",
+      "issue": "Poor performance when only showing titles",
+      "fix": "<cms:entries limit='3' skip_custom_fields='1'>"
+    },
+    "noDateValidation": {
+      "pattern": "<cms:editable name='end_date' type='text' />",
+      "issue": "No validation for date format",
+      "fix": "Add regex validator for yyyy-mm-dd format"
+    },
+    "hardcodedDate": {
+      "pattern": "<cms:calendar date='2025-12-01'>",
+      "issue": "Calendar always shows same month",
+      "fix": "Use querystring: <cms:calendar date=\"<cms:gpc 'cal' />\">"
+    }
+  },
+  "parameterReference": {
+    "cms:calendar": {
+      "date": "Date in yyyy-mm-dd format (defaults to current date)",
+      "masterpage": "Template to associate with calendar (enables entries)",
+      "show_future_entries": "0 or 1 - Include future-dated pages (default 0)",
+      "all_pages_params": "Accepts all cms:pages parameters (folders, limit, etc.)"
+    },
+    "cms:weeks": {
+      "no_parameters": "Automatically iterates weeks in month"
+    },
+    "cms:days": {
+      "pad_with_zeroes": "0 or 1 - Pad day numbers with leading zeros (default 1)"
+    },
+    "cms:entries": {
+      "limit": "Number of entries to show per day",
+      "skip_custom_fields": "0 or 1 - Skip loading editable regions (performance)",
+      "all_pages_params": "Accepts all cms:pages parameters"
+    }
+  },
+  "bestPractices": {
+    "performance": [
+      "Use skip_custom_fields='1' when only showing titles/links",
+      "Limit entries per day to avoid oversized cells",
+      "Consider caching calendar output for high traffic",
+      "Use pagination for event archives"
+    ],
+    "userExperience": [
+      "Always include month navigation (prev/next)",
+      "Highlight today's date for context",
+      "Show visual distinction for days with events",
+      "Link event names to detail pages",
+      "Make calendar responsive for mobile"
+    ],
+    "eventManagement": [
+      "Use publish date as primary event date",
+      "Add end_date field for multi-day events",
+      "Use dropdown for time selection (better UX)",
+      "Validate date formats with regex",
+      "Consider adding event categories/tags"
+    ],
+    "futureEvents": [
+      "Always set show_future_entries='1' for event calendars",
+      "Consider separate 'upcoming events' list",
+      "Show date range for multi-day events",
+      "Add filtering by category or date range"
+    ],
+    "styling": [
+      "Distinguish past, present, and future days",
+      "Highlight current month vs other months",
+      "Use consistent spacing in calendar grid",
+      "Make event links clearly visible",
+      "Consider color-coding event categories"
+    ]
+  },
+  "integrationPatterns": {
+    "daisyUICalendar": {
+      "pattern": "<div class=\"card bg-base-100 shadow-xl\">\n   <div class=\"card-body\">\n      <cms:calendar masterpage='events.php' show_future_entries='1'>\n         <!-- Calendar markup with daisyUI classes -->\n      </cms:calendar>\n   </div>\n</div>",
+      "description": "Calendar in daisyUI card component"
+    },
+    "tailwindGrid": {
+      "pattern": "<div class=\"grid grid-cols-7 gap-2\">\n   <cms:weeks>\n      <cms:days>\n         <div class=\"bg-base-200 rounded p-2\">\n            <cms:show k_day />\n         </div>\n      </cms:days>\n   </cms:weeks>\n</div>",
+      "description": "Calendar using Tailwind grid"
+    },
+    "alpineModal": {
+      "pattern": "<div x-data=\"{ eventId: null }\">\n   <cms:entries>\n      <button x-on:click=\"eventId = <cms:show k_page_id />\">\n         <cms:show k_page_title />\n      </button>\n   </cms:entries>\n</div>",
+      "description": "Open event details in Alpine.js modal"
+    }
+  },
+  "calendarVariables": {
+    "calendar": {
+      "k_count_weeks": "Number of weeks in month (4-6)",
+      "k_calendar_date": "Month being displayed (yyyy-mm-dd)",
+      "k_next_calendar_date": "Next month date",
+      "k_prev_calendar_date": "Previous month date"
+    },
+    "weeks": {
+      "k_week_num": "Current week number"
+    },
+    "days": {
+      "k_date": "Full date (yyyy-mm-dd)",
+      "k_day": "Day number (1-31)",
+      "k_month": "Month number (1-12)",
+      "k_year": "Year number",
+      "k_day_of_week": "Day of week (0-6, Sunday=0)",
+      "k_position": "previous_month, current_month, or next_month",
+      "k_timeline_position": "past, present, or future",
+      "k_count_entries": "Number of events on this day (requires masterpage)"
+    }
+  },
+  "useCases": {
+    "eventTypes": [
+      "Public events calendar",
+      "Conference schedule",
+      "Class/workshop schedule",
+      "Meeting calendar",
+      "Sports events",
+      "Concert/performance schedule",
+      "Holiday calendar",
+      "Booking/availability calendar"
+    ],
+    "displayTypes": [
+      "Small sidebar calendar (linked to archives)",
+      "Large main calendar (with event details)",
+      "Month-by-month navigation",
+      "Combined with upcoming events list",
+      "Category-filtered calendars",
+      "Multi-calendar view (different event types)"
+    ]
+  },
+  "troubleshooting": {
+    "noEventsShowing": [
+      "Check masterpage parameter is set",
+      "Verify show_future_entries='1' for future events",
+      "Ensure events are published (not drafts)",
+      "Check publish dates are correct",
+      "Verify k_count_entries is being checked"
+    ],
+    "wrongNesting": [
+      "Verify tag hierarchy: calendar > weeks > days > entries",
+      "Check all tags are properly closed",
+      "Don't skip levels in hierarchy",
+      "Use correct parent tag for each nested tag"
+    ],
+    "navigationBroken": [
+      "Check k_prev_calendar_date and k_next_calendar_date variables",
+      "Verify querystring parameter name matches gpc call",
+      "Ensure links include full URL with querystring",
+      "Test with different months"
+    ],
+    "performanceIssues": [
+      "Add skip_custom_fields='1' to entries tag",
+      "Limit number of entries shown per day",
+      "Consider caching calendar output",
+      "Optimize database queries"
+    ],
+    "stylingProblems": [
+      "Check k_position for current vs other months",
+      "Use k_timeline_position for past/present/future",
+      "Verify CSS classes are applied correctly",
+      "Test with months that have different week counts"
+    ]
+  },
+  "quickReference": {
+    "basicStructure": "calendar > weeks > days > entries",
+    "showEvents": "masterpage='events.php' show_future_entries='1'",
+    "checkEvents": "k_count_entries > 0",
+    "today": "k_timeline_position='present'",
+    "currentMonth": "k_position='current_month'",
+    "navigation": "k_prev_calendar_date, k_next_calendar_date",
+    "performance": "skip_custom_fields='1'"
+  },
+  "templateSetup": {
+    "required": [
+      "clonable='1' in template definition",
+      "Publish date represents event date",
+      "Editable regions for event details"
+    ],
+    "recommended": [
+      "end_date field for multi-day events",
+      "start_time and end_time dropdowns",
+      "location field",
+      "description richtext field",
+      "featured_image field",
+      "category or tag system"
+    ],
+    "validation": [
+      "Regex validator for date fields: /(?:19|20)\\d\\d-(?:0[1-9]|1[012])-(?:0[1-9]|[12][0-9]|3[01])/",
+      "Required fields marked appropriately",
+      "Help text for date format"
+    ]
+  }
+}
