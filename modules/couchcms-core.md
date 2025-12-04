@@ -16,25 +16,39 @@ conflicts: []
 
 ### Basic Template
 
-```php title="cms.php"
+```php title="page.php"
 <?php require_once('couch/cms.php'); ?>
-<cms:extends 'layouts/base.html' />
-<cms:block 'templates'>
-    <cms:template title='Page Name' clonable='1' routable='1'>
-        <cms:editable name='content' label='Content' type='richtext' />
-    </cms:template>
-</cms:block>
-<cms:block 'content'>
-    <!-- Page content here -->
-</cms:block>
+
+<cms:template title='Page Name' clonable='1' routable='1'>
+    <cms:editable name='content' label='Content' type='richtext' />
+</cms:template>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <cms:embed 'head.html' />
+</head>
+<body>
+    <cms:embed 'header.html' />
+
+    <main>
+        <cms:show content />
+    </main>
+
+    <cms:embed 'footer.html' />
+</body>
+</html>
+
 <?php COUCH::invoke(); ?>
 ```
 
-### Template Inheritance
+### Code Reuse with Snippets
 
-- Use `<cms:extends>` for layout inheritance
-- Define blocks with `<cms:block>`
-- Use `<cms:embed>` for reusable snippets
+- Use `<cms:embed 'snippet.html' />` to include reusable code
+- Store snippets in `couch/snippets/` folder
+- Organize snippets in subfolders (partials/, layouts/, components/)
+
+**⚠️ CRITICAL**: CouchCMS does NOT support `<cms:extends>` or `<cms:block>` tags - these do not exist!
 
 ## Security Standards
 
@@ -134,13 +148,13 @@ conflicts: []
 
 ### 🚨 CRITICAL: Execution Order
 
-In CouchCMS template inheritance:
+In CouchCMS with embedded snippets:
 
-- `<cms:embed>` components execute at their position in the parent template
-- Child `<cms:block>` content executes AFTER all parent template code
-- Variables set in child blocks are NOT available to components embedded earlier in the parent
+- `<cms:embed>` executes snippets at their position in the template
+- Variables must be set BEFORE they are used in embedded snippets
+- Scope is important - variables set in one scope may not be available in another
 
-**Always verify execution order before using variables.**
+**Always verify variable scope and execution order.**
 
 ## Best Practices
 
