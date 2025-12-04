@@ -79,7 +79,7 @@ git pull origin develop
 bun test
 
 # Run validation
-bun scripts/validate.js
+bun scripts/cli/validate.js
 
 # Check for open PRs
 # - Review GitHub for pending PRs
@@ -225,7 +225,7 @@ git push origin release/1.3.0
 bun test
 
 # All validations pass
-bun scripts/validate.js
+bun scripts/cli/validate.js
 
 # Version numbers correct
 grep version package.json

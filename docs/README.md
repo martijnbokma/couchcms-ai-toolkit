@@ -104,13 +104,13 @@ Welcome to the comprehensive documentation for the CouchCMS AI Toolkit. This gui
 
 ```bash
 # Setup (first time)
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 
 # Generate configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Validate setup
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # Audit documentation
 cd ai-toolkit-shared && bun run audit:docs

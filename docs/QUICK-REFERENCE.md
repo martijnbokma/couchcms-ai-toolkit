@@ -11,10 +11,10 @@ A one-page reference for the most common CouchCMS AI Toolkit operations.
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `bun install` | Install dependencies | After cloning repository |
-| `bun scripts/create-standards.js` | Simple setup wizard | First-time setup (beginners) |
-| `bun scripts/init.js` | Advanced setup wizard | Custom configuration needed |
-| `bun scripts/sync.js` | Generate AI configs | After modifying standards.md |
-| `bun scripts/validate.js` | Validate configuration | Check for errors |
+| `bun scripts/cli/create-standards.js` | Simple setup wizard | First-time setup (beginners) |
+| `bun scripts/cli/init.js` | Advanced setup wizard | Custom configuration needed |
+| `bun scripts/cli/sync.js` | Generate AI configs | After modifying standards.md |
+| `bun scripts/cli/validate.js` | Validate configuration | Check for errors |
 | `bun run update` | Check for updates | Weekly maintenance |
 | `bun run update:apply` | Apply updates automatically | When updates available |
 
@@ -23,9 +23,9 @@ A one-page reference for the most common CouchCMS AI Toolkit operations.
 
 | I want to... | Command |
 |--------------|---------|
-| Set up toolkit (first time) | `bun ai-toolkit-shared/scripts/init.js` |
-| Generate/update AI configs | `bun ai-toolkit-shared/scripts/sync.js` |
-| Validate my setup | `bun ai-toolkit-shared/scripts/validate.js` |
+| Set up toolkit (first time) | `bun ai-toolkit-shared/scripts/cli/init.js` |
+| Generate/update AI configs | `bun ai-toolkit-shared/scripts/cli/sync.js` |
+| Validate my setup | `bun ai-toolkit-shared/scripts/cli/validate.js` |
 | Update toolkit to latest | `cd ai-toolkit-shared && bun run update-submodule && cd ..` |
 
 ---
@@ -110,7 +110,7 @@ your-project/
 # Use /add-auth @snippets/views/my-feature/list.html
 
 # 4. Test and validate
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 ```
 
 ### Fixing Code Issues
@@ -134,7 +134,7 @@ bun ai-toolkit-shared/scripts/validate.js
 # @file.html "apply the DRY refactoring"
 
 # 3. Validate changes
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 ```
 
 ---
@@ -178,7 +178,7 @@ agents:
 Your custom rules here...
 ```
 
-After editing, run: `bun ai-toolkit-shared/scripts/sync.js`
+After editing, run: `bun ai-toolkit-shared/scripts/cli/sync.js`
 
 ---
 
@@ -186,10 +186,10 @@ After editing, run: `bun ai-toolkit-shared/scripts/sync.js`
 
 | Problem | Solution |
 |---------|----------|
-| "No configuration file found" | Run `bun ai-toolkit-shared/scripts/init.js` |
+| "No configuration file found" | Run `bun ai-toolkit-shared/scripts/cli/init.js` |
 | "Module not found" | Check spelling in `standards.md` |
 | "Toolkit path not found" | Verify `toolkit: './ai-toolkit-shared'` |
-| Changes not reflected | Run `bun ai-toolkit-shared/scripts/sync.js` |
+| Changes not reflected | Run `bun ai-toolkit-shared/scripts/cli/sync.js` |
 | Submodule issues | `cd ai-toolkit-shared && git checkout master && git pull` |
 
 ---

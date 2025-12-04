@@ -39,7 +39,7 @@ bun install
 cd ..
 
 # 3. Run setup
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 ```
 
 **Prerequisites:**
@@ -64,7 +64,7 @@ bun install
 cd ..
 
 # 4. Run setup
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 ```bash
 
 **Security Note:** Don't commit the token! Use credential helper:
@@ -86,7 +86,7 @@ bun install
 cd ..
 
 # 3. Run setup
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 ```text
 
 **Note:** This is not a submodule, so updates are manual.

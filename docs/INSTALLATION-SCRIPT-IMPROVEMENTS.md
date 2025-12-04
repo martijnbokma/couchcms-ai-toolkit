@@ -144,7 +144,7 @@ console.log('\nCreate a standards.md file with:\n')
 printError('Configuration file not found', 2)
 printInfo('Create a .project/standards.md file with:', 2)
 // ... example code ...
-printInfo('💡 Tip: Run "bun ai-toolkit-shared/scripts/init.js" to create configuration', 2)
+printInfo('💡 Tip: Run "bun ai-toolkit-shared/scripts/cli/init.js" to create configuration', 2)
 ```
 
 **Voordelen:**
@@ -216,7 +216,7 @@ printList([
     'Verify standards.md has valid YAML frontmatter',
     'Check toolkit path in standards.md',
     'Ensure all referenced modules exist',
-    "Run 'bun ai-toolkit-shared/scripts/validate.js' for detailed diagnostics"
+    "Run 'bun ai-toolkit-shared/scripts/cli/validate.js' for detailed diagnostics"
 ], { bullet: '•', color: 'reset' }, 2)
 ```
 

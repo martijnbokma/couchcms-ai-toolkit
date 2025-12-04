@@ -465,7 +465,7 @@ export function validateToolkitPath(toolkitPath) {
     }
 
     // Check for required files
-    const requiredFiles = ['scripts/sync.js', 'templates/editors']
+    const requiredFiles = ['scripts/cli/sync.js', 'templates/editors']
     for (const file of requiredFiles) {
         const filePath = join(toolkitPath, file)
         if (!existsSync(filePath)) {

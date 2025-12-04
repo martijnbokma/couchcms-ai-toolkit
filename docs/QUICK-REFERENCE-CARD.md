@@ -6,20 +6,20 @@ One-page reference for common commands and solutions.
 
 ```bash
 # Setup (first time)
-bun ai-toolkit-shared/scripts/create-standards.js  # Simple setup
-bun ai-toolkit-shared/scripts/init.js                # Advanced setup
+bun ai-toolkit-shared/scripts/cli/create-standards.js  # Simple setup
+bun ai-toolkit-shared/scripts/cli/init.js                # Advanced setup
 
 # Generate configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Validate setup
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # Update toolkit (submodule)
 cd ai-toolkit-shared && git pull && bun install && cd ..
 
 # Browse available modules/agents
-bun ai-toolkit-shared/scripts/browse.js
+bun ai-toolkit-shared/scripts/cli/browse.js
 ```
 
 ## Common Errors & Quick Fixes
@@ -27,7 +27,7 @@ bun ai-toolkit-shared/scripts/browse.js
 | Error | Quick Fix |
 |-------|-----------|
 | `Cannot find module 'gray-matter'` | Dependencies auto-install now. If persists: `cd ai-toolkit-shared && bun install` |
-| `No configuration file found` | Run: `bun ai-toolkit-shared/scripts/create-standards.js` |
+| `No configuration file found` | Run: `bun ai-toolkit-shared/scripts/cli/create-standards.js` |
 | `Invalid YAML syntax` | Check error message for line number and fix suggestion |
 | `Module 'X' not found` | Check suggestions in error message. Common: `tailwind` → `tailwindcss` |
 | `Agent 'X' not found` | Check suggestions in error message. Common: `couchcms-core` → `couchcms` |
@@ -76,15 +76,15 @@ Add your custom rules here...
 ## Workflow
 
 1. **Edit** `.project/standards.md`
-2. **Run** `bun ai-toolkit-shared/scripts/sync.js`
-3. **Verify** `bun ai-toolkit-shared/scripts/validate.js`
+2. **Run** `bun ai-toolkit-shared/scripts/cli/sync.js`
+3. **Verify** `bun ai-toolkit-shared/scripts/cli/validate.js`
 4. **Reload** your editor
 
 ## Quick Diagnostics
 
 ```bash
 # All-in-one check
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 ```
 
 ## Need More Help?

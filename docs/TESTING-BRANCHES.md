@@ -56,10 +56,10 @@ git pull origin develop
 cd ..
 
 # Test de sync
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Valideer configuratie
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # Test alle functionaliteit die je wilt verifiëren
 ```
@@ -141,8 +141,8 @@ git checkout -b test/develop-$(date +%Y%m%d)
 cd ..
 
 # Test alle functionaliteit
-bun ai-toolkit-shared/scripts/sync.js
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/sync.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # Test je eigen features die gebruik maken van de toolkit
 # ...
@@ -213,7 +213,7 @@ git pull origin "${BRANCH}"
 echo "✅ Switched to ${BRANCH} branch"
 echo ""
 echo "To test:"
-echo "  cd .. && bun ${SUBMODULE}/scripts/sync.js"
+echo "  cd .. && bun ${SUBMODULE}/scripts/cli/sync.js"
 echo ""
 echo "To switch back to master:"
 echo "  cd ${SUBMODULE} && git checkout master"
@@ -287,12 +287,12 @@ Voordat je een branch merge naar master, test:
 
 - [ ] **Sync werkt correct**
   ```bash
-  bun ai-toolkit-shared/scripts/sync.js
+  bun ai-toolkit-shared/scripts/cli/sync.js
   ```
 
 - [ ] **Validatie werkt**
   ```bash
-  bun ai-toolkit-shared/scripts/validate.js
+  bun ai-toolkit-shared/scripts/cli/validate.js
   ```
 
 - [ ] **Alle directories worden aangemaakt**
@@ -397,7 +397,7 @@ cd ai-toolkit-shared && git checkout develop && git pull origin develop && cd ..
 
 ### Test sync
 ```bash
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 ```
 
 ### Terug naar master

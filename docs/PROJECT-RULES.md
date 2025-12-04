@@ -87,10 +87,10 @@ Rules are automatically synced when you run:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 This:
@@ -296,7 +296,7 @@ These are invoked with `@rule-name` in chat.
 
 ### Path Variables Not Replaced
 
-1. **Run sync script**: `bun ai-toolkit-shared/scripts/sync.js`
+1. **Run sync script**: `bun ai-toolkit-shared/scripts/cli/sync.js`
 2. ✅ **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration
 3. ✅ **Verify `defaults.yaml`** - Check toolkit has path definitions
 

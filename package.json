@@ -3,7 +3,7 @@
     "version": "1.5.0",
     "description": "Universal AI Development Toolkit for CouchCMS Projects",
     "type": "module",
-    "main": "scripts/sync.js",
+    "main": "scripts/cli/sync.js",
     "bin": {
         "toolkit": "./bin/toolkit"
     },
@@ -12,27 +12,27 @@
         "bun": ">=1.0.0"
     },
     "scripts": {
-        "toolkit": "bun scripts/toolkit.js",
-        "install-toolkit": "bun scripts/install.js",
-        "sync": "bun scripts/sync.js",
-        "sync:watch": "bun scripts/sync.js --watch",
-        "validate": "bun scripts/validate.js",
-        "init": "bun scripts/init.js",
-        "create": "bun scripts/create-standards.js",
-        "migrate": "bun scripts/migrate.js",
-        "reinstall": "bun scripts/reinstall.js",
-        "health": "bun scripts/health.js",
-        "browse": "bun scripts/browse.js",
-        "browse:modules": "bun scripts/browse.js --modules",
-        "browse:agents": "bun scripts/browse.js --agents",
-        "update": "bun scripts/update.js",
-        "update:check": "bun scripts/update.js --check",
-        "update:apply": "bun scripts/update.js --apply",
+        "toolkit": "bun scripts/cli/toolkit.js",
+        "install-toolkit": "bun scripts/cli/install.js",
+        "sync": "bun scripts/cli/sync.js",
+        "sync:watch": "bun scripts/cli/sync.js --watch",
+        "validate": "bun scripts/cli/validate.js",
+        "init": "bun scripts/cli/init.js",
+        "create": "bun scripts/cli/create-standards.js",
+        "migrate": "bun scripts/cli/migrate.js",
+        "reinstall": "bun scripts/cli/reinstall.js",
+        "health": "bun scripts/cli/health.js",
+        "browse": "bun scripts/cli/browse.js",
+        "browse:modules": "bun scripts/cli/browse.js --modules",
+        "browse:agents": "bun scripts/cli/browse.js --agents",
+        "update": "bun scripts/cli/update.js",
+        "update:check": "bun scripts/cli/update.js --check",
+        "update:apply": "bun scripts/cli/update.js --apply",
         "update-submodule": "bun scripts/utils/update-submodule.js",
         "prepare-contribution": "bun scripts/utils/prepare-contribution.js",
         "extend-modules": "bun scripts/maintenance/extend-modules.js",
-        "create:module": "bun scripts/create-module.js",
-        "create:agent": "bun scripts/create-agent.js",
+        "create:module": "bun scripts/create/create-module.js",
+        "create:agent": "bun scripts/create/create-agent.js",
         "git-flow": "bun scripts/git-flow/main.js",
         "git-flow-init": "bun scripts/git-flow/init.js",
         "release": "bun scripts/utils/quick-release.js",
@@ -40,7 +40,14 @@
         "release:major": "bun scripts/utils/quick-release.js --major",
         "release:minor": "bun scripts/utils/quick-release.js --minor",
         "release:patch": "bun scripts/utils/quick-release.js --patch",
-        "audit:docs": "bun scripts/audit-docs.js",
+        "audit:docs": "bun scripts/create/audit-docs.js",
+        "build:web": "bun web/scripts/build.js",
+        "build:web:fresh": "bun web/scripts/clean.js && bun web/scripts/build.js",
+        "clean:web": "bun web/scripts/clean.js",
+        "watch:web": "bun web/scripts/watch.js",
+        "watch:web:server": "bun web/scripts/watch.js --server",
+        "dev:web": "bun web/scripts/dev.js",
+        "serve": "bun toolkit serve",
         "test": "bun test"
     },
     "dependencies": {
@@ -52,7 +59,10 @@
         "yaml": "^2.8.2"
     },
     "devDependencies": {
-        "fast-check": "^3.23.2"
+        "fast-check": "^3.23.2",
+        "tailwindcss": "^4.1.17",
+        "@tailwindcss/cli": "^4.1.17",
+        "daisyui": "^5.4.7"
     },
     "keywords": [
         "couchcms",
@@ -72,9 +82,19 @@
         "url": "https://github.com/martijnbokma/couchcms-ai-toolkit/issues"
     },
     "author": {
-        "name": "Martijn Bokma, aashari, and all contributors"
+        "name": "Martijn Bokma and all contributors"
     },
     "contributors": [
+        {
+            "name": "PixelPadThai",
+            "url": "https://github.com/PixelPadThai"
+        },
+        {
+            "name": "trendoman",
+            "url": "https://github.com/trendoman"
+        }
+    ],
+    "inspiration": [
         {
             "name": "aashari",
             "url": "https://github.com/aashari"

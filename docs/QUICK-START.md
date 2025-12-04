@@ -57,7 +57,7 @@ curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/ma
 ### Option 2: With Bun
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/cli/install.js -o install.js
 bun install.js
 rm install.js
 ```text
@@ -76,7 +76,7 @@ bun install  # or: npm install
 cd ..
 
 # Step 3: Run setup
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 ```
 
 ## 🎯 Setup Wizard
@@ -91,7 +91,7 @@ After installation, you have two setup options:
 - Are not sure exactly which modules you need
 
 ```bash
-bun ai-toolkit-shared/scripts/create-standards.js
+bun ai-toolkit-shared/scripts/cli/create-standards.js
 # or
 bun run create
 ```
@@ -215,19 +215,19 @@ Your AI now knows:
 
 ```bash
 # Check if everything is OK
-bun ai-toolkit-shared/scripts/health.js
+bun ai-toolkit-shared/scripts/cli/health.js
 
 # Modify config
 vim .project/standards.md
 
 # Regenerate configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Auto-sync on changes (useful during development)
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 
 # Browse available modules
-bun ai-toolkit-shared/scripts/browse.js
+bun ai-toolkit-shared/scripts/cli/browse.js
 ```
 
 **Tip:** If you get "permission denied", use `bun` or `node` instead of running the script directly.
@@ -258,17 +258,17 @@ After changes:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 ### Add Modules
 
 **Option 1: Interactive (Easy)**
 ```bash
-bun ai-toolkit-shared/scripts/browse.js
+bun ai-toolkit-shared/scripts/cli/browse.js
 ```text
 
 **Option 2: Manual**
@@ -287,10 +287,10 @@ Then sync:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```text
 
 ### Use Watch Mode
@@ -298,7 +298,7 @@ bun ai-toolkit-shared/scripts/sync.js
 During development:
 ```bash
 # Generate AI configuration files
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 Now you should modify `.project/standards.md` and configs are automatically updated!
@@ -341,7 +341,7 @@ Or Node.js: https://nodejs.org/
 Run health check:
 ```bash
 # Check toolkit status and updates
-bun ai-toolkit-shared/scripts/health.js
+bun ai-toolkit-shared/scripts/cli/health.js
 ```text
 
 This shows what's wrong and how to fix it.
@@ -353,7 +353,7 @@ cd ai-toolkit-shared
 git pull
 cd ..
 # Generate AI configuration files
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 ```
 
 ## 💡 Tips & Tricks
@@ -367,14 +367,14 @@ For 95% of projects, Auto mode is perfect. It detects everything automatically.
 During setup/development:
 ```bash
 # Generate AI configuration files
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```bash
 
 ### Tip 3: Run Health Check Regularly
 
 ```bash
 # Check toolkit status and updates
-bun ai-toolkit-shared/scripts/health.js
+bun ai-toolkit-shared/scripts/cli/health.js
 ```
 
 Shows:
@@ -386,7 +386,7 @@ Shows:
 
 Instead of manual editing:
 ```bash
-bun ai-toolkit-shared/scripts/browse.js
+bun ai-toolkit-shared/scripts/cli/browse.js
 ```
 
 Use ↑↓ to navigate, Space to select.

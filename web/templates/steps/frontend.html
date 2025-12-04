@@ -1,0 +1,77 @@
+<div>
+    {% set sectionTitle = 'Frontend Frameworks' %}
+    {% set sectionDescription = 'Select the CSS and JavaScript frameworks you want to use.' %}
+    {% include "partials/section-header.html" %}
+
+    <form hx-post="/api/setup/step/frontend" hx-target="#wizard-content" hx-swap="innerHTML">
+        {% include "partials/hidden-fields.html" %}
+
+        <div class="mb-4 sm:mb-6">
+            <h3 class="text-xs sm:text-sm font-semibold mb-2 text-base-content">CSS Framework</h3>
+            <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
+                {% if frontendOptions %}
+                {% for option in frontendOptions.css %}
+                <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="css" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm shrink-0" {% if option.selected %}checked{% endif %} />
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
+                        <p class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
+                    </div>
+                </label>
+                {% endfor %}
+                {% else %}
+                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="css" value="tailwindcss" class="checkbox checkbox-primary checkbox-sm" checked />
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-semibold text-base-content">TailwindCSS</h4>
+                        <p class="text-xs text-base-content/60">Utility-first CSS framework</p>
+                    </div>
+                </label>
+                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="css" value="daisyui" class="checkbox checkbox-primary checkbox-sm" />
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-semibold text-base-content">daisyUI</h4>
+                        <p class="text-xs text-base-content/60">Component library for TailwindCSS</p>
+                    </div>
+                </label>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mb-4 sm:mb-6">
+            <h3 class="text-xs sm:text-sm font-semibold mb-2 text-base-content">JavaScript Frameworks</h3>
+            <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
+                {% if frontendOptions %}
+                {% for option in frontendOptions.js %}
+                <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="js" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm shrink-0" {% if option.selected %}checked{% endif %} />
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
+                        <p class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
+                    </div>
+                </label>
+                {% endfor %}
+                {% else %}
+                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="js" value="alpinejs" class="checkbox checkbox-primary checkbox-sm" checked />
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-semibold text-base-content">Alpine.js</h4>
+                        <p class="text-xs text-base-content/60">Lightweight reactive JavaScript</p>
+                            </div>
+                </label>
+                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
+                    <input type="checkbox" name="js" value="typescript" class="checkbox checkbox-primary checkbox-sm" />
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-semibold text-base-content">TypeScript</h4>
+                        <p class="text-xs text-base-content/60">Type-safe JavaScript</p>
+                    </div>
+                </label>
+                {% endif %}
+            </div>
+        </div>
+
+        {% set nextButtonLabel = 'Next: AI Agents' %}
+        {% set showBackButton = true %}
+        {% include "partials/form-navigation.html" %}
+    </form>
+</div>

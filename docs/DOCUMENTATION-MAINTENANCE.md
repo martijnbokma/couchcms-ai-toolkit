@@ -172,14 +172,14 @@ Always use these preferred terms:
 ### Formatting Standards
 
 #### File Paths
-- Use backticks for all file paths: `` `scripts/sync.js` ``
+- Use backticks for all file paths: `` `scripts/cli/sync.js` ``
 - Use relative paths from project root: `` `./docs/README.md` ``
 - Be consistent with leading `./` for relative paths
 
 #### Commands
 - Always use code blocks with language specifiers:
   ```bash
-  bun scripts/sync.js
+  bun scripts/cli/sync.js
   ```
 - Include full commands, not partial examples
 - Test all commands before documenting
@@ -279,7 +279,7 @@ Generate monthly reports including:
 ### Audit Tool Issues
 
 **Problem**: Audit tool reports false positives
-- **Solution**: Review and update validation patterns in `scripts/audit-docs.js`
+- **Solution**: Review and update validation patterns in `scripts/create/audit-docs.js`
 - **Prevention**: Test audit tool with edge cases during development
 
 **Problem**: Audit tool misses actual issues

@@ -402,7 +402,9 @@ function getDevToolDescription(name) {
     const descriptions = {
         'bun': 'Bun runtime and build tooling',
         'git': 'Git version control',
-        'mysql': 'Database operations'
+        'mysql': 'Database operations',
+        'prompt-engineering': 'Prompt engineering best practices and AI workflow optimization',
+        'prompt-validator': 'Continuous prompt validation and SSOT compliance checking'
     }
     return descriptions[name] || `Development tool: ${name}`
 }

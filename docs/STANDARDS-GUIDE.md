@@ -124,7 +124,7 @@ if (hasStandards(process.cwd())) {
     console.log('✓ standards.md found')
 } else {
     console.log('❌ No standards.md found')
-    console.log('Run: bun ai-toolkit-shared/scripts/init.js')
+    console.log('Run: bun ai-toolkit-shared/scripts/cli/init.js')
 }
 ```
 
@@ -178,7 +178,7 @@ console.log(`Using: ${fileName}`)
 4. **Test detection**:
 
     ```bash
-    bun ai-toolkit-shared/scripts/validate.js
+    bun ai-toolkit-shared/scripts/cli/validate.js
     ```
 
 5. **Remove project.md** (optional):
@@ -245,7 +245,7 @@ The validate script now:
 git submodule add ... ai-toolkit-shared
 
 # Run init (creates docs/standards.md)
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 ```text
 
 ### 2. Customize Standards
@@ -262,7 +262,7 @@ code docs/standards.md
 
 ```bash
 # Generate AI configs from standards.md
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Creates:
 # - .cursorrules (references standards.md)
@@ -274,7 +274,7 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ```bash
 # Check standards compliance
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # Reports:
 # - Standards structure ✓
@@ -337,7 +337,7 @@ test -f .project/standards.md && echo "Found" || echo "Not found"
 
 ```bash
 # Validate YAML syntax
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # Check for:
 # - Proper indentation (spaces, not tabs)
@@ -349,7 +349,7 @@ bun ai-toolkit-shared/scripts/validate.js
 
 ```bash
 # Regenerate prompts
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Check generated files
 grep "standards.md" .cursorrules

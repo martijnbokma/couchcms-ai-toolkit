@@ -45,6 +45,7 @@ The agent loader automatically searches these subdirectories, so agent names rem
 | `admin-panel-theming` | Admin panel customization and theming      |
 | `alpinejs`        | Lightweight reactive JavaScript for CouchCMS   |
 | `archives`        | Archive views by time periods (yearly/monthly/daily) |
+| `javascript`      | Modern JavaScript for CouchCMS projects         |
 | `bun`             | Bun runtime, package management, build tooling |
 | `comments`        | Comment system with moderation and CAPTCHA     |
 | `couchcms`        | Core CouchCMS templates, tags, patterns        |
@@ -119,6 +120,7 @@ agents:
   - on-page-editing
   - admin-panel-theming
   - tailwindcss
+  - javascript
   - alpinejs
   - typescript
 ```

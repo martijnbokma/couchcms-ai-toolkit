@@ -208,7 +208,7 @@ git commit -m "chore: Bump version to 1.3.1"
 bun test
 
 # Run validation
-bun scripts/validate.js
+bun scripts/cli/validate.js
 
 # Manual testing
 # - Test the fix

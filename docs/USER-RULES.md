@@ -59,15 +59,15 @@ The toolkit provides a template you should use. Generate it with:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```text
 
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```text
 
 This creates `USER-RULES.md` in your project with a template you should copy to Cursor Settings.

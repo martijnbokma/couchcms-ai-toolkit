@@ -13,6 +13,7 @@ Frontend agents are **optional** and provide specialized assistance for frontend
 - **`admin-panel-theming`** - CouchCMS admin panel customization and theming
 
 ### Interactivity
+- **`javascript`** - Modern JavaScript for CouchCMS projects
 - **`alpinejs`** - Lightweight reactive JavaScript for CouchCMS integration
 - **`typescript`** - Type-safe TypeScript for CouchCMS projects
 
@@ -23,6 +24,7 @@ Add agents to `standards.md`:
 ```yaml
 agents:
     - tailwindcss    # Optional - only if you use TailwindCSS
+    - javascript     # Optional - only if you use modern JavaScript
     - alpinejs       # Optional - only if you use Alpine.js
     - typescript     # Optional - only if you use TypeScript
 ```
@@ -37,6 +39,7 @@ agents:
 
 - **`tailwindcss`**: When you use TailwindCSS for styling
 - **`admin-panel-theming`**: When you customize the CouchCMS admin panel
+- **`javascript`**: When you use modern JavaScript (ES6+) for frontend logic
 - **`alpinejs`**: When you use Alpine.js for interactions
 - **`typescript`**: When you use TypeScript for frontend logic
 

@@ -7,6 +7,9 @@ dist/
 build/
 *.log
 
+# Web build outputs (these are generated, but should be committed for easy deployment)
+# web/public/dist/
+
 # OS files
 .DS_Store
 Thumbs.db

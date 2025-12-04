@@ -146,10 +146,10 @@ agents:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```text
 
 This generates:
@@ -177,7 +177,7 @@ The toolkit now automatically detects your project type, frameworks, and languag
 ### How It Works
 
 ```bash
-bun scripts/init.js
+bun scripts/cli/init.js
 
 # Output:
 🔍 Detecting project...
@@ -221,7 +221,7 @@ Choose from 8 predefined configurations during setup.
 ### Using Presets
 
 ```bash
-bun scripts/init.js
+bun scripts/cli/init.js
 
 # Choose mode:
 🎯 Setup mode:
@@ -267,7 +267,7 @@ Auto-sync configs when your configuration file changes.
 
 ```bash
 # Start watch mode
-bun scripts/sync.js --watch
+bun scripts/cli/sync.js --watch
 
 # Or use npm script
 cd ai-toolkit-shared && bun run sync:watch
@@ -312,7 +312,7 @@ Validate your toolkit installation and check for issues.
 ### Usage
 
 ```bash
-bun scripts/health.js
+bun scripts/cli/health.js
 
 # Or use npm script
 cd ai-toolkit-shared && bun run health
@@ -352,7 +352,7 @@ cd ai-toolkit-shared && bun run health
 
 📄 Generated Files
   ⚠️  Outdated files: Cursor rules, Claude settings
-      → Run: bun ai-toolkit-shared/scripts/sync.js
+      → Run: bun ai-toolkit-shared/scripts/cli/sync.js
 
 🔄 Updates
   ⚠️  Toolkit is 3 commit(s) behind
@@ -396,7 +396,7 @@ Get notified when toolkit updates are available.
 Force an update check:
 
 ```bash
-bun scripts/health.js
+bun scripts/cli/health.js
 ```
 
 ### Disable Notifications
@@ -411,11 +411,11 @@ Browse and select modules/agents with a terminal UI.
 
 ```bash
 # Browse modules
-bun scripts/browse.js
-bun scripts/browse.js --modules
+bun scripts/cli/browse.js
+bun scripts/cli/browse.js --modules
 
 # Browse agents
-bun scripts/browse.js --agents
+bun scripts/cli/browse.js --agents
 
 # Or use npm scripts
 cd ai-toolkit-shared && bun run browse
@@ -465,7 +465,7 @@ Selected: 3/15
 
 ```bash
 # Manual setup
-bun scripts/init.js
+bun scripts/cli/init.js
 # Answer 5-10 questions
 # Manually select modules from list
 # Manually select agents from list
@@ -478,34 +478,34 @@ git status
 cd ..
 
 # Sync after config changes
-bun scripts/sync.js
+bun scripts/cli/sync.js
 # Edit config
-bun scripts/sync.js
+bun scripts/cli/sync.js
 # Edit config
-bun scripts/sync.js
+bun scripts/cli/sync.js
 ```bash
 
 ### Now (Current Version)
 
 ```bash
 # Auto setup
-bun scripts/init.js
+bun scripts/cli/init.js
 # Choose "Auto" mode
 # Done! Everything detected and configured
 
 # Or use preset
-bun scripts/init.js
+bun scripts/cli/init.js
 # Choose "Preset" mode
 # Select "Blog"
 # Done!
 
 # Watch mode
-bun scripts/sync.js --watch
+bun scripts/cli/sync.js --watch
 # Edit config as much as you want
 # Auto-syncs on save
 
 # Health check
-bun scripts/health.js
+bun scripts/cli/health.js
 # See everything at a glance
 ```
 
@@ -528,7 +528,7 @@ git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-too
 cd ai-toolkit-shared && bun install && cd ..
 
 # 2. Auto setup
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 # Choose "Auto" mode
 
 # 3. Start coding!
@@ -539,23 +539,23 @@ bun ai-toolkit-shared/scripts/init.js
 
 ```bash
 # 1. Health check
-bun ai-toolkit-shared/scripts/health.js
+bun ai-toolkit-shared/scripts/cli/health.js
 
 # 2. Update if needed
 cd ai-toolkit-shared && git pull && cd ..
 
 # 3. Adjust config if needed
-bun ai-toolkit-shared/scripts/browse.js
+bun ai-toolkit-shared/scripts/cli/browse.js
 
 # 4. Sync
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 ```
 
 ### Active Development
 
 ```bash
 # Start watch mode
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 
 # Edit config as needed
 # Configs auto-update on save
@@ -587,13 +587,13 @@ Follow the suggested fixes in the output:
 
 ```text
 ❌ Missing files: Cursor rules
-    → Run: bun ai-toolkit-shared/scripts/sync.js
+    → Run: bun ai-toolkit-shared/scripts/cli/sync.js
 ```
 
 ### Update Notifier Not Showing
 
 - Checks only run once per 24 hours
-- Run `bun scripts/health.js` to force a check
+- Run `bun scripts/cli/health.js` to force a check
 - Make sure you're in a git repository
 
 ## 📚 Next Steps

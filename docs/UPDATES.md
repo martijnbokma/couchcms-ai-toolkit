@@ -89,7 +89,7 @@ Use this in CI/CD or when you're confident about updating.
 ### Force Check
 
 ```bash
-bun scripts/update.js --force
+bun scripts/cli/update.js --force
 ```
 
 Bypasses the 24-hour cache and checks immediately.
@@ -132,7 +132,7 @@ After updating, you can want to:
 If update check fails:
 - Check internet connection
 - Verify git repository is intact: `git status`
-- Try force check: `bun scripts/update.js --force`
+- Try force check: `bun scripts/cli/update.js --force`
 
 ### Update Apply Fails
 

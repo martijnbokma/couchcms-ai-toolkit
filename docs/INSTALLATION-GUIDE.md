@@ -10,7 +10,7 @@ This works from your project root directory:
 
 ```bash
 # From your project root (where ai-toolkit-shared submodule is located)
-bun ai-toolkit-shared/scripts/toolkit.js install
+bun ai-toolkit-shared/scripts/cli/toolkit.js install
 ```
 
 **When to use:** When the toolkit is added as a git submodule (`ai-toolkit-shared`)
@@ -26,11 +26,11 @@ After installation, you can add a script to your `package.json` for easier use:
 
 ```bash
 # Run this once from your project root
-bun ai-toolkit-shared/scripts/add-toolkit-script.js
+bun ai-toolkit-shared/scripts/utils/add-toolkit-script.js
 ```
 
 **What it does:**
-- ✅ Adds `"toolkit": "bun ai-toolkit-shared/scripts/toolkit.js"` to your `package.json`
+- ✅ Adds `"toolkit": "bun ai-toolkit-shared/scripts/cli/toolkit.js"` to your `package.json`
 - ✅ Only adds if it doesn't already exist
 - ✅ Preserves all existing scripts and settings
 - ✅ Safe to run multiple times
@@ -106,7 +106,7 @@ bun bin/toolkit install
 1. **Use direct path (recommended):**
    ```bash
    # From project root
-   bun ai-toolkit-shared/scripts/toolkit.js install
+   bun ai-toolkit-shared/scripts/cli/toolkit.js install
    ```
 
 2. **Link globally (optional):**
@@ -138,14 +138,14 @@ Test if toolkit is working:
 
 ```bash
 # Option 1: Direct path (recommended)
-bun ai-toolkit-shared/scripts/toolkit.js help
+bun ai-toolkit-shared/scripts/cli/toolkit.js help
 
 # Option 2: Direct command (if linked globally)
 toolkit help
 
 # Option 3: From toolkit directory (for testing)
 cd ai-toolkit-shared
-bun scripts/toolkit.js help
+bun scripts/cli/toolkit.js help
 ```
 
 All should show the same help message.

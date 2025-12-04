@@ -109,8 +109,8 @@ cd ai-toolkit-shared && bun install && cd ..
 # 3. Run setup wizard
 bun run toolkit setup
 # Or use legacy commands:
-# bun ai-toolkit-shared/scripts/create-standards.js
-# bun ai-toolkit-shared/scripts/init.js
+# bun ai-toolkit-shared/scripts/cli/create-standards.js
+# bun ai-toolkit-shared/scripts/cli/init.js
 
 # The wizard will guide you through:
 # - Project name and description
@@ -191,7 +191,7 @@ Choose from 8 predefined configurations during setup:
 | **Minimal** | Bare minimum | Core only |
 | **Full Stack** | Everything included | All modules and agents |
 
-Select during `init` or browse interactively with `bun scripts/browse.js`
+Select during `init` or browse interactively with `bun scripts/cli/browse.js`
 
 ## 🎨 Setup Methods
 
@@ -205,7 +205,7 @@ Choose the setup method that fits your experience level:
 ### Simple Standards Creator
 
 ```bash
-bun ai-toolkit-shared/scripts/create-standards.js
+bun ai-toolkit-shared/scripts/cli/create-standards.js
 # or
 cd ai-toolkit-shared && bun run create
 ```
@@ -225,7 +225,7 @@ cd ai-toolkit-shared && bun run create
 ### Advanced Init
 
 ```bash
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 # or
 cd ai-toolkit-shared && bun run init
 ```
@@ -336,7 +336,7 @@ agents:
 ```bash
 # First-time installation and setup
 # From project root directory (recommended)
-bun ai-toolkit-shared/scripts/toolkit.js install
+bun ai-toolkit-shared/scripts/cli/toolkit.js install
 
 # Configure or reconfigure project
 bun run toolkit setup
@@ -363,31 +363,31 @@ bun run toolkit help
 **Options:**
 ```bash
 # Specify complexity
-bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=easy
-bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=medium
-bun ai-toolkit-shared/scripts/toolkit.js setup --complexity=comprehensive
+bun ai-toolkit-shared/scripts/cli/toolkit.js setup --complexity=easy
+bun ai-toolkit-shared/scripts/cli/toolkit.js setup --complexity=medium
+bun ai-toolkit-shared/scripts/cli/toolkit.js setup --complexity=comprehensive
 
 # Show all options (temporary override)
-bun ai-toolkit-shared/scripts/toolkit.js setup --show-all
+bun ai-toolkit-shared/scripts/cli/toolkit.js setup --show-all
 ```
 
 ### Legacy Commands (Still Work)
 
 ```bash
 # Simple setup wizard (recommended for beginners)
-bun ai-toolkit-shared/scripts/create-standards.js
+bun ai-toolkit-shared/scripts/cli/create-standards.js
 
 # Advanced setup (first time)
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 
 # Health check
-bun ai-toolkit-shared/scripts/health.js
+bun ai-toolkit-shared/scripts/cli/health.js
 
 # Generate/update AI configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Watch mode - auto-sync on config changes
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 **Note:** Legacy commands still work, but use `toolkit` commands for the best experience.
@@ -404,21 +404,21 @@ The toolkit requires the following Node.js packages:
 **These are automatically installed** when you run `bun run toolkit install` or `bun install` in the toolkit directory.
 
 # Interactive module browser
-bun ai-toolkit-shared/scripts/browse.js          # Browse modules
-bun ai-toolkit-shared/scripts/browse.js --agents # Browse agents
+bun ai-toolkit-shared/scripts/cli/browse.js          # Browse modules
+bun ai-toolkit-shared/scripts/cli/browse.js --agents # Browse agents
 # or: cd ai-toolkit-shared && bun run browse
 # or: cd ai-toolkit-shared && bun run browse:agents
 
 # Validate configuration
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 # or: cd ai-toolkit-shared && bun run validate
 
 # Audit documentation for accuracy and consistency
-bun ai-toolkit-shared/scripts/audit-docs.js
+bun ai-toolkit-shared/scripts/create/audit-docs.js
 # or: cd ai-toolkit-shared && bun run audit:docs
 
 # Migrate from old configuration format
-bun ai-toolkit-shared/scripts/migrate.js
+bun ai-toolkit-shared/scripts/cli/migrate.js
 # or: cd ai-toolkit-shared && bun run migrate
 
 # Extend modules from documentation
@@ -430,7 +430,7 @@ cd ai-toolkit-shared && bun run extend-modules --module comments
 
 ```bash
 # Reinstall - update toolkit and regenerate configs (recommended)
-bun ai-toolkit-shared/scripts/reinstall.js
+bun ai-toolkit-shared/scripts/cli/reinstall.js
 # or: cd ai-toolkit-shared && bun run reinstall
 
 # Check for updates (interactive - asks to update)
@@ -587,16 +587,16 @@ This automatically:
 
 ```bash
 # 1. Setup (once)
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 
 # 2. Customize configuration
 code standards.md
 
 # 3. Sync after changes
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # 4. Validate setup
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 ```
 
 📖 See [Commands Reference](docs/COMMANDS.md) for all commands.
@@ -626,10 +626,10 @@ Your custom rules here...
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 📖 See [Config Files Guide](docs/CONFIG-FILES.md) for details.
@@ -683,7 +683,7 @@ ai-toolkit-shared/
 ## 🆘 Need Help?
 
 1. Check [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
-2. ⚙️ Validate setup: `bun ai-toolkit-shared/scripts/validate.js`
+2. ⚙️ Validate setup: `bun ai-toolkit-shared/scripts/cli/validate.js`
 3. 📝 Open an [issue](https://github.com/martijnbokma/couchcms-ai-toolkit/issues)
 
 ## 📄 License

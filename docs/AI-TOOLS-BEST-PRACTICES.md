@@ -99,7 +99,7 @@
 
 ```bash
 # 1. Ensure toolkit is configured
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # 2. Verify .cursorrules exists
 ls -la .cursorrules
@@ -160,7 +160,7 @@ ls -la .cursor/rules/*.mdc
 
 ```bash
 # 1. Sync toolkit configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # 2. Verify Claude files exist
 ls -la CLAUDE.md
@@ -203,7 +203,7 @@ ls -la .claude/settings.json
 - Check Claude Desktop app for updates
 - Follow [Anthropic Blog](https://www.anthropic.com/news) for model updates
 - Review [Claude Code Documentation](https://claude.ai/code)
-- Monitor toolkit updates: `bun ai-toolkit-shared/scripts/update.js`
+- Monitor toolkit updates: `bun ai-toolkit-shared/scripts/cli/update.js`
 
 ---
 
@@ -215,7 +215,7 @@ ls -la .claude/settings.json
 
 ```bash
 # 1. Ensure toolkit sync has run
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # 2. Check Kiro configs
 ls -la .kiro/
@@ -262,7 +262,7 @@ ls -la .kiro/
 
 ```bash
 # 1. Sync toolkit configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # 2. Verify Windsurf recognizes project
 # Check Windsurf settings for project detection
@@ -386,13 +386,13 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ```bash
 # Check for updates (interactive)
-bun ai-toolkit-shared/scripts/update.js
+bun ai-toolkit-shared/scripts/cli/update.js
 
 # Auto-apply updates
-bun ai-toolkit-shared/scripts/update.js --apply
+bun ai-toolkit-shared/scripts/cli/update.js --apply
 
 # Check only (no prompt)
-bun ai-toolkit-shared/scripts/update.js --check
+bun ai-toolkit-shared/scripts/cli/update.js --check
 ```
 
 **Frequency:**
@@ -561,10 +561,10 @@ Before accepting AI suggestions:
 
 ```bash
 # Regular sync ensures latest standards
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Validate compliance
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 ```
 
 **Update Schedule:**
@@ -653,7 +653,7 @@ The toolkit generates:
 code .project/standards.md
 
 # 2. Sync to all tools
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # 3. Reload editor/restart tool
 # Configs are now updated
@@ -663,10 +663,10 @@ bun ai-toolkit-shared/scripts/sync.js
 
 ```bash
 # Check compliance
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # Health check
-bun ai-toolkit-shared/scripts/health.js
+bun ai-toolkit-shared/scripts/cli/health.js
 ```
 
 ### 5. **Module & Agent System**
@@ -697,10 +697,10 @@ The toolkit provides:
 
 ### Weekly Maintenance
 
-- [ ] Check for toolkit updates: `bun ai-toolkit-shared/scripts/update.js`
+- [ ] Check for toolkit updates: `bun ai-toolkit-shared/scripts/cli/update.js`
 - [ ] Review tool updates (Cursor, Claude, etc.)
-- [ ] Sync configs if standards changed: `bun ai-toolkit-shared/scripts/sync.js`
-- [ ] Validate compliance: `bun ai-toolkit-shared/scripts/validate.js`
+- [ ] Sync configs if standards changed: `bun ai-toolkit-shared/scripts/cli/sync.js`
+- [ ] Validate compliance: `bun ai-toolkit-shared/scripts/cli/validate.js`
 
 ### Monthly Review
 
@@ -723,7 +723,7 @@ The toolkit provides:
 ### Common Issues
 
 **Problem:** AI suggestions don't follow project standards
-**Solution:** Run `bun ai-toolkit-shared/scripts/sync.js` to update configs
+**Solution:** Run `bun ai-toolkit-shared/scripts/cli/sync.js` to update configs
 
 **Problem:** Tool doesn't recognize project structure
 **Solution:** Check that `standards.md` is properly configured and synced

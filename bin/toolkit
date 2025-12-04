@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Path to the actual toolkit script
-const toolkitScript = join(__dirname, '..', 'scripts', 'toolkit.js')
+const toolkitScript = join(__dirname, '..', 'scripts', 'cli', 'toolkit.js')
 
 // Get all arguments except node/bun and script name
 const args = process.argv.slice(2)

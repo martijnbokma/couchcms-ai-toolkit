@@ -1,0 +1,28 @@
+/* ==========================================================================
+   Common CSS Utilities
+   ==========================================================================
+   Standalone utility classes for common UI patterns.
+   Imported by input.css for TailwindCSS compilation.
+   ========================================================================== */
+
+@layer components {
+    /* ----------------------------------------------------------------------
+       Scrollbar Hide Utility
+       ----------------------------------------------------------------------
+       Hides scrollbar while maintaining scroll functionality.
+       Used for horizontal scrolling containers on mobile devices.
+
+       Browser Support:
+       - Modern browsers: scrollbar-width: none
+       - WebKit browsers: ::-webkit-scrollbar display: none
+       - IE/Edge: -ms-overflow-style: none
+    */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}

@@ -18,7 +18,7 @@ Use this wizard when:
 
 ```bash
 # From your project directory
-bun ai-toolkit-shared/scripts/create-standards.js
+bun ai-toolkit-shared/scripts/cli/create-standards.js
 
 # Or via npm script (if toolkit is installed)
 bun run create
@@ -116,7 +116,7 @@ Create standards.md with these settings? (Y/n): Y
 
   1. Review .project/standards.md
   2. Add project-specific rules at the bottom
-  3. Run "bun ai-toolkit-shared/scripts/sync.js" to update configs
+  3. Run "bun ai-toolkit-shared/scripts/cli/sync.js" to update configs
 ```
 
 ## Difference from `init.js`
@@ -145,7 +145,7 @@ After creating `standards.md`:
 
 1. **Review the file**: Open `.project/standards.md` and check the settings
 2. **Add project-specific rules**: At the bottom of the file, you can add your own rules
-3. **Re-sync**: Run `bun ai-toolkit-shared/scripts/sync.js` if you make changes
+3. **Re-sync**: Run `bun ai-toolkit-shared/scripts/cli/sync.js` if you make changes
 4. **Start developing**: Your AI assistants are now configured!
 
 ## Tips
@@ -153,7 +153,7 @@ After creating `standards.md`:
 - **Not sure?** Choose a project type that most closely matches what you want to build
 - **Too many modules?** You can remove modules later in `standards.md`
 - **Too few modules?** You can add modules later in `standards.md`
-- **Want more control?** Use `bun ai-toolkit-shared/scripts/init.js`
+- **Want more control?** Use `bun ai-toolkit-shared/scripts/cli/init.js`
 
 ## Troubleshooting
 
@@ -177,7 +177,7 @@ If sync fails, try:
 
 ```bash
 # Check toolkit status and updates
-bun ai-toolkit-shared/scripts/health.js
+bun ai-toolkit-shared/scripts/cli/health.js
 ```
 
 This checks if everything is correctly configured.

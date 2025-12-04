@@ -15,7 +15,7 @@ export async function runInitialSync(projectDir, toolkitRoot) {
     console.log('\n🔄 Running initial sync...\n')
 
     try {
-        const syncScript = join(toolkitRoot, 'scripts', 'sync.js')
+        const syncScript = join(toolkitRoot, 'scripts', 'cli', 'sync.js')
 
         if (existsSync(syncScript)) {
             // Execute sync script

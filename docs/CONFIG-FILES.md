@@ -214,7 +214,7 @@ Core:
 - `couchcms`, `databound-forms`, `custom-routes`
 
 Frontend:
-- `alpinejs`, `tailwindcss`, `typescript`
+- `javascript`, `alpinejs`, `tailwindcss`, `typescript`
 
 Content:
 - `views`, `folders`, `archives`, `relationships`, `repeatable-regions`
@@ -265,7 +265,7 @@ Run the interactive setup wizard:
 ```bash
 # Run the advanced setup wizard
 # This provides full control over modules, agents, and configuration
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 
 # The wizard will guide you through:
 # - Project name and description
@@ -291,10 +291,10 @@ Generate/update AI configs:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 ### 4. Validate
@@ -304,7 +304,7 @@ Check configuration is valid:
 ```bash
 # Validate your project configuration and check compliance
 # This checks for errors in standards.md and missing files
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # The validation will show:
 # - Configuration file status
@@ -319,7 +319,7 @@ Auto-sync when `standards.md` changes:
 
 ```bash
 # Generate AI configuration files
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 ---
@@ -405,7 +405,7 @@ The toolkit validates your configuration automatically:
 ```bash
 # Validate your project configuration and check compliance
 # This checks for errors in standards.md and missing files
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # The validation will show:
 # - Configuration file status
@@ -529,7 +529,7 @@ Consider creating context files when:
 
 ### Q: Do I need to run sync after every change?
 
-**Answer:** Yes, or use watch mode: `bun scripts/sync.js --watch`
+**Answer:** Yes, or use watch mode: `bun scripts/cli/sync.js --watch`
 
 ### Q: What happened to config.yaml?
 
@@ -547,7 +547,7 @@ Consider creating context files when:
 ```bash
 # Run the advanced setup wizard
 # This provides full control over modules, agents, and configuration
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 
 # The wizard will guide you through:
 # - Project name and description
@@ -576,7 +576,7 @@ bun ai-toolkit-shared/scripts/init.js
 **Error:** Various sync errors
 
 **Solution:**
-1. Validate config: `bun scripts/validate.js`
+1. Validate config: `bun scripts/cli/validate.js`
 2. 🔍 Check toolkit path is correct
 3. ⚙️ Ensure toolkit dependencies are installed: `cd ai-toolkit-shared && bun install`
 

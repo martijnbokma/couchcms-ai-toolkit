@@ -200,7 +200,7 @@ modules:
 
 Run `toolkit sync` to generate AI configs:
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js sync
+bun ai-toolkit-shared/scripts/cli/toolkit.js sync
 ```
 
 ### Step 3: AI Configs Generated

@@ -12,13 +12,13 @@ Common issues and solutions.
 
 ```bash
 # Instead of: toolkit install
-bun ai-toolkit-shared/scripts/toolkit.js install
+bun ai-toolkit-shared/scripts/cli/toolkit.js install
 
 # Instead of: toolkit setup
-bun ai-toolkit-shared/scripts/toolkit.js setup
+bun ai-toolkit-shared/scripts/cli/toolkit.js setup
 
 # Instead of: toolkit sync
-bun ai-toolkit-shared/scripts/toolkit.js sync
+bun ai-toolkit-shared/scripts/cli/toolkit.js sync
 ```
 
 **Important:** Run these commands from your **project root** directory, not from inside `ai-toolkit-shared`.
@@ -27,7 +27,7 @@ bun ai-toolkit-shared/scripts/toolkit.js sync
 
 ```bash
 # Run this once from your project root
-bun ai-toolkit-shared/scripts/add-toolkit-script.js
+bun ai-toolkit-shared/scripts/utils/add-toolkit-script.js
 
 # Then you can use:
 bun run toolkit install
@@ -58,7 +58,7 @@ bun install
 Then try again:
 
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js install
+bun ai-toolkit-shared/scripts/cli/toolkit.js install
 ```
 
 ## Wrong Directory
@@ -72,11 +72,11 @@ bun ai-toolkit-shared/scripts/toolkit.js install
 ```bash
 # Correct: From project root
 cd ~/my-project
-bun ai-toolkit-shared/scripts/toolkit.js install
+bun ai-toolkit-shared/scripts/cli/toolkit.js install
 
 # Wrong: From toolkit directory
 cd ~/my-project/ai-toolkit-shared
-bun scripts/toolkit.js install  # This won't work correctly (wrong working directory)
+bun scripts/cli/toolkit.js install  # This won't work correctly (wrong working directory)
 ```
 
 ## Configuration File Not Found
@@ -88,16 +88,16 @@ bun scripts/toolkit.js install  # This won't work correctly (wrong working direc
 **Solution:** Run setup:
 
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js install
+bun ai-toolkit-shared/scripts/cli/toolkit.js install
 # or
-bun ai-toolkit-shared/scripts/toolkit.js setup
+bun ai-toolkit-shared/scripts/cli/toolkit.js setup
 ```
 
 ## Still Having Issues?
 
 1. Check installation status:
    ```bash
-   bun ai-toolkit-shared/scripts/toolkit.js health
+   bun ai-toolkit-shared/scripts/cli/toolkit.js health
    ```
 
 2. Verify dependencies:

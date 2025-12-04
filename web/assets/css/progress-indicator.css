@@ -1,0 +1,31 @@
+/* ==========================================================================
+   Progress Indicator Component Styles
+   ==========================================================================
+   Styles for the wizard progress indicator component.
+   Imported by input.css for TailwindCSS compilation.
+   ========================================================================== */
+
+@layer components {
+    /* ----------------------------------------------------------------------
+       Progress Line Positioning
+       ----------------------------------------------------------------------
+       Positions progress bar perfectly centered on step circles.
+
+       Calculation:
+       - Mobile: button padding (4px) + circle radius (14px) = 18px from top
+       - Desktop: button padding (4px) + circle radius (16px) = 20px from top
+
+       Uses transform to center vertically on calculated position.
+       Breakpoint matches TailwindCSS sm: breakpoint (640px).
+    */
+    .progress-line {
+        top: 18px;
+        transform: translateY(-50%);
+    }
+
+    @media (min-width: 640px) {
+        .progress-line {
+            top: 20px;
+        }
+    }
+}

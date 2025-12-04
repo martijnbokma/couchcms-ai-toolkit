@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@source "../../templates/**/*.html";
+@source "../**/*.{js,css}";
+
+@plugin "daisyui" {
+    themes: light --default;
+}
+
+/* ==========================================================================
+   Component Layer - Custom Utilities
+   ==========================================================================
+   Import standalone utility files to avoid duplication.
+   Single source of truth for all custom component styles.
+   ========================================================================== */
+
+@import "./common.css";
+@import "./progress-indicator.css";

@@ -67,7 +67,7 @@ cd ..
 ```bash
 # Run the advanced setup wizard
 # This provides full control over modules, agents, and configuration
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 
 # The wizard will guide you through:
 # - Project name and description
@@ -119,10 +119,10 @@ rm -f defaults.yaml smart-defaults.yaml preflight-checks.yaml config.yaml
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```text
 
 ### 6. Verify Migration Success
@@ -137,13 +137,13 @@ test -f standards.md && echo "✅ standards.md found" || echo "❌ standards.md 
 ! test -f defaults.yaml && ! test -f smart-defaults.yaml && ! test -f preflight-checks.yaml && ! test -f config.yaml && ! test -d .project && echo "✅ Old files removed" || echo "❌ Old files still present"
 
 # 3. Verify configuration is valid
-bun ai-toolkit-shared/scripts/validate.js && echo "✅ Configuration valid" || echo "❌ Configuration has errors"
+bun ai-toolkit-shared/scripts/cli/validate.js && echo "✅ Configuration valid" || echo "❌ Configuration has errors"
 
 # 4. Verify generated files are created
 test -f .cursorrules && echo "✅ .cursorrules generated" || echo "❌ .cursorrules missing"
 
 # 5. Test sync process
-bun ai-toolkit-shared/scripts/sync.js && echo "✅ Sync successful" || echo "❌ Sync failed"
+bun ai-toolkit-shared/scripts/cli/sync.js && echo "✅ Sync successful" || echo "❌ Sync failed"
 ```
 
 **Expected output after successful migration:**
@@ -311,7 +311,7 @@ rm -f AGENTS.md
 ls -la defaults.yaml smart-defaults.yaml preflight-checks.yaml .project/standards.md
 
 # Test old toolkit functionality
-bun ai-toolkit-shared/scripts/sync.js  # Use old sync command
+bun ai-toolkit-shared/scripts/cli/sync.js  # Use old sync command
 ```text
 
 ### Important Notes

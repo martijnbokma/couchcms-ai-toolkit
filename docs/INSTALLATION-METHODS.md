@@ -71,7 +71,7 @@ curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/ma
 
 ```bash
 # Download installer
-curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/install.js -o install.js
+curl -fsSL https://raw.githubusercontent.com/martijnbokma/couchcms-ai-toolkit/master/scripts/cli/install.js -o install.js
 
 # Run with Bun
 bun install.js
@@ -104,7 +104,7 @@ bun install  # or: npm install
 cd ..
 
 # Step 3: Run setup wizard
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 ```
 
 **Pros:**
@@ -132,7 +132,7 @@ bun install
 cd ..
 
 # Run setup
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 ```text
 
 **Pros:**
@@ -191,7 +191,7 @@ curl -fsSL https://bun.sh/install | bash
 Or use Node.js instead:
 ```bash
 npm install  # instead of: bun install
-node scripts/init.js  # instead of: bun scripts/init.js
+node scripts/cli/init.js  # instead of: bun scripts/cli/init.js
 ```
 
 ### "git: command not found"
@@ -245,10 +245,10 @@ your-project/
 ```
 
 Next steps:
-1. Check health: `bun ai-toolkit-shared/scripts/health.js`
+1. Check health: `bun ai-toolkit-shared/scripts/cli/health.js`
 2. 🚀 Start coding with your AI assistant
 3. 📝 Modify config: `vim .project/standards.md`
-4. 📝 Re-sync: `bun ai-toolkit-shared/scripts/sync.js`
+4. 📝 Re-sync: `bun ai-toolkit-shared/scripts/cli/sync.js`
 
 ---
 

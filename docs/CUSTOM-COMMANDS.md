@@ -60,10 +60,10 @@ Commands are automatically synced when you run:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```text
 
 This:
@@ -317,11 +317,11 @@ Mention required modules/agents:
 1. **Check directory** - Ensure `.cursor/commands/` exists
 2. ✅ **Verify file extension** - Must be `.md`
 3. 📝 **Restart Cursor** - Sometimes needed after adding commands
-4. 🔍 **Check sync** - Run `bun ai-toolkit-shared/scripts/sync.js`
+4. 🔍 **Check sync** - Run `bun ai-toolkit-shared/scripts/cli/sync.js`
 
 ### Path Variables Not Replaced
 
-1. **Run sync script**: `bun ai-toolkit-shared/scripts/sync.js`
+1. **Run sync script**: `bun ai-toolkit-shared/scripts/cli/sync.js`
 2. ✅ **Check `standards.md`** (or `.project/standards.md`) - Verify path configuration
 3. ✅ **Verify `defaults.yaml`** - Check toolkit has path definitions
 

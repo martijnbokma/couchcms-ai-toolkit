@@ -11,6 +11,8 @@ Dev tool agents are **optional** and provide specialized knowledge for developme
 - **`bun`** - Bun runtime, package management, and build tooling
 - **`git`** - Git version control and workflow management
 - **`mysql`** - Database operations, optimization, and CouchCMS-specific queries
+- **`prompt-engineering`** - Prompt engineering best practices, optimization, and AI workflow architecture
+- **`prompt-validator`** - Continuous prompt validation, quality assurance, and SSOT compliance checking
 
 ## Usage
 
@@ -34,6 +36,8 @@ agents:
 - **`bun`**: When you use Bun as your package manager or runtime
 - **`git`**: When you need help with Git workflows and version control
 - **`mysql`**: When you need help with database optimization or complex queries
+- **`prompt-engineering`**: When you want to optimize AI agent prompts, create reusable prompt templates, or improve AI workflow architecture
+- **`prompt-validator`**: When you need to continuously validate prompts for correctness, completeness, and SSOT compliance before use
 
 ## Key Principle
 

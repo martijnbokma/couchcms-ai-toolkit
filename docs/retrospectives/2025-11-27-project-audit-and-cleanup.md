@@ -76,7 +76,7 @@
 
 1. **Initial setRawMode Error Discovery**
     - **Failure:** `setRawMode` was called without checking if it exists, causing errors in Bun runtime
-    - **User Correction/Feedback:** Error discovered during audit when testing `bun scripts/sync.js --dry-run`
+    - **User Correction/Feedback:** Error discovered during audit when testing `bun scripts/cli/sync.js --dry-run`
     - **Root Cause:** Assumption that Node.js APIs are always available in Bun runtime
     - **Lesson:** Always check for API availability when targeting multiple runtimes
     - **Prevention:** Add runtime compatibility checks for all Node.js-specific APIs when Bun support is required
@@ -106,8 +106,8 @@
 
 - **Files Modified:** 4
   - `.gitignore` - Added backup pattern
-  - `scripts/sync.js` - Fixed setRawMode
-  - `scripts/init.js` - Fixed setRawMode
+  - `scripts/cli/sync.js` - Fixed setRawMode
+  - `scripts/cli/init.js` - Fixed setRawMode
   - `CHANGELOG.md` - Added entries
 - **Files Created:** 1
   - `docs/retrospectives/2025-11-27-project-audit-and-cleanup.md` - This retrospective
@@ -213,7 +213,7 @@ runtime_compatibility:
 **Integration Steps:**
 1. Add check to `preflight-checks.yaml`
 2. Test with sample code
-3. Run `bun scripts/sync.js` to update all agent configs
+3. Run `bun scripts/cli/sync.js` to update all agent configs
 4. Document in `framework/enhancements/smart-operations.md`
 
 ---
@@ -286,7 +286,7 @@ runtime_compatibility:
 
 **Sync Command:**
 ```bash
-bun scripts/sync.js
+bun scripts/cli/sync.js
 ```
 
 **Verification:**
@@ -328,8 +328,8 @@ bun scripts/sync.js
 ### Key Files Modified
 
 - `.gitignore` - Added `*.bak.*` pattern to exclude backup files
-- `scripts/sync.js` - Added runtime check for `setRawMode` (line 1562)
-- `scripts/init.js` - Added runtime check for `setRawMode` (line 894)
+- `scripts/cli/sync.js` - Added runtime check for `setRawMode` (line 1562)
+- `scripts/cli/init.js` - Added runtime check for `setRawMode` (line 894)
 - `CHANGELOG.md` - Added entries under Changed, Fixed, and Removed sections
 
 ### Documentation Created
@@ -349,10 +349,10 @@ rm -f scripts/*.bak.*
 grep "*.bak.*" .gitignore
 
 # Test script functionality
-bun scripts/sync.js --help
+bun scripts/cli/sync.js --help
 
 # Verify changes
-git diff scripts/sync.js scripts/init.js
+git diff scripts/cli/sync.js scripts/cli/init.js
 ```
 
 ### Key Metrics

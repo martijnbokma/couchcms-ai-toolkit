@@ -60,20 +60,20 @@ toolkit: '~/couchcms-ai-toolkit'
 
 ```bash
 # Option A (submodule):
-bun ai-toolkit-shared/scripts/create-standards.js
+bun ai-toolkit-shared/scripts/cli/create-standards.js
 
 # Option B (home directory):
-bun ~/couchcms-ai-toolkit/scripts/create-standards.js
+bun ~/couchcms-ai-toolkit/scripts/cli/create-standards.js
 ```
 
 **For Advanced Users:**
 
 ```bash
 # Option A (submodule):
-bun ai-toolkit-shared/scripts/init.js
+bun ai-toolkit-shared/scripts/cli/init.js
 
 # Option B (home directory):
-bun ~/couchcms-ai-toolkit/scripts/init.js
+bun ~/couchcms-ai-toolkit/scripts/cli/init.js
 ```
 
 **Note:** The setup wizard automatically detects the toolkit location, so you can also run it from your project root and it will find the toolkit.
@@ -139,7 +139,7 @@ Add your custom coding standards here...
 ### 4. Generate Configurations
 
 ```bash
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 ```
 
 This creates:
@@ -215,14 +215,14 @@ After setup:
 
 1. **Validate configuration:**
    ```bash
-   bun ai-toolkit-shared/scripts/validate.js
+   bun ai-toolkit-shared/scripts/cli/validate.js
    ```
 
 2. **Customize `.project/standards.md`** with your specific rules
 
 3. **Re-sync after changes:**
    ```bash
-   bun ai-toolkit-shared/scripts/sync.js
+   bun ai-toolkit-shared/scripts/cli/sync.js
    ```
 
 4. **Reload your editor** to apply new configurations
@@ -241,7 +241,7 @@ bun install  # Update dependencies if needed
 cd ..
 
 # Regenerate configurations
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 ```
 
 **Upgrading from old format?** See [Migration Guide](MIGRATION.md)
@@ -294,7 +294,7 @@ The framework enables the **Autonomous Agent Prompting Framework (AAPF)** for st
 
 ### Can I change modules later?
 
-Yes. Edit `.project/standards.md`, then run `bun ai-toolkit-shared/scripts/sync.js`.
+Yes. Edit `.project/standards.md`, then run `bun ai-toolkit-shared/scripts/cli/sync.js`.
 
 ### Do I need to commit generated files?
 
@@ -318,7 +318,7 @@ Yes. Commit `.cursorrules`, `CLAUDE.md`, and `AGENTS.md` so all team members use
 ## Troubleshooting
 
 **Quick fixes:**
-- Run `bun ai-toolkit-shared/scripts/validate.js` to identify issues
+- Run `bun ai-toolkit-shared/scripts/cli/validate.js` to identify issues
 - Check error messages - they now include specific solutions
 - See [Troubleshooting Guide](TROUBLESHOOTING.md) for detailed help
 

@@ -23,7 +23,7 @@ Choose your path:
 
 2. **Start the web interface:**
    ```bash
-   bun ai-toolkit-shared/scripts/toolkit.js serve
+   bun ai-toolkit-shared/scripts/cli/toolkit.js serve
    ```
 
 3. **Open your browser:**
@@ -49,7 +49,7 @@ Choose your path:
 2. **Run unified install command:**
    ```bash
    # From project root (recommended)
-   bun ai-toolkit-shared/scripts/toolkit.js install
+   bun ai-toolkit-shared/scripts/cli/toolkit.js install
    ```
 
    **Note:** You must run this from your project root directory, not from inside `ai-toolkit-shared`.
@@ -83,7 +83,7 @@ Choose your path:
 
 **Command:**
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js setup
+bun ai-toolkit-shared/scripts/cli/toolkit.js setup
 ```
 
 **Options:**
@@ -93,7 +93,7 @@ bun ai-toolkit-shared/scripts/toolkit.js setup
 
 **Change complexity later:**
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js reconfigure
+bun ai-toolkit-shared/scripts/cli/toolkit.js reconfigure
 ```
 
 ---
@@ -104,7 +104,7 @@ bun ai-toolkit-shared/scripts/toolkit.js reconfigure
 
 **Command:**
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js sync
+bun ai-toolkit-shared/scripts/cli/toolkit.js sync
 ```
 
 **What it does:**
@@ -114,7 +114,7 @@ bun ai-toolkit-shared/scripts/toolkit.js sync
 
 **Watch mode** (auto-sync on changes):
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js sync --watch
+bun ai-toolkit-shared/scripts/cli/toolkit.js sync --watch
 ```
 
 ---
@@ -125,8 +125,8 @@ bun ai-toolkit-shared/scripts/toolkit.js sync --watch
 
 **Commands:**
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js health    # Check installation status
-bun ai-toolkit-shared/scripts/toolkit.js validate # Validate configuration compliance
+bun ai-toolkit-shared/scripts/cli/toolkit.js health    # Check installation status
+bun ai-toolkit-shared/scripts/cli/toolkit.js validate # Validate configuration compliance
 ```
 
 **What they check:**
@@ -143,9 +143,9 @@ bun ai-toolkit-shared/scripts/toolkit.js validate # Validate configuration compl
 
 **Command:**
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js browse              # Browse all
-bun ai-toolkit-shared/scripts/toolkit.js browse --modules   # Browse modules only
-bun ai-toolkit-shared/scripts/toolkit.js browse --agents    # Browse agents only
+bun ai-toolkit-shared/scripts/cli/toolkit.js browse              # Browse all
+bun ai-toolkit-shared/scripts/cli/toolkit.js browse --modules   # Browse modules only
+bun ai-toolkit-shared/scripts/cli/toolkit.js browse --agents    # Browse agents only
 ```
 
 ---
@@ -171,7 +171,7 @@ bun ai-toolkit-shared/scripts/toolkit.js browse --agents    # Browse agents only
 git submodule add https://github.com/martijnbokma/couchcms-ai-toolkit.git ai-toolkit-shared
 
 # Install and setup (unified command)
-bun ai-toolkit-shared/scripts/toolkit.js install
+bun ai-toolkit-shared/scripts/cli/toolkit.js install
 ```
 
 **Expected output:**
@@ -225,7 +225,7 @@ Choice [1-3]: _
 After setup, generate your AI editor configs:
 
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js sync
+bun ai-toolkit-shared/scripts/cli/toolkit.js sync
 ```
 
 **What gets generated:**
@@ -241,7 +241,7 @@ bun ai-toolkit-shared/scripts/toolkit.js sync
 ### Step 5: Verify Setup
 
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js health
+bun ai-toolkit-shared/scripts/cli/toolkit.js health
 ```
 
 **Expected output:**
@@ -314,7 +314,7 @@ bun ai-toolkit-shared/scripts/toolkit.js health
 
 **Quick Fix:**
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js install
+bun ai-toolkit-shared/scripts/cli/toolkit.js install
 ```
 
 The unified command installs dependencies automatically.
@@ -325,7 +325,7 @@ The unified command installs dependencies automatically.
 
 **Quick Fix:**
 ```bash
-bun ai-toolkit-shared/scripts/toolkit.js setup
+bun ai-toolkit-shared/scripts/cli/toolkit.js setup
 ```
 
 ### Toolkit Path Not Found
@@ -360,4 +360,4 @@ The toolkit auto-detects its location. If detection fails:
 
 ---
 
-**Ready to start?** Run `bun ai-toolkit-shared/scripts/toolkit.js install` now! 🚀
+**Ready to start?** Run `bun ai-toolkit-shared/scripts/cli/toolkit.js install` now! 🚀

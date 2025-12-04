@@ -24,6 +24,7 @@ AI agents provide specialized guidance for specific development tasks.
 | `@admin-panel-theming` | Development | Admin panel customization |
 | `@custom-routes` | Utility | Clean URLs and routing |
 | `@alpinejs` | Utility | Reactive JavaScript integration |
+| `@javascript` | Utility | Modern JavaScript development |
 | `@tailwindcss` | Utility | Styling with TailwindCSS |
 | `@typescript` | Utility | Type-safe development |
 | `@bun` | Utility | Runtime and package management |
@@ -279,6 +280,21 @@ Alpine.js development with CouchCMS integration.
 
 ---
 
+### javascript
+
+Modern JavaScript development for CouchCMS projects.
+
+**Use for:**
+
+- ES6+ features and patterns
+- Functional programming
+- Performance optimization
+- Alpine.js integration utilities
+- DOM manipulation
+- Event handling
+
+---
+
 ### tailwindcss
 
 TailwindCSS 4 + daisyUI 5 styling.
@@ -391,6 +407,7 @@ agents:
 agents:
     - couchcms
     - tailwindcss
+    - javascript
     - alpinejs
     - typescript
 ```
@@ -404,6 +421,7 @@ agents:
     - search
     - pagination
     - tailwindcss
+    - javascript
     - alpinejs
     - typescript
     - git
@@ -451,6 +469,7 @@ agents:
     - on-page-editing
     - admin-panel-theming
     - tailwindcss
+    - javascript
     - alpinejs
     - typescript
     - custom-routes
@@ -490,10 +509,10 @@ Then sync:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 ---

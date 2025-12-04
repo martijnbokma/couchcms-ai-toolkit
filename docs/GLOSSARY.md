@@ -101,7 +101,7 @@ Your custom rules and documentation here...
 **See also:** [Configuration File](#configuration-file), [YAML Frontmatter](#yaml-frontmatter)
 
 ### Sync
-The process of generating AI configuration files (`.cursorrules`, `CLAUDE.md`, `AGENTS.md`, etc.) from your `standards.md` file. Run `bun ai-toolkit-shared/scripts/sync.js` after making changes to `standards.md`.
+The process of generating AI configuration files (`.cursorrules`, `CLAUDE.md`, `AGENTS.md`, etc.) from your `standards.md` file. Run `bun ai-toolkit-shared/scripts/cli/sync.js` after making changes to `standards.md`.
 
 **When to sync:**
 - After creating or modifying `standards.md`

@@ -197,7 +197,7 @@ bun scripts/extend-modules.js --module comments
 
 ```bash
 # After extending modules, sync to your project
-bun scripts/sync.js
+bun scripts/cli/sync.js
 ```yaml
 
 ## Best Practices
@@ -281,7 +281,7 @@ bun scripts/extend-modules.js --module comments
 cat modules/comments.md
 
 # 5. Sync
-bun scripts/sync.js
+bun scripts/cli/sync.js
 ```text
 
 ### Creating New Module
@@ -304,15 +304,15 @@ bun scripts/extend-modules.js --module photo-gallery
 
 4. Sync to projects:
 ```bash
-bun scripts/sync.js
+bun scripts/cli/sync.js
 ```
 
 ## Integration with Sync
 
 After extending modules:
 
-1. **Sync to projects**: `bun scripts/sync.js`
-2. 📝 **Validate**: `bun scripts/validate.js`
+1. **Sync to projects**: `bun scripts/cli/sync.js`
+2. 📝 **Validate**: `bun scripts/cli/validate.js`
 3. ✅ **Test**: Use in a project to verify patterns work
 
 ## See Also

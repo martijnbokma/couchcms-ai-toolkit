@@ -497,7 +497,7 @@ agents:
 Run the sync script to generate updated AI configurations:
 
 ```bash
-bun scripts/sync.js
+bun scripts/cli/sync.js
 ```
 
 This will:
@@ -511,7 +511,7 @@ This will:
 Check that everything is working:
 
 ```bash
-bun scripts/validate.js
+bun scripts/cli/validate.js
 ```
 
 ---
@@ -701,13 +701,13 @@ This module works best when combined with:
 
 ```bash
 # Check configuration
-bun scripts/validate.js
+bun scripts/cli/validate.js
 
 # Test specific module
-bun scripts/validate.js --module your-module
+bun scripts/cli/validate.js --module your-module
 
 # Test specific agent
-bun scripts/validate.js --agent your-agent
+bun scripts/cli/validate.js --agent your-agent
 ```
 
 ### Integration Testing
@@ -751,19 +751,19 @@ bun scripts/validate.js --agent your-agent
 #### Module Not Loading
 ```bash
 # Check file syntax
-bun scripts/validate.js --module your-module
+bun scripts/cli/validate.js --module your-module
 
 # Verify standards.md includes module
 grep "your-module" standards.md
 
 # Regenerate configs
-bun scripts/sync.js
+bun scripts/cli/sync.js
 ```
 
 #### Agent Not Responding
 ```bash
 # Check agent file syntax
-bun scripts/validate.js --agent your-agent
+bun scripts/cli/validate.js --agent your-agent
 
 # Verify agent is in standards.md
 grep "your-agent" standards.md
@@ -787,13 +787,13 @@ grep "your-agent" AGENTS.md
 #### Sync Errors
 ```bash
 # Check for syntax errors
-bun scripts/validate.js
+bun scripts/cli/validate.js
 
 # Check file permissions
 ls -la modules/ agents/
 
 # Regenerate with verbose output
-bun scripts/sync.js --verbose
+bun scripts/cli/sync.js --verbose
 ```
 
 ### Debug Tips

@@ -106,23 +106,23 @@ allowed-tools: Read, Write, Bash, Grep
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 ### Watch Mode (Auto-Sync)
 ```bash
 # Generate AI configuration files
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```bash
 
 ### Validate Configuration
 ```bash
 # Validate your project configuration and check compliance
 # This checks for errors in standards.md and missing files
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # The validation will show:
 # - Configuration file status
@@ -136,7 +136,7 @@ bun ai-toolkit-shared/scripts/validate.js
 # Remove and regenerate
 rm -rf .cursor/rules/
 rm -rf .claude/
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 ```yaml
 
 ---
@@ -164,7 +164,7 @@ agents:
 
 **Workflow:**
 1. Edit `standards.md`
-2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+2. 🚀 Run `bun ai-toolkit-shared/scripts/cli/sync.js`
 3. 📝 All editor configs updated automatically
 
 ---

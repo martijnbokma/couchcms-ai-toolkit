@@ -82,7 +82,7 @@ The toolkit includes these context-aware rules:
 MDC rules are copied from `ai-toolkit-shared/rules/*.mdc`. To customize:
 
 1. Edit rules in the toolkit directory
-2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+2. 🚀 Run `bun ai-toolkit-shared/scripts/cli/sync.js`
 3. 📝 Rules are automatically copied to `.cursor/rules/`
 
 ---
@@ -254,7 +254,7 @@ Skills are generated from your active modules. To customize:
 
 1. Edit module content in `ai-toolkit-shared/modules/`
 2. 📝 Or add custom content to `standards.md`
-3. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+3. 🚀 Run `bun ai-toolkit-shared/scripts/cli/sync.js`
 4. 📝 Skills are automatically regenerated
 
 **Customizing Hooks:**
@@ -331,7 +331,7 @@ GitHub Copilot reads instructions from `.github/copilot-instructions.md` and app
 Instructions are generated from `standards.md`. To customize:
 
 1. Edit `standards.md` (Markdown section)
-2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+2. 🚀 Run `bun ai-toolkit-shared/scripts/cli/sync.js`
 3. 📝 Instructions are automatically updated
 
 ---
@@ -361,7 +361,7 @@ Windsurf reads rules from `.windsurf/rules.md` and applies them during code gene
 Rules are generated from `standards.md`. To customize:
 
 1. Edit `standards.md` (Markdown section)
-2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+2. 🚀 Run `bun ai-toolkit-shared/scripts/cli/sync.js`
 3. 📝 Rules are automatically updated
 
 ---
@@ -394,7 +394,7 @@ Kiro reads steering files from `.kiro/steering/` and uses them to guide code gen
 Steering files are generated from `standards.md`. To customize:
 
 1. Edit `standards.md` (Markdown section)
-2. 🚀 Run `bun ai-toolkit-shared/scripts/sync.js`
+2. 🚀 Run `bun ai-toolkit-shared/scripts/cli/sync.js`
 3. 📝 Steering files are automatically updated
 
 ---
@@ -429,10 +429,10 @@ Run sync to generate all editor configs:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 This generates:
@@ -449,7 +449,7 @@ Auto-sync when `standards.md` changes:
 
 ```bash
 # Generate AI configuration files
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```text
 
 ### 4. Validation
@@ -459,7 +459,7 @@ Validate all configurations:
 ```bash
 # Validate your project configuration and check compliance
 # This checks for errors in standards.md and missing files
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # The validation will show:
 # - Configuration file status
@@ -548,7 +548,7 @@ agents:
 
 **Solution:**
 1. Check `standards.md` exists and is valid
-2. 🚀 Run validation: `bun ai-toolkit-shared/scripts/validate.js`
+2. 🚀 Run validation: `bun ai-toolkit-shared/scripts/cli/validate.js`
 3. 🔍 Check toolkit path is correct
 4. ⚙️ Ensure dependencies are installed: `cd ai-toolkit-shared && bun install`
 
@@ -605,14 +605,14 @@ Update `standards.md` as your project evolves:
 code standards.md
 
 # Sync configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 ```bash
 
 ### 2. Use Watch Mode During Development
 
 ```bash
 # Generate AI configuration files
-bun ai-toolkit-shared/scripts/sync.js --watch
+bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 This auto-syncs configs when you edit `standards.md`.
@@ -622,7 +622,7 @@ This auto-syncs configs when you edit `standards.md`.
 ```bash
 # Validate your project configuration and check compliance
 # This checks for errors in standards.md and missing files
-bun ai-toolkit-shared/scripts/validate.js
+bun ai-toolkit-shared/scripts/cli/validate.js
 
 # The validation will show:
 # - Configuration file status
@@ -722,10 +722,10 @@ Then sync:
 ```bash
 # Generate/update AI configuration files from standards.md
 # This creates .cursorrules, CLAUDE.md, AGENTS.md, and other editor configs
-bun ai-toolkit-shared/scripts/sync.js
+bun ai-toolkit-shared/scripts/cli/sync.js
 
 # Optional: Watch mode - auto-sync when standards.md changes
-# bun ai-toolkit-shared/scripts/sync.js --watch
+# bun ai-toolkit-shared/scripts/cli/sync.js --watch
 ```
 
 ### Module-Specific Skills (Claude Code)
