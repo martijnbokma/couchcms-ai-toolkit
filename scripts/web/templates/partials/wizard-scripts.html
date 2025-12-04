@@ -16,15 +16,77 @@
 
         /**
          * Save complete wizard state to sessionStorage
+         * CRITICAL: Normalize project fields before saving to prevent duplication
          * @param {Object} state - Complete wizard state object
          */
         save(state) {
             try {
-                sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(state))
-                console.log('[WizardState.save] Saved state:', state)
+                // Normalize project fields to ensure single values (no comma-separated duplicates)
+                const normalizedState = { ...state }
+
+                if (normalizedState.projectName) {
+                    const normalized = this.normalizeProjectValue(normalizedState.projectName)
+                    if (normalized) {
+                        normalizedState.projectName = normalized
+                    } else {
+                        delete normalizedState.projectName
+                    }
+                }
+
+                if (normalizedState.projectDescription) {
+                    const normalized = this.normalizeProjectValue(normalizedState.projectDescription)
+                    if (normalized) {
+                        normalizedState.projectDescription = normalized
+                    } else {
+                        delete normalizedState.projectDescription
+                    }
+                }
+
+                // CRITICAL: Also normalize editors array to remove duplicates
+                if (normalizedState.editors && Array.isArray(normalizedState.editors)) {
+                    normalizedState.editors = [...new Set(normalizedState.editors)]
+                }
+
+                sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(normalizedState))
+                console.log('[WizardState.save] Saved normalized state:', normalizedState)
             } catch (error) {
                 console.error('[WizardState.save] Error saving state:', error)
             }
+        },
+
+        /**
+         * Normalize project value to single string (no duplicates)
+         * @param {string|string[]} value - Value to normalize
+         * @returns {string|null} Normalized single value or null
+         */
+        normalizeProjectValue(value) {
+            if (!value) return null
+
+            // Handle arrays - take LAST value
+            if (Array.isArray(value)) {
+                const validValues = value.filter(v => v && v !== '' && v !== 'undefined' && v !== 'null')
+                if (validValues.length === 0) return null
+                return validValues[validValues.length - 1]  // Last value = user input
+            }
+
+            // Handle strings - split on comma and take LAST part
+            if (typeof value === 'string') {
+                const trimmed = value.trim()
+                if (!trimmed) return null
+
+                // If contains commas, split and take LAST part
+                if (trimmed.includes(',')) {
+                    const parts = trimmed.split(',').map(p => p.trim()).filter(p => p)
+                    if (parts.length > 0) {
+                        return parts[parts.length - 1]  // Last part = user's input
+                    }
+                    return null
+                }
+
+                return trimmed
+            }
+
+            return String(value)
         },
 
         /**
@@ -85,20 +147,77 @@
             const syncedState = { ...existingState }
 
             // Sync project info
-            const projectNameInput = form.querySelector('input[name="projectName"][type="hidden"]')
-            if (projectNameInput && projectNameInput.value) {
-                syncedState.projectName = projectNameInput.value
+            // CRITICAL: Normalize to string, handle multiple hidden fields with same name
+            const normalizeProjectValue = (value) => {
+                if (!value) return null
+                if (Array.isArray(value)) {
+                    const first = value.find(v => v && v !== '' && v !== 'undefined' && v !== 'null')
+                    return first || null
+                }
+                if (typeof value === 'string') {
+                    // If comma-separated duplicates, take first part
+                    if (value.includes(',') && value.split(',').every(part => part.trim() === value.split(',')[0].trim())) {
+                        return value.split(',')[0].trim()
+                    }
+                    return value
+                }
+                return String(value)
             }
 
-            const projectDescriptionInput = form.querySelector('input[name="projectDescription"][type="hidden"]')
-            if (projectDescriptionInput && projectDescriptionInput.value) {
-                syncedState.projectDescription = projectDescriptionInput.value
+            // CRITICAL: On project step, prefer visible input over hidden fields
+            // Hidden fields are excluded on project step, but if they exist (from navigation),
+            // we should still prefer the visible input value
+            const projectNameVisibleInput = form.querySelector('input[name="projectName"]:not([type="hidden"])')
+            if (projectNameVisibleInput && projectNameVisibleInput.value) {
+                // Visible input takes precedence (user's current input)
+                const visibleValue = projectNameVisibleInput.value.trim()
+                if (visibleValue && visibleValue !== 'my-project' && visibleValue !== projectNameVisibleInput.placeholder) {
+                    syncedState.projectName = visibleValue
+                }
+            }
+
+            // Fallback to hidden fields only if no visible input or visible input has default value
+            if (!projectNameVisibleInput || !projectNameVisibleInput.value || projectNameVisibleInput.value.trim() === 'my-project') {
+                const projectNameInputs = Array.from(form.querySelectorAll('input[name="projectName"][type="hidden"]'))
+                if (projectNameInputs.length > 0) {
+                    const projectNameValue = projectNameInputs
+                        .map(i => i.value)
+                        .find(v => v && v !== '' && v !== 'undefined' && v !== 'null' && v !== 'my-project')
+                    if (projectNameValue) {
+                        syncedState.projectName = normalizeProjectValue(projectNameValue)
+                    }
+                }
+            }
+
+            const projectDescriptionVisibleInput = form.querySelector('textarea[name="projectDescription"]') || form.querySelector('input[name="projectDescription"]:not([type="hidden"])')
+            if (projectDescriptionVisibleInput && projectDescriptionVisibleInput.value) {
+                const visibleValue = projectDescriptionVisibleInput.value.trim()
+                if (visibleValue && visibleValue !== 'A CouchCMS web application' && visibleValue !== projectDescriptionVisibleInput.placeholder) {
+                    syncedState.projectDescription = visibleValue
+                }
+            }
+
+            if (!projectDescriptionVisibleInput || !projectDescriptionVisibleInput.value || projectDescriptionVisibleInput.value.trim() === 'A CouchCMS web application') {
+                const projectDescriptionInputs = Array.from(form.querySelectorAll('input[name="projectDescription"][type="hidden"]'))
+                if (projectDescriptionInputs.length > 0) {
+                    const projectDescriptionValue = projectDescriptionInputs
+                        .map(i => i.value)
+                        .find(v => v && v !== '' && v !== 'undefined' && v !== 'null' && v !== 'A CouchCMS web application')
+                    if (projectDescriptionValue) {
+                        syncedState.projectDescription = normalizeProjectValue(projectDescriptionValue)
+                    }
+                }
             }
 
             // Sync setup type
-            const setupTypeInput = form.querySelector('input[name="setupType"][type="hidden"]')
-            if (setupTypeInput && setupTypeInput.value) {
-                syncedState.setupType = setupTypeInput.value
+            const setupTypeInputs = Array.from(form.querySelectorAll('input[name="setupType"][type="hidden"]'))
+            if (setupTypeInputs.length > 0) {
+                const setupTypeValue = setupTypeInputs
+                    .map(i => i.value)
+                    .find(v => v && v !== '' && v !== 'undefined' && v !== 'null')
+                if (setupTypeValue) {
+                    syncedState.setupType = normalizeProjectValue(setupTypeValue)
+                }
             }
 
             // Sync CSS selections from hidden fields
@@ -119,13 +238,25 @@
                 console.log('[WizardState.syncFromHiddenFields] Synced JS:', jsHidden)
             }
 
-            // Sync editor selections from hidden fields
-            const editorsHidden = Array.from(form.querySelectorAll('input[name="editors"][type="hidden"]'))
+            // Sync editor selections
+            // CRITICAL: Check visible checkboxes first (they take precedence), then hidden fields
+            const editorsVisible = Array.from(form.querySelectorAll('input[name="editors"][type="checkbox"]:checked'))
                 .map(i => i.value)
-                .filter(v => v && v !== 'undefined' && v !== '')
-            if (editorsHidden.length > 0) {
-                syncedState.editors = editorsHidden
-                console.log('[WizardState.syncFromHiddenFields] Synced editors:', editorsHidden)
+                .filter(v => v && v !== 'undefined' && v !== '' && v !== 'null')
+
+            if (editorsVisible.length > 0) {
+                // Visible checkboxes take precedence
+                syncedState.editors = [...new Set(editorsVisible)]  // Remove duplicates
+                console.log('[WizardState.syncFromHiddenFields] Synced editors from visible checkboxes:', syncedState.editors)
+            } else {
+                // Fallback to hidden fields
+                const editorsHidden = Array.from(form.querySelectorAll('input[name="editors"][type="hidden"]'))
+                    .map(i => i.value)
+                    .filter(v => v && v !== 'undefined' && v !== '' && v !== 'null')
+                if (editorsHidden.length > 0) {
+                    syncedState.editors = [...new Set(editorsHidden)]  // Remove duplicates
+                    console.log('[WizardState.syncFromHiddenFields] Synced editors from hidden fields:', syncedState.editors)
+                }
             }
 
             // Sync advanced options
@@ -168,20 +299,111 @@
             const form = document.querySelector('form')
             if (form) {
                 // Project info (always available if form exists)
+                // CRITICAL: Normalize to SINGLE string value, ALWAYS take LAST value to prevent duplication
+                // This handles: arrays, comma-separated strings, and ensures no duplicates
+                const normalizeProjectValue = (value) => {
+                    if (!value) return null
+
+                    // Handle arrays - take LAST value (visible input comes after hidden fields)
+                    if (Array.isArray(value)) {
+                        const validValues = value.filter(v => v && v !== '' && v !== 'undefined' && v !== 'null')
+                        if (validValues.length === 0) return null
+                        // Always take LAST value (most recent/user input)
+                        return validValues[validValues.length - 1]
+                    }
+
+                    // Handle strings - split on comma and take LAST part
+                    if (typeof value === 'string') {
+                        const trimmed = value.trim()
+                        if (!trimmed) return null
+
+                        // If contains commas, split and take LAST part (user's actual input)
+                        if (trimmed.includes(',')) {
+                            const parts = trimmed.split(',').map(p => p.trim()).filter(p => p)
+                            if (parts.length > 0) {
+                                // Always take the LAST part - this is the user's input
+                                return parts[parts.length - 1]
+                            }
+                            return null
+                        }
+
+                        return trimmed
+                    }
+
+                    return String(value)
+                }
+
+                // CRITICAL: Always prefer visible input over hidden fields
+                // Visible input = user's current input, always takes precedence
                 const projectNameInput = form.querySelector('input[name="projectName"]:not([type="hidden"])')
-                if (projectNameInput && projectNameInput.value) {
-                    formData.projectName = projectNameInput.value
+                if (projectNameInput) {
+                    const inputValue = projectNameInput.value
+                    if (inputValue && inputValue.trim()) {
+                        // Normalize the visible input value (handles comma-separated duplicates)
+                        const normalized = normalizeProjectValue(inputValue)
+                        if (normalized) {
+                            formData.projectName = normalized
+                            console.log('[collectFormData] Set projectName from visible input:', normalized)
+                        }
+                    }
+                }
+
+                // Only use hidden fields if no visible input or visible input is empty/default
+                if (!projectNameInput || !projectNameInput.value || projectNameInput.value.trim() === 'my-project') {
+                    const hiddenProjectNameFields = Array.from(form.querySelectorAll('input[name="projectName"][type="hidden"]'))
+                    if (hiddenProjectNameFields.length > 0) {
+                        // Collect all hidden values and normalize (take last)
+                        const allHiddenValues = hiddenProjectNameFields
+                            .map(f => f.value)
+                            .filter(v => v && v !== '' && v !== 'undefined' && v !== 'null' && v !== 'my-project')
+                        if (allHiddenValues.length > 0) {
+                            const normalized = normalizeProjectValue(allHiddenValues)
+                            if (normalized && !formData.projectName) {
+                                formData.projectName = normalized
+                                console.log('[collectFormData] Set projectName from hidden fields:', normalized)
+                            }
+                        }
+                    }
                 }
 
                 const projectDescriptionInput = form.querySelector('textarea[name="projectDescription"]') || form.querySelector('input[name="projectDescription"]:not([type="hidden"])')
-                if (projectDescriptionInput && projectDescriptionInput.value) {
-                    formData.projectDescription = projectDescriptionInput.value
+                if (projectDescriptionInput) {
+                    const inputValue = projectDescriptionInput.value
+                    if (inputValue && inputValue.trim()) {
+                        const normalized = normalizeProjectValue(inputValue)
+                        if (normalized) {
+                            formData.projectDescription = normalized
+                            console.log('[collectFormData] Set projectDescription from visible input:', normalized)
+                        }
+                    }
+                }
+
+                if (!projectDescriptionInput || !projectDescriptionInput.value || projectDescriptionInput.value.trim() === 'A CouchCMS web application') {
+                    const hiddenProjectDescriptionFields = Array.from(form.querySelectorAll('input[name="projectDescription"][type="hidden"]'))
+                    if (hiddenProjectDescriptionFields.length > 0) {
+                        const allHiddenValues = hiddenProjectDescriptionFields
+                            .map(f => f.value)
+                            .filter(v => v && v !== '' && v !== 'undefined' && v !== 'null' && v !== 'A CouchCMS web application')
+                        if (allHiddenValues.length > 0) {
+                            const normalized = normalizeProjectValue(allHiddenValues)
+                            if (normalized && !formData.projectDescription) {
+                                formData.projectDescription = normalized
+                                console.log('[collectFormData] Set projectDescription from hidden fields:', normalized)
+                            }
+                        }
+                    }
                 }
 
                 // Setup type
                 const setupTypeInput = form.querySelector('input[name="setupType"]:not([type="hidden"])')
                 if (setupTypeInput && setupTypeInput.value) {
                     formData.setupType = setupTypeInput.value
+                } else {
+                    // Fallback to hidden field if visible input doesn't exist
+                    const hiddenSetupType = form.querySelector('input[name="setupType"][type="hidden"]')
+                    if (hiddenSetupType && hiddenSetupType.value && !formData.setupType) {
+                        formData.setupType = hiddenSetupType.value
+                    }
                 }
 
                 // Frontend selections (CSS and JS) - only update if fields exist in form
@@ -196,8 +418,17 @@
                         // If checkboxes exist but none checked, clear selection
                         formData.css = []
                     }
+                } else {
+                    // CRITICAL: If no visible CSS fields in form, preserve from hidden fields (backward navigation)
+                    const hiddenCss = Array.from(form.querySelectorAll('input[name="css"][type="hidden"]'))
+                        .map(i => i.value)
+                        .filter(v => v && v !== 'undefined' && v !== '' && v !== 'null')
+                    if (hiddenCss.length > 0 && (!formData.css || formData.css.length === 0)) {
+                        formData.css = hiddenCss
+                        console.log('[WizardState.collectFormData] Preserved CSS from hidden fields:', hiddenCss)
+                    }
                 }
-                // If no CSS fields in form, preserve existing state (don't delete)
+                // If no CSS fields at all, preserve existing state (don't delete)
 
                 const jsFields = form.querySelectorAll('input[name="js"]:not([type="hidden"])')
                 if (jsFields.length > 0) {
@@ -209,6 +440,15 @@
                     } else {
                         formData.js = []
                     }
+                } else {
+                    // CRITICAL: If no visible JS fields in form, preserve from hidden fields (backward navigation)
+                    const hiddenJs = Array.from(form.querySelectorAll('input[name="js"][type="hidden"]'))
+                        .map(i => i.value)
+                        .filter(v => v && v !== 'undefined' && v !== '' && v !== 'null')
+                    if (hiddenJs.length > 0 && (!formData.js || formData.js.length === 0)) {
+                        formData.js = hiddenJs
+                        console.log('[WizardState.collectFormData] Preserved JS from hidden fields:', hiddenJs)
+                    }
                 }
 
                 // Editor selections - only update if fields exist in form
@@ -218,9 +458,20 @@
                         .map(i => i.value)
                         .filter(v => v && v !== 'undefined' && v !== '')
                     if (editorsCheckboxes.length > 0) {
-                        formData.editors = editorsCheckboxes
+                        // CRITICAL: Remove duplicates using Set
+                        formData.editors = [...new Set(editorsCheckboxes)]
                     } else {
                         formData.editors = []
+                    }
+                } else {
+                    // CRITICAL: If no visible editor fields in form, preserve from hidden fields (backward navigation)
+                    const hiddenEditors = Array.from(form.querySelectorAll('input[name="editors"][type="hidden"]'))
+                        .map(i => i.value)
+                        .filter(v => v && v !== 'undefined' && v !== '' && v !== 'null')
+                    if (hiddenEditors.length > 0 && (!formData.editors || formData.editors.length === 0)) {
+                        // CRITICAL: Remove duplicates using Set
+                        formData.editors = [...new Set(hiddenEditors)]
+                        console.log('[WizardState.collectFormData] Preserved editors from hidden fields:', formData.editors)
                     }
                 }
 
@@ -290,8 +541,10 @@
             }
 
             // Editor selections - always include if they exist in state
+            // CRITICAL: Remove duplicates before adding to URL params
             if (stateToUse.editors && Array.isArray(stateToUse.editors) && stateToUse.editors.length > 0) {
-                stateToUse.editors.forEach(ed => params.append('editors', ed))
+                const uniqueEditors = [...new Set(stateToUse.editors)]
+                uniqueEditors.forEach(ed => params.append('editors', ed))
             }
 
             // Advanced options
@@ -367,22 +620,27 @@
             const formAction = form?.getAttribute('hx-post') || ''
 
             // Determine back route based on current step
-            if (formAction.includes('/step/advanced')) {
+            // Check if we're on review step by checking the URL or form action
+            const currentUrl = window.location.pathname + window.location.search
+            const isReviewStep = formAction.includes('/setup/generate') || currentUrl.includes('/step/review') || document.querySelector('form[hx-post*="/setup/generate"]')
+
+            if (isReviewStep) {
+                // Review step: go back to previous step based on setup type
+                backRoute = setupType === 'simple'
+                    ? '/api/setup/step/editors'  // Simple: Review -> Editors
+                    : '/api/setup/step/advanced'  // Extended: Review -> Advanced
+            } else if (formAction.includes('/step/advanced')) {
                 backRoute = setupType === 'simple'
                     ? '/api/setup/step/project'
                     : '/api/setup/step/editors'
             } else if (formAction.includes('/step/editors')) {
                 backRoute = setupType === 'simple'
-                    ? '/api/setup/step/project'
-                    : '/api/setup/step/frontend'
+                    ? '/api/setup/step/project'  // Simple: Editors -> Project
+                    : '/api/setup/step/frontend'  // Extended: Editors -> Frontend
             } else if (formAction.includes('/step/frontend')) {
                 backRoute = '/api/setup/step/project'
             } else if (formAction.includes('/step/complexity')) {
                 backRoute = '/api/setup/step/project'
-            } else if (formAction.includes('/step/review')) {
-                backRoute = setupType === 'simple'
-                    ? '/api/setup/step/editors'
-                    : '/api/setup/step/advanced'
             } else {
                 // Default fallback
                 backRoute = '/api/setup/step/project'
@@ -417,13 +675,86 @@
         console.log('[restoreFormSelections] Restoring state:', state)
 
         // Restore project info
+        // CRITICAL: Normalize to SINGLE string, ALWAYS take LAST value to prevent duplication
+        const normalizeToString = (value) => {
+            if (!value) return null
+
+            // Handle arrays - take LAST value
+            if (Array.isArray(value)) {
+                const validValues = value.filter(v => v && v !== '' && v !== 'undefined' && v !== 'null')
+                if (validValues.length === 0) return null
+                return validValues[validValues.length - 1]  // Last value
+            }
+
+            // Handle strings - split on comma and take LAST part
+            if (typeof value === 'string') {
+                const trimmed = value.trim()
+                if (!trimmed) return null
+
+                // If contains commas, split and take LAST part
+                if (trimmed.includes(',')) {
+                    const parts = trimmed.split(',').map(p => p.trim()).filter(p => p)
+                    if (parts.length > 0) {
+                        return parts[parts.length - 1]  // Last part = user's input
+                    }
+                    return null
+                }
+
+                return trimmed
+            }
+
+            return String(value)
+        }
+
+        // CRITICAL: Only restore project fields if they are empty or have default/template values
+        // Never overwrite user input - check if field has focus or contains non-default value
         const projectNameInput = form.querySelector('input[name="projectName"]:not([type="hidden"])')
         if (projectNameInput && state.projectName) {
-            projectNameInput.value = state.projectName
+            const currentValue = projectNameInput.value.trim()
+            const placeholder = projectNameInput.placeholder || 'my-project'
+            const defaultValue = 'my-project'  // Template default
+            const normalizedName = normalizeToString(state.projectName)
+
+            // Only restore if:
+            // 1. Field is empty, OR
+            // 2. Field has default/placeholder value (user hasn't changed it), OR
+            // 3. Field doesn't have focus (user is not actively typing)
+            const isEmpty = currentValue === ''
+            const isDefault = currentValue === defaultValue || currentValue === placeholder
+            const hasFocus = document.activeElement === projectNameInput
+
+            if (normalizedName && isEmpty) {
+                // Field is empty, safe to restore
+                projectNameInput.value = normalizedName
+            } else if (normalizedName && isDefault && !hasFocus) {
+                // Field has default value and user is not typing, safe to restore
+                projectNameInput.value = normalizedName
+            } else if (normalizedName && currentValue !== normalizedName && !hasFocus) {
+                // Field has different value but user is not typing - restore from state
+                // This handles case where user navigated back and template has old value
+                projectNameInput.value = normalizedName
+            }
+            // If field has focus or has non-default value, preserve user input
         }
+
         const projectDescriptionInput = form.querySelector('textarea[name="projectDescription"]') || form.querySelector('input[name="projectDescription"]:not([type="hidden"])')
         if (projectDescriptionInput && state.projectDescription) {
-            projectDescriptionInput.value = state.projectDescription
+            const currentValue = projectDescriptionInput.value.trim()
+            const placeholder = projectDescriptionInput.placeholder || 'A CouchCMS web application'
+            const defaultValue = 'A CouchCMS web application'  // Template default
+            const normalizedDescription = normalizeToString(state.projectDescription)
+
+            const isEmpty = currentValue === ''
+            const isDefault = currentValue === defaultValue || currentValue === placeholder
+            const hasFocus = document.activeElement === projectDescriptionInput
+
+            if (normalizedDescription && isEmpty) {
+                projectDescriptionInput.value = normalizedDescription
+            } else if (normalizedDescription && isDefault && !hasFocus) {
+                projectDescriptionInput.value = normalizedDescription
+            } else if (normalizedDescription && currentValue !== normalizedDescription && !hasFocus) {
+                projectDescriptionInput.value = normalizedDescription
+            }
         }
 
         // Restore CSS selections
@@ -447,13 +778,23 @@
         }
 
         // Restore editor selections
-        if (state.editors && Array.isArray(state.editors)) {
-            state.editors.forEach(editorId => {
+        // CRITICAL: Ensure we restore from normalized state (no duplicates)
+        if (state.editors && Array.isArray(state.editors) && state.editors.length > 0) {
+            // Remove duplicates and normalize
+            const uniqueEditors = [...new Set(state.editors.filter(e => e && e !== '' && e !== 'undefined'))]
+            console.log('[restoreFormSelections] Restoring editors:', uniqueEditors)
+
+            uniqueEditors.forEach(editorId => {
                 const checkbox = form.querySelector(`input[name="editors"][value="${editorId}"]:not([type="hidden"])`)
                 if (checkbox) {
                     checkbox.checked = true
+                    console.log('[restoreFormSelections] Checked editor:', editorId)
+                } else {
+                    console.warn('[restoreFormSelections] Editor checkbox not found:', editorId)
                 }
             })
+        } else {
+            console.log('[restoreFormSelections] No editors to restore in state:', state.editors)
         }
 
         // Restore advanced options
@@ -512,21 +853,74 @@
         }
     })
 
-    // CRITICAL: Sync state from hidden fields and restore selections after HTMX swap
-    // This is the SINGLE event listener for afterSwap to avoid conflicts
-    document.body.addEventListener('htmx:afterSwap', function(event) {
-        console.log('[htmx:afterSwap] Content swapped successfully')
+    /**
+     * Sync state and restore selections after HTMX content swap
+     * Uses requestAnimationFrame for reliable DOM timing
+     */
+    let syncInProgress = false
+    function syncAndRestoreState() {
+        // Prevent duplicate execution if both afterSettle and afterSwap fire
+        if (syncInProgress) {
+            console.log('[syncAndRestoreState] Sync already in progress, skipping')
+            return
+        }
+        syncInProgress = true
 
-        // Step 1: Sync state from server-rendered hidden fields
-        // This ensures state is always in sync with what the server rendered
-        setTimeout(() => {
+        try {
+            // Step 1: Sync state from server-rendered hidden fields AND visible checkboxes
+            // This ensures state is always in sync with what the server rendered
             WizardState.syncFromHiddenFields()
-        }, 10)
 
-        // Step 2: Restore form selections from synced state
-        setTimeout(() => {
-            restoreFormSelections()
-        }, 50)
+            // Step 2: Restore form selections from synced state
+            // Use a small delay to ensure DOM is fully ready
+            setTimeout(() => {
+                restoreFormSelections()
+
+                // Step 3: Double-check editors after a brief moment (for editors step specifically)
+                // Sometimes checkboxes need a moment to be fully rendered
+                const form = document.querySelector('form')
+                if (form && form.querySelector('input[name="editors"]')) {
+                    setTimeout(() => {
+                        const state = WizardState.load()
+                        if (state.editors && Array.isArray(state.editors) && state.editors.length > 0) {
+                            const uniqueEditors = [...new Set(state.editors)]
+                            uniqueEditors.forEach(editorId => {
+                                const checkbox = form.querySelector(`input[name="editors"][value="${editorId}"]:not([type="hidden"])`)
+                                if (checkbox && !checkbox.checked) {
+                                    checkbox.checked = true
+                                    console.log('[syncAndRestoreState] Double-checked editor:', editorId)
+                                }
+                            })
+                        }
+                    }, 50)
+                }
+            }, 10)
+        } finally {
+            // Reset flag after a short delay to allow for rapid successive swaps
+            setTimeout(() => {
+                syncInProgress = false
+            }, 200)
+        }
+    }
+
+    // CRITICAL: Sync state from hidden fields and restore selections after HTMX swap
+    // Use htmx:afterSettle if available (fires after all transitions complete)
+    // Fallback to htmx:afterSwap with requestAnimationFrame for reliable DOM timing
+    document.body.addEventListener('htmx:afterSettle', function(event) {
+        console.log('[htmx:afterSettle] Content settled, syncing state')
+        syncAndRestoreState()
+    })
+
+    // Fallback: Use afterSwap with requestAnimationFrame for browsers/HTMX versions without afterSettle
+    // Note: This will also fire if afterSettle exists, but syncInProgress flag prevents duplicate execution
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        console.log('[htmx:afterSwap] Content swapped, waiting for DOM stability')
+        // Use double requestAnimationFrame to ensure DOM is fully updated and rendered
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                syncAndRestoreState()
+            })
+        })
     })
 
     // Make functions available globally
@@ -578,6 +972,26 @@
             WizardState.syncFromHiddenFields()
             restoreFormSelections()
         }, 100)
+
+        // CRITICAL: Save user input to state as they type (debounced)
+        // This prevents losing input when HTMX swaps occur
+        let saveTimeout = null
+        const saveUserInput = () => {
+            clearTimeout(saveTimeout)
+            saveTimeout = setTimeout(() => {
+                const formData = WizardState.collectFormData()
+                WizardState.update(formData)
+                console.log('[saveUserInput] Saved user input to state:', formData)
+            }, 300)  // Debounce: save 300ms after user stops typing
+        }
+
+        // Listen for input events on project fields
+        document.body.addEventListener('input', function(event) {
+            const target = event.target
+            if (target && (target.name === 'projectName' || target.name === 'projectDescription')) {
+                saveUserInput()
+            }
+        }, true)  // Use capture phase to catch events early
     })
 
     function handleStepClick(e) {

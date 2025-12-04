@@ -89,18 +89,22 @@ function parseArrayValue(data, key) {
 }
 
 /**
- * Normalize editors to always be an array
+ * Normalize editors to always be an array with UNIQUE values
+ * CRITICAL: Removes duplicates to prevent showing duplicate badges
  * @param {string|string[]|undefined} editors - Editors value
- * @returns {string[]} Array of editor IDs
+ * @returns {string[]} Array of unique editor IDs
  */
 function normalizeEditorsArray(editors) {
+    let result = []
+
     if (Array.isArray(editors)) {
-        return editors.filter(e => e != null && e !== '' && e !== 'undefined')
+        result = editors.filter(e => e != null && e !== '' && e !== 'undefined')
+    } else if (editors != null && editors !== '' && editors !== 'undefined') {
+        result = [editors]
     }
-    if (editors != null && editors !== '' && editors !== 'undefined') {
-        return [editors]
-    }
-    return []
+
+    // CRITICAL: Remove duplicates using Set to ensure unique values
+    return [...new Set(result)]
 }
 
 /**
@@ -149,18 +153,24 @@ function parseFormData(data, options = {}) {
 /**
  * Create hidden form fields for state persistence
  * @param {Object} data - Data to create hidden fields from
+ * @param {Object} options - Options
+ * @param {boolean} [options.excludeProjectFields=false] - Exclude projectName and projectDescription (for project step)
  * @returns {Array<Object>} Array of hidden field objects
  */
-function createHiddenFields(data) {
+function createHiddenFields(data, options = {}) {
     const fields = []
+    const { excludeProjectFields = false } = options
 
-    // Project info
-    if (data.projectName) {
-        fields.push({ name: 'projectName', value: data.projectName })
+    // Project info - EXCLUDE on project step (they have visible inputs)
+    if (!excludeProjectFields) {
+        if (data.projectName) {
+            fields.push({ name: 'projectName', value: data.projectName })
+        }
+        if (data.projectDescription) {
+            fields.push({ name: 'projectDescription', value: data.projectDescription })
+        }
     }
-    if (data.projectDescription) {
-        fields.push({ name: 'projectDescription', value: data.projectDescription })
-    }
+    // setupType is always included (it's always a hidden field)
     if (data.setupType) {
         fields.push({ name: 'setupType', value: data.setupType })
     }
@@ -208,15 +218,65 @@ function createHiddenFields(data) {
 }
 
 /**
+ * Normalize a value to a string, handling arrays from multiple form fields
+ * When multiple hidden fields have the same name, parseBody({ all: true }) returns arrays
+ * CRITICAL: For projectName/projectDescription, we want the LAST value (from visible input),
+ * not the first (from hidden fields)
+ * @param {string|string[]|undefined} value - Value to normalize
+ * @param {string} defaultValue - Default value if value is empty
+ * @param {boolean} preferLast - If true, take last value from array (for visible inputs), else take first
+ * @returns {string} Normalized string value
+ */
+function normalizeStringValue(value, defaultValue, preferLast = false) {
+    if (!value) {
+        return defaultValue
+    }
+    // If it's an array (from multiple form fields with same name)
+    if (Array.isArray(value)) {
+        // Filter out empty values
+        const validValues = value.filter(v => v && v !== '' && v !== 'undefined' && v !== 'null')
+        if (validValues.length === 0) {
+            return defaultValue
+        }
+        // For project fields, prefer LAST value (visible input comes after hidden fields in form)
+        // For other fields, prefer FIRST value (hidden fields are authoritative)
+        return preferLast ? validValues[validValues.length - 1] : validValues[0]
+    }
+    // If it's already a string, ALWAYS split on comma and take appropriate part
+    if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (!trimmed) {
+            return defaultValue
+        }
+
+        // If value contains commas, split and take appropriate part
+        if (trimmed.includes(',')) {
+            const parts = trimmed.split(',').map(p => p.trim()).filter(p => p)
+            if (parts.length > 0) {
+                // For project fields (preferLast=true), ALWAYS take last part (user's input)
+                // For other fields, take first part
+                return preferLast ? parts[parts.length - 1] : parts[0]
+            }
+            return defaultValue
+        }
+
+        return trimmed
+    }
+    return defaultValue
+}
+
+/**
  * Get default project values from query or body
  * @param {Object} queryOrBody - Query parameters or form body
  * @returns {Object} Default project values
  */
 function getProjectDefaults(queryOrBody) {
     return {
-        projectName: queryOrBody.projectName || DEFAULT_PROJECT_NAME,
-        projectDescription: queryOrBody.projectDescription || DEFAULT_PROJECT_DESCRIPTION,
-        setupType: queryOrBody.setupType || DEFAULT_SETUP_TYPE
+        // CRITICAL: preferLast=true for projectName/projectDescription because visible inputs come AFTER hidden fields
+        // This ensures we get the value from the visible input, not from hidden fields
+        projectName: normalizeStringValue(queryOrBody.projectName, DEFAULT_PROJECT_NAME, true),
+        projectDescription: normalizeStringValue(queryOrBody.projectDescription, DEFAULT_PROJECT_DESCRIPTION, true),
+        setupType: normalizeStringValue(queryOrBody.setupType, DEFAULT_SETUP_TYPE, false)
     }
 }
 
@@ -325,13 +385,26 @@ export function apiRoutes(projectDir) {
     app.get('/setup/step/project', async (c) => {
         const formData = parseFormData(c.req.query())
 
+        // CRITICAL: Ensure projectName and projectDescription are always single values (no comma-separated duplicates)
+        // This prevents displaying "my-project,my-project,my-projecttest" in the input field
+        if (formData.projectName && typeof formData.projectName === 'string' && formData.projectName.includes(',')) {
+            const parts = formData.projectName.split(',').map(p => p.trim()).filter(p => p)
+            formData.projectName = parts.length > 0 ? parts[parts.length - 1] : DEFAULT_PROJECT_NAME
+        }
+        if (formData.projectDescription && typeof formData.projectDescription === 'string' && formData.projectDescription.includes(',')) {
+            const parts = formData.projectDescription.split(',').map(p => p.trim()).filter(p => p)
+            formData.projectDescription = parts.length > 0 ? parts[parts.length - 1] : DEFAULT_PROJECT_DESCRIPTION
+        }
+
         const html = await wrapStepWithProgress(
             c.renderTemplate,
             1,
             'steps/project.html',
             {
                 ...formData,
-                hiddenFields: createHiddenFields(formData)
+                // CRITICAL: Exclude projectName and projectDescription from hidden fields
+                // because they have visible inputs on this step - prevents duplication
+                hiddenFields: createHiddenFields(formData, { excludeProjectFields: true })
             }
         )
         return c.html(html)
@@ -359,7 +432,14 @@ export function apiRoutes(projectDir) {
     // GET route for editors step (for back navigation) - Handles both simple and extended paths
     app.get('/setup/step/editors', async (c) => {
         const formData = parseFormData(c.req.query())
-        const { popular: popularEditors, other: otherEditors } = getEditorsGrouped(formData.editors)
+
+        // CRITICAL: Ensure editors array is normalized and has unique values
+        // This handles cases where editors come from query params as arrays or comma-separated strings
+        const normalizedEditors = normalizeEditorsArray(formData.editors)
+        debug('[Editors GET] Query editors:', formData.editors)
+        debug('[Editors GET] Normalized editors:', normalizedEditors)
+
+        const { popular: popularEditors, other: otherEditors } = getEditorsGrouped(normalizedEditors)
         const stepNumber = formData.setupType === SETUP_TYPES.SIMPLE ? 2 : 3
 
         const html = await wrapStepWithProgress(
@@ -368,6 +448,7 @@ export function apiRoutes(projectDir) {
             'steps/editors.html',
             {
                 ...formData,
+                editors: normalizedEditors,  // Use normalized editors
                 frontend: { css: formData.css, js: formData.js },
                 popularEditors,
                 otherEditors,
@@ -401,6 +482,15 @@ export function apiRoutes(projectDir) {
     // Handle project info submission - routes based on setupType
     app.post('/setup/step/project', async (c) => {
         const body = await c.req.parseBody({ all: true })
+        // CRITICAL: Normalize projectName and projectDescription to prevent duplication
+        // When both visible input and hidden fields exist, parseBody creates arrays
+        if (Array.isArray(body.projectName)) {
+            // Take the first non-empty value (visible input takes precedence)
+            body.projectName = body.projectName.find(v => v && v !== '' && v !== 'undefined') || body.projectName[0]
+        }
+        if (Array.isArray(body.projectDescription)) {
+            body.projectDescription = body.projectDescription.find(v => v && v !== '' && v !== 'undefined') || body.projectDescription[0]
+        }
         const formData = parseFormData(body)
 
         if (formData.setupType === SETUP_TYPES.SIMPLE) {

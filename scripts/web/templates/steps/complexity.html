@@ -4,8 +4,7 @@
     {% include "partials/section-header.html" %}
 
     <form hx-post="/api/setup/step/complexity" hx-target="#wizard-content" hx-swap="innerHTML">
-        <input type="hidden" name="projectName" value="{{ projectName }}" />
-        <input type="hidden" name="projectDescription" value="{{ projectDescription }}" />
+        {% include "partials/hidden-fields.html" %}
 
         <div class="grid gap-2 mb-4 sm:mb-6">
             <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
