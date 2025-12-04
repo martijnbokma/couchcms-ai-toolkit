@@ -263,3 +263,4 @@ if (typeof window !== 'undefined') {
     ;(window as { getNextStep?: typeof getNextStep }).getNextStep = getNextStep
     ;(window as { getPreviousStep?: typeof getPreviousStep }).getPreviousStep = getPreviousStep
 }
+

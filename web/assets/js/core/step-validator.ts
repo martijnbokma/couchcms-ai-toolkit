@@ -294,3 +294,4 @@ if (typeof window !== 'undefined') {
     ;(window as { validateProjectName?: typeof validateProjectName }).validateProjectName = validateProjectName
     ;(window as { updateDescriptionCounter?: typeof updateDescriptionCounter }).updateDescriptionCounter = updateDescriptionCounter
 }
+

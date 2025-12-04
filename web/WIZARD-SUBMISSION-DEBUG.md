@@ -197,3 +197,4 @@ curl -X POST http://localhost:3000/api/setup/step/editors \
 
 *Debug Guide Version: 1.0*
 *Last Updated: 2025-12-01*
+

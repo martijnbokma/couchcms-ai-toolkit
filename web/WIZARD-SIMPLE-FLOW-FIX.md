@@ -138,3 +138,4 @@ Het probleem was dat de route mapping niet setup-type aware was. Nu wordt voor e
 
 *Fix Version: 1.0*
 *Last Updated: 2025-12-01*
+
