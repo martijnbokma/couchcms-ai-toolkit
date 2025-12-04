@@ -62,7 +62,9 @@
         "fast-check": "^3.23.2",
         "tailwindcss": "^4.1.17",
         "@tailwindcss/cli": "^4.1.17",
-        "daisyui": "^5.4.7"
+        "daisyui": "^5.4.7",
+        "typescript": "^5.3.3",
+        "@types/node": "^20.11.0"
     },
     "keywords": [
         "couchcms",

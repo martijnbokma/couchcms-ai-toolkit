@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ESNext",
+        "lib": ["ES2020", "DOM"],
+        "moduleResolution": "bundler",
+        "strict": false,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "./assets/js/dist",
+        "rootDir": "./assets/js",
+        "declaration": false,
+        "declarationMap": false,
+        "sourceMap": true,
+        "removeComments": false,
+        "noEmit": false,
+        "allowJs": true,
+        "checkJs": false
+    },
+    "include": [
+        "assets/js/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "public",
+        "assets/js/**/*.js"
+    ]
+}

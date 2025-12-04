@@ -17,37 +17,37 @@
 
     /**
      * Get generate form element
-     * @returns {HTMLFormElement|null} Generate form or null
+     * @returns {HTMLFormElement | null} Generate form or null
      */
-    function getGenerateForm() {
-        return document.getElementById(GENERATE_FORM_ID)
+    function getGenerateForm(): HTMLFormElement | null {
+        return document.getElementById(GENERATE_FORM_ID) as HTMLFormElement | null
     }
 
     /**
      * Get wizard state input element
-     * @returns {HTMLInputElement|null} State input or null
+     * @returns {HTMLInputElement | null} State input or null
      */
-    function getWizardStateInput() {
-        return document.getElementById(WIZARD_STATE_INPUT_ID)
+    function getWizardStateInput(): HTMLInputElement | null {
+        return document.getElementById(WIZARD_STATE_INPUT_ID) as HTMLInputElement | null
     }
 
     /**
      * Check if WizardState is available
      * @returns {boolean} True if WizardState is available
      */
-    function isWizardStateAvailable() {
+    function isWizardStateAvailable(): boolean {
         return typeof window.WizardState !== 'undefined' &&
-               typeof window.WizardState.collectFormData === 'function' &&
-               typeof window.WizardState.update === 'function' &&
-               typeof window.WizardState.load === 'function'
+               typeof (window.WizardState as WizardStateLegacy).collectFormData === 'function' &&
+               typeof (window.WizardState as WizardStateLegacy).update === 'function' &&
+               typeof (window.WizardState as WizardStateLegacy).load === 'function'
     }
 
     /**
      * Serialize wizard state to JSON string
-     * @param {Object} state - Wizard state object
-     * @returns {string|null} JSON string or null on error
+     * @param {WizardState} state - Wizard state object
+     * @returns {string | null} JSON string or null on error
      */
-    function serializeState(state) {
+    function serializeState(state: Partial<WizardState> | null | undefined): string | null {
         if (!state || Object.keys(state).length === 0) {
             return null
         }
@@ -63,17 +63,18 @@
     /**
      * Save and inject wizard state into form before submission
      */
-    function saveAndInjectState() {
+    function saveAndInjectState(): void {
         if (!isWizardStateAvailable()) {
             console.warn('[Review] WizardState not available')
             return
         }
 
         try {
-            const currentFormData = window.WizardState.collectFormData()
-            window.WizardState.update(currentFormData)
+            const wizardState = window.WizardState as WizardStateLegacy
+            const currentFormData = wizardState.collectFormData()
+            wizardState.update(currentFormData)
 
-            const completeState = window.WizardState.load()
+            const completeState = wizardState.load()
             const stateInput = getWizardStateInput()
 
             if (!stateInput) {
@@ -96,13 +97,14 @@
      * @param {Event} event - HTMX event
      * @returns {boolean} True if event targets wizard content
      */
-    function isWizardContentSwap(event) {
+    function isWizardContentSwap(event: Event): boolean {
         if (window.HTMXUtils && typeof window.HTMXUtils.isWizardContentSwap === 'function') {
             return window.HTMXUtils.isWizardContentSwap(event)
         }
 
-        const detailTargetId = (event.detail && event.detail.target && event.detail.target.id)
-        const eventTargetId = (event.target && event.target.id)
+        const htmxEvent = event as CustomEvent
+        const detailTargetId = (htmxEvent.detail && htmxEvent.detail.target && (htmxEvent.detail.target as HTMLElement).id)
+        const eventTargetId = (event.target && (event.target as HTMLElement).id)
         const targetId = detailTargetId || eventTargetId
         return targetId === WIZARD_CONTENT_ID
     }
@@ -111,8 +113,8 @@
      * Handle form submission (capture phase to run before HTMX)
      * @param {Event} event - Submit event
      */
-    function handleFormSubmit(event) {
-        const form = event.target
+    function handleFormSubmit(event: Event): void {
+        const form = event.target as HTMLFormElement | null
         if (!form || form.id !== GENERATE_FORM_ID) {
             return
         }
@@ -124,8 +126,9 @@
      * Handle HTMX beforeRequest event
      * @param {Event} event - HTMX beforeRequest event
      */
-    function handleHtmxBeforeRequest(event) {
-        const form = (event.detail && event.detail.elt) || null
+    function handleHtmxBeforeRequest(event: Event): void {
+        const htmxEvent = event as CustomEvent
+        const form = htmxEvent.detail?.elt as HTMLFormElement | undefined
         if (!form || form.id !== GENERATE_FORM_ID) {
             return
         }
@@ -137,7 +140,7 @@
      * Handle HTMX afterSwap event
      * @param {Event} event - HTMX afterSwap event
      */
-    function handleHtmxSwap(event) {
+    function handleHtmxSwap(event: Event): void {
         if (!isWizardContentSwap(event)) {
             return
         }
@@ -160,7 +163,7 @@
      * Setup form event listeners
      * @param {HTMLFormElement} form - Form element
      */
-    function setupFormListeners(form) {
+    function setupFormListeners(form: HTMLFormElement): void {
         // Use capture phase to run before HTMX processes the submit
         form.addEventListener('submit', handleFormSubmit, true)
         form.addEventListener('htmx:beforeRequest', handleHtmxBeforeRequest)
@@ -169,8 +172,8 @@
     /**
      * Setup HTMX swap listener
      */
-    function setupHtmxListener() {
-        if (typeof htmx === 'undefined') {
+    function setupHtmxListener(): void {
+        if (typeof window.htmx === 'undefined') {
             return
         }
 
@@ -181,15 +184,16 @@
      * Handle edit button clicks using event delegation
      * @param {Event} event - Click event
      */
-    function handleEditButtonClick(event) {
+    function handleEditButtonClick(event: Event): void {
         // Use closest to find the button element (works even if SVG is clicked)
-        const button = event.target.closest('[data-edit-step]')
+        const target = event.target as HTMLElement
+        const button = target.closest<HTMLElement>('[data-edit-step]')
 
         if (!button) {
             return
         }
 
-        const stepNum = parseInt(button.getAttribute('data-edit-step'))
+        const stepNum = parseInt(button.getAttribute('data-edit-step') || '0')
         const route = button.getAttribute('data-edit-route')
 
         if (!stepNum || isNaN(stepNum) || !route) {
@@ -203,7 +207,7 @@
         console.log('[Review] Edit button clicked:', { stepNum, route, button })
 
         // Get setup type from state
-        let setupType = 'simple'
+        let setupType: string = 'simple'
         if (window.wizardStateManager) {
             try {
                 const state = window.wizardStateManager.load()
@@ -213,8 +217,9 @@
             }
         } else if (window.WizardState) {
             try {
-                const state = window.WizardState.load()
-                setupType = state.setupType || 'simple'
+                const wizardState = window.WizardState as WizardStateLegacy
+                const state = wizardState.load()
+                setupType = (state as Partial<WizardState>).setupType || 'simple'
             } catch (error) {
                 console.warn('[Review] Error loading state:', error)
             }
@@ -232,7 +237,7 @@
                 const result = window.navigateToStep(stepNum, route, setupType)
                 // Handle both promise and non-promise returns
                 if (result && typeof result.catch === 'function') {
-                    result.catch(error => {
+                    (result as Promise<unknown>).catch((error: Error) => {
                         console.error('[Review] Error navigating to edit step:', error)
                     })
                 }
@@ -248,7 +253,7 @@
             try {
                 const result = window.wizardNavigation.navigateToStep(stepNum, route)
                 if (result && typeof result.catch === 'function') {
-                    result.catch(error => {
+                    (result as Promise<unknown>).catch((error: Error) => {
                         console.error('[Review] Error navigating to edit step:', error)
                     })
                 }
@@ -266,23 +271,23 @@
             ))
 
             // Try to use HTMX directly
-            if (typeof htmx !== 'undefined') {
+            if (typeof window.htmx !== 'undefined' && window.htmx && typeof window.htmx.ajax === 'function') {
                 try {
-                    const state = window.wizardStateManager?.load() || window.WizardState?.load() || {}
+                    const state = window.wizardStateManager?.load() || (window.WizardState as WizardStateLegacy)?.load() || {}
                     const params = new URLSearchParams()
-                    Object.entries(state).forEach(([key, value]) => {
+                    Object.entries(state as Record<string, unknown>).forEach(([key, value]) => {
                         if (Array.isArray(value)) {
-                            value.forEach(v => params.append(key, v))
+                            value.forEach(v => params.append(key, String(v)))
                         } else if (value !== null && value !== undefined && value !== '') {
-                            params.append(key, value)
+                            params.append(key, String(value))
                         }
                     })
                     const url = `/api/setup/step/${route}?${params.toString()}`
                     console.log('[Review] Manual HTMX navigation to:', url)
-                    htmx.ajax('GET', url, {
+                    window.htmx.ajax('GET', url, {
                         target: '#wizard-content',
                         swap: 'innerHTML'
-                    })
+                    } as never)
                 } catch (error) {
                     console.error('[Review] Error with manual HTMX navigation:', error)
                 }
@@ -293,7 +298,7 @@
     /**
      * Setup edit button listeners using event delegation AND direct binding
      */
-    function setupEditButtons() {
+    function setupEditButtons(): void {
         // Only setup event delegation once
         if (!editButtonsSetup) {
             // Use event delegation on document body for better reliability
@@ -305,16 +310,18 @@
         }
 
         // Also bind directly to existing buttons as fallback
-        const editButtons = document.querySelectorAll('[data-edit-step][data-edit-route]')
+        const editButtons = document.querySelectorAll<HTMLElement>('[data-edit-step][data-edit-route]')
         console.log('[Review] Found edit buttons:', editButtons.length)
 
         editButtons.forEach((btn, index) => {
             // Remove any existing listeners by cloning
-            const newBtn = btn.cloneNode(true)
-            btn.parentNode.replaceChild(newBtn, btn)
+            const newBtn = btn.cloneNode(true) as HTMLElement
+            if (btn.parentNode) {
+                btn.parentNode.replaceChild(newBtn, btn)
+            }
 
             // Add direct click listener
-            newBtn.addEventListener('click', function(event) {
+            newBtn.addEventListener('click', function(event: Event) {
                 console.log('[Review] Direct edit button click:', index + 1)
                 handleEditButtonClick(event)
             })
@@ -330,7 +337,7 @@
      * Handle back button click
      * @param {Event} event - Click event
      */
-    function handleBackButtonClick(event) {
+    function handleBackButtonClick(event: Event): void {
         console.log('[Review] Back button clicked')
 
         event.preventDefault()
@@ -343,7 +350,7 @@
                 const result = window.goBack()
                 // Handle promise if returned
                 if (result && typeof result.catch === 'function') {
-                    result.catch(error => {
+                    (result as Promise<unknown>).catch((error: Error) => {
                         console.error('[Review] Error navigating back:', error)
                     })
                 }
@@ -357,7 +364,7 @@
             // Fallback: try to navigate manually
             if (window.wizardNavigation && typeof window.wizardNavigation.navigateBack === 'function') {
                 console.log('[Review] Using wizardNavigation.navigateBack directly')
-                window.wizardNavigation.navigateBack().catch(error => {
+                window.wizardNavigation.navigateBack().catch((error: Error) => {
                     console.error('[Review] Error navigating back:', error)
                 })
             }
@@ -367,17 +374,18 @@
     /**
      * Setup back button listener using event delegation AND direct binding
      */
-    function setupBackButton() {
+    function setupBackButton(): void {
         // Only setup event delegation once
         if (!backButtonSetup) {
             // Use event delegation for back button
-            document.body.addEventListener('click', function(event) {
+            document.body.addEventListener('click', function(event: Event) {
                 // Check if clicked element or parent is the back button
-                const target = event.target.closest('#review-back-button') ||
-                              (event.target.id === 'review-back-button' ? event.target : null)
+                const target = event.target as HTMLElement
+                const backButton = target.closest<HTMLElement>('#review-back-button') ||
+                              (target.id === 'review-back-button' ? target : null)
 
-                if (target) {
-                    console.log('[Review] Back button event detected via delegation:', target)
+                if (backButton) {
+                    console.log('[Review] Back button event detected via delegation:', backButton)
                     handleBackButtonClick(event)
                 }
             }, true)
@@ -392,11 +400,13 @@
             const backButton = document.getElementById('review-back-button')
             if (backButton) {
                 // Remove any existing listeners by cloning
-                const newBtn = backButton.cloneNode(true)
-                backButton.parentNode.replaceChild(newBtn, backButton)
+                const newBtn = backButton.cloneNode(true) as HTMLElement
+                if (backButton.parentNode) {
+                    backButton.parentNode.replaceChild(newBtn, backButton)
+                }
 
                 // Add direct click listener
-                newBtn.addEventListener('click', function(event) {
+                newBtn.addEventListener('click', function(event: Event) {
                     console.log('[Review] Direct back button click')
                     handleBackButtonClick(event)
                 })
@@ -415,7 +425,7 @@
     /**
      * Initialize review form handlers
      */
-    function initializeReviewForm() {
+    function initializeReviewForm(): void {
         const form = getGenerateForm()
         if (!form) {
             console.warn('[Review] Generate form not found')
@@ -429,7 +439,7 @@
         setupBackButton()
 
         // Verify buttons exist
-        const editButtons = document.querySelectorAll('[data-edit-step][data-edit-route]')
+        const editButtons = document.querySelectorAll<HTMLElement>('[data-edit-step][data-edit-route]')
         const backButton = document.getElementById('review-back-button')
 
         console.log('[Review] Review form initialized', {
@@ -445,7 +455,7 @@
     /**
      * Test if navigation functions are available
      */
-    function testNavigationFunctions() {
+    function testNavigationFunctions(): Record<string, boolean> {
         const tests = {
             navigateToStep: typeof window.navigateToStep === 'function',
             wizardNavigation: typeof window.wizardNavigation !== 'undefined',
@@ -459,7 +469,7 @@
     /**
      * Execute initialization when DOM is ready
      */
-    function runInitialization() {
+    function runInitialization(): void {
         // Test navigation functions first
         testNavigationFunctions()
 
@@ -473,7 +483,7 @@
 
         // Only initialize if we're already on the review step
         // Otherwise wait for HTMX swap event
-        function doInitialize() {
+        function doInitialize(): void {
             const form = getGenerateForm()
             if (form) {
                 // We're on review step - initialize
@@ -481,7 +491,7 @@
 
                 // Also verify buttons are accessible after a short delay
                 setTimeout(() => {
-                    const editButtons = document.querySelectorAll('[data-edit-step][data-edit-route]')
+                    const editButtons = document.querySelectorAll<HTMLElement>('[data-edit-step][data-edit-route]')
                     const backButton = document.getElementById('review-back-button')
 
                     console.log('[Review] Button verification:', {
@@ -510,4 +520,4 @@
 
     // Run initialization immediately
     runInitialization()
-})(); // End review.js IIFE
+})()

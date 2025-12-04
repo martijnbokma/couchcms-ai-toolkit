@@ -39,4 +39,4 @@
             CONTEXT_DIR: 'contextDir'
         }
     }
-})();
+})()

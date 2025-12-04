@@ -22,21 +22,25 @@
     const formSync = window.formStateSync
 
     // Track HTMX listeners for cleanup
-    const htmxListeners = []
+    interface HtmxListener {
+        event: string
+        handler: (e: Event) => void
+    }
+    const htmxListeners: HtmxListener[] = []
 
     /**
      * Initialize wizard on page load
      */
-    function initializeWizard() {
+    function initializeWizard(): void {
         console.log('[WizardInit] Initializing wizard')
 
         // Get setup type from URL
         const urlParams = new URLSearchParams(window.location.search)
-        const setupType = urlParams.get('type') || urlParams.get('setupType') || 'simple'
+        const setupType = (urlParams.get('type') || urlParams.get('setupType') || 'simple') as 'simple' | 'extended'
 
         // Initialize state with setup type and current step
         const currentState = stateManager.load()
-        const initialState = {
+        const initialState: Partial<WizardState> = {
             setupType,
             currentStep: currentState.currentStep || 1  // Default to step 1 if not set
         }
@@ -45,11 +49,11 @@
         console.log('[WizardInit] Initialized with setupType:', setupType, 'currentStep:', initialState.currentStep)
 
         // Setup form listeners for initial form
-        const form = document.querySelector('form')
+        const form = document.querySelector<HTMLFormElement>('form')
         if (form) {
             // Detect and update current step from initial form
             const formAction = form.getAttribute('hx-post') || ''
-            const routeToStepMap = setupType === 'simple' ? {
+            const routeToStepMap: Record<string, number> = setupType === 'simple' ? {
                 '/api/setup/step/project': 1,
                 '/api/setup/step/editors': 2,
                 '/api/setup/generate': 3
@@ -94,15 +98,15 @@
      * CRITICAL: Route mapping is setup-type aware
      * @param {string} formAction - Form hx-post action
      * @param {string} setupType - Setup type
-     * @returns {Object|null} Next step info or null
+     * @returns {StepDefinition | null} Next step info or null
      */
-    function determineNextStepFromForm(formAction, setupType) {
+    function determineNextStepFromForm(formAction: string, setupType: string): StepDefinition | null {
         if (!window.wizardNavigation) return null
 
-        const steps = window.wizardNavigation.getSteps(setupType)
+        const steps = window.wizardNavigation.getSteps(setupType as 'simple' | 'extended')
 
         // Setup-type aware route mapping
-        let routeToStepMap = {}
+        let routeToStepMap: Record<string, number> = {}
         if (setupType === 'simple') {
             // Simple flow: Project(1) → Editors(2) → Review(3)
             routeToStepMap = {
@@ -124,7 +128,7 @@
         }
 
         // Find current step from form action
-        let currentStepNum = null
+        let currentStepNum: number | null = null
         for (const [action, stepNum] of Object.entries(routeToStepMap)) {
             if (formAction.includes(action)) {
                 currentStepNum = stepNum
@@ -152,29 +156,31 @@
     /**
      * Setup HTMX event listeners with cleanup tracking
      */
-    function setupHtmxListeners() {
+    function setupHtmxListeners(): void {
         // After HTMX swaps content, restore form state and update current step
-        const afterSettleHandler = function(event) {
-            if (event.detail && event.detail.target && event.detail.target.id === 'wizard-content') {
+        const afterSettleHandler = function(event: Event): void {
+            const htmxEvent = event as CustomEvent
+            const target = htmxEvent.detail?.target as HTMLElement | undefined
+            if (target && target.id === 'wizard-content') {
                 console.log('[WizardInit] HTMX content swapped, restoring form state')
 
                 // Cleanup old form listeners
-                const oldForm = document.querySelector('form')
+                const oldForm = document.querySelector<HTMLFormElement>('form')
                 if (oldForm) {
                     formSync.cleanupFormListeners(oldForm)
                 }
 
                 // Wait for DOM to be ready
                 requestAnimationFrame(() => {
-                    const form = document.querySelector('form')
+                    const form = document.querySelector<HTMLFormElement>('form')
                     if (form && window.wizardNavigation) {
                         // Update current step based on form action
                         const formAction = form.getAttribute('hx-post') || ''
                         const state = stateManager.load()
-                        const setupType = state.setupType || 'simple'
+                        const setupType = (state.setupType || 'simple') as 'simple' | 'extended'
 
                         // Setup-type aware route mapping
-                        let routeToStepMap = {}
+                        let routeToStepMap: Record<string, number> = {}
                         if (setupType === 'simple') {
                             // Simple flow: Project(1) → Editors(2) → Review(3)
                             routeToStepMap = {
@@ -219,23 +225,26 @@
         }
 
         // Before HTMX POST requests, save current form state and determine next step
-        const beforeRequestHandler = function(event) {
+        const beforeRequestHandler = function(event: Event): void {
             try {
-                const form = event.detail?.elt
+                const htmxEvent = event as CustomEvent
+                const form = htmxEvent.detail?.elt as HTMLFormElement | undefined
                 if (form && form.tagName === 'FORM') {
                     console.log('[WizardInit] HTMX request starting, saving form state')
                     console.log('[WizardInit] Form action:', form.getAttribute('hx-post'))
                     console.log('[WizardInit] Form method:', form.method || 'POST')
                     console.log('[WizardInit] Form target:', form.getAttribute('hx-target'))
+                    const pathInfo = htmxEvent.detail?.pathInfo as { requestPath?: string } | undefined
+                    const target = htmxEvent.detail?.target as HTMLElement | undefined
                     console.log('[WizardInit] HTMX detail:', {
-                        verb: event.detail?.verb,
-                        path: event.detail?.pathInfo?.requestPath,
-                        target: event.detail?.target?.id,
-                        shouldSwap: event.detail?.shouldSwap
+                        verb: htmxEvent.detail?.verb,
+                        path: pathInfo?.requestPath,
+                        target: target?.id,
+                        shouldSwap: htmxEvent.detail?.shouldSwap
                     })
 
                     // CRITICAL: Check if request is being blocked
-                    if (event.detail?.shouldSwap === false) {
+                    if (htmxEvent.detail?.shouldSwap === false) {
                         console.warn('[WizardInit] WARNING: Request swap is disabled!')
                     }
 
@@ -252,7 +261,7 @@
                     try {
                         const formAction = form.getAttribute('hx-post') || ''
                         const state = stateManager.load()
-                        const nextStep = determineNextStepFromForm(formAction, state.setupType)
+                        const nextStep = determineNextStepFromForm(formAction, state.setupType || 'simple')
 
                         if (nextStep) {
                             console.log('[WizardInit] Determined next step:', nextStep.num, nextStep.route)
@@ -272,24 +281,27 @@
         }
 
         // Handle form validation errors
-        const validationErrorHandler = function(event) {
-            const form = event.detail?.elt
+        const validationErrorHandler = function(event: Event): void {
+            const htmxEvent = event as CustomEvent
+            const form = htmxEvent.detail?.elt as HTMLFormElement | undefined
             if (form && form.tagName === 'FORM') {
                 console.error('[WizardInit] Form validation error:', {
                     formAction: form.getAttribute('hx-post'),
                     formId: form.id,
-                    invalidFields: Array.from(form.elements).filter(el => !el.validity.valid)
+                    invalidFields: Array.from(form.elements).filter(el => !(el as HTMLInputElement).validity.valid)
                 })
             }
         }
 
         // Handle HTMX request errors (not configRequest - that's not an error event)
-        const responseErrorHandler = function(event) {
-            console.error('[WizardInit] HTMX response error:', event.detail)
+        const responseErrorHandler = function(event: Event): void {
+            const htmxEvent = event as CustomEvent
+            console.error('[WizardInit] HTMX response error:', htmxEvent.detail)
         }
 
-        const sendErrorHandler = function(event) {
-            console.error('[WizardInit] HTMX send error:', event.detail)
+        const sendErrorHandler = function(event: Event): void {
+            const htmxEvent = event as CustomEvent
+            console.error('[WizardInit] HTMX send error:', htmxEvent.detail)
         }
 
         // Add listeners
@@ -312,7 +324,7 @@
     /**
      * Cleanup HTMX listeners
      */
-    function cleanupHtmxListeners() {
+    function cleanupHtmxListeners(): void {
         htmxListeners.forEach(({ event, handler }) => {
             document.body.removeEventListener(event, handler)
         })
@@ -323,7 +335,7 @@
      * Validate form before submission
      * Returns true if form is valid, false otherwise
      */
-    function validateForm(form) {
+    function validateForm(form: HTMLFormElement | null): boolean {
         if (!form || form.tagName !== 'FORM') return true
 
         // Check HTML5 validation
@@ -339,23 +351,25 @@
     /**
      * Initialize step button handlers
      */
-    function initializeStepButtons() {
-        const stepButtons = document.querySelectorAll('[data-step][data-route]')
+    function initializeStepButtons(): void {
+        const stepButtons = document.querySelectorAll<HTMLElement>('[data-step][data-route]')
         stepButtons.forEach(button => {
-            const stepNum = parseInt(button.getAttribute('data-step'))
-            const route = button.getAttribute('data-route')
-            const closestEl = button.closest('[data-setup-type]')
+            const stepNum = parseInt(button.getAttribute('data-step') || '0')
+            const route = button.getAttribute('data-route') || ''
+            const closestEl = button.closest<HTMLElement>('[data-setup-type]')
             const closestType = closestEl ? closestEl.getAttribute('data-setup-type') : null
-            const queryEl = document.querySelector('[data-setup-type]')
+            const queryEl = document.querySelector<HTMLElement>('[data-setup-type]')
             const queryType = queryEl ? queryEl.getAttribute('data-setup-type') : null
-            const setupType = closestType || queryType || 'extended'
+            const setupType = (closestType || queryType || 'extended') as string
 
             // Remove existing listeners by cloning
-            const newButton = button.cloneNode(true)
-            button.parentNode.replaceChild(newButton, button)
+            const newButton = button.cloneNode(true) as HTMLElement
+            if (button.parentNode) {
+                button.parentNode.replaceChild(newButton, button)
+            }
 
             // Add new listener
-            newButton.addEventListener('click', function(e) {
+            newButton.addEventListener('click', function(e: Event) {
                 e.preventDefault()
                 e.stopPropagation()
                 if (typeof window.navigateToStep === 'function') {
@@ -382,23 +396,23 @@
     })
 
     // Helper functions for backward compatibility
-    window.selectAllEditors = function() {
-        document.querySelectorAll('input[name="editors"]').forEach(cb => cb.checked = true)
-        const form = document.querySelector('form')
+    window.selectAllEditors = function(): void {
+        document.querySelectorAll<HTMLInputElement>('input[name="editors"]').forEach(cb => cb.checked = true)
+        const form = document.querySelector<HTMLFormElement>('form')
         if (form && window.formStateSync) {
             window.formStateSync.syncFormToState(form)
         }
     }
 
-    window.deselectAllEditors = function() {
-        document.querySelectorAll('input[name="editors"]').forEach(cb => cb.checked = false)
-        const form = document.querySelector('form')
+    window.deselectAllEditors = function(): void {
+        document.querySelectorAll<HTMLInputElement>('input[name="editors"]').forEach(cb => cb.checked = false)
+        const form = document.querySelector<HTMLFormElement>('form')
         if (form && window.formStateSync) {
             window.formStateSync.syncFormToState(form)
         }
     }
 
-    window.toggleInfo = function(infoId, button) {
+    window.toggleInfo = function(infoId: string, button?: HTMLElement): void {
         const infoBox = document.getElementById(infoId)
         if (infoBox) {
             const isHidden = infoBox.classList.contains('hidden')
@@ -406,13 +420,13 @@
 
             // Update aria-expanded attribute if button is provided
             if (button) {
-                button.setAttribute('aria-expanded', !isHidden)
+                button.setAttribute('aria-expanded', String(!isHidden))
             }
         }
     }
 
-    window.updateFrameworkVisibility = function() {
-        const checkbox = document.querySelector('input[name="framework"]')
+    window.updateFrameworkVisibility = function(): void {
+        const checkbox = document.querySelector<HTMLInputElement>('input[name="framework"]')
         const options = document.getElementById('framework-options')
         if (checkbox && options) {
             const isChecked = checkbox.checked
@@ -420,7 +434,7 @@
 
             // Uncheck all framework component checkboxes if framework is disabled
             if (!isChecked) {
-                const componentCheckboxes = options.querySelectorAll('input[type="checkbox"]')
+                const componentCheckboxes = options.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
                 componentCheckboxes.forEach(cb => {
                     cb.checked = false
                 })
@@ -428,13 +442,13 @@
         }
     }
 
-    window.handleAdvancedSubmit = function(event) {
+    window.handleAdvancedSubmit = function(event: Event): boolean {
         // Add any validation logic here if needed
         return true
     }
 
     // Edit step navigation handler for Review page
-    window.editStep = function(button) {
+    window.editStep = function(button: HTMLElement): void {
         const stepNum = button.getAttribute('data-edit-step')
         const route = button.getAttribute('data-edit-route')
 

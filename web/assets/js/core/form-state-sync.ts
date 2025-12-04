@@ -14,12 +14,24 @@
     }
 
     const stateManager = window.wizardStateManager
-    const DOMUtils = window.DOMUtils || {}
+    const DOMUtils = window.DOMUtils || {} as DOMUtils
+
+    interface FormListeners {
+        input: (e: Event) => void
+        change: (e: Event) => void
+        submit: (e: Event) => void
+    }
 
     /**
      * Form State Sync Class - Improved Version
      */
     class FormStateSync {
+        debounceTimers: Map<HTMLFormElement, ReturnType<typeof setTimeout>>
+        listeners: Map<HTMLFormElement, FormListeners>
+        htmxHandlers: Map<HTMLFormElement, (e: Event) => void>
+        debounceDelay: number
+        isRestoring: boolean
+
         constructor() {
             this.debounceTimers = new Map()
             this.listeners = new Map() // Track listeners per form for cleanup
@@ -32,9 +44,9 @@
          * Collect form data and convert to state format
          * CRITICAL: Always merges with existing state to preserve selections from other steps
          * @param {HTMLFormElement} form - Form element
-         * @returns {Object} Form data as state object (merged with existing state)
+         * @returns {WizardState} Form data as state object (merged with existing state)
          */
-        collectFormData(form) {
+        collectFormData(form: HTMLFormElement | null): Partial<WizardState> {
             if (!form || form.tagName !== 'FORM') {
                 console.warn('[FormStateSync] Invalid form element')
                 return {}
@@ -42,18 +54,18 @@
 
             // CRITICAL: Start with existing state to preserve all previous selections
             const existingState = stateManager.load()
-            const data = { ...existingState }
+            const data: Partial<WizardState> = { ...existingState }
 
             // CRITICAL: Collect checkbox arrays directly from DOM, not FormData
             // FormData only includes checked checkboxes, but we need to know ALL checkbox states
             // to properly update arrays (including unchecked ones)
-            const checkboxFields = ['css', 'js', 'agents', 'editors']
+            const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
             checkboxFields.forEach(key => {
-                const checkboxes = form.querySelectorAll(`input[name="${key}"][type="checkbox"]`)
+                const checkboxes = form.querySelectorAll<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
                 if (checkboxes.length > 0) {
                     // Field exists in form - collect checked values from DOM
                     // CRITICAL: Always collect from DOM, even if empty (to preserve deselections)
-                    const checkedValues = []
+                    const checkedValues: string[] = []
                     checkboxes.forEach(checkbox => {
                         if (checkbox.checked && checkbox.value && checkbox.value !== 'false' && checkbox.value !== '') {
                             checkedValues.push(checkbox.value)
@@ -71,35 +83,35 @@
             const formData = new FormData(form)
             for (const [key, value] of formData.entries()) {
                 // Skip checkbox fields - already handled above
-                if (checkboxFields.includes(key)) {
+                if (checkboxFields.includes(key as typeof checkboxFields[number])) {
                     continue
                 }
 
                 // Framework checkboxes (boolean)
                 if (key.startsWith('framework_')) {
-                    data[key] = value === 'true' || value === true
+                    data[key as keyof WizardState] = (value === 'true' || value === true) as never
                 }
                 // Framework main checkbox
                 else if (key === 'framework') {
-                    data[key] = value === 'true' || value === true
+                    data.framework = value === 'true' || value === true
                 }
                 // Setup type
                 else if (key === 'setupType') {
-                    data[key] = value || 'simple'
+                    data.setupType = (value || 'simple') as 'simple' | 'extended'
                 }
                 // Preset (radio button)
                 else if (key === 'preset') {
-                    data[key] = value || ''
+                    data.preset = value || ''
                 }
                 // Context directory
                 else if (key === 'contextDir') {
-                    data[key] = value || '.project'
+                    data.contextDir = value || '.project'
                 }
                 // Text fields - only update if field exists in form
                 else {
                     const fieldExists = form.querySelector(`input[name="${key}"], textarea[name="${key}"]`) !== null
                     if (fieldExists) {
-                        data[key] = value || ''
+                        (data as Record<string, unknown>)[key] = value || ''
                     }
                     // If field doesn't exist, keep existing state
                 }
@@ -107,8 +119,9 @@
 
             // Remove duplicates from arrays
             checkboxFields.forEach(key => {
-                if (data[key] && Array.isArray(data[key])) {
-                    data[key] = [...new Set(data[key])]
+                const value = data[key]
+                if (value && Array.isArray(value)) {
+                    data[key] = [...new Set(value)] as string[]
                 }
             })
 
@@ -127,9 +140,9 @@
         /**
          * Apply state to form elements
          * @param {HTMLFormElement} form - Form element
-         * @param {Object} state - State to apply
+         * @param {Partial<WizardState>} state - State to apply
          */
-        applyStateToForm(form, state) {
+        applyStateToForm(form: HTMLFormElement | null, state: Partial<WizardState>): void {
             if (!form || form.tagName !== 'FORM') {
                 console.warn('[FormStateSync] Invalid form element')
                 return
@@ -137,36 +150,39 @@
 
             console.log('[FormStateSync] Applying state to form:', state)
 
+            // Set restoring flag
+            this.isRestoring = true
+
             // Apply text inputs and textareas
             Object.entries(state).forEach(([key, value]) => {
                 if (['css', 'js', 'agents', 'editors'].includes(key)) {
                     // Checkboxes - check matching values
-                    const checkboxes = form.querySelectorAll(`input[name="${key}"][type="checkbox"]`)
+                    const checkboxes = form.querySelectorAll<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
                     checkboxes.forEach(checkbox => {
                         checkbox.checked = Array.isArray(value) && value.includes(checkbox.value)
                     })
                 }
                 else if (key === 'preset') {
                     // Radio button - check matching value
-                    const radio = form.querySelector(`input[name="${key}"][type="radio"][value="${value}"]`)
+                    const radio = form.querySelector<HTMLInputElement>(`input[name="${key}"][type="radio"][value="${value}"]`)
                     if (radio) {
                         radio.checked = true
                     } else if (value === '') {
                         // Check "skip" option if value is empty
-                        const skipRadio = form.querySelector(`input[name="${key}"][type="radio"][value=""]`)
+                        const skipRadio = form.querySelector<HTMLInputElement>(`input[name="${key}"][type="radio"][value=""]`)
                         if (skipRadio) skipRadio.checked = true
                     }
                 }
                 else if (key.startsWith('framework_')) {
                     // Framework option checkboxes
-                    const checkbox = form.querySelector(`input[name="${key}"][type="checkbox"]`)
+                    const checkbox = form.querySelector<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
                     if (checkbox) {
                         checkbox.checked = value === true || value === 'true'
                     }
                 }
                 else if (key === 'framework') {
                     // Framework main checkbox
-                    const checkbox = form.querySelector(`input[name="${key}"][type="checkbox"]`)
+                    const checkbox = form.querySelector<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
                     if (checkbox) {
                         checkbox.checked = value === true || value === 'true'
                         // Trigger visibility update if function exists
@@ -177,9 +193,9 @@
                 }
                 else {
                     // Text inputs and textareas
-                    const input = form.querySelector(`input[name="${key}"], textarea[name="${key}"]`)
+                    const input = form.querySelector<HTMLInputElement | HTMLTextAreaElement>(`input[name="${key}"], textarea[name="${key}"]`)
                     if (input && input.type !== 'hidden') {
-                        input.value = value || ''
+                        input.value = String(value || '')
                     }
                 }
             })
@@ -198,7 +214,9 @@
          * @param {HTMLFormElement} form - Form element
          * @param {boolean} immediate - If true, sync immediately without setTimeout (for navigation)
          */
-        syncFormToState(form, immediate = false) {
+        syncFormToState(form: HTMLFormElement | null, immediate: boolean = false): void {
+            if (!form) return
+
             const performSync = () => {
                 const formData = this.collectFormData(form)
                 stateManager.update(formData)
@@ -223,7 +241,7 @@
          * Does not wait for fields that don't exist - that's normal (different steps have different fields)
          * @param {HTMLFormElement} form - Form element
          */
-        restoreStateToForm(form) {
+        restoreStateToForm(form: HTMLFormElement | null): void {
             if (!form || form.tagName !== 'FORM') {
                 console.warn('[FormStateSync] Invalid form element for restore')
                 return
@@ -256,7 +274,7 @@
          * Setup form event listeners with cleanup tracking
          * @param {HTMLFormElement} form - Form element
          */
-        setupFormListeners(form) {
+        setupFormListeners(form: HTMLFormElement | null): void {
             if (!form || form.tagName !== 'FORM') {
                 console.warn('[FormStateSync] Invalid form element')
                 return
@@ -266,18 +284,19 @@
             this.cleanupFormListeners(form)
 
             // Create handler functions
-            const inputHandler = (e) => {
+            const inputHandler = (e: Event) => {
                 // CRITICAL: Don't trigger during programmatic restore
                 if (this.isRestoring) {
                     return
                 }
 
-                if (e.target.type === 'checkbox' || e.target.type === 'radio') {
+                const target = e.target as HTMLInputElement | HTMLTextAreaElement
+                if (target.type === 'checkbox' || target.type === 'radio') {
                     // Immediate save for checkboxes/radios
                     // Use setTimeout to ensure checkbox state is updated in DOM
                     // CRITICAL: Small delay ensures DOM is updated before we read it
                     setTimeout(() => {
-                        console.log('[FormStateSync] Checkbox/radio changed, syncing state. Checkbox:', e.target.name, e.target.value, 'checked:', e.target.checked)
+                        console.log('[FormStateSync] Checkbox/radio changed, syncing state. Checkbox:', target.name, target.value, 'checked:', target.checked)
                         this.syncFormToState(form)
                     }, 10) // Increased from 0 to 10ms for more reliable DOM updates
                 } else {
@@ -286,24 +305,25 @@
                 }
             }
 
-            const changeHandler = (e) => {
+            const changeHandler = (e: Event) => {
                 // CRITICAL: Don't trigger during programmatic restore
                 if (this.isRestoring) {
                     return
                 }
 
-                if (e.target.type === 'checkbox' || e.target.type === 'radio') {
+                const target = e.target as HTMLInputElement | HTMLTextAreaElement
+                if (target.type === 'checkbox' || target.type === 'radio') {
                     // Immediate save for checkboxes/radios
                     // Use setTimeout to ensure checkbox state is updated in DOM
                     // CRITICAL: Small delay ensures DOM is updated before we read it
                     setTimeout(() => {
-                        console.log('[FormStateSync] Checkbox/radio changed (change event), syncing state. Checkbox:', e.target.name, e.target.value, 'checked:', e.target.checked)
+                        console.log('[FormStateSync] Checkbox/radio changed (change event), syncing state. Checkbox:', target.name, target.value, 'checked:', target.checked)
                         this.syncFormToState(form)
                     }, 10) // Increased from 0 to 10ms for more reliable DOM updates
                 }
             }
 
-            const submitHandler = (e) => {
+            const submitHandler = (e: Event) => {
                 try {
                     // CRITICAL: Don't prevent default - let HTMX handle the submission
                     // We just save state before submission
@@ -319,7 +339,7 @@
                         const setupType = state.setupType || 'simple'
 
                         // Setup-type aware route mapping
-                        let routeToStepMap = {}
+                        let routeToStepMap: Record<string, number> = {}
                         if (setupType === 'simple') {
                             // Simple flow: Project(1) → Editors(2) → Review(3)
                             routeToStepMap = {
@@ -378,12 +398,14 @@
          * Cleanup form event listeners
          * @param {HTMLFormElement} form - Form element
          */
-        cleanupFormListeners(form) {
+        cleanupFormListeners(form: HTMLFormElement | null): void {
+            if (!form) return
+
             const handlers = this.listeners.get(form)
             if (handlers) {
                 // Remove event listeners
                 Object.entries(handlers).forEach(([event, handler]) => {
-                    form.removeEventListener(event, handler, { capture: true })
+                    form.removeEventListener(event as keyof FormListeners, handler, { capture: true })
                 })
 
                 // Remove from map
@@ -414,7 +436,9 @@
          * @param {HTMLFormElement} form - Form element
          * @private
          */
-        debouncedSync(form) {
+        debouncedSync(form: HTMLFormElement | null): void {
+            if (!form) return
+
             const timer = this.debounceTimers.get(form)
             if (timer) clearTimeout(timer)
 
@@ -429,7 +453,7 @@
         /**
          * Cleanup all listeners (for page unload)
          */
-        cleanupAll() {
+        cleanupAll(): void {
             this.listeners.forEach((handlers, form) => {
                 this.cleanupFormListeners(form)
             })

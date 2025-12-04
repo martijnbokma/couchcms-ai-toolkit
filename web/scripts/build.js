@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
- * Build script for bundling JavaScript and CSS files
- * Uses Bun's built-in bundler to combine and minify JS files
+ * Build script for bundling JavaScript/TypeScript and CSS files
+ * Compiles TypeScript files and bundles them using Bun's bundler
  * Uses Tailwind CSS CLI to compile CSS with custom styles and daisyUI
  */
 
@@ -20,6 +20,30 @@ const CSS_DIST_DIR = join(DIST_DIR, 'css')
 const CSS_INPUT = join(CSS_SRC_DIR, 'input.css')
 const CSS_OUTPUT = join(CSS_DIST_DIR, 'app.css')
 
+/**
+ * Get file path, preferring .ts over .js
+ * @param {string} basePath - Base path without extension
+ * @returns {string|null} Path to file if it exists, null otherwise
+ */
+function getFilePath(basePath) {
+    // Remove .js extension if present (entryBase might already have it)
+    const cleanPath = basePath.replace(/\.js$/, '')
+
+    // Try TypeScript first
+    const tsPath = cleanPath + '.ts'
+    if (existsSync(tsPath)) {
+        return tsPath
+    }
+
+    // Fallback to JavaScript
+    const jsPath = cleanPath + '.js'
+    if (existsSync(jsPath)) {
+        return jsPath
+    }
+
+    return null
+}
+
 // Ensure dist directories exist
 if (!existsSync(DIST_DIR)) {
     mkdirSync(DIST_DIR, { recursive: true })
@@ -34,29 +58,30 @@ if (!existsSync(CSS_DIST_DIR)) {
 console.log('📦 Bundling JavaScript files...\n')
 
 // Bundle configuration
+// Note: TypeScript files (.ts) are preferred over JavaScript (.js)
 const bundles = [
     {
         name: 'wizard',
         entry: [
             // Core modules - must be loaded first
-            join(JS_SRC_DIR, 'core', 'constants.js'),
-            join(JS_SRC_DIR, 'core', 'dom.js'),
-            join(JS_SRC_DIR, 'core', 'htmx.js'),
+            join(JS_SRC_DIR, 'core', 'constants'),
+            join(JS_SRC_DIR, 'core', 'dom'),
+            join(JS_SRC_DIR, 'core', 'htmx'),
             // Improved state management (new)
-            join(JS_SRC_DIR, 'core', 'wizard-state-manager.js'),
-            join(JS_SRC_DIR, 'core', 'form-state-sync.js'),
-            join(JS_SRC_DIR, 'core', 'wizard-navigation.js'),
-            join(JS_SRC_DIR, 'core', 'wizard-init.js'),
+            join(JS_SRC_DIR, 'core', 'wizard-state-manager'),
+            join(JS_SRC_DIR, 'core', 'form-state-sync'),
+            join(JS_SRC_DIR, 'core', 'wizard-navigation'),
+            join(JS_SRC_DIR, 'core', 'wizard-init'),
             // Legacy state management (for backward compatibility)
-            join(JS_SRC_DIR, 'core', 'state.js'),
+            join(JS_SRC_DIR, 'core', 'state'),
             // Wizard modules (legacy - kept for compatibility)
-            join(JS_SRC_DIR, 'wizard', 'navigation.js'),
-            join(JS_SRC_DIR, 'wizard', 'form-restore.js'),
-            join(JS_SRC_DIR, 'wizard', 'form-sync.js'),
-            join(JS_SRC_DIR, 'wizard', 'init.js'),
+            join(JS_SRC_DIR, 'wizard', 'navigation'),
+            join(JS_SRC_DIR, 'wizard', 'form-restore'),
+            join(JS_SRC_DIR, 'wizard', 'form-sync'),
+            join(JS_SRC_DIR, 'wizard', 'init'),
             // Step modules
-            join(JS_SRC_DIR, 'steps', 'advanced.js'),
-            join(JS_SRC_DIR, 'steps', 'review.js')
+            join(JS_SRC_DIR, 'steps', 'advanced'),
+            join(JS_SRC_DIR, 'steps', 'review')
         ],
         output: join(JS_DIST_DIR, 'wizard.js'),
         description: 'Wizard scripts bundle (improved version)'
@@ -64,9 +89,9 @@ const bundles = [
     {
         name: 'base',
         entry: [
-            join(JS_SRC_DIR, 'base', 'back-button.js'),
+            join(JS_SRC_DIR, 'base', 'back-button'),
             // Live reload client (development only, but included in build)
-            join(JS_SRC_DIR, 'core', 'live-reload.js')
+            join(JS_SRC_DIR, 'core', 'live-reload')
         ],
         output: join(JS_DIST_DIR, 'base.js'),
         description: 'Base scripts bundle'
@@ -107,32 +132,98 @@ for (const bundle of bundles) {
     console.log(`🔨 Building ${bundle.name} bundle...`)
 
     try {
-        // Read all entry files and combine them
-        let combinedContent = ''
-
-        for (const entryFile of bundle.entry) {
-            if (!existsSync(entryFile)) {
-                console.warn(`⚠️  Warning: Entry file not found: ${entryFile}`)
-                continue
+        // Resolve entry files (prefer .ts over .js)
+        const resolvedEntries = []
+        for (const entryBase of bundle.entry) {
+            // entryBase already includes full path, just need to check .ts vs .js
+            const filePath = getFilePath(entryBase)
+            if (filePath) {
+                resolvedEntries.push(filePath)
+            } else {
+                console.warn(`⚠️  Warning: Entry file not found: ${entryBase}.js or ${entryBase}.ts`)
             }
+        }
 
-            const content = await Bun.file(entryFile).text()
+        if (resolvedEntries.length === 0) {
+            console.warn(`⚠️  Warning: No entry files found for ${bundle.name} bundle`)
+            continue
+        }
+
+        // Build bundle content
+        let combinedContent = ''
+        const tempDir = join(WEB_DIR, '.temp-build')
+
+        // Create temp directory if needed for TypeScript compilation
+        const needsTempDir = resolvedEntries.some(f => f.endsWith('.ts'))
+        if (needsTempDir && !existsSync(tempDir)) {
+            mkdirSync(tempDir, { recursive: true })
+        }
+
+        for (const entryFile of resolvedEntries) {
             const fileName = entryFile.split('/').pop()
+            const isTypeScript = entryFile.endsWith('.ts')
 
             // Add separator comment
             combinedContent += `\n// === ${fileName} ===\n`
 
-            // Add content
-            combinedContent += content.trim()
+            if (isTypeScript) {
+                // Compile TypeScript to JavaScript using Bun.build
+                // Use a unique temp file for each entry to avoid conflicts
+                const tempOutput = join(tempDir, `${bundle.name}-${fileName.replace('.ts', '.js')}`)
+
+                try {
+                    const result = await Bun.build({
+                        entrypoints: [entryFile],
+                        outdir: tempDir,
+                        target: 'browser',
+                        format: 'iife',
+                        minify: false,
+                        sourcemap: 'none',
+                        external: [] // Don't externalize anything - bundle everything
+                    })
+
+                    if (!result.success) {
+                        console.error(`❌ Error compiling ${entryFile}:`)
+                        result.logs.forEach(log => console.error('  ', log))
+                        throw new Error(`Failed to compile ${entryFile}`)
+                    }
+
+                    // Read the compiled output
+                    if (result.outputs.length > 0) {
+                        const compiledContent = await result.outputs[0].text()
+                        combinedContent += compiledContent.trim()
+                    } else {
+                        // Fallback: try reading from temp file
+                        if (existsSync(tempOutput)) {
+                            const compiledContent = await Bun.file(tempOutput).text()
+                            combinedContent += compiledContent.trim()
+                        } else {
+                            throw new Error(`No output file generated for ${entryFile}`)
+                        }
+                    }
+                } catch (error) {
+                    console.error(`❌ Error processing TypeScript file ${entryFile}:`, error)
+                    throw error
+                }
+            } else {
+                // JavaScript file - read directly
+                const content = await Bun.file(entryFile).text()
+                combinedContent += content.trim()
+            }
 
             // Ensure proper separation between modules
-            // IIFEs end with })(), so we need a semicolon and newline after
-            if (!content.trim().endsWith(';')) {
+            if (!combinedContent.trim().endsWith(';')) {
                 combinedContent += ';'
             }
 
             // Add double newline for clear separation
             combinedContent += '\n\n'
+        }
+
+        // Cleanup temp directory
+        if (needsTempDir && existsSync(tempDir)) {
+            const { rmSync } = await import('fs')
+            rmSync(tempDir, { recursive: true, force: true })
         }
 
         // Write combined content to output file

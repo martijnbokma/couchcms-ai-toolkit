@@ -29,7 +29,10 @@
      * Custom error classes for better error handling
      */
     class WizardStateError extends Error {
-        constructor(message, code, details = {}) {
+        code: string
+        details: Record<string, unknown>
+
+        constructor(message: string, code: string, details: Record<string, unknown> = {}) {
             super(message)
             this.name = 'WizardStateError'
             this.code = code
@@ -41,14 +44,14 @@
     }
 
     class InvalidStateError extends WizardStateError {
-        constructor(details) {
+        constructor(details: Record<string, unknown>) {
             super('Invalid wizard state structure', 'INVALID_STATE', details)
             this.name = 'InvalidStateError'
         }
     }
 
     class StorageError extends WizardStateError {
-        constructor(details) {
+        constructor(details: Record<string, unknown>) {
             super('Storage operation failed', 'STORAGE_ERROR', details)
             this.name = 'StorageError'
         }
@@ -58,6 +61,11 @@
      * Wizard State Manager Class - Improved Version
      */
     class WizardStateManager {
+        storageKey: string
+        stateVersion: string
+        listeners: Set<(state: WizardState) => void>
+        initialState: WizardState
+
         constructor() {
             this.storageKey = STORAGE_KEY
             this.stateVersion = STATE_VERSION
@@ -67,11 +75,11 @@
 
         /**
          * Get initial state structure
-         * @returns {Object} Initial state object
+         * @returns {WizardState} Initial state object
          */
-        getInitialState() {
+        getInitialState(): WizardState {
             return {
-                setupType: WIZARD_CONFIG.DEFAULT_SETUP_TYPE || 'simple',
+                setupType: (WIZARD_CONFIG.DEFAULT_SETUP_TYPE || 'simple') as 'simple' | 'extended',
                 projectName: WIZARD_CONFIG.DEFAULT_PROJECT_NAME || '',
                 projectDescription: WIZARD_CONFIG.DEFAULT_PROJECT_DESCRIPTION || '',
                 preset: '',
@@ -98,7 +106,7 @@
          * @param {number} maxLength - Maximum length
          * @returns {string} Sanitized value
          */
-        sanitizeString(value, maxLength = Infinity) {
+        sanitizeString(value: string | null | undefined, maxLength: number = Infinity): string {
             if (!value || typeof value !== 'string') return ''
 
             // Trim whitespace
@@ -117,11 +125,9 @@
 
         /**
          * Load state from sessionStorage with validation
-         * @returns {Object} Complete wizard state
-         * @throws {StorageError} If storage operation fails
-         * @throws {InvalidStateError} If state structure is invalid
+         * @returns {WizardState} Complete wizard state
          */
-        load() {
+        load(): WizardState {
             try {
                 const stored = sessionStorage.getItem(this.storageKey)
                 if (!stored) {
@@ -129,7 +135,7 @@
                     return { ...this.initialState }
                 }
 
-                const state = JSON.parse(stored)
+                const state = JSON.parse(stored) as Partial<WizardState>
                 console.log('[WizardStateManager] Loaded state:', state)
 
                 // Validate state structure
@@ -144,7 +150,7 @@
                     return this.migrateState(state)
                 }
 
-                return state
+                return state as WizardState
             } catch (error) {
                 if (error instanceof InvalidStateError) {
                     console.error('[WizardStateManager] Invalid state:', error.details)
@@ -163,12 +169,10 @@
 
         /**
          * Save state to sessionStorage with validation
-         * @param {Object} state - State object to save
-         * @returns {Object} Validated and normalized state
-         * @throws {InvalidStateError} If state structure is invalid
-         * @throws {StorageError} If storage operation fails
+         * @param {WizardState} state - State object to save
+         * @returns {WizardState} Validated and normalized state
          */
-        save(state) {
+        save(state: Partial<WizardState>): WizardState {
             try {
                 const validated = this.validateAndNormalize(state)
                 validated.lastUpdated = Date.now()
@@ -193,10 +197,10 @@
 
         /**
          * Update specific fields in state
-         * @param {Object} updates - Fields to update
-         * @returns {Object} Updated state
+         * @param {Partial<WizardState>} updates - Fields to update
+         * @returns {WizardState} Updated state
          */
-        update(updates) {
+        update(updates: Partial<WizardState>): WizardState {
             const current = this.load()
             const updated = { ...current, ...updates }
             return this.save(updated)
@@ -204,25 +208,27 @@
 
         /**
          * Validate state structure
-         * @param {Object} state - State to validate
+         * @param {unknown} state - State to validate
          * @returns {boolean} True if valid
          */
-        validateState(state) {
+        validateState(state: unknown): state is WizardState {
             if (!state || typeof state !== 'object') return false
+
+            const s = state as Partial<WizardState>
 
             // Check required fields
             const required = ['setupType', 'currentStep']
-            if (!required.every(key => key in state)) {
+            if (!required.every(key => key in s)) {
                 return false
             }
 
             // Validate setupType
-            if (!['simple', 'extended'].includes(state.setupType)) {
+            if (!['simple', 'extended'].includes(s.setupType || '')) {
                 return false
             }
 
             // Validate currentStep
-            if (typeof state.currentStep !== 'number' || state.currentStep < 1) {
+            if (typeof s.currentStep !== 'number' || (s.currentStep || 0) < 1) {
                 return false
             }
 
@@ -231,23 +237,24 @@
 
         /**
          * Validate and normalize state values
-         * @param {Object} state - State to normalize
-         * @returns {Object} Normalized state
+         * @param {Partial<WizardState>} state - State to normalize
+         * @returns {WizardState} Normalized state
          */
-        validateAndNormalize(state) {
-            const normalized = { ...this.initialState, ...state }
+        validateAndNormalize(state: Partial<WizardState>): WizardState {
+            const normalized: WizardState = { ...this.initialState, ...state } as WizardState
 
             // Normalize arrays - ensure they're arrays and remove duplicates
-            const arrayFields = ['css', 'js', 'agents', 'editors', 'completedSteps']
+            const arrayFields: (keyof WizardState)[] = ['css', 'js', 'agents', 'editors', 'completedSteps']
             arrayFields.forEach(key => {
-                if (normalized[key] && !Array.isArray(normalized[key])) {
-                    normalized[key] = []
-                } else if (normalized[key]) {
-                    normalized[key] = [...new Set(
-                        normalized[key].filter(v =>
+                const value = normalized[key]
+                if (value && !Array.isArray(value)) {
+                    (normalized[key] as string[]) = []
+                } else if (Array.isArray(value)) {
+                    (normalized[key] as string[]) = [...new Set(
+                        value.filter(v =>
                             v !== null && v !== undefined && v !== ''
                         )
-                    )]
+                    )] as string[]
                 }
             })
 
@@ -264,7 +271,7 @@
             normalized.contextDir = this.sanitizeString(normalized.contextDir) || '.project'
 
             // Normalize booleans
-            const booleanFields = [
+            const booleanFields: (keyof WizardState)[] = [
                 'framework',
                 'framework_doctrine',
                 'framework_directives',
@@ -276,7 +283,7 @@
             })
 
             // Normalize numbers
-            normalized.currentStep = Math.max(1, Math.min(10, parseInt(normalized.currentStep) || 1))
+            normalized.currentStep = Math.max(1, Math.min(10, parseInt(String(normalized.currentStep)) || 1))
             normalized.lastUpdated = normalized.lastUpdated || Date.now()
 
             return normalized
@@ -284,25 +291,26 @@
 
         /**
          * Migrate state from old version
-         * @param {Object} oldState - Old state to migrate
-         * @returns {Object} Migrated state
+         * @param {Partial<WizardState>} oldState - Old state to migrate
+         * @returns {WizardState} Migrated state
          */
-        migrateState(oldState) {
+        migrateState(oldState: Partial<WizardState>): WizardState {
             console.log('[WizardStateManager] Migrating state from version', oldState.version || '1.0')
 
-            const migrated = { ...this.initialState }
+            const migrated: WizardState = { ...this.initialState }
 
             // Map old fields to new structure
-            if (oldState.setupType) migrated.setupType = oldState.setupType
+            if (oldState.setupType) migrated.setupType = oldState.setupType as 'simple' | 'extended'
             if (oldState.projectName) migrated.projectName = this.sanitizeString(oldState.projectName)
             if (oldState.projectDescription) migrated.projectDescription = this.sanitizeString(oldState.projectDescription)
             if (oldState.preset !== undefined) migrated.preset = this.sanitizeString(oldState.preset)
 
             // Migrate arrays
-            const arrayFields = ['css', 'js', 'agents', 'editors']
+            const arrayFields: (keyof WizardState)[] = ['css', 'js', 'agents', 'editors']
             arrayFields.forEach(key => {
-                if (oldState[key] && Array.isArray(oldState[key])) {
-                    migrated[key] = [...new Set(oldState[key])]
+                const oldValue = oldState[key]
+                if (oldValue && Array.isArray(oldValue)) {
+                    (migrated[key] as string[]) = [...new Set(oldValue)] as string[]
                 }
             })
 
@@ -312,9 +320,10 @@
             }
             const frameworkOptions = ['doctrine', 'directives', 'playbooks', 'enhancements']
             frameworkOptions.forEach(option => {
-                const key = `framework_${option}`
-                if (oldState[key] === 'true' || oldState[key] === true) {
-                    migrated[key] = true
+                const key = `framework_${option}` as keyof WizardState
+                const oldValue = oldState[key]
+                if (oldValue === 'true' || oldValue === true) {
+                    (migrated[key] as boolean) = true
                 }
             })
 
@@ -334,10 +343,10 @@
 
         /**
          * Subscribe to state changes
-         * @param {Function} callback - Callback function
-         * @returns {Function} Unsubscribe function
+         * @param {(state: WizardState) => void} callback - Callback function
+         * @returns {() => void} Unsubscribe function
          */
-        subscribe(callback) {
+        subscribe(callback: (state: WizardState) => void): () => void {
             if (typeof callback !== 'function') {
                 throw new TypeError('Callback must be a function')
             }
@@ -352,10 +361,10 @@
 
         /**
          * Notify listeners of state changes
-         * @param {Object} state - State to notify
+         * @param {WizardState} state - State to notify
          * @private
          */
-        notifyListeners(state) {
+        notifyListeners(state: WizardState): void {
             this.listeners.forEach(callback => {
                 try {
                     callback(state)
@@ -368,7 +377,7 @@
         /**
          * Clear state
          */
-        clear() {
+        clear(): void {
             try {
                 sessionStorage.removeItem(this.storageKey)
                 const initialState = { ...this.initialState }
@@ -384,19 +393,18 @@
          * Export state as JSON
          * @returns {string} JSON string
          */
-        export() {
+        export(): string {
             return JSON.stringify(this.load(), null, 2)
         }
 
         /**
          * Import state from JSON
          * @param {string} jsonString - JSON string to import
-         * @returns {Object} Imported state
-         * @throws {InvalidStateError} If state is invalid
+         * @returns {WizardState} Imported state
          */
-        import(jsonString) {
+        import(jsonString: string): WizardState {
             try {
-                const state = JSON.parse(jsonString)
+                const state = JSON.parse(jsonString) as Partial<WizardState>
                 if (this.validateState(state)) {
                     return this.save(state)
                 } else {
@@ -423,11 +431,11 @@
     // This allows gradual migration
     // Only create minimal wrapper if full WizardState doesn't exist
     // Full implementation (from core/state.js) will replace this if loaded later
-    if (!window.WizardState || !window.WizardState.collectFormData) {
+    if (!window.WizardState || !(window.WizardState as { collectFormData?: () => WizardState }).collectFormData) {
         window.WizardState = {
             load: () => window.wizardStateManager.load(),
-            save: (state) => window.wizardStateManager.save(state),
-            update: (updates) => window.wizardStateManager.update(updates),
+            save: (state: Partial<WizardState>) => window.wizardStateManager.save(state),
+            update: (updates: Partial<WizardState>) => window.wizardStateManager.update(updates),
             clear: () => window.wizardStateManager.clear(),
             // Stub methods that will be replaced by full implementation
             // These prevent errors if called before full implementation loads
@@ -439,22 +447,22 @@
                 console.warn('[WizardStateManager] syncFromHiddenFields called but full WizardState not loaded.')
                 // No-op for minimal implementation
             },
-            toURLParams: function(state) {
+            toURLParams: function(state?: Partial<WizardState>) {
                 console.warn('[WizardStateManager] toURLParams called but full WizardState not loaded. Using minimal implementation.')
                 const params = new URLSearchParams()
                 const stateToUse = state || window.wizardStateManager.load()
                 Object.entries(stateToUse).forEach(([key, value]) => {
                     if (value !== null && value !== undefined && value !== '') {
                         if (Array.isArray(value)) {
-                            value.forEach(v => params.append(key, v))
+                            value.forEach(v => params.append(key, String(v)))
                         } else {
-                            params.append(key, value)
+                            params.append(key, String(value))
                         }
                     }
                 })
                 return params
             }
-        }
+        } as WizardStateLegacy
     }
 
     console.log('[WizardStateManager] Initialized')

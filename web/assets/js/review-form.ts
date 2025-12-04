@@ -13,37 +13,37 @@
 
     /**
      * Get generate form element
-     * @returns {HTMLFormElement|null} Generate form or null
+     * @returns {HTMLFormElement | null} Generate form or null
      */
-    function getGenerateForm() {
-        return document.getElementById(GENERATE_FORM_ID)
+    function getGenerateForm(): HTMLFormElement | null {
+        return document.getElementById(GENERATE_FORM_ID) as HTMLFormElement | null
     }
 
     /**
      * Get wizard state input element
-     * @returns {HTMLInputElement|null} State input or null
+     * @returns {HTMLInputElement | null} State input or null
      */
-    function getWizardStateInput() {
-        return document.getElementById(WIZARD_STATE_INPUT_ID)
+    function getWizardStateInput(): HTMLInputElement | null {
+        return document.getElementById(WIZARD_STATE_INPUT_ID) as HTMLInputElement | null
     }
 
     /**
      * Check if WizardState is available
      * @returns {boolean} True if WizardState is available
      */
-    function isWizardStateAvailable() {
-        return typeof WizardState !== 'undefined' &&
-               typeof WizardState.collectFormData === 'function' &&
-               typeof WizardState.update === 'function' &&
-               typeof WizardState.load === 'function'
+    function isWizardStateAvailable(): boolean {
+        return typeof window.WizardState !== 'undefined' &&
+               typeof (window.WizardState as WizardStateLegacy).collectFormData === 'function' &&
+               typeof (window.WizardState as WizardStateLegacy).update === 'function' &&
+               typeof (window.WizardState as WizardStateLegacy).load === 'function'
     }
 
     /**
      * Serialize wizard state to JSON string
-     * @param {Object} state - Wizard state object
-     * @returns {string|null} JSON string or null on error
+     * @param {WizardState} state - Wizard state object
+     * @returns {string | null} JSON string or null on error
      */
-    function serializeState(state) {
+    function serializeState(state: Partial<WizardState> | null | undefined): string | null {
         if (!state || Object.keys(state).length === 0) {
             return null
         }
@@ -59,17 +59,18 @@
     /**
      * Save and inject wizard state into form before submission
      */
-    function saveAndInjectState() {
+    function saveAndInjectState(): void {
         if (!isWizardStateAvailable()) {
             console.warn('[Review Form] WizardState not available')
             return
         }
 
         try {
-            const currentFormData = WizardState.collectFormData()
-            WizardState.update(currentFormData)
+            const wizardState = window.WizardState as WizardStateLegacy
+            const currentFormData = wizardState.collectFormData()
+            wizardState.update(currentFormData)
 
-            const completeState = WizardState.load()
+            const completeState = wizardState.load()
             const stateInput = getWizardStateInput()
 
             if (!stateInput) {
@@ -92,8 +93,11 @@
      * @param {Event} event - HTMX event
      * @returns {boolean} True if event targets wizard content
      */
-    function isWizardContentSwap(event) {
-        const targetId = event.detail?.target?.id || event.target?.id
+    function isWizardContentSwap(event: Event): boolean {
+        const htmxEvent = event as CustomEvent
+        const target = htmxEvent.detail?.target as HTMLElement | undefined
+        const eventTarget = event.target as HTMLElement | undefined
+        const targetId = target?.id || eventTarget?.id
         return targetId === WIZARD_CONTENT_ID
     }
 
@@ -101,9 +105,9 @@
      * Handle form submission (capture phase to run before HTMX)
      * @param {Event} event - Submit event
      */
-    function handleFormSubmit(event) {
-        const form = event.target
-        if (form?.id !== GENERATE_FORM_ID) {
+    function handleFormSubmit(event: Event): void {
+        const form = event.target as HTMLFormElement | null
+        if (!form || form.id !== GENERATE_FORM_ID) {
             return
         }
 
@@ -114,9 +118,10 @@
      * Handle HTMX beforeRequest event
      * @param {Event} event - HTMX beforeRequest event
      */
-    function handleHtmxBeforeRequest(event) {
-        const form = event.detail?.elt
-        if (form?.id !== GENERATE_FORM_ID) {
+    function handleHtmxBeforeRequest(event: Event): void {
+        const htmxEvent = event as CustomEvent
+        const form = htmxEvent.detail?.elt as HTMLFormElement | undefined
+        if (!form || form.id !== GENERATE_FORM_ID) {
             return
         }
 
@@ -127,7 +132,7 @@
      * Handle HTMX afterSwap event
      * @param {Event} event - HTMX afterSwap event
      */
-    function handleHtmxSwap(event) {
+    function handleHtmxSwap(event: Event): void {
         if (!isWizardContentSwap(event)) {
             return
         }
@@ -139,7 +144,7 @@
      * Setup form event listeners
      * @param {HTMLFormElement} form - Form element
      */
-    function setupFormListeners(form) {
+    function setupFormListeners(form: HTMLFormElement): void {
         // Use capture phase to run before HTMX processes the submit
         form.addEventListener('submit', handleFormSubmit, true)
         form.addEventListener('htmx:beforeRequest', handleHtmxBeforeRequest)
@@ -148,8 +153,8 @@
     /**
      * Setup HTMX swap listener
      */
-    function setupHtmxListener() {
-        if (typeof htmx === 'undefined') {
+    function setupHtmxListener(): void {
+        if (typeof window.htmx === 'undefined') {
             return
         }
 
@@ -159,7 +164,7 @@
     /**
      * Initialize review form handlers
      */
-    function initializeReviewForm() {
+    function initializeReviewForm(): void {
         const form = getGenerateForm()
         if (!form) {
             return
@@ -171,7 +176,7 @@
     /**
      * Execute initialization when DOM is ready
      */
-    function runInitialization() {
+    function runInitialization(): void {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeReviewForm)
         } else {
