@@ -1,0 +1,69 @@
+{# Unified Field Group Component (DRY)
+   Reusable component for form field groups with label, input, and validation
+   Used in: Project, Advanced steps
+
+   Parameters:
+   - fieldId: ID of the field
+   - fieldName: Name attribute of the field
+   - fieldType: Type of input (text, textarea, email, etc.)
+   - label: Label text
+   - labelOptional: Boolean to show "(optional)" text
+   - placeholder: Placeholder text
+   - value: Current value
+   - required: Boolean for required attribute
+   - pattern: Optional pattern attribute
+   - minLength: Optional minlength attribute
+   - maxLength: Optional maxlength attribute
+   - rows: Number of rows (for textarea)
+   - helpText: Help text below field
+   - errorMessage: Error message to display
+   - showError: Boolean to show error
+   - onInput: Optional oninput handler
+   - counter: Boolean to show character counter
+   - inputClasses: Additional classes for input element
+#}
+
+{% macro fieldGroup(fieldId, fieldName, fieldType='text', label='', labelOptional=false, placeholder='', value='', required=false, pattern='', minLength='', maxLength='', rows=3, helpText='', errorMessage='', showError=false, onInput='', counter=false, inputClasses='') %}
+    <div class="form-control mb-4 sm:mb-6">
+        <label for="{{ fieldId }}" class="label py-1 sm:py-2">
+            <span class="label-text text-sm sm:text-base font-medium text-base-content">
+                {{ label }}
+                {% if labelOptional %}
+                <span class="text-xs font-normal text-base-content/60 ml-2">(optional)</span>
+                {% endif %}
+            </span>
+        </label>
+        {% if fieldType == 'textarea' %}
+        <textarea
+            id="{{ fieldId }}"
+            name="{{ fieldName }}"
+            placeholder="{{ placeholder }}"
+            class="textarea textarea-bordered w-full focus:textarea-primary rounded-xl text-sm sm:text-base min-h-[88px] sm:min-h-0 {{ inputClasses }}"
+            rows="{{ rows }}"
+            {% if maxLength %}maxlength="{{ maxLength }}"{% endif %}
+            {% if required %}required aria-required="true"{% endif %}
+            aria-describedby="{{ fieldId }}-help {{ fieldId }}-error {% if counter %}{{ fieldId }}-counter{% endif %}"
+            {% if onInput %}oninput="{{ onInput }}"{% endif %}
+        >{{ value }}</textarea>
+        {% else %}
+        <input
+            type="{{ fieldType }}"
+            id="{{ fieldId }}"
+            name="{{ fieldName }}"
+            placeholder="{{ placeholder }}"
+            class="input input-bordered w-full focus:input-primary rounded-xl text-sm sm:text-base min-h-[44px] sm:min-h-0 {{ 'input-error' if showError else '' }} {{ inputClasses }}"
+            {% if value %}value="{{ value }}"{% endif %}
+            {% if required %}required aria-required="true"{% endif %}
+            {% if pattern %}pattern="{{ pattern }}"{% endif %}
+            {% if minLength %}minlength="{{ minLength }}"{% endif %}
+            {% if maxLength %}maxlength="{{ maxLength }}"{% endif %}
+            aria-describedby="{{ fieldId }}-help {{ fieldId }}-error {% if counter %}{{ fieldId }}-counter{% endif %}"
+            {% if onInput %}oninput="{{ onInput }}"{% endif %}
+        />
+        {% endif %}
+        {% if helpText or counter or errorMessage %}
+        {% from "partials/validation-message.html" import validationMessage %}
+        {{ validationMessage(fieldId, fieldName, helpText, errorMessage, showError, counter, maxLength|int if maxLength else 0, value|length if value else 0) }}
+        {% endif %}
+    </div>
+{% endmacro %}

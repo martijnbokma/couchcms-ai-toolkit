@@ -6,168 +6,35 @@
     <form hx-post="/api/setup/step/presets" hx-target="#wizard-content" hx-swap="innerHTML">
         {% include "partials/hidden-fields.html" %}
 
-        <fieldset class="mb-4 sm:mb-6">
-            <legend class="sr-only">Choose a preset configuration or skip to manual setup</legend>
-
-            <!-- Skip Option - Visually Distinct -->
-            <div class="mb-4 sm:mb-6">
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-100 border-2 border-dashed border-base-300 cursor-pointer hover:bg-base-200 transition-all shadow-sm rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value=""
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if not preset or preset == '' %}checked{% endif %}
-                        aria-describedby="skip-preset-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">Skip Presets</h3>
-                        <p id="skip-preset-description" class="text-xs text-base-content/60">
-                            Continue with manual configuration - full control over all options
-                        </p>
-                    </div>
-                </label>
-            </div>
-
-            <!-- Presets Grid -->
-            <div class="grid gap-2 mb-4 sm:mb-6">
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value="landing-page"
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if preset == 'landing-page' %}checked{% endif %}
-                        aria-describedby="preset-landing-page-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">Landing Page</h3>
-                        <p id="preset-landing-page-description" class="text-xs text-base-content/60">
-                            Simple landing page with CouchCMS - perfect for marketing sites
-                        </p>
-                    </div>
-                </label>
-
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value="blog"
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if preset == 'blog' %}checked{% endif %}
-                        aria-describedby="preset-blog-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">Blog</h3>
-                        <p id="preset-blog-description" class="text-xs text-base-content/60">
-                            Blog with comments, search, and archive views
-                        </p>
-                    </div>
-                </label>
-
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value="ecommerce"
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if preset == 'ecommerce' %}checked{% endif %}
-                        aria-describedby="preset-ecommerce-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">E-commerce</h3>
-                        <p id="preset-ecommerce-description" class="text-xs text-base-content/60">
-                            Online store with product catalog and shopping cart
-                        </p>
-                    </div>
-                </label>
-
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value="webapp"
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if preset == 'webapp' %}checked{% endif %}
-                        aria-describedby="preset-webapp-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">Web Application</h3>
-                        <p id="preset-webapp-description" class="text-xs text-base-content/60">
-                            Full-featured webapp with user management and data forms
-                        </p>
-                    </div>
-                </label>
-
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value="portfolio"
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if preset == 'portfolio' %}checked{% endif %}
-                        aria-describedby="preset-portfolio-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">Portfolio</h3>
-                        <p id="preset-portfolio-description" class="text-xs text-base-content/60">
-                            Portfolio showcase with image galleries and project pages
-                        </p>
-                    </div>
-                </label>
-
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value="documentation"
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if preset == 'documentation' %}checked{% endif %}
-                        aria-describedby="preset-documentation-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">Documentation</h3>
-                        <p id="preset-documentation-description" class="text-xs text-base-content/60">
-                            Documentation site with search and navigation
-                        </p>
-                    </div>
-                </label>
-
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value="minimal"
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if preset == 'minimal' %}checked{% endif %}
-                        aria-describedby="preset-minimal-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">Minimal</h3>
-                        <p id="preset-minimal-description" class="text-xs text-base-content/60">
-                            Bare minimum setup - just the essentials
-                        </p>
-                    </div>
-                </label>
-
-                <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="radio"
-                        name="preset"
-                        value="full"
-                        class="radio radio-primary radio-sm mt-1"
-                        {% if preset == 'full' %}checked{% endif %}
-                        aria-describedby="preset-full-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">Full Stack</h3>
-                        <p id="preset-full-description" class="text-xs text-base-content/60">
-                            Everything included - all modules and agents
-                        </p>
-                    </div>
-                </label>
-            </div>
-        </fieldset>
+        {# Presets Selection - Using unified option-selector component #}
+        {% from "partials/option-selector.html" import optionSelector %}
+        {% set presetOptions = [
+            {id: 'landing-page', name: 'Landing Page', description: 'Simple landing page with CouchCMS - perfect for marketing sites', selected: preset == 'landing-page'},
+            {id: 'blog', name: 'Blog', description: 'Blog with comments, search, and archive views', selected: preset == 'blog'},
+            {id: 'ecommerce', name: 'E-commerce', description: 'Online store with product catalog and shopping cart', selected: preset == 'ecommerce'},
+            {id: 'webapp', name: 'Web Application', description: 'Full-featured webapp with user management and data forms', selected: preset == 'webapp'},
+            {id: 'portfolio', name: 'Portfolio', description: 'Portfolio showcase with image galleries and project pages', selected: preset == 'portfolio'},
+            {id: 'documentation', name: 'Documentation', description: 'Documentation site with search and navigation', selected: preset == 'documentation'},
+            {id: 'minimal', name: 'Minimal', description: 'Bare minimum setup - just the essentials', selected: preset == 'minimal'},
+            {id: 'full', name: 'Full Stack', description: 'Everything included - all modules and agents', selected: preset == 'full'}
+        ] %}
+        {% set skipOption = {
+            value: '',
+            name: 'Skip Presets',
+            description: 'Continue with manual configuration - full control over all options',
+            selected: not preset or preset == ''
+        } %}
+        {{ optionSelector(
+            presetOptions,
+            'preset',
+            'radio',
+            preset|default(''),
+            '',
+            '',
+            '',
+            'grid-cols-1 sm:grid-cols-2',
+            skipOption
+        ) }}
 
         {% if setupType == 'simple' %}
         {% set nextButtonLabel = 'Next: Editors' %}

@@ -19,13 +19,39 @@
        Breakpoint matches TailwindCSS sm: breakpoint (640px).
     */
     .progress-line {
-        top: 18px;
+        top: 22px;
         transform: translateY(-50%);
     }
 
     @media (min-width: 640px) {
         .progress-line {
             top: 20px;
+        }
+    }
+
+    /* Smooth scrolling for mobile horizontal scroll */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Snap scrolling for better mobile experience (if using horizontal scroll) */
+    .snap-x {
+        scroll-snap-type: x mandatory;
+    }
+
+    .snap-center {
+        scroll-snap-align: center;
+    }
+
+    /* Vertical progress line for mobile layout */
+    @media (max-width: 639px) {
+        .progress-indicator-vertical .progress-line {
+            display: none; /* Hide horizontal progress bar on mobile */
         }
     }
 }

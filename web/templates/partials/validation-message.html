@@ -1,0 +1,33 @@
+{# Unified Validation Message Component (DRY)
+   Reusable component for form field validation feedback
+   Used in: All steps with form inputs
+
+   Parameters:
+   - fieldId: ID of the field being validated
+   - fieldName: Name attribute of the field
+   - helpText: Optional help text to show when field is valid/empty
+   - errorMessage: Optional error message to display
+   - showError: Boolean to show/hide error message
+   - counter: Optional character counter (for textarea/input with maxlength)
+   - maxLength: Maximum length for counter
+#}
+
+{% macro validationMessage(fieldId, fieldName, helpText='', errorMessage='', showError=false, counter=false, maxLength=0, currentLength=0) %}
+    {% if helpText or counter %}
+    <div class="flex justify-between items-center mt-1">
+        {% if helpText %}
+        <div id="{{ fieldId }}-help" class="text-xs text-base-content/60 {{ 'hidden' if showError else '' }}">
+            {{ helpText }}
+        </div>
+        {% endif %}
+        {% if counter and maxLength > 0 %}
+        <div id="{{ fieldId }}-counter" class="text-xs text-base-content/60" aria-live="polite">
+            <span id="{{ fieldId }}-count">{{ currentLength }}</span>/{{ maxLength }} characters
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    <div id="{{ fieldId }}-error" class="text-xs text-error mt-1 {{ 'hidden' if not showError else '' }}" role="alert" aria-live="polite">
+        {{ errorMessage }}
+    </div>
+{% endmacro %}

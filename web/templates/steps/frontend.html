@@ -6,133 +6,42 @@
     <form hx-post="/api/setup/step/frontend" hx-target="#wizard-content" hx-swap="innerHTML">
         {% include "partials/hidden-fields.html" %}
 
-        <!-- CSS Framework Section -->
-        <fieldset class="mb-4 sm:mb-6">
-            <legend class="text-xs sm:text-sm font-semibold mb-2 text-base-content">
-                CSS Framework
-                <span class="text-xs font-normal text-base-content/60 ml-2">(select one or more)</span>
-            </legend>
-            <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
-                {% if frontendOptions %}
-                {% for option in frontendOptions.css %}
-                <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="checkbox"
-                        name="css"
-                        value="{{ option.id }}"
-                        class="checkbox checkbox-primary checkbox-sm shrink-0"
-                        {% if option.selected %}checked{% endif %}
-                        {% if option.id == 'daisyui' %}data-requires="tailwindcss"{% endif %}
-                        aria-describedby="css-{{ option.id }}-description"
-                        onchange="checkDependency(this, 'css')"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
-                        <p id="css-{{ option.id }}-description" class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
-                    </div>
-                </label>
-                {% endfor %}
-                {% else %}
-                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="checkbox"
-                        name="css"
-                        value="tailwindcss"
-                        id="css-tailwindcss"
-                        class="checkbox checkbox-primary checkbox-sm"
-                        checked
-                        aria-describedby="css-tailwindcss-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-base-content">TailwindCSS</h4>
-                        <p id="css-tailwindcss-description" class="text-xs text-base-content/60">Utility-first CSS framework</p>
-                    </div>
-                </label>
-                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="checkbox"
-                        name="css"
-                        value="daisyui"
-                        id="css-daisyui"
-                        class="checkbox checkbox-primary checkbox-sm"
-                        data-requires="tailwindcss"
-                        aria-describedby="css-daisyui-description"
-                        onchange="checkDependency(this, 'css')"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-base-content">daisyUI</h4>
-                        <p id="css-daisyui-description" class="text-xs text-base-content/60">Component library for TailwindCSS</p>
-                    </div>
-                </label>
-                {% endif %}
-            </div>
+        {# CSS Framework Section - Using unified option-selector component #}
+        {% from "partials/option-selector.html" import optionSelector %}
+        {% set cssOptions = frontendOptions.css if frontendOptions else [
+            {id: 'tailwindcss', name: 'TailwindCSS', description: 'Utility-first CSS framework', selected: true},
+            {id: 'daisyui', name: 'daisyUI', description: 'Component library for TailwindCSS', requires: 'tailwindcss'}
+        ] %}
+        {% set cssSelected = css|default([]) %}
+        {{ optionSelector(
+            cssOptions,
+            'css',
+            'checkbox',
+            cssSelected,
+            'CSS Framework',
+            '',
+            '(select one or more)',
+            'grid-cols-1 sm:grid-cols-2',
+            null,
+            'daisyui-warning',
+            'checkDependency'
+        ) }}
 
-            <!-- Dependency Warning -->
-            <div id="daisyui-warning" class="alert alert-warning mt-3 hidden" role="alert">
-                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                <span class="text-xs sm:text-sm">
-                    <strong>Note:</strong> daisyUI requires TailwindCSS. Please select TailwindCSS as well.
-                </span>
-            </div>
-        </fieldset>
-
-        <!-- JavaScript Framework Section -->
-        <fieldset class="mb-4 sm:mb-6">
-            <legend class="text-xs sm:text-sm font-semibold mb-2 text-base-content">
-                JavaScript Frameworks
-                <span class="text-xs font-normal text-base-content/60 ml-2">(select one or more)</span>
-            </legend>
-            <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
-                {% if frontendOptions %}
-                {% for option in frontendOptions.js %}
-                <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="checkbox"
-                        name="js"
-                        value="{{ option.id }}"
-                        class="checkbox checkbox-primary checkbox-sm shrink-0"
-                        {% if option.selected %}checked{% endif %}
-                        aria-describedby="js-{{ option.id }}-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
-                        <p id="js-{{ option.id }}-description" class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
-                    </div>
-                </label>
-                {% endfor %}
-                {% else %}
-                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="checkbox"
-                        name="js"
-                        value="alpinejs"
-                        class="checkbox checkbox-primary checkbox-sm"
-                        checked
-                        aria-describedby="js-alpinejs-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-base-content">Alpine.js</h4>
-                        <p id="js-alpinejs-description" class="text-xs text-base-content/60">Lightweight reactive JavaScript</p>
-                    </div>
-                </label>
-                <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input
-                        type="checkbox"
-                        name="js"
-                        value="typescript"
-                        class="checkbox checkbox-primary checkbox-sm"
-                        aria-describedby="js-typescript-description"
-                    />
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-base-content">TypeScript</h4>
-                        <p id="js-typescript-description" class="text-xs text-base-content/60">Type-safe JavaScript</p>
-                    </div>
-                </label>
-                {% endif %}
-            </div>
-        </fieldset>
+        {# JavaScript Framework Section - Using unified option-selector component #}
+        {% set jsOptions = frontendOptions.js if frontendOptions else [
+            {id: 'alpinejs', name: 'Alpine.js', description: 'Lightweight reactive JavaScript', selected: true},
+            {id: 'typescript', name: 'TypeScript', description: 'Type-safe JavaScript'}
+        ] %}
+        {% set jsSelected = js|default([]) %}
+        {{ optionSelector(
+            jsOptions,
+            'js',
+            'checkbox',
+            jsSelected,
+            'JavaScript Frameworks',
+            '',
+            '(select one or more)'
+        ) }}
 
         {% set nextButtonLabel = 'Next: AI Agents' %}
         {% set showBackButton = true %}

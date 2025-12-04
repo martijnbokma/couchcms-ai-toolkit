@@ -166,6 +166,7 @@ declare global {
         // Flags
         __WIZARD_INIT_V2_INITIALIZED__?: boolean
         __WIZARD_INIT_INITIALIZED__?: boolean
+        __STATE_INDICATOR_INITIALIZED__?: boolean
 
         // HTMX (external library)
         htmx?: {

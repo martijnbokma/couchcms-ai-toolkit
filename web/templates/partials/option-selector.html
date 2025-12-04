@@ -1,0 +1,94 @@
+{# Unified Option Selector Component (DRY)
+   Reusable component for checkbox/radio option selection
+   Used in: Frontend, Agents, Editors, Presets steps
+
+   Parameters:
+   - options: Array of option objects with {id, name, description, selected?, requires?}
+   - name: Form field name (e.g., 'css', 'js', 'agents', 'editors', 'preset')
+   - type: 'checkbox' or 'radio' (default: 'checkbox')
+   - selected: Array of selected option IDs (for checkboxes) or single ID (for radio)
+   - groupLabel: Label for the fieldset/group
+   - groupDescription: Optional description text below group label
+   - description: Optional helper text (e.g., "(select one or more)")
+   - gridCols: Grid columns class (default: 'grid-cols-1 sm:grid-cols-2')
+   - skipOption: Optional skip option object (for presets step)
+   - dependencyWarningId: Optional ID for dependency warning element
+   - dependencyHandler: Optional JavaScript function name for dependency checking
+#}
+
+{% macro optionSelector(options, name, type='checkbox', selected=[], groupLabel='', groupDescription='', description='', gridCols='grid-cols-1 sm:grid-cols-2', skipOption=null, dependencyWarningId='', dependencyHandler='') %}
+    <fieldset class="mb-4 sm:mb-6">
+        {% if groupLabel %}
+        <legend class="text-xs sm:text-sm font-semibold mb-2 text-base-content">
+            {{ groupLabel }}
+            {% if description %}
+            <span class="text-xs font-normal text-base-content/60 ml-2">{{ description }}</span>
+            {% endif %}
+        </legend>
+        {% endif %}
+
+        {% if groupDescription %}
+        <p class="text-xs text-base-content/60 mb-3">{{ groupDescription }}</p>
+        {% endif %}
+
+        {# Skip Option (for presets) - Visually Distinct #}
+        {% if skipOption %}
+        <div class="mb-4 sm:mb-6">
+            <label class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-base-100 border-2 border-dashed border-base-300 cursor-pointer hover:bg-base-200 active:bg-base-200 transition-all shadow-sm rounded-xl min-h-[44px]">
+                <input
+                    type="radio"
+                    name="{{ name }}"
+                    value="{{ skipOption.value }}"
+                    class="radio radio-primary radio-sm mt-1"
+                    {% if skipOption.selected %}checked{% endif %}
+                    aria-describedby="{{ name }}-skip-description"
+                />
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-xs sm:text-sm font-semibold text-base-content mb-1">{{ skipOption.name }}</h3>
+                    <p id="{{ name }}-skip-description" class="text-xs text-base-content/60">{{ skipOption.description }}</p>
+                </div>
+            </label>
+        </div>
+        {% endif %}
+
+        {# Options Grid #}
+        <div class="grid gap-2 sm:gap-2 {{ gridCols }}">
+            {% for option in options %}
+            <label class="relative flex items-{{ 'start' if type == 'radio' else 'center' }} gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-{{ '4' if type == 'radio' else '2.5' }} bg-base-200 cursor-pointer hover:bg-base-300 active:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl min-h-[44px] sm:min-h-0">
+                <input
+                    type="{{ type }}"
+                    name="{{ name }}"
+                    value="{{ option.id }}"
+                    class="{{ 'radio radio-primary radio-sm' if type == 'radio' else 'checkbox checkbox-primary checkbox-sm' }} shrink-0 {{ 'mt-1' if type == 'radio' else '' }}"
+                    {% if type == 'checkbox' %}
+                        {% if option.id in selected or option.selected %}checked{% endif %}
+                    {% else %}
+                        {% if option.id == selected or option.selected %}checked{% endif %}
+                    {% endif %}
+                    {% if option.requires %}
+                        data-requires="{{ option.requires }}"
+                        {% if dependencyHandler %}onchange="{{ dependencyHandler }}(this, '{{ name }}')"{% endif %}
+                    {% endif %}
+                    aria-describedby="{{ name }}-{{ option.id }}-description"
+                />
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-xs sm:text-sm font-semibold text-base-content {% if type == 'radio' %}mb-1{% endif %}">{{ option.name }}</h4>
+                    <p id="{{ name }}-{{ option.id }}-description" class="text-xs text-base-content/60 {% if type == 'checkbox' %}line-clamp-2{% endif %}">{{ option.description }}</p>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+
+        {# Dependency Warning (optional) #}
+        {% if dependencyWarningId %}
+        <div id="{{ dependencyWarningId }}" class="alert alert-warning mt-3 hidden" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span class="text-xs sm:text-sm">
+                <strong>Note:</strong> <span id="{{ dependencyWarningId }}-message">daisyUI requires TailwindCSS. Please select TailwindCSS as well.</span>
+            </span>
+        </div>
+        {% endif %}
+    </fieldset>
+{% endmacro %}

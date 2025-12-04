@@ -16,7 +16,7 @@
                     </svg>
                     <span class="flex-1">CADS Framework</span>
                     <span class="text-xs sm:text-sm text-base-content/60 font-normal">(CouchCMS AI Development Standards)</span>
-                    <button type="button" id="cads-info-toggle" onclick="toggleInfo('cads-info', this)" class="btn btn-circle btn-xs sm:btn-sm btn-ghost text-info hover:bg-info/10 tooltip tooltip-left flex items-center justify-center shrink-0 cursor-pointer" data-tip="More information about CADS Framework" aria-label="Show more information about CADS Framework" aria-expanded="false" aria-controls="cads-info">
+                    <button type="button" id="cads-info-toggle" onclick="toggleInfo('cads-info', this)" class="btn btn-circle btn-xs sm:btn-sm btn-ghost text-info hover:bg-info/10 active:bg-info/20 tooltip tooltip-left flex items-center justify-center shrink-0 cursor-pointer min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0" data-tip="More information about CADS Framework" aria-label="Show more information about CADS Framework" aria-expanded="false" aria-controls="cads-info">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -31,8 +31,8 @@
                 <p class="text-xs sm:text-sm text-base-content/70 mb-3 sm:mb-4">Enable CADS for more structured and predictable AI agent behavior. This is especially useful for complex CouchCMS projects where consistency and adherence to CouchCMS patterns is important.</p>
 
                 <div class="form-control">
-                    <label class="label cursor-pointer justify-start gap-4">
-                        <input type="checkbox" name="framework" value="true" id="framework-checkbox" class="checkbox checkbox-primary rounded-xl" {% if framework %}checked{% endif %} onchange="updateFrameworkVisibility()" aria-describedby="framework-description" />
+                    <label class="label cursor-pointer justify-start gap-4 py-2 sm:py-0 min-h-[44px] sm:min-h-0">
+                        <input type="checkbox" name="framework" value="true" id="framework-checkbox" class="checkbox checkbox-primary rounded-xl shrink-0" {% if framework %}checked{% endif %} onchange="updateFrameworkVisibility()" aria-describedby="framework-description" />
                         <span class="label-text font-medium text-base-content">Enable CADS Framework</span>
                     </label>
                     <span id="framework-description" class="sr-only">Enables structured AI agent behavior for CouchCMS projects</span>
@@ -41,29 +41,29 @@
                 <div id="framework-options" class="mt-3 sm:mt-4 {% if not framework %}hidden{% endif %}" role="group" aria-labelledby="framework-components-heading">
                     <p id="framework-components-heading" class="text-xs sm:text-sm font-medium mb-2 sm:mb-3 text-base-content">Framework Components:</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                        <label class="label cursor-pointer justify-start gap-3 items-start">
-                            <input type="checkbox" name="framework_doctrine" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5" {% if framework and framework.doctrine %}checked{% endif %} aria-describedby="doctrine-description" />
+                        <label class="label cursor-pointer justify-start gap-3 items-start py-2 sm:py-0 min-h-[44px] sm:min-h-0">
+                            <input type="checkbox" name="framework_doctrine" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5 shrink-0" {% if framework and framework.doctrine %}checked{% endif %} aria-describedby="doctrine-description" />
                             <div class="flex-1 min-w-0">
                                 <span class="label-text text-sm font-semibold text-base-content block mb-0.5">Doctrine</span>
                                 <p id="doctrine-description" class="text-xs text-base-content/60 leading-relaxed">Core principles and operational doctrine for AI agents</p>
                             </div>
                         </label>
-                        <label class="label cursor-pointer justify-start gap-3 items-start">
-                            <input type="checkbox" name="framework_directives" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5" {% if framework and framework.directives %}checked{% endif %} aria-describedby="directives-description" />
+                        <label class="label cursor-pointer justify-start gap-3 items-start py-2 sm:py-0 min-h-[44px] sm:min-h-0">
+                            <input type="checkbox" name="framework_directives" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5 shrink-0" {% if framework and framework.directives %}checked{% endif %} aria-describedby="directives-description" />
                             <div class="flex-1 min-w-0">
                                 <span class="label-text text-sm font-semibold text-base-content block mb-0.5">Directives</span>
                                 <p id="directives-description" class="text-xs text-base-content/60 leading-relaxed">Communication guidelines and best practices</p>
                             </div>
                         </label>
-                        <label class="label cursor-pointer justify-start gap-3 items-start">
-                            <input type="checkbox" name="framework_playbooks" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5" {% if framework and framework.playbooks %}checked{% endif %} aria-describedby="playbooks-description" />
+                        <label class="label cursor-pointer justify-start gap-3 items-start py-2 sm:py-0 min-h-[44px] sm:min-h-0">
+                            <input type="checkbox" name="framework_playbooks" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5 shrink-0" {% if framework and framework.playbooks %}checked{% endif %} aria-describedby="playbooks-description" />
                             <div class="flex-1 min-w-0">
                                 <span class="label-text text-sm font-semibold text-base-content block mb-0.5">Playbooks</span>
                                 <p id="playbooks-description" class="text-xs text-base-content/60 leading-relaxed">Reusable workflow templates for common tasks</p>
                             </div>
                         </label>
-                        <label class="label cursor-pointer justify-start gap-3 items-start">
-                            <input type="checkbox" name="framework_enhancements" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5" {% if framework and framework.enhancements %}checked{% endif %} aria-describedby="enhancements-description" />
+                        <label class="label cursor-pointer justify-start gap-3 items-start py-2 sm:py-0 min-h-[44px] sm:min-h-0">
+                            <input type="checkbox" name="framework_enhancements" value="true" class="checkbox checkbox-sm checkbox-primary rounded-xl mt-0.5 shrink-0" {% if framework and framework.enhancements %}checked{% endif %} aria-describedby="enhancements-description" />
                             <div class="flex-1 min-w-0">
                                 <span class="label-text text-sm font-semibold text-base-content block mb-0.5">Enhancements</span>
                                 <p id="enhancements-description" class="text-xs text-base-content/60 leading-relaxed">Advanced features and optimizations (optional)</p>
@@ -83,7 +83,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
                     <span class="flex-1">Context Directory</span>
-                    <button type="button" onclick="toggleInfo('context-info')" class="btn btn-circle btn-xs sm:btn-sm btn-ghost text-info hover:bg-info/10 tooltip tooltip-left flex items-center justify-center shrink-0 cursor-pointer" data-tip="More information about Context Directory" aria-label="Show more information about Context Directory" aria-expanded="false" aria-controls="context-info">
+                    <button type="button" onclick="toggleInfo('context-info')" class="btn btn-circle btn-xs sm:btn-sm btn-ghost text-info hover:bg-info/10 active:bg-info/20 tooltip tooltip-left flex items-center justify-center shrink-0 cursor-pointer min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0" data-tip="More information about Context Directory" aria-label="Show more information about Context Directory" aria-expanded="false" aria-controls="context-info">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>

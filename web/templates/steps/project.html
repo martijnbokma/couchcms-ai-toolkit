@@ -7,57 +7,48 @@
         <input type="hidden" name="setupType" value="{{ setupType or 'simple' }}" />
         {% include "partials/hidden-fields.html" %}
 
-        <div class="form-control mb-4 sm:mb-6">
-            <label for="projectName" class="label py-1 sm:py-2">
-                <span class="label-text text-sm sm:text-base font-medium text-base-content">Project Name</span>
-            </label>
-            <input
-                type="text"
-                id="projectName"
-                name="projectName"
-                placeholder="my-awesome-project"
-                class="input input-bordered w-full focus:input-primary rounded-xl text-sm sm:text-base"
-                required
-                aria-required="true"
-                aria-describedby="projectName-help projectName-error"
-                pattern="[a-z0-9-]+"
-                minlength="3"
-                maxlength="100"
-                value="{{ projectName or '' }}"
-                oninput="validateProjectName(this)"
-            />
-            <div id="projectName-help" class="text-xs text-base-content/60 mt-1">
-                Use lowercase letters, numbers, and hyphens only. 3-100 characters.
-            </div>
-            <div id="projectName-error" class="text-xs text-error mt-1 hidden" role="alert" aria-live="polite"></div>
-        </div>
+        {# Project Name Field - Using unified field-group component #}
+        {% from "partials/field-group.html" import fieldGroup %}
+        {{ fieldGroup(
+            'projectName',
+            'projectName',
+            'text',
+            'Project Name',
+            false,
+            'my-awesome-project',
+            projectName or '',
+            true,
+            '[a-z0-9-]+',
+            '3',
+            '100',
+            '',
+            'Use lowercase letters, numbers, and hyphens only. 3-100 characters.',
+            '',
+            false,
+            'if (window.StepValidator) { window.StepValidator.validateAndUpdateUI("projectName", this.value); } else if (window.validateProjectName) { window.validateProjectName(this); }',
+            false
+        ) }}
 
-        <div class="form-control mb-4 sm:mb-6">
-            <label for="projectDescription" class="label py-1 sm:py-2">
-                <span class="label-text text-sm sm:text-base font-medium text-base-content">
-                    Project Description
-                    <span class="text-xs font-normal text-base-content/60 ml-2">(optional)</span>
-                </span>
-            </label>
-            <textarea
-                id="projectDescription"
-                name="projectDescription"
-                placeholder="A CouchCMS web application for..."
-                class="textarea textarea-bordered w-full focus:textarea-primary rounded-xl text-sm sm:text-base"
-                rows="3"
-                maxlength="500"
-                aria-describedby="projectDescription-help projectDescription-counter"
-                oninput="updateDescriptionCounter(this)"
-            >{{ projectDescription or '' }}</textarea>
-            <div class="flex justify-between items-center mt-1">
-                <div id="projectDescription-help" class="text-xs text-base-content/60">
-                    Brief description of your project (optional)
-                </div>
-                <div id="projectDescription-counter" class="text-xs text-base-content/60" aria-live="polite">
-                    <span id="description-count">{{ (projectDescription or '')|length }}</span>/500 characters
-                </div>
-            </div>
-        </div>
+        {# Project Description Field - Using unified field-group component #}
+        {{ fieldGroup(
+            'projectDescription',
+            'projectDescription',
+            'textarea',
+            'Project Description',
+            true,
+            'A CouchCMS web application for...',
+            projectDescription or '',
+            false,
+            '',
+            '',
+            '500',
+            '3',
+            'Brief description of your project (optional)',
+            '',
+            false,
+            'if (window.StepValidator) { window.StepValidator.updateCounter("projectDescription", this.value.length, 500); } else if (window.updateDescriptionCounter) { window.updateDescriptionCounter(this); }',
+            true
+        ) }}
 
         {% if setupType == 'simple' %}
         {% set nextButtonLabel = 'Next: Editors' %}
@@ -69,63 +60,21 @@
     </form>
 
     <script>
-        // Project name validation
-        function validateProjectName(input) {
-            const errorElement = document.getElementById('projectName-error')
-            const value = input.value.trim()
-
-            // Clear previous error
-            errorElement.classList.add('hidden')
-            errorElement.textContent = ''
-            input.classList.remove('input-error')
-
-            if (value === '') {
-                return // Let HTML5 required validation handle empty
-            }
-
-            // Check pattern
-            if (!/^[a-z0-9-]+$/.test(value)) {
-                errorElement.textContent = 'Project name can only contain lowercase letters, numbers, and hyphens.'
-                errorElement.classList.remove('hidden')
-                input.classList.add('input-error')
-                return false
-            }
-
-            // Check length
-            if (value.length < 3) {
-                errorElement.textContent = 'Project name must be at least 3 characters long.'
-                errorElement.classList.remove('hidden')
-                input.classList.add('input-error')
-                return false
-            }
-
-            if (value.length > 100) {
-                errorElement.textContent = 'Project name must be 100 characters or less.'
-                errorElement.classList.remove('hidden')
-                input.classList.add('input-error')
-                return false
-            }
-
-            // Valid
-            input.classList.remove('input-error')
-            return true
-        }
-
-        // Description character counter
-        function updateDescriptionCounter(textarea) {
-            const count = textarea.value.length
-            const countElement = document.getElementById('description-count')
-            if (countElement) {
-                countElement.textContent = count
-            }
-        }
-
-        // Initialize counter on page load
+        // Initialize validation and counter on page load
+        // Uses centralized StepValidator if available (DRY)
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize description counter
             const description = document.getElementById('projectDescription')
-            if (description) {
-                updateDescriptionCounter(description)
+            if (description && window.StepValidator) {
+                const currentLength = description.value.length
+                window.StepValidator.updateCounter('projectDescription', currentLength, 500)
+            } else if (description && window.updateDescriptionCounter) {
+                // Fallback to legacy function
+                window.updateDescriptionCounter(description)
             }
+
+            // Note: Validation is handled by StepValidator.validateAndUpdateUI() via oninput
+            // This is called inline in the field-group component
         })
     </script>
 </div>

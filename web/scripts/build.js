@@ -69,7 +69,12 @@ const bundles = [
             join(JS_SRC_DIR, 'core', 'htmx'),
             // Improved state management (new)
             join(JS_SRC_DIR, 'core', 'wizard-state-manager'),
+            join(JS_SRC_DIR, 'core', 'state-indicator'),
             join(JS_SRC_DIR, 'core', 'form-state-sync'),
+            // Centralized step configuration (DRY)
+            join(JS_SRC_DIR, 'core', 'step-config'),
+            // Unified validation system (DRY)
+            join(JS_SRC_DIR, 'core', 'step-validator'),
             join(JS_SRC_DIR, 'core', 'wizard-navigation'),
             join(JS_SRC_DIR, 'core', 'wizard-init'),
             // Legacy state management (for backward compatibility)

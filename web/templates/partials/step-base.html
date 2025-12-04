@@ -1,0 +1,41 @@
+{# Base Step Template (DRY)
+   Common structure for all wizard steps
+   Used by: All step templates
+
+   Parameters:
+   - sectionTitle: Step title
+   - sectionDescription: Step description
+   - formAction: Form action URL (hx-post)
+   - formContent: Step-specific form content
+   - nextButtonLabel: Label for next button
+   - showBackButton: Boolean to show/hide back button
+   - setupType: Setup type (simple/extended)
+   - scripts: Optional step-specific scripts
+#}
+
+{% macro stepBase(sectionTitle, sectionDescription, formAction, formContent, nextButtonLabel, showBackButton=true, setupType='simple', scripts='') %}
+<div>
+    {% set sectionTitle = sectionTitle %}
+    {% set sectionDescription = sectionDescription %}
+    {% include "partials/section-header.html" %}
+
+    <form hx-post="{{ formAction }}" hx-target="#wizard-content" hx-swap="innerHTML" aria-label="{{ sectionTitle }} form">
+        <input type="hidden" name="setupType" value="{{ setupType or 'simple' }}" />
+        {% include "partials/hidden-fields.html" %}
+
+        {# Step-specific form content #}
+        {{ formContent }}
+
+        {% set nextButtonLabel = nextButtonLabel %}
+        {% set showBackButton = showBackButton %}
+        {% include "partials/form-navigation.html" %}
+    </form>
+
+    {# Step-specific scripts #}
+    {% if scripts %}
+    <script>
+        {{ scripts }}
+    </script>
+    {% endif %}
+</div>
+{% endmacro %}

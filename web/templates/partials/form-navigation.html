@@ -4,7 +4,7 @@
     {% if showBackButton !== false and showBack !== false %}
     <button
         type="button"
-        class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors bg-base-100 rounded-full border border-base-300 hover:bg-base-200 focus:outline-none gap-2 cursor-pointer"
+        class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-3 sm:py-3 text-xs sm:text-sm font-medium transition-colors bg-base-100 rounded-full border border-base-300 hover:bg-base-200 active:bg-base-200 focus:outline-none gap-2 cursor-pointer min-h-[44px] sm:min-h-0"
         onclick="if (window.wizardNavigation) { window.wizardNavigation.navigateBack(); } else if (typeof goBack === 'function') { goBack(); } return false;"
         aria-label="Go back to previous step"
     >
@@ -19,7 +19,7 @@
     {% if nextButtonLabel or nextLabel %}
     <button
         type="submit"
-        class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-primary-content transition-colors bg-primary rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:bg-primary/90 gap-2 cursor-pointer"
+        class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-3 sm:py-3 text-xs sm:text-sm font-medium text-primary-content transition-colors bg-primary rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:bg-primary/90 active:bg-primary/80 gap-2 cursor-pointer min-h-[44px] sm:min-h-0"
         aria-label="{{ nextButtonLabel or nextLabel }}"
     >
         {{ nextButtonLabel or nextLabel }}

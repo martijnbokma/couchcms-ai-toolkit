@@ -1,7 +1,6 @@
 /**
  * Wizard Navigation Manager - Improved Version
  * Handles navigation between wizard steps with state preservation
- * Uses centralized step-config.ts for step definitions (DRY)
  *
  * @class WizardNavigation
  */
@@ -22,61 +21,27 @@
     const stateManager = window.wizardStateManager
     const HTMXUtils = window.HTMXUtils
 
-    // Get step configuration from centralized step-config.ts (DRY)
-    // Will be available after build bundles step-config.ts before this file
-    const getStepConfig = (): {
-        simple: StepDefinition[]
-        extended: StepDefinition[]
-        presets: StepDefinition[]
-    } => {
-        if (typeof window !== 'undefined' && (window as { StepConfig?: unknown }).StepConfig) {
-            return (window as { StepConfig: { simple: StepDefinition[]; extended: StepDefinition[]; presets: StepDefinition[] } }).StepConfig
-        }
-        // Fallback definitions (should not be needed after build, but kept for safety)
-        console.warn('[WizardNavigation] StepConfig not found, using fallback definitions')
-        return {
-            simple: [
-                { num: 1, route: 'project', label: 'Project' },
-                { num: 2, route: 'editors', label: 'Editors' },
-                { num: 3, route: 'review', label: 'Review' }
-            ],
-            extended: [
-                { num: 1, route: 'project', label: 'Project' },
-                { num: 2, route: 'presets', label: 'Presets' },
-                { num: 3, route: 'frontend', label: 'Frontend' },
-                { num: 4, route: 'agents', label: 'Agents' },
-                { num: 5, route: 'editors', label: 'Editors' },
-                { num: 6, route: 'advanced', label: 'Advanced' },
-                { num: 7, route: 'review', label: 'Review' }
-            ],
-            presets: [
-                { num: 1, route: 'project', label: 'Project' },
-                { num: 2, route: 'presets', label: 'Select Preset' },
-                { num: 3, route: 'review', label: 'Review' }
-            ]
-        }
-    }
-
-    const STEP_CONFIG = getStepConfig()
-
     /**
      * Wizard Navigation Class - Improved Version
      * CRITICAL: This class maintains the single source of truth for step navigation
-     * Uses centralized step-config.ts (DRY principle)
      */
     class WizardNavigation {
-        stepDefinitions: {
-            simple: StepDefinition[]
-            extended: StepDefinition[]
-            presets: StepDefinition[]
-        }
-
         constructor() {
-            // Use centralized step configuration (DRY)
             this.stepDefinitions = {
-                simple: STEP_CONFIG.simple,
-                extended: STEP_CONFIG.extended,
-                presets: STEP_CONFIG.presets
+                simple: [
+                    { num: 1, route: 'project', label: 'Project' },
+                    { num: 2, route: 'editors', label: 'Editors' },
+                    { num: 3, route: 'review', label: 'Review' }
+                ],
+                extended: [
+                    { num: 1, route: 'project', label: 'Project' },
+                    { num: 2, route: 'presets', label: 'Presets' },
+                    { num: 3, route: 'frontend', label: 'Frontend' },
+                    { num: 4, route: 'agents', label: 'Agents' },
+                    { num: 5, route: 'editors', label: 'Editors' },
+                    { num: 6, route: 'advanced', label: 'Advanced' },
+                    { num: 7, route: 'review', label: 'Review' }
+                ]
             }
         }
 
@@ -84,12 +49,11 @@
          * Get current step from state or detect from form
          * CRITICAL: This is the single source of truth for current step
          * CRITICAL: Route mapping is setup-type aware
-         * Uses centralized step-config (DRY)
-         * @returns {StepDefinition | null} Current step info
+         * @returns {Object} Current step info { num, route, label }
          */
-        getCurrentStep(): StepDefinition | null {
+        getCurrentStep() {
             const state = stateManager.load()
-            const setupType = (state.setupType || 'simple') as 'simple' | 'extended' | 'presets'
+            const setupType = state.setupType || 'simple'
             const steps = this.getSteps(setupType)
 
             // First try: use state.currentStep
@@ -108,15 +72,26 @@
                 const formAction = form.getAttribute('hx-post') || ''
                 console.log('[WizardNavigation.getCurrentStep] Detecting from form action:', formAction, 'setupType:', setupType)
 
-                // Setup-type aware route mapping (uses centralized step config)
-                const routeMap: Record<string, number> = {}
-                const currentSteps = this.getSteps(setupType)
-                currentSteps.forEach(step => {
-                    routeMap[`/api/setup/step/${step.route}`] = step.num
-                })
-                // Add generate route (always last step)
-                if (currentSteps.length > 0) {
-                    routeMap['/api/setup/generate'] = currentSteps.length
+                // Setup-type aware route mapping
+                let routeMap = {}
+                if (setupType === 'simple') {
+                    // Simple flow: Project(1) → Editors(2) → Review(3)
+                    routeMap = {
+                        '/api/setup/step/project': 1,
+                        '/api/setup/step/editors': 2,
+                        '/api/setup/generate': 3
+                    }
+                } else {
+                    // Extended flow: Project(1) → Presets(2) → Frontend(3) → Agents(4) → Editors(5) → Advanced(6) → Review(7)
+                    routeMap = {
+                        '/api/setup/step/project': 1,
+                        '/api/setup/step/presets': 2,
+                        '/api/setup/step/frontend': 3,
+                        '/api/setup/step/agents': 4,
+                        '/api/setup/step/editors': 5,
+                        '/api/setup/step/advanced': 6,
+                        '/api/setup/generate': 7
+                    }
                 }
 
                 for (const [action, stepNum] of Object.entries(routeMap)) {
@@ -137,25 +112,18 @@
             // Default: first step
             console.log('[WizardNavigation.getCurrentStep] Using default: first step')
             const firstStep = steps[0]
-            if (firstStep) {
-                stateManager.update({ currentStep: firstStep.num })
-                return firstStep
-            }
-            return null
+            stateManager.update({ currentStep: firstStep.num })
+            return firstStep
         }
 
         /**
          * Get next step based on current step
-         * @param {string} setupType - Setup type
-         * @param {number} currentStepNum - Current step number
-         * @returns {StepDefinition | null} Next step info or null if at last step
+         * @returns {Object|null} Next step info or null if at last step
          */
-        getNextStep(setupType?: 'simple' | 'extended', currentStepNum?: number): StepDefinition | null {
-            const current = currentStepNum ? this.getSteps(setupType || 'simple').find(s => s.num === currentStepNum) : this.getCurrentStep()
-            if (!current) return null
-
+        getNextStep() {
+            const current = this.getCurrentStep()
             const state = stateManager.load()
-            const steps = this.getSteps((setupType || state.setupType || 'simple') as 'simple' | 'extended')
+            const steps = this.getSteps(state.setupType)
             const currentIndex = steps.findIndex(s => s.num === current.num)
 
             if (currentIndex < steps.length - 1) {
@@ -166,16 +134,12 @@
 
         /**
          * Get previous step based on current step
-         * @param {string} setupType - Setup type
-         * @param {number} currentStepNum - Current step number
-         * @returns {StepDefinition | null} Previous step info or null if at first step
+         * @returns {Object|null} Previous step info or null if at first step
          */
-        getPreviousStep(setupType?: 'simple' | 'extended', currentStepNum?: number): StepDefinition | null {
-            const current = currentStepNum ? this.getSteps(setupType || 'simple').find(s => s.num === currentStepNum) : this.getCurrentStep()
-            if (!current) return null
-
+        getPreviousStep() {
+            const current = this.getCurrentStep()
             const state = stateManager.load()
-            const steps = this.getSteps((setupType || state.setupType || 'simple') as 'simple' | 'extended')
+            const steps = this.getSteps(state.setupType)
             const currentIndex = steps.findIndex(s => s.num === current.num)
 
             if (currentIndex > 0) {
@@ -186,10 +150,10 @@
 
         /**
          * Get steps for current setup type
-         * @param {string} setupType - Setup type ('simple', 'extended', or 'presets')
-         * @returns {StepDefinition[]} Step definitions
+         * @param {string} setupType - Setup type ('simple' or 'extended')
+         * @returns {Array} Step definitions
          */
-        getSteps(setupType: 'simple' | 'extended' | 'presets'): StepDefinition[] {
+        getSteps(setupType) {
             return this.stepDefinitions[setupType] || this.stepDefinitions.simple
         }
 
@@ -197,10 +161,9 @@
          * Navigate to specific step
          * @param {number} stepNum - Step number
          * @param {string} route - Route name
-         * @param {string} setupType - Setup type (optional, read from state if not provided)
-         * @returns {Promise<unknown>} HTMX navigation promise
+         * @returns {Promise} HTMX navigation promise
          */
-        async navigateToStep(stepNum: number, route: string, setupType?: 'simple' | 'extended'): Promise<unknown> {
+        async navigateToStep(stepNum, route) {
             console.log('[WizardNavigation] Navigating to step', stepNum, 'route:', route)
 
             // CRITICAL: Save current form state before navigating
@@ -231,16 +194,15 @@
 
             // Update state
             const state = stateManager.load()
-            const currentStep = state.currentStep || 1
-            const updated: WizardState = {
+            const updated = {
                 ...state,
                 currentStep: stepNum
             }
 
             // Mark previous steps as completed when moving forward
-            if (stepNum > currentStep) {
+            if (stepNum > state.currentStep) {
                 updated.completedSteps = [
-                    ...new Set([...(state.completedSteps || []), currentStep])
+                    ...new Set([...state.completedSteps, state.currentStep])
                 ]
             }
 
@@ -265,9 +227,9 @@
         /**
          * Navigate back
          * CRITICAL: Always uses getPreviousStep() to ensure correct navigation
-         * @returns {Promise<unknown>} Navigation promise
+         * @returns {Promise} Navigation promise
          */
-        async navigateBack(): Promise<unknown> {
+        async navigateBack() {
             const prevStep = this.getPreviousStep()
 
             if (prevStep) {
@@ -275,16 +237,16 @@
                 return this.navigateToStep(prevStep.num, prevStep.route)
             } else {
                 console.warn('[WizardNavigation] Already at first step, cannot go back')
-                return Promise.resolve(undefined)
+                return Promise.resolve()
             }
         }
 
         /**
          * Navigate forward
          * CRITICAL: Always uses getNextStep() to ensure correct navigation
-         * @returns {Promise<unknown>} Navigation promise
+         * @returns {Promise} Navigation promise
          */
-        async navigateForward(): Promise<unknown> {
+        async navigateForward() {
             const nextStep = this.getNextStep()
 
             if (nextStep) {
@@ -292,16 +254,16 @@
                 return this.navigateToStep(nextStep.num, nextStep.route)
             } else {
                 console.warn('[WizardNavigation] Already at last step, cannot go forward')
-                return Promise.resolve(undefined)
+                return Promise.resolve()
             }
         }
 
         /**
          * Convert state to URL parameters
-         * @param {WizardState} state - State object
+         * @param {Object} state - State object
          * @returns {URLSearchParams} URL parameters
          */
-        stateToURLParams(state: WizardState): URLSearchParams {
+        stateToURLParams(state) {
             const params = new URLSearchParams()
 
             Object.entries(state).forEach(([key, value]) => {
@@ -316,12 +278,12 @@
                     // This is correct behavior - empty arrays mean "nothing selected"
                     value.forEach(v => {
                         if (v !== null && v !== undefined && v !== '') {
-                            params.append(key, String(v))
+                            params.append(key, v)
                         }
                     })
                 } else if (value !== null && value !== undefined && value !== '') {
                     // Single values
-                    params.append(key, String(value))
+                    params.append(key, value)
                 }
             })
 
@@ -330,11 +292,11 @@
 
         /**
          * Get current step info
-         * @returns {StepDefinition} Current step information
+         * @returns {Object} Current step information
          */
-        getCurrentStepInfo(): StepDefinition {
+        getCurrentStepInfo() {
             const state = stateManager.load()
-            const steps = this.getSteps((state.setupType || 'simple') as 'simple' | 'extended')
+            const steps = this.getSteps(state.setupType)
             return steps.find(s => s.num === state.currentStep) || steps[0]
         }
 
@@ -342,10 +304,10 @@
          * Get progress percentage
          * @returns {number} Progress percentage (0-100)
          */
-        getProgressPercentage(): number {
+        getProgressPercentage() {
             const state = stateManager.load()
-            const steps = this.getSteps((state.setupType || 'simple') as 'simple' | 'extended')
-            return Math.round((state.currentStep || 1) / steps.length * 100)
+            const steps = this.getSteps(state.setupType)
+            return Math.round((state.currentStep / steps.length) * 100)
         }
     }
 
@@ -354,7 +316,7 @@
     window.wizardNavigation = new WizardNavigation()
 
     // Export global navigation functions for backward compatibility
-    window.navigateToStep = function(stepNum: number, route: string, setupType?: string): Promise<unknown> {
+    window.navigateToStep = function(stepNum, route, setupType) {
         // setupType parameter is kept for backward compatibility but not used
         // (it's read from state instead)
         if (window.wizardNavigation) {
@@ -364,23 +326,23 @@
         return Promise.reject(new Error('wizardNavigation not available'))
     }
 
-    window.goBack = function(): Promise<unknown> {
+    window.goBack = function() {
         if (window.wizardNavigation) {
             return window.wizardNavigation.navigateBack()
         }
         console.error('[goBack] wizardNavigation not available')
         // Fallback to old implementation if available
-        if (typeof window.determineBackRoute === 'function' && window.wizardStateManager && window.HTMXUtils) {
-            const state = window.wizardStateManager.load()
-            const setupType = (state.setupType || 'simple') as 'simple' | 'extended'
-            const backRoute = (window.determineBackRoute as (type: string) => string)(setupType)
-            if (backRoute) {
+        if (typeof window.determineBackRoute === 'function') {
+            const state = window.wizardStateManager?.load() || {}
+            const setupType = state.setupType || 'simple'
+            const backRoute = window.determineBackRoute(setupType)
+            if (backRoute && window.HTMXUtils) {
                 const params = new URLSearchParams()
                 Object.entries(state).forEach(([key, value]) => {
                     if (Array.isArray(value)) {
-                        value.forEach(v => params.append(key, String(v)))
+                        value.forEach(v => params.append(key, v))
                     } else if (value !== null && value !== undefined && value !== '') {
-                        params.append(key, String(value))
+                        params.append(key, value)
                     }
                 })
                 return window.HTMXUtils.htmxAjax('GET', `${backRoute}?${params.toString()}`, {

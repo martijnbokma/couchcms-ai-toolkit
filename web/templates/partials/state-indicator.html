@@ -1,4 +1,6 @@
-{# State Indicator - Shows when state is saved #}
+{# State Indicator - Shows when state is saved
+   JavaScript logic is handled by state-indicator.ts module
+#}
 <div
     id="state-indicator"
     class="fixed bottom-4 right-4 z-50 transition-all duration-300 opacity-0 pointer-events-none"
@@ -12,33 +14,3 @@
         <span class="text-sm font-medium">All selections saved</span>
     </div>
 </div>
-
-<script>
-(function() {
-    'use strict'
-
-    if (!window.wizardStateManager) return
-
-    const indicator = document.getElementById('state-indicator')
-    if (!indicator) return
-
-    let hideTimeout = null
-
-    function showIndicator() {
-        indicator.classList.remove('opacity-0', 'pointer-events-none')
-        indicator.classList.add('opacity-100')
-
-        // Auto-hide after 2 seconds
-        if (hideTimeout) clearTimeout(hideTimeout)
-        hideTimeout = setTimeout(() => {
-            indicator.classList.remove('opacity-100')
-            indicator.classList.add('opacity-0', 'pointer-events-none')
-        }, 2000)
-    }
-
-    // Subscribe to state changes
-    window.wizardStateManager.subscribe(() => {
-        showIndicator()
-    })
-})()
-</script>

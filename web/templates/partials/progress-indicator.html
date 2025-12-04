@@ -1,27 +1,113 @@
 {# Progress Indicator Component
    Displays wizard steps with progress bar and interactive navigation
    Uses HTMX out-of-band swap for dynamic updates
+   Mobile: Vertical layout (no scroll needed)
+   Desktop: Horizontal layout with progress bar
 #}
 
 <nav
-    class="relative mb-8 py-4 sm:py-6"
+    class="relative mb-6 sm:mb-8 py-3 sm:py-4 md:py-6"
     id="progress-indicator"
     hx-swap-oob="true"
     data-setup-type="{{ setupType }}"
     aria-label="Setup wizard progress"
 >
-    {# Steps container - Responsive: horizontal scroll on mobile, full width on desktop #}
-    <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible scrollbar-hide">
-        <ol
-            class="relative flex items-center justify-between gap-1 sm:gap-2 md:gap-4 min-w-max sm:min-w-0"
-            role="list"
-            style="min-width: {{ totalSteps * 60 }}px;"
-        >
+    {# Mobile: Vertical Layout (no scroll needed) #}
+    <div class="block sm:hidden">
+        <ol class="flex flex-col gap-4" role="list">
+            {% for step in steps %}
+            <li class="relative flex items-start gap-3">
+                {# Step circle container - positioned to allow centered line #}
+                <div class="relative z-10 flex-shrink-0 flex items-center justify-center" style="width: 44px;">
+                    {# Vertical progress line (connector) - perfectly centered on circle
+                       Circle: size-7 (28px) with p-2 (8px) padding
+                       Center: 8px (padding) + 14px (half of 28px) = 22px from top
+                    #}
+                    {% if not loop.last %}
+                    <div class="absolute left-1/2 top-[22px] bottom-[-16px] w-0.5 -translate-x-1/2 {% if step.isCompleted or step.isActive %}bg-primary{% else %}bg-base-300{% endif %} transition-colors z-0 rounded-full"></div>
+                    {% endif %}
+
+                    {% if step.isClickable %}
+                    <button
+                        type="button"
+                        onclick="navigateToStep({{ step.num }}, '{{ step.route }}', '{{ setupType }}'); return false;"
+                        class="group relative flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg p-2 transition-all hover:opacity-80 active:opacity-70 min-h-[44px] min-w-[44px]"
+                        aria-label="Go to step {{ step.num }}: {{ step.label }}{% if step.isCompleted %} (completed){% elif step.isActive %} (current){% endif %}"
+                        aria-current="{% if step.isActive %}step{% else %}false{% endif %}"
+                        data-step="{{ step.num }}"
+                        data-route="{{ step.route }}"
+                    >
+                    {% else %}
+                    <div class="group relative flex items-center justify-center min-h-[44px] min-w-[44px]">
+                    {% endif %}
+                        <div
+                            class="relative flex size-7 items-center justify-center rounded-full font-semibold text-xs transition-all duration-300
+                                {% if step.isCompleted %}
+                                    bg-primary text-primary-content shadow-lg shadow-primary/30
+                                {% elif step.isActive %}
+                                    border-2 border-primary bg-base-100 text-primary shadow-lg shadow-primary/20
+                                {% else %}
+                                    border-2 border-base-300 bg-base-100 text-base-content/70
+                                {% endif %}"
+                            aria-hidden="true"
+                        >
+                            {% if step.isCompleted %}
+                            <svg
+                                class="size-3.5"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                            {% else %}
+                            <span aria-hidden="true">{{ step.num }}</span>
+                            {% endif %}
+                        </div>
+                    {% if step.isClickable %}
+                    </button>
+                    {% else %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                {# Step label and description #}
+                <div class="flex-1 min-w-0 pt-0.5">
+                    <div
+                        class="text-sm font-semibold transition-colors mb-0.5
+                            {% if step.isActive %}
+                                text-primary
+                            {% elif step.isCompleted %}
+                                text-base-content
+                            {% else %}
+                                text-base-content/70
+                            {% endif %}"
+                    >
+                        {{ step.label }}
+                    </div>
+                    {% if step.description %}
+                    <div class="text-xs text-base-content/60 leading-relaxed">
+                        {{ step.description }}
+                    </div>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    {# Desktop: Horizontal Layout with Progress Bar #}
+    <div class="hidden sm:block">
+        <div class="relative">
             {# Progress Bar - positioned behind circles, perfectly centered on circle centers
-               Mobile: p-1 (4px) + size-7/2 (14px) = 18px from top
                Desktop: p-1 (4px) + size-8/2 (16px) = 20px from top
             #}
-            <div class="absolute left-0 right-0 flex items-center px-2 sm:px-0 pointer-events-none progress-line">
+            <div class="absolute left-0 right-0 flex items-center pointer-events-none progress-line z-0">
                 <div class="flex h-1 w-full items-center overflow-hidden rounded-full bg-base-200">
                     <div
                         role="progressbar"
@@ -35,80 +121,85 @@
                 </div>
             </div>
 
-            {# Step items #}
-            {% for step in steps %}
-            <li class="relative z-10 flex-shrink-0 sm:flex-1 flex flex-col items-center min-w-[60px] sm:min-w-0">
-                {# Step circle and label wrapper #}
-                {% if step.isClickable %}
-                <button
-                    type="button"
-                    onclick="navigateToStep({{ step.num }}, '{{ step.route }}', '{{ setupType }}'); return false;"
-                    class="group relative flex flex-col items-center w-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg p-1 transition-all hover:opacity-80"
-                    aria-label="Go to step {{ step.num }}: {{ step.label }}{% if step.isCompleted %} (completed){% elif step.isActive %} (current){% endif %}"
-                    aria-current="{% if step.isActive %}step{% else %}false{% endif %}"
-                    data-step="{{ step.num }}"
-                    data-route="{{ step.route }}"
-                >
-                {% else %}
-                <div class="group relative flex flex-col items-center w-full" aria-label="Step {{ step.num }}: {{ step.label }}">
-                {% endif %}
-
-                    {# Step circle with number or checkmark icon #}
-                    <div
-                        class="relative flex size-7 sm:size-8 items-center justify-center rounded-full font-semibold text-xs sm:text-sm transition-all duration-300
-                            {% if step.isCompleted %}
-                                bg-primary text-primary-content shadow-lg shadow-primary/30
-                                {% if step.isClickable %}hover:bg-primary/90{% endif %}
-                            {% elif step.isActive %}
-                                border-2 border-primary bg-base-100 text-primary shadow-lg shadow-primary/20
-                            {% else %}
-                                border-2 border-base-300 bg-base-100 text-base-content/70
-                                {% if step.isClickable %}hover:border-primary/30 hover:text-base-content{% endif %}
-                            {% endif %}"
-                        aria-hidden="true"
+            <ol
+                class="relative flex items-center justify-between gap-2 md:gap-4"
+                role="list"
+            >
+                {# Step items (Desktop) #}
+                {% for step in steps %}
+                <li class="relative z-10 flex-1 flex flex-col items-center">
+                    {# Step circle and label wrapper #}
+                    {% if step.isClickable %}
+                    <button
+                        type="button"
+                        onclick="navigateToStep({{ step.num }}, '{{ step.route }}', '{{ setupType }}'); return false;"
+                        class="group relative flex flex-col items-center w-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg p-1 transition-all hover:opacity-80"
+                        aria-label="Go to step {{ step.num }}: {{ step.label }}{% if step.isCompleted %} (completed){% elif step.isActive %} (current){% endif %}"
+                        aria-current="{% if step.isActive %}step{% else %}false{% endif %}"
+                        data-step="{{ step.num }}"
+                        data-route="{{ step.route }}"
                     >
-                        {% if step.isCompleted %}
-                        <svg
-                            class="size-3.5 sm:size-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
+                    {% else %}
+                    <div class="group relative flex flex-col items-center w-full" aria-label="Step {{ step.num }}: {{ step.label }}">
+                    {% endif %}
+
+                        {# Step circle with number or checkmark icon #}
+                        <div
+                            class="relative flex size-8 items-center justify-center rounded-full font-semibold text-sm transition-all duration-300
+                                {% if step.isCompleted %}
+                                    bg-primary text-primary-content shadow-lg shadow-primary/30
+                                    {% if step.isClickable %}hover:bg-primary/90{% endif %}
+                                {% elif step.isActive %}
+                                    border-2 border-primary bg-base-100 text-primary shadow-lg shadow-primary/20
+                                {% else %}
+                                    border-2 border-base-300 bg-base-100 text-base-content/70
+                                    {% if step.isClickable %}hover:border-primary/30 hover:text-base-content{% endif %}
+                                {% endif %}"
                             aria-hidden="true"
                         >
-                            <path
-                                fill-rule="evenodd"
-                                d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
-                        {% else %}
-                        <span aria-hidden="true">{{ step.num }}</span>
-                        {% endif %}
-                    </div>
-
-                    {# Step label - Smaller on mobile, full on desktop #}
-                    <div class="mt-2 sm:mt-3 text-center">
-                        <div
-                            class="text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap
-                                {% if step.isActive %}
-                                    text-primary
-                                {% elif step.isCompleted %}
-                                    text-base-content
-                                {% else %}
-                                    text-base-content/70
-                                {% endif %}"
-                        >
-                            {{ step.label }}
+                            {% if step.isCompleted %}
+                            <svg
+                                class="size-4"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                            {% else %}
+                            <span aria-hidden="true">{{ step.num }}</span>
+                            {% endif %}
                         </div>
-                    </div>
 
-                {% if step.isClickable %}
-                </button>
-                {% else %}
-                </div>
-                {% endif %}
-            </li>
-            {% endfor %}
-        </ol>
+                        {# Step label #}
+                        <div class="mt-3 text-center w-full">
+                            <div
+                                class="text-sm font-semibold transition-colors whitespace-nowrap
+                                    {% if step.isActive %}
+                                        text-primary
+                                    {% elif step.isCompleted %}
+                                        text-base-content
+                                    {% else %}
+                                        text-base-content/70
+                                    {% endif %}"
+                            >
+                                {{ step.label }}
+                            </div>
+                        </div>
+
+                    {% if step.isClickable %}
+                    </button>
+                    {% else %}
+                    </div>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
     </div>
 </nav>
