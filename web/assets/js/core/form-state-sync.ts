@@ -53,6 +53,7 @@
             }
 
             // CRITICAL: Start with existing state to preserve all previous selections
+            // This ensures that selections from other steps are never lost
             const existingState = stateManager.load()
             const data: Partial<WizardState> = { ...existingState }
 
@@ -75,6 +76,13 @@
                     // Don't keep existing state if field exists in form - user's current selection is authoritative
                     data[key] = checkedValues
                     console.log(`[FormStateSync] Collected ${key} from DOM:`, checkedValues, `(total checkboxes: ${checkboxes.length})`)
+                } else {
+                    // CRITICAL: Field doesn't exist in form - explicitly preserve existing state
+                    // This ensures selections from other steps are never lost during navigation
+                    if (existingState[key] && Array.isArray(existingState[key]) && existingState[key].length > 0) {
+                        console.log(`[FormStateSync] Preserving ${key} from existing state:`, existingState[key])
+                        // State is already copied above, but log for debugging
+                    }
                 }
                 // If field doesn't exist in form, keep existing state (preserve from other steps)
             })
@@ -218,9 +226,32 @@
             if (!form) return
 
             const performSync = () => {
+                // CRITICAL: Always start with existing state to preserve all selections
+                const existingState = stateManager.load()
                 const formData = this.collectFormData(form)
+
+                // CRITICAL: Verify that checkbox arrays from other steps are preserved
+                const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
+                checkboxFields.forEach(key => {
+                    const checkboxes = form.querySelectorAll<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
+                    if (checkboxes.length === 0 && existingState[key] && Array.isArray(existingState[key])) {
+                        // Field doesn't exist in current form - ensure it's preserved
+                        if (!formData[key] || !Array.isArray(formData[key]) || formData[key].length === 0) {
+                            formData[key] = [...existingState[key]] as string[]
+                            console.log(`[FormStateSync] Preserved ${key} array from existing state:`, formData[key])
+                        }
+                    }
+                })
+
                 stateManager.update(formData)
-                console.log('[FormStateSync] Synced form to state:', formData)
+                console.log('[FormStateSync] Synced form to state:', {
+                    css: formData.css,
+                    js: formData.js,
+                    agents: formData.agents,
+                    editors: formData.editors,
+                    projectName: formData.projectName,
+                    preset: formData.preset
+                })
             }
 
             if (immediate) {
@@ -328,8 +359,24 @@
                     // CRITICAL: Don't prevent default - let HTMX handle the submission
                     // We just save state before submission
 
-                    // Ensure state is saved before submit
-                    this.syncFormToState(form)
+                    // CRITICAL: Save state immediately before submit to ensure all selections are preserved
+                    // Use immediate sync to avoid race conditions
+                    const existingState = stateManager.load()
+                    this.syncFormToState(form, true) // Immediate sync
+
+                    // CRITICAL: Verify state was saved correctly
+                    const savedState = stateManager.load()
+                    const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
+                    checkboxFields.forEach(key => {
+                        const checkboxes = form.querySelectorAll<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
+                        if (checkboxes.length === 0 && existingState[key] && Array.isArray(existingState[key]) && existingState[key].length > 0) {
+                            // Field doesn't exist in current form but exists in state
+                            if (!savedState[key] || !Array.isArray(savedState[key]) || savedState[key].length === 0) {
+                                console.warn(`[FormStateSync] WARNING: ${key} array was lost during submit! Restoring.`)
+                                stateManager.update({ [key]: existingState[key] })
+                            }
+                        }
+                    })
 
                     // Update current step based on form action
                     // CRITICAL: Route mapping must be setup-type aware

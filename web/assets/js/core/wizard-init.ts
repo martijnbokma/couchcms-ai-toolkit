@@ -248,10 +248,26 @@
                         console.warn('[WizardInit] WARNING: Request swap is disabled!')
                     }
 
-                    // Save form state (don't let errors block submission)
+                    // CRITICAL: Save form state before HTMX request
+                    // This ensures all selections are preserved when navigating between steps
                     // Use immediate sync to ensure state is saved before HTMX request
                     try {
+                        const existingState = stateManager.load()
                         formSync.syncFormToState(form, true) // Immediate sync
+
+                        // CRITICAL: Verify state was saved correctly
+                        const savedState = stateManager.load()
+                        const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
+                        checkboxFields.forEach(key => {
+                            const checkboxes = form.querySelectorAll<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
+                            if (checkboxes.length === 0 && existingState[key] && Array.isArray(existingState[key]) && existingState[key].length > 0) {
+                                // Field doesn't exist in current form but exists in state
+                                if (!savedState[key] || !Array.isArray(savedState[key]) || savedState[key].length === 0) {
+                                    console.warn(`[WizardInit] WARNING: ${key} array was lost in beforeRequest! Restoring.`)
+                                    stateManager.update({ [key]: existingState[key] })
+                                }
+                            }
+                        })
                     } catch (error) {
                         console.error('[WizardInit] Error syncing form state:', error)
                         // Continue anyway - don't block submission

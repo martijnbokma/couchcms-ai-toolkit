@@ -213,17 +213,35 @@
                 // CRITICAL: Wait a tiny bit to ensure any pending async syncs complete
                 // This prevents race conditions where a checkbox deselect triggers async sync
                 // but navigation happens before that sync completes
-                await new Promise(resolve => setTimeout(resolve, 20))
+                await new Promise(resolve => setTimeout(resolve, 50))
 
+                // CRITICAL: Save state multiple times to ensure it's persisted
+                // This handles edge cases where state might be overwritten
+                const currentState = stateManager.load()
                 window.formStateSync.syncFormToState(form, true) // Immediate sync
 
-                // Verify state was saved
+                // Verify state was saved and contains all expected fields
                 const savedState = stateManager.load()
                 console.log('[WizardNavigation] State saved before navigation:', {
                     css: savedState.css,
                     js: savedState.js,
                     agents: savedState.agents,
-                    editors: savedState.editors
+                    editors: savedState.editors,
+                    projectName: savedState.projectName,
+                    preset: savedState.preset
+                })
+
+                // CRITICAL: Verify that checkbox arrays are preserved
+                const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
+                checkboxFields.forEach(key => {
+                    const checkboxes = form.querySelectorAll<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
+                    if (checkboxes.length === 0 && currentState[key] && Array.isArray(currentState[key]) && currentState[key].length > 0) {
+                        // Field doesn't exist in current form but exists in state
+                        if (!savedState[key] || !Array.isArray(savedState[key]) || savedState[key].length === 0) {
+                            console.warn(`[WizardNavigation] WARNING: ${key} array was lost! Restoring from current state.`)
+                            stateManager.update({ [key]: currentState[key] })
+                        }
+                    }
                 })
             } else {
                 console.warn('[WizardNavigation] Could not sync form state - form or formStateSync not available')
