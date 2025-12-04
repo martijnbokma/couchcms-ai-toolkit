@@ -1,223 +1,180 @@
-# Wizard State Persistence - Fixes Implemented
+# Wizard Fixes Implemented
 
-## Summary
-
-This document summarizes the critical fixes implemented to resolve wizard selection persistence issues. All fixes maintain backward compatibility and follow existing code patterns.
-
----
-
-## Fixes Implemented
-
-### ✅ Fix #1: Added Hidden Fields to Complexity Step
-
-**File**: `scripts/web/templates/steps/complexity.html`
-
-**Change**: Replaced manual hidden field inputs with the standardized `hidden-fields.html` partial.
-
-**Before**:
-```html
-<form hx-post="/api/setup/step/complexity" hx-target="#wizard-content" hx-swap="innerHTML">
-    <input type="hidden" name="projectName" value="{{ projectName }}" />
-    <input type="hidden" name="projectDescription" value="{{ projectDescription }}" />
-```
-
-**After**:
-```html
-<form hx-post="/api/setup/step/complexity" hx-target="#wizard-content" hx-swap="innerHTML">
-    {% include "partials/hidden-fields.html" %}
-```
-
-**Impact**:
-- ✅ Ensures all previous selections (projectName, projectDescription, setupType, css, js, editors, framework options) are passed forward
-- ✅ Server can reconstruct complete state when rendering next step
-- ✅ State sync from hidden fields now works correctly for complexity step
-
-**Status**: ✅ **COMPLETED**
+**Date:** 2025-01-01
+**Status:** Critical fixes completed
 
 ---
 
-### ✅ Fix #2: Improved HTMX Event Timing
+## ✅ Critical Fixes Implemented
 
-**File**: `scripts/web/templates/partials/wizard-scripts.html`
+### 1. Editors Step - JavaScript Functions ✅
 
-**Change**: Replaced `setTimeout` delays with `htmx:afterSettle` event and `requestAnimationFrame` fallback.
+**Issue:** `selectAllEditors()` and `deselectAllEditors()` functions were referenced but implementation was incomplete.
 
-**Before**:
-```javascript
-document.body.addEventListener('htmx:afterSwap', function(event) {
-    setTimeout(() => {
-        WizardState.syncFromHiddenFields()
-    }, 10)
+**Fix:** Functions already existed in `wizard-init.js` but were improved:
+- Functions now properly sync form state after selection changes
+- Added proper event handling
 
-    setTimeout(() => {
-        restoreFormSelections()
-    }, 50)
-})
-```
+**Files Modified:**
+- `web/assets/js/core/wizard-init.js` (lines 377-391)
 
-**After**:
-```javascript
-let syncInProgress = false
-function syncAndRestoreState() {
-    if (syncInProgress) return
-    syncInProgress = true
-
-    try {
-        WizardState.syncFromHiddenFields()
-        restoreFormSelections()
-    } finally {
-        setTimeout(() => { syncInProgress = false }, 100)
-    }
-}
-
-// Primary: Use afterSettle (fires after all transitions complete)
-document.body.addEventListener('htmx:afterSettle', function(event) {
-    syncAndRestoreState()
-})
-
-// Fallback: Use afterSwap with requestAnimationFrame
-document.body.addEventListener('htmx:afterSwap', function(event) {
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            syncAndRestoreState()
-        })
-    })
-})
-```
-
-**Impact**:
-- ✅ DOM is guaranteed to be stable before state sync
-- ✅ Works reliably on slow networks and devices
-- ✅ Prevents race conditions with duplicate execution guard
-- ✅ Better browser rendering pipeline synchronization
-
-**Status**: ✅ **COMPLETED**
+**Status:** ✅ Complete
 
 ---
 
-### ✅ Fix #3: Preserve Hidden Field Values in collectFormData()
+### 2. Advanced Step - JavaScript Functions ✅
 
-**File**: `scripts/web/templates/partials/wizard-scripts.html`
+**Issue:** `toggleInfo()` and `updateFrameworkVisibility()` functions needed improvements for accessibility and proper behavior.
 
-**Change**: Modified `collectFormData()` to read hidden fields as fallback when visible fields don't exist (backward navigation scenario).
+**Fixes Applied:**
 
-**Before**:
-```javascript
-// Only collected from visible fields
-const cssFields = form.querySelectorAll('input[name="css"]:not([type="hidden"])')
-if (cssFields.length > 0) {
-    // ... collect from checkboxes
-}
-// If no CSS fields in form, preserve existing state (but hidden fields ignored)
-```
+1. **`toggleInfo()` function:**
+   - Now properly updates `aria-expanded` attribute
+   - Accepts button element as second parameter
+   - Properly toggles visibility state
 
-**After**:
-```javascript
-const cssFields = form.querySelectorAll('input[name="css"]:not([type="hidden"])')
-if (cssFields.length > 0) {
-    // ... collect from visible checkboxes
-} else {
-    // CRITICAL: Preserve from hidden fields (backward navigation)
-    const hiddenCss = Array.from(form.querySelectorAll('input[name="css"][type="hidden"]'))
-        .map(i => i.value)
-        .filter(v => v && v !== 'undefined' && v !== '' && v !== 'null')
-    if (hiddenCss.length > 0 && (!formData.css || formData.css.length === 0)) {
-        formData.css = hiddenCss
-    }
-}
-```
+2. **`updateFrameworkVisibility()` function:**
+   - Now unchecks all framework component checkboxes when framework is disabled
+   - Properly shows/hides framework options section
 
-**Applied to**:
-- ✅ Project name (with hidden field fallback)
-- ✅ Project description (with hidden field fallback)
-- ✅ Setup type (with hidden field fallback)
-- ✅ CSS selections (with hidden field fallback)
-- ✅ JS selections (with hidden field fallback)
-- ✅ Editor selections (with hidden field fallback)
+3. **Template improvements:**
+   - Added `id` attributes to info toggle buttons
+   - Added `id` to framework checkbox
+   - Fixed initial visibility state of framework-options
 
-**Impact**:
-- ✅ Backward navigation now preserves all previous selections
-- ✅ State is never lost when navigating between steps
-- ✅ Hidden fields serve as reliable state backup
+**Files Modified:**
+- `web/assets/js/core/wizard-init.js` (lines 393-408)
+- `web/templates/steps/advanced.html` (multiple locations)
 
-**Status**: ✅ **COMPLETED**
+**Status:** ✅ Complete
+
+---
+
+### 3. Review Step - Edit Navigation ✅
+
+**Issue:** Edit buttons in review step had `data-edit-step` and `data-edit-route` attributes but no click handlers.
+
+**Fixes Applied:**
+
+1. **Added `editStep()` function:**
+   - Extracts step number and route from button attributes
+   - Uses `wizardNavigation.navigateToStep()` for navigation
+   - Includes proper error handling
+
+2. **Updated all edit buttons:**
+   - Added `onclick="editStep(this)"` to all edit buttons
+   - Fixed Frontend Frameworks edit button (was using old `navigateToStep` call)
+   - Added proper aria-labels
+
+3. **Added Agents section:**
+   - Added missing Agents review section for extended flow
+   - Includes edit button with proper navigation
+
+4. **Fixed Back button:**
+   - Added proper onclick handler for back navigation
+   - Uses wizardNavigation.navigateBack() with fallback
+
+**Files Modified:**
+- `web/assets/js/core/wizard-init.js` (lines 410-424)
+- `web/templates/steps/review.html` (multiple locations)
+
+**Status:** ✅ Complete
+
+---
+
+## Summary of Changes
+
+### JavaScript Functions (`wizard-init.js`)
+
+1. **`toggleInfo(infoId, button)`** - Enhanced
+   - Updates `aria-expanded` attribute for accessibility
+   - Accepts button element parameter
+
+2. **`updateFrameworkVisibility()`** - Enhanced
+   - Unchecks component checkboxes when framework disabled
+   - Proper visibility management
+
+3. **`editStep(button)`** - New
+   - Handles edit button clicks in review step
+   - Navigates to specified step using wizardNavigation
+
+### Template Updates
+
+1. **`advanced.html`**
+   - Added IDs to info toggle buttons
+   - Added ID to framework checkbox
+   - Fixed initial visibility state
+
+2. **`review.html`**
+   - Added `onclick="editStep(this)"` to all edit buttons
+   - Fixed Frontend Frameworks edit button
+   - Added Agents section for extended flow
+   - Fixed Back button handler
 
 ---
 
 ## Testing Recommendations
 
-After deploying these fixes, verify:
+### Manual Testing Checklist
 
-### Basic Flow Tests
-- [ ] Navigate forward through all steps (simple flow)
-- [ ] Navigate forward through all steps (extended flow)
-- [ ] Navigate backward through all steps
-- [ ] Navigate forward → backward → forward (round trip)
+- [ ] **Editors Step:**
+  - [ ] Click "Select All" - all editors should be selected
+  - [ ] Click "Deselect All" - all editors should be deselected
+  - [ ] Form state should sync after selection changes
 
-### Selection Persistence Tests
-- [ ] Select CSS frameworks, navigate forward/backward, verify selections persist
-- [ ] Select JS frameworks, navigate forward/backward, verify selections persist
-- [ ] Select editors, navigate forward/backward, verify selections persist
-- [ ] Enable framework options, navigate forward/backward, verify options persist
-- [ ] Uncheck a previously selected checkbox, navigate back/forward, verify deselection persists
+- [ ] **Advanced Step:**
+  - [ ] Click info button for CADS Framework - info should toggle
+  - [ ] `aria-expanded` should update correctly
+  - [ ] Check "Enable CADS Framework" - options should appear
+  - [ ] Uncheck "Enable CADS Framework" - options should hide and component checkboxes should uncheck
 
-### Edge Case Tests
-- [ ] Test on slow network connection (throttle in DevTools)
-- [ ] Test complexity step flow specifically
-- [ ] Test with browser DevTools open (may affect timing)
-- [ ] Verify console logs show state being saved/loaded correctly
-- [ ] Check Session Storage in DevTools → Application → Session Storage
+- [ ] **Review Step:**
+  - [ ] Click edit button on Project Information - should navigate to project step
+  - [ ] Click edit button on Preset - should navigate to presets step
+  - [ ] Click edit button on Frontend Frameworks - should navigate to frontend step
+  - [ ] Click edit button on Agents - should navigate to agents step
+  - [ ] Click edit button on Editors - should navigate to editors step
+  - [ ] Click edit button on Advanced Options - should navigate to advanced step
+  - [ ] Click Back button - should navigate to previous step
+  - [ ] Verify state is preserved when navigating back to edit
 
-### Browser Compatibility Tests
+### Browser Testing
+
 - [ ] Chrome/Edge (Chromium)
 - [ ] Firefox
 - [ ] Safari
-- [ ] Mobile browsers (if applicable)
+- [ ] Mobile browsers
+
+### Accessibility Testing
+
+- [ ] Test with screen reader (NVDA, JAWS, VoiceOver)
+- [ ] Test keyboard navigation (Tab, Enter, Space)
+- [ ] Verify `aria-expanded` updates correctly
+- [ ] Verify all buttons have proper `aria-label`
 
 ---
 
-## Expected Behavior After Fixes
+## Next Steps (High Priority)
 
-1. **Forward Navigation**: Selections are saved before each step transition and restored when navigating back
-2. **Backward Navigation**: All previous selections are preserved and displayed correctly
-3. **State Sync**: Hidden fields are always in sync with sessionStorage state
-4. **Timing**: State restoration happens reliably regardless of network speed or device performance
-5. **Complexity Step**: Now properly includes all hidden fields, maintaining state chain
+Based on the analysis document, the following high-priority improvements should be implemented next:
 
----
+1. **Project Step** - Add input validation and accessibility improvements
+2. **Presets Step** - Better descriptions and visual hierarchy
+3. **Frontend Step** - Dependency warnings (e.g., daisyUI requires TailwindCSS)
 
-## Monitoring
-
-Watch browser console for these log messages to verify fixes are working:
-
-- `[WizardState.save] Saved state:` - Should appear before each navigation
-- `[WizardState.load] Loaded state:` - Should appear when restoring state
-- `[WizardState.syncFromHiddenFields] Synced CSS/JS/editors:` - Should appear after HTMX swap
-- `[WizardState.collectFormData] Preserved CSS/JS/editors from hidden fields:` - Should appear during backward navigation
-- `[htmx:afterSettle] Content settled, syncing state` - Should appear after content swap
-- `[restoreFormSelections] Form selections restored` - Should appear after state restoration
+See `WIZARD-STEPS-ANALYSIS.md` for detailed recommendations.
 
 ---
 
-## Rollback Plan
+## Files Changed
 
-If issues occur after deployment:
-
-1. **Revert Fix #1**: Restore manual hidden fields in `complexity.html`
-2. **Revert Fix #2**: Restore `setTimeout` delays in `wizard-scripts.html`
-3. **Revert Fix #3**: Remove hidden field fallback logic in `collectFormData()`
-
-All changes are isolated and can be reverted independently.
+```
+web/assets/js/core/wizard-init.js
+web/templates/steps/advanced.html
+web/templates/steps/review.html
+```
 
 ---
 
-## Related Documentation
-
-- `WIZARD-STATE-ANALYSIS.md` - Complete analysis of all issues identified
-- `scripts/web/routes/api.js` - Server-side state handling
-- `scripts/web/templates/partials/hidden-fields.html` - Hidden fields template
-
----
-
-**Implementation Date**: 2025-01-01
-**Status**: ✅ **READY FOR TESTING**
+**Document Version:** 1.0
+**Last Updated:** 2025-01-01

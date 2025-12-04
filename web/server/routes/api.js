@@ -661,6 +661,7 @@ export function apiRoutes(projectDir) {
         // Next: agents step
         const selectedFrontend = [...(formData.css || []), ...(formData.js || [])]
         const agentOptions = createAgentOptions([], selectedFrontend)
+        const recommendedAgents = getMatchingAgents(selectedFrontend)
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -670,6 +671,7 @@ export function apiRoutes(projectDir) {
                 ...formData,
                 frontend: { css: formData.css, js: formData.js },
                 agentOptions,
+                recommendedAgents,
                 hiddenFields: createHiddenFields(formData)
             }
         )
@@ -683,6 +685,7 @@ export function apiRoutes(projectDir) {
 
         const selectedFrontend = [...(formData.css || []), ...(formData.js || [])]
         const agentOptions = createAgentOptions(formData.agents || [], selectedFrontend)
+        const recommendedAgents = getMatchingAgents(selectedFrontend)
 
         const html = await wrapStepWithProgress(
             c.renderTemplate,
@@ -693,6 +696,7 @@ export function apiRoutes(projectDir) {
                 ...formData,
                 frontend: { css: formData.css, js: formData.js },
                 agentOptions,
+                recommendedAgents,
                 hiddenFields: createHiddenFields(formData)
             }
         )

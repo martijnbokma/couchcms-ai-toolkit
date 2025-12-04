@@ -71,11 +71,15 @@
                 }
             }
 
-            formSync.setupFormListeners(form)
-            // Restore state to form - use setTimeout to ensure DOM is ready
+            // CRITICAL: Restore state BEFORE setting up listeners
+            // This prevents listeners from triggering on programmatic changes
+            formSync.restoreStateToForm(form)
+
+            // Setup listeners AFTER restore is complete
+            // Use setTimeout to ensure restore flag is cleared
             setTimeout(() => {
-                formSync.restoreStateToForm(form)
-            }, 100)
+                formSync.setupFormListeners(form)
+            }, 150)
         }
 
         // Setup HTMX event listeners
@@ -200,12 +204,15 @@
                             }
                         }
 
-                        // Setup listeners for new form
-                        formSync.setupFormListeners(form)
-                        // Restore state to form - use setTimeout to ensure DOM is ready
+                        // CRITICAL: Restore state BEFORE setting up listeners
+                        // This prevents listeners from triggering on programmatic changes
+                        formSync.restoreStateToForm(form)
+
+                        // Setup listeners AFTER restore is complete
+                        // Use setTimeout to ensure restore flag is cleared
                         setTimeout(() => {
-                            formSync.restoreStateToForm(form)
-                        }, 50)
+                            formSync.setupFormListeners(form)
+                        }, 150)
                     }
                 })
             }
@@ -233,8 +240,9 @@
                     }
 
                     // Save form state (don't let errors block submission)
+                    // Use immediate sync to ensure state is saved before HTMX request
                     try {
-                        formSync.syncFormToState(form)
+                        formSync.syncFormToState(form, true) // Immediate sync
                     } catch (error) {
                         console.error('[WizardInit] Error syncing form state:', error)
                         // Continue anyway - don't block submission
@@ -390,21 +398,56 @@
         }
     }
 
-    window.toggleInfo = function(infoId) {
+    window.toggleInfo = function(infoId, button) {
         const infoBox = document.getElementById(infoId)
-        if (infoBox) infoBox.classList.toggle('hidden')
+        if (infoBox) {
+            const isHidden = infoBox.classList.contains('hidden')
+            infoBox.classList.toggle('hidden')
+
+            // Update aria-expanded attribute if button is provided
+            if (button) {
+                button.setAttribute('aria-expanded', !isHidden)
+            }
+        }
     }
 
     window.updateFrameworkVisibility = function() {
         const checkbox = document.querySelector('input[name="framework"]')
         const options = document.getElementById('framework-options')
         if (checkbox && options) {
-            options.classList.toggle('hidden', !checkbox.checked)
+            const isChecked = checkbox.checked
+            options.classList.toggle('hidden', !isChecked)
+
+            // Uncheck all framework component checkboxes if framework is disabled
+            if (!isChecked) {
+                const componentCheckboxes = options.querySelectorAll('input[type="checkbox"]')
+                componentCheckboxes.forEach(cb => {
+                    cb.checked = false
+                })
+            }
         }
     }
 
-    window.handleAdvancedSubmit = function() {
+    window.handleAdvancedSubmit = function(event) {
+        // Add any validation logic here if needed
         return true
+    }
+
+    // Edit step navigation handler for Review page
+    window.editStep = function(button) {
+        const stepNum = button.getAttribute('data-edit-step')
+        const route = button.getAttribute('data-edit-route')
+
+        if (!stepNum || !route) {
+            console.error('[WizardInit.editStep] Missing step number or route', { stepNum, route })
+            return
+        }
+
+        if (window.wizardNavigation) {
+            window.wizardNavigation.navigateToStep(parseInt(stepNum), route)
+        } else {
+            console.error('[WizardInit.editStep] wizardNavigation not available')
+        }
     }
 
     console.log('[WizardInit] Script loaded')

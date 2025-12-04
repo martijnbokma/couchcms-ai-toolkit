@@ -6,17 +6,47 @@
     <form hx-post="/api/setup/step/agents" hx-target="#wizard-content" hx-swap="innerHTML">
         {% include "partials/hidden-fields.html" %}
 
-        <div class="mb-4 sm:mb-6">
-            <h3 class="text-xs sm:text-sm font-semibold mb-2 text-base-content">Frontend Agents</h3>
-            <p class="text-xs text-base-content/60 mb-3">Agents for frontend frameworks and tools</p>
+        <!-- Recommended Agents Section -->
+        {% if recommendedAgents and recommendedAgents|length > 0 %}
+        <div class="alert alert-info mb-4 sm:mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="text-xs sm:text-sm">
+                <p class="font-semibold mb-1">Recommended Agents:</p>
+                <p class="mb-2">Based on your frontend selections, we recommend these agents:</p>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {% for agent in recommendedAgents %}
+                    <span class="badge badge-primary badge-sm">{{ agent }}</span>
+                    {% endfor %}
+                </div>
+                <p class="text-xs mt-2 text-base-content/70">These agents are pre-selected for you. You can uncheck them if you don't need them.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Frontend Agents -->
+        <fieldset class="mb-4 sm:mb-6">
+            <legend class="text-xs sm:text-sm font-semibold mb-2 text-base-content">
+                Frontend Agents
+                <span class="text-xs font-normal text-base-content/60 ml-2">(optional)</span>
+            </legend>
+            <p class="text-xs text-base-content/60 mb-3">Agents for frontend frameworks and tools. Select agents that match your chosen frameworks.</p>
             <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
                 {% if agentOptions %}
                 {% for option in agentOptions.frontend %}
                 <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="agents" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm shrink-0" {% if option.selected %}checked{% endif %} />
+                    <input
+                        type="checkbox"
+                        name="agents"
+                        value="{{ option.id }}"
+                        class="checkbox checkbox-primary checkbox-sm shrink-0"
+                        {% if option.selected %}checked{% endif %}
+                        aria-describedby="agent-{{ option.id }}-description"
+                    />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
-                        <p class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
+                        <p id="agent-{{ option.id }}-description" class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
                     </div>
                 </label>
                 {% endfor %}
@@ -51,19 +81,30 @@
                 </label>
                 {% endif %}
             </div>
-        </div>
+        </fieldset>
 
-        <div class="mb-4 sm:mb-6">
-            <h3 class="text-xs sm:text-sm font-semibold mb-2 text-base-content">Development Tools</h3>
-            <p class="text-xs text-base-content/60 mb-3">Optional agents for development tools</p>
+        <!-- Development Tools -->
+        <fieldset class="mb-4 sm:mb-6">
+            <legend class="text-xs sm:text-sm font-semibold mb-2 text-base-content">
+                Development Tools
+                <span class="text-xs font-normal text-base-content/60 ml-2">(optional)</span>
+            </legend>
+            <p class="text-xs text-base-content/60 mb-3">Optional agents for development tools and workflows.</p>
             <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
                 {% if agentOptions %}
                 {% for option in agentOptions.devTools %}
                 <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="agents" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm shrink-0" {% if option.selected %}checked{% endif %} />
+                    <input
+                        type="checkbox"
+                        name="agents"
+                        value="{{ option.id }}"
+                        class="checkbox checkbox-primary checkbox-sm shrink-0"
+                        {% if option.selected %}checked{% endif %}
+                        aria-describedby="agent-{{ option.id }}-description"
+                    />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
-                        <p class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
+                        <p id="agent-{{ option.id }}-description" class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
                     </div>
                 </label>
                 {% endfor %}
@@ -91,10 +132,12 @@
                 </label>
                 {% endif %}
             </div>
-        </div>
+        </fieldset>
 
         <div class="alert alert-info mb-4 sm:mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
             <div class="text-xs sm:text-sm">
                 <p class="font-semibold">Note:</p>
                 <p>All CouchCMS core agents are automatically included. You're only selecting optional frontend and development tool agents here.</p>

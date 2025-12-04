@@ -168,10 +168,17 @@
 
             // CRITICAL: Save current form state before navigating
             // This ensures all selections are preserved when navigating between steps
+            // Use immediate sync to avoid race conditions with async event handlers
             const form = document.querySelector('form')
             if (form && window.formStateSync) {
-                console.log('[WizardNavigation] Syncing form state before navigation')
-                window.formStateSync.syncFormToState(form)
+                console.log('[WizardNavigation] Syncing form state before navigation (immediate)')
+
+                // CRITICAL: Wait a tiny bit to ensure any pending async syncs complete
+                // This prevents race conditions where a checkbox deselect triggers async sync
+                // but navigation happens before that sync completes
+                await new Promise(resolve => setTimeout(resolve, 20))
+
+                window.formStateSync.syncFormToState(form, true) // Immediate sync
 
                 // Verify state was saved
                 const savedState = stateManager.load()
@@ -267,6 +274,8 @@
 
                 if (Array.isArray(value)) {
                     // Array fields - append each value
+                    // CRITICAL: If array is empty, don't add parameter (server will use empty array from parseArrayValue)
+                    // This is correct behavior - empty arrays mean "nothing selected"
                     value.forEach(v => {
                         if (v !== null && v !== undefined && v !== '') {
                             params.append(key, v)

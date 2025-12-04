@@ -6,72 +6,176 @@
     <form hx-post="/api/setup/step/frontend" hx-target="#wizard-content" hx-swap="innerHTML">
         {% include "partials/hidden-fields.html" %}
 
-        <div class="mb-4 sm:mb-6">
-            <h3 class="text-xs sm:text-sm font-semibold mb-2 text-base-content">CSS Framework</h3>
+        <!-- CSS Framework Section -->
+        <fieldset class="mb-4 sm:mb-6">
+            <legend class="text-xs sm:text-sm font-semibold mb-2 text-base-content">
+                CSS Framework
+                <span class="text-xs font-normal text-base-content/60 ml-2">(select one or more)</span>
+            </legend>
             <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
                 {% if frontendOptions %}
                 {% for option in frontendOptions.css %}
                 <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="css" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm shrink-0" {% if option.selected %}checked{% endif %} />
+                    <input
+                        type="checkbox"
+                        name="css"
+                        value="{{ option.id }}"
+                        class="checkbox checkbox-primary checkbox-sm shrink-0"
+                        {% if option.selected %}checked{% endif %}
+                        {% if option.id == 'daisyui' %}data-requires="tailwindcss"{% endif %}
+                        aria-describedby="css-{{ option.id }}-description"
+                        onchange="checkDependency(this, 'css')"
+                    />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
-                        <p class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
+                        <p id="css-{{ option.id }}-description" class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
                     </div>
                 </label>
                 {% endfor %}
                 {% else %}
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="css" value="tailwindcss" class="checkbox checkbox-primary checkbox-sm" checked />
+                    <input
+                        type="checkbox"
+                        name="css"
+                        value="tailwindcss"
+                        id="css-tailwindcss"
+                        class="checkbox checkbox-primary checkbox-sm"
+                        checked
+                        aria-describedby="css-tailwindcss-description"
+                    />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-semibold text-base-content">TailwindCSS</h4>
-                        <p class="text-xs text-base-content/60">Utility-first CSS framework</p>
+                        <p id="css-tailwindcss-description" class="text-xs text-base-content/60">Utility-first CSS framework</p>
                     </div>
                 </label>
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="css" value="daisyui" class="checkbox checkbox-primary checkbox-sm" />
+                    <input
+                        type="checkbox"
+                        name="css"
+                        value="daisyui"
+                        id="css-daisyui"
+                        class="checkbox checkbox-primary checkbox-sm"
+                        data-requires="tailwindcss"
+                        aria-describedby="css-daisyui-description"
+                        onchange="checkDependency(this, 'css')"
+                    />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-semibold text-base-content">daisyUI</h4>
-                        <p class="text-xs text-base-content/60">Component library for TailwindCSS</p>
+                        <p id="css-daisyui-description" class="text-xs text-base-content/60">Component library for TailwindCSS</p>
                     </div>
                 </label>
                 {% endif %}
             </div>
-        </div>
 
-        <div class="mb-4 sm:mb-6">
-            <h3 class="text-xs sm:text-sm font-semibold mb-2 text-base-content">JavaScript Frameworks</h3>
+            <!-- Dependency Warning -->
+            <div id="daisyui-warning" class="alert alert-warning mt-3 hidden" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span class="text-xs sm:text-sm">
+                    <strong>Note:</strong> daisyUI requires TailwindCSS. Please select TailwindCSS as well.
+                </span>
+            </div>
+        </fieldset>
+
+        <!-- JavaScript Framework Section -->
+        <fieldset class="mb-4 sm:mb-6">
+            <legend class="text-xs sm:text-sm font-semibold mb-2 text-base-content">
+                JavaScript Frameworks
+                <span class="text-xs font-normal text-base-content/60 ml-2">(select one or more)</span>
+            </legend>
             <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
                 {% if frontendOptions %}
                 {% for option in frontendOptions.js %}
                 <label class="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="js" value="{{ option.id }}" class="checkbox checkbox-primary checkbox-sm shrink-0" {% if option.selected %}checked{% endif %} />
+                    <input
+                        type="checkbox"
+                        name="js"
+                        value="{{ option.id }}"
+                        class="checkbox checkbox-primary checkbox-sm shrink-0"
+                        {% if option.selected %}checked{% endif %}
+                        aria-describedby="js-{{ option.id }}-description"
+                    />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-xs sm:text-sm font-semibold text-base-content">{{ option.name }}</h4>
-                        <p class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
+                        <p id="js-{{ option.id }}-description" class="text-xs text-base-content/60 line-clamp-2">{{ option.description }}</p>
                     </div>
                 </label>
                 {% endfor %}
                 {% else %}
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="js" value="alpinejs" class="checkbox checkbox-primary checkbox-sm" checked />
+                    <input
+                        type="checkbox"
+                        name="js"
+                        value="alpinejs"
+                        class="checkbox checkbox-primary checkbox-sm"
+                        checked
+                        aria-describedby="js-alpinejs-description"
+                    />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-semibold text-base-content">Alpine.js</h4>
-                        <p class="text-xs text-base-content/60">Lightweight reactive JavaScript</p>
-                            </div>
+                        <p id="js-alpinejs-description" class="text-xs text-base-content/60">Lightweight reactive JavaScript</p>
+                    </div>
                 </label>
                 <label class="relative flex items-center gap-3 px-4 py-2.5 bg-base-200 cursor-pointer hover:bg-base-300 transition-all shadow-sm border border-transparent hover:border-primary/30 rounded-xl">
-                    <input type="checkbox" name="js" value="typescript" class="checkbox checkbox-primary checkbox-sm" />
+                    <input
+                        type="checkbox"
+                        name="js"
+                        value="typescript"
+                        class="checkbox checkbox-primary checkbox-sm"
+                        aria-describedby="js-typescript-description"
+                    />
                     <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-semibold text-base-content">TypeScript</h4>
-                        <p class="text-xs text-base-content/60">Type-safe JavaScript</p>
+                        <p id="js-typescript-description" class="text-xs text-base-content/60">Type-safe JavaScript</p>
                     </div>
                 </label>
                 {% endif %}
             </div>
-        </div>
+        </fieldset>
 
         {% set nextButtonLabel = 'Next: AI Agents' %}
         {% set showBackButton = true %}
         {% include "partials/form-navigation.html" %}
     </form>
+
+    <script>
+        // Check dependencies when checkbox changes
+        function checkDependency(checkbox, groupName) {
+            const requires = checkbox.dataset.requires
+            if (!requires) return
+
+            const warning = document.getElementById('daisyui-warning')
+            if (!warning) return
+
+            if (checkbox.checked) {
+                // Check if required dependency is selected
+                const requiredCheckbox = document.querySelector(`input[name="${groupName}"][value="${requires}"]`)
+                if (requiredCheckbox && !requiredCheckbox.checked) {
+                    // Show warning
+                    warning.classList.remove('hidden')
+
+                    // Auto-select required dependency
+                    if (confirm(`daisyUI requires TailwindCSS. Would you like to select TailwindCSS automatically?`)) {
+                        requiredCheckbox.checked = true
+                        warning.classList.add('hidden')
+                    }
+                } else if (requiredCheckbox && requiredCheckbox.checked) {
+                    // Hide warning if dependency is selected
+                    warning.classList.add('hidden')
+                }
+            } else {
+                // Hide warning when daisyUI is unchecked
+                warning.classList.add('hidden')
+            }
+        }
+
+        // Check dependencies on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const daisyUICheckbox = document.getElementById('css-daisyui') || document.querySelector('input[name="css"][value="daisyui"]')
+            if (daisyUICheckbox && daisyUICheckbox.checked) {
+                checkDependency(daisyUICheckbox, 'css')
+            }
+        })
+    </script>
 </div>

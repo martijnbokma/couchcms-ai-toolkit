@@ -1,13 +1,60 @@
 <div>
     {% set sectionTitle = 'Error' %}
     {% include "partials/section-header.html" %}
-    <div class="relative flex flex-col h-full px-3 sm:px-4 py-2.5 sm:py-3 bg-error/10 border border-error/20 rounded-xl mb-4 sm:mb-6">
-        <p class="text-xs sm:text-sm text-error-content break-words">{{ errorMessage }}</p>
+
+    <div class="relative flex flex-col h-full px-3 sm:px-4 py-2.5 sm:py-3 bg-error/10 border border-error/20 rounded-xl mb-4 sm:mb-6" role="alert">
+        <div class="flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-error shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="flex-1">
+                <h3 class="font-semibold text-error-content mb-1">
+                    {% if errorTitle %}{{ errorTitle }}{% else %}An Error Occurred{% endif %}
+                </h3>
+                <p class="text-xs sm:text-sm text-error-content break-words">
+                    {{ errorMessage }}
+                </p>
+                {% if errorCode %}
+                <p class="text-xs text-error-content/60 mt-2">
+                    Error Code: <code class="bg-error/20 px-1 rounded">{{ errorCode }}</code>
+                </p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 
-    <div class="flex justify-end">
-        <button onclick="history.back()" class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors bg-base-100 rounded-full border border-base-300 hover:bg-base-200 focus:outline-none cursor-pointer">
-            ← Back
+    {% if errorSuggestions and errorSuggestions|length > 0 %}
+    <div class="alert alert-info mb-4 sm:mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+            <h4 class="font-semibold mb-2">Try these solutions:</h4>
+            <ul class="list-disc list-inside space-y-1">
+                {% for suggestion in errorSuggestions %}
+                <li class="text-xs sm:text-sm">{{ suggestion }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="flex flex-col sm:flex-row justify-between gap-3">
+        <button
+            onclick="if (window.wizardNavigation) { window.wizardNavigation.navigateBack(); } else { history.back(); }"
+            class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors bg-base-100 rounded-full border border-base-300 hover:bg-base-200 focus:outline-none cursor-pointer"
+            aria-label="Go back to previous step"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
         </button>
+        <a
+            href="/setup/wizard?type={{ setupType or 'simple' }}"
+            class="relative inline-flex items-center justify-center h-auto px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors bg-primary rounded-full text-primary-content hover:bg-primary/90 focus:outline-none cursor-pointer"
+        >
+            Start Over
+        </a>
     </div>
 </div>

@@ -25,6 +25,7 @@
             this.listeners = new Map() // Track listeners per form for cleanup
             this.htmxHandlers = new Map() // Track HTMX handlers for cleanup
             this.debounceDelay = window.WIZARD_CONFIG?.DEBOUNCE_DELAY || 300
+            this.isRestoring = false // Flag to prevent listeners from triggering during restore
         }
 
         /**
@@ -51,14 +52,17 @@
                 const checkboxes = form.querySelectorAll(`input[name="${key}"][type="checkbox"]`)
                 if (checkboxes.length > 0) {
                     // Field exists in form - collect checked values from DOM
+                    // CRITICAL: Always collect from DOM, even if empty (to preserve deselections)
                     const checkedValues = []
                     checkboxes.forEach(checkbox => {
                         if (checkbox.checked && checkbox.value && checkbox.value !== 'false' && checkbox.value !== '') {
                             checkedValues.push(checkbox.value)
                         }
                     })
+                    // CRITICAL: Always set the array, even if empty, to preserve deselections
+                    // Don't keep existing state if field exists in form - user's current selection is authoritative
                     data[key] = checkedValues
-                    console.log(`[FormStateSync] Collected ${key} from DOM:`, checkedValues)
+                    console.log(`[FormStateSync] Collected ${key} from DOM:`, checkedValues, `(total checkboxes: ${checkboxes.length})`)
                 }
                 // If field doesn't exist in form, keep existing state (preserve from other steps)
             })
@@ -180,17 +184,37 @@
                 }
             })
 
+            // CRITICAL: Clear flag after restore is complete
+            // Use setTimeout to ensure all DOM updates are complete
+            setTimeout(() => {
+                this.isRestoring = false
+            }, 100)
+
             console.log('[FormStateSync] State applied to form')
         }
 
         /**
          * Sync form to state (form → state)
          * @param {HTMLFormElement} form - Form element
+         * @param {boolean} immediate - If true, sync immediately without setTimeout (for navigation)
          */
-        syncFormToState(form) {
-            const formData = this.collectFormData(form)
-            stateManager.update(formData)
-            console.log('[FormStateSync] Synced form to state:', formData)
+        syncFormToState(form, immediate = false) {
+            const performSync = () => {
+                const formData = this.collectFormData(form)
+                stateManager.update(formData)
+                console.log('[FormStateSync] Synced form to state:', formData)
+            }
+
+            if (immediate) {
+                // Immediate sync (for navigation) - ensures state is saved before navigation
+                performSync()
+            } else {
+                // Use setTimeout to ensure DOM is updated (for event handlers)
+                // This ensures checkbox.checked is updated in DOM before we read it
+                setTimeout(() => {
+                    performSync()
+                }, 0)
+            }
         }
 
         /**
@@ -243,12 +267,19 @@
 
             // Create handler functions
             const inputHandler = (e) => {
+                // CRITICAL: Don't trigger during programmatic restore
+                if (this.isRestoring) {
+                    return
+                }
+
                 if (e.target.type === 'checkbox' || e.target.type === 'radio') {
                     // Immediate save for checkboxes/radios
                     // Use setTimeout to ensure checkbox state is updated in DOM
+                    // CRITICAL: Small delay ensures DOM is updated before we read it
                     setTimeout(() => {
+                        console.log('[FormStateSync] Checkbox/radio changed, syncing state. Checkbox:', e.target.name, e.target.value, 'checked:', e.target.checked)
                         this.syncFormToState(form)
-                    }, 0)
+                    }, 10) // Increased from 0 to 10ms for more reliable DOM updates
                 } else {
                     // Debounced save for text inputs
                     this.debouncedSync(form)
@@ -256,12 +287,19 @@
             }
 
             const changeHandler = (e) => {
+                // CRITICAL: Don't trigger during programmatic restore
+                if (this.isRestoring) {
+                    return
+                }
+
                 if (e.target.type === 'checkbox' || e.target.type === 'radio') {
                     // Immediate save for checkboxes/radios
                     // Use setTimeout to ensure checkbox state is updated in DOM
+                    // CRITICAL: Small delay ensures DOM is updated before we read it
                     setTimeout(() => {
+                        console.log('[FormStateSync] Checkbox/radio changed (change event), syncing state. Checkbox:', e.target.name, e.target.value, 'checked:', e.target.checked)
                         this.syncFormToState(form)
-                    }, 0)
+                    }, 10) // Increased from 0 to 10ms for more reliable DOM updates
                 }
             }
 

@@ -2,9 +2,11 @@
     <div class="mb-4 sm:mb-6">
         <div class="flex items-center gap-2 sm:gap-3 mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-success shrink-0 h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-            <h2 class="text-xl sm:text-2xl font-semibold text-base-content">Setup Complete!</h2>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-xl sm:text-2xl font-semibold text-base-content">
+                Setup Complete{% if projectName %} for {{ projectName }}{% endif %}!
+            </h2>
         </div>
         <p class="text-xs sm:text-sm text-base-content/60">Your CouchCMS AI Toolkit is now configured and ready to use. Follow the steps below to get started.</p>
     </div>
@@ -24,7 +26,20 @@
                         <span class="flex-shrink-0 w-6 h-6 rounded-full bg-success text-success-content text-xs font-bold flex items-center justify-center">1</span>
                         <div class="flex-1 pt-0.5">
                             <strong class="text-base-content">Review your configuration:</strong>
-                            <code class="block mt-1 bg-base-300 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-mono border border-base-content/10">config/standards.md</code>
+                            <div class="flex items-center gap-2 mt-1">
+                                <code class="bg-base-300 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-mono border border-base-content/10">config/standards.md</code>
+                                <button
+                                    type="button"
+                                    onclick="copyToClipboard('config/standards.md')"
+                                    class="btn btn-xs btn-ghost"
+                                    aria-label="Copy path to clipboard"
+                                    title="Copy path"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                            </div>
                             <p class="text-xs text-base-content/60 mt-1">Check and customize your project settings if needed.</p>
                         </div>
                     </li>
@@ -32,7 +47,20 @@
                         <span class="flex-shrink-0 w-6 h-6 rounded-full bg-success text-success-content text-xs font-bold flex items-center justify-center">2</span>
                         <div class="flex-1 pt-0.5">
                             <strong class="text-base-content">Generate AI configurations:</strong>
-                            <code class="block mt-1 bg-base-300 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-mono border border-base-content/10">bun run toolkit sync</code>
+                            <div class="flex items-center gap-2 mt-1">
+                                <code class="bg-base-300 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-mono border border-base-content/10">bun run toolkit sync</code>
+                                <button
+                                    type="button"
+                                    onclick="copyToClipboard('bun run toolkit sync')"
+                                    class="btn btn-xs btn-ghost"
+                                    aria-label="Copy command to clipboard"
+                                    title="Copy command"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                            </div>
                             <p class="text-xs text-base-content/60 mt-1">Creates editor-specific configs (CLAUDE.md, .cursorrules, etc.)</p>
                         </div>
                     </li>
@@ -56,7 +84,20 @@
                     </svg>
                     Configuration File
                 </h3>
-                <p class="font-mono text-xs sm:text-sm bg-base-300 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl mt-2 inline-block border border-base-content/10 break-all">config/standards.md</p>
+                <div class="flex items-center gap-2 mt-2">
+                    <code class="font-mono text-xs sm:text-sm bg-base-300 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-base-content/10 break-all">config/standards.md</code>
+                    <button
+                        type="button"
+                        onclick="copyToClipboard('config/standards.md')"
+                        class="btn btn-xs btn-ghost"
+                        aria-label="Copy path to clipboard"
+                        title="Copy path"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                </div>
                 <p class="text-xs sm:text-sm text-base-content/70 mt-2">This is your single source of truth. Edit this file to customize modules, agents, and project rules.</p>
             </div>
         </div>
@@ -208,4 +249,40 @@
             Ready to code? Open your editor and start asking your AI assistant questions!
         </div>
     </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show toast notification
+                const toast = document.createElement('div')
+                toast.className = 'toast toast-top toast-end'
+                toast.innerHTML = `
+                    <div class="alert alert-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Copied to clipboard!</span>
+                    </div>
+                `
+                document.body.appendChild(toast)
+                setTimeout(() => toast.remove(), 2000)
+            }).catch(err => {
+                console.error('Failed to copy:', err)
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea')
+                textArea.value = text
+                textArea.style.position = 'fixed'
+                textArea.style.left = '-999999px'
+                document.body.appendChild(textArea)
+                textArea.select()
+                try {
+                    document.execCommand('copy')
+                    alert('Copied to clipboard!')
+                } catch (err) {
+                    console.error('Fallback copy failed:', err)
+                }
+                document.body.removeChild(textArea)
+            })
+        }
+    </script>
 </div>
