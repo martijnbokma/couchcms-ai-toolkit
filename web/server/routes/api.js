@@ -1157,19 +1157,26 @@ async function getReviewStep(renderTemplate, data) {
 
     // For presets, use preset data if available, otherwise get from toolkit
     let couchcmsModules, couchcmsAgents
+    // Get selected frontend frameworks to filter from agents
+    const selectedFrontendFrameworks = [...uniqueCss, ...uniqueJs]
+
     if (preset && preset !== '' && finalPresetData && data.couchcmsModules && data.couchcmsAgents) {
         couchcmsModules = data.couchcmsModules
-        couchcmsAgents = data.couchcmsAgents
+        // Filter out frontend frameworks that user selected - they're already shown in Frontend Frameworks section
+        couchcmsAgents = data.couchcmsAgents.filter(agent => !selectedFrontendFrameworks.includes(agent))
     } else if (preset && preset !== '' && finalPresetData) {
         // Extract modules and agents from preset if not already provided
         const cssModules = finalPresetData.modules.filter(m => ['tailwindcss', 'daisyui'].includes(m))
         const jsModules = finalPresetData.modules.filter(m => ['alpinejs', 'typescript'].includes(m))
         couchcmsModules = finalPresetData.modules.filter(m => !['tailwindcss', 'daisyui', 'alpinejs', 'typescript'].includes(m))
-        couchcmsAgents = finalPresetData.agents || []
+        // Filter out frontend frameworks that user selected - they're already shown in Frontend Frameworks section
+        couchcmsAgents = (finalPresetData.agents || []).filter(agent => !selectedFrontendFrameworks.includes(agent))
     } else {
         const items = getCouchCMSItemsFromToolkit()
         couchcmsModules = items.couchcmsModules
-        couchcmsAgents = items.couchcmsAgents
+
+        // Filter out frontend frameworks that user selected - they're already shown in Frontend Frameworks section
+        couchcmsAgents = items.couchcmsAgents.filter(agent => !selectedFrontendFrameworks.includes(agent))
     }
 
     const finalStep = setupType === SETUP_TYPES.SIMPLE ? 3 : 7
