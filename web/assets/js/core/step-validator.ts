@@ -295,3 +295,4 @@ if (typeof window !== 'undefined') {
     ;(window as { updateDescriptionCounter?: typeof updateDescriptionCounter }).updateDescriptionCounter = updateDescriptionCounter
 }
 
+

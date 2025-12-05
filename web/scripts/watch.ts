@@ -5,22 +5,35 @@
  * Optionally watches server files and restarts the server
  */
 
-import { watch } from 'fs'
+import { watch, existsSync } from 'fs'
 import { join, relative } from 'path'
-import { existsSync } from 'fs'
 import { $ } from 'bun'
+import type { WatchOptions, ChangeType } from './types'
 
-const WEB_DIR = import.meta.dir
-const WEB_ROOT = join(WEB_DIR, '..')
-const ASSETS_DIR = join(WEB_ROOT, 'assets')
-const JS_SRC_DIR = join(ASSETS_DIR, 'js')
-const CSS_SRC_DIR = join(ASSETS_DIR, 'css')
-const TEMPLATES_DIR = join(WEB_ROOT, 'templates')
-const SERVER_DIR = join(WEB_ROOT, 'server')
-const BUILD_SCRIPT = join(WEB_DIR, 'build.js')
+const WEB_DIR: string = import.meta.dir
+const WEB_ROOT: string = join(WEB_DIR, '..')
+const ASSETS_DIR: string = join(WEB_ROOT, 'assets')
+const JS_SRC_DIR: string = join(ASSETS_DIR, 'js')
+const CSS_SRC_DIR: string = join(ASSETS_DIR, 'css')
+const TEMPLATES_DIR: string = join(WEB_ROOT, 'templates')
+const SERVER_DIR: string = join(WEB_ROOT, 'server')
+const BUILD_SCRIPT: string = join(WEB_DIR, 'build.ts')
 
-// Colors for console output
-const colors = {
+/**
+ * Console color codes
+ */
+interface ColorCodes {
+    reset: string
+    bright: string
+    dim: string
+    green: string
+    yellow: string
+    blue: string
+    magenta: string
+    cyan: string
+}
+
+const colors: ColorCodes = {
     reset: '\x1b[0m',
     bright: '\x1b[1m',
     dim: '\x1b[2m',
@@ -28,26 +41,39 @@ const colors = {
     yellow: '\x1b[33m',
     blue: '\x1b[34m',
     magenta: '\x1b[35m',
-    cyan: '\x1b[36m',
+    cyan: '\x1b[36m'
 }
 
-function log(message, color = 'reset') {
+type ColorKey = keyof ColorCodes
+
+/**
+ * Log a message with color and timestamp
+ */
+function log(message: string, color: ColorKey = 'reset'): void {
     const timestamp = new Date().toLocaleTimeString('nl-NL')
     console.log(`${colors.dim}[${timestamp}]${colors.reset} ${colors[color]}${message}${colors.reset}`)
 }
 
+/**
+ * Live reload response data
+ */
+interface LiveReloadResponse {
+    clients?: number
+    type?: string
+}
+
 // Track if build is in progress to prevent multiple simultaneous builds
-let isBuilding = false
-let buildTimeout = null
+let isBuilding: boolean = false
+let buildTimeout: ReturnType<typeof setTimeout> | null = null
 
 // Live reload server URL (can be configured via environment variable)
-const LIVE_RELOAD_SERVER = process.env.LIVE_RELOAD_SERVER || 'http://localhost:3000'
+const LIVE_RELOAD_SERVER: string = process.env.LIVE_RELOAD_SERVER || 'http://localhost:3000'
 
 /**
  * Trigger browser reload via live reload server
- * @param {string} changeType - Type of change ('css', 'js', 'html', 'full')
+ * @param changeType - Type of change ('css', 'js', 'html', 'full')
  */
-async function triggerBrowserReload(changeType = 'full') {
+async function triggerBrowserReload(changeType: ChangeType = 'full'): Promise<void> {
     try {
         const response = await fetch(`${LIVE_RELOAD_SERVER}/_live-reload/trigger`, {
             method: 'POST',
@@ -56,8 +82,8 @@ async function triggerBrowserReload(changeType = 'full') {
         })
 
         if (response.ok) {
-            const data = await response.json().catch(() => ({}))
-            if (data.clients > 0) {
+            const data = (await response.json().catch(() => ({}))) as LiveReloadResponse
+            if (data.clients && data.clients > 0) {
                 log(`🔄 Browser reload triggered (${data.clients} client(s))`, 'green')
             }
         }
@@ -70,9 +96,9 @@ async function triggerBrowserReload(changeType = 'full') {
 /**
  * Debounced build function
  * Waits for file changes to settle before rebuilding
- * @param {string} changeType - Type of change that triggered the build
+ * @param changeType - Type of change that triggered the build
  */
-async function triggerBuild(changeType = 'full') {
+async function triggerBuild(changeType: ChangeType = 'full'): Promise<void> {
     if (buildTimeout) {
         clearTimeout(buildTimeout)
     }
@@ -99,22 +125,32 @@ async function triggerBuild(changeType = 'full') {
             }
         } catch (error) {
             isBuilding = false
-            log(`❌ Build error: ${error.message}`, 'yellow')
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            log(`❌ Build error: ${errorMessage}`, 'yellow')
         }
     }, 300) // 300ms debounce
 }
 
 /**
+ * Watch callback function type
+ */
+type WatchCallback = (eventType: string, filename: string, filePath: string) => void
+
+/**
  * Watch a directory recursively for file changes
  */
-function watchDirectory(dir, label, callback) {
+function watchDirectory(
+    dir: string,
+    label: string,
+    callback: WatchCallback
+): ReturnType<typeof watch> | null {
     if (!existsSync(dir)) {
         log(`⚠️  Directory does not exist: ${dir}`, 'yellow')
         return null
     }
 
     try {
-        const watcher = watch(dir, { recursive: true }, (eventType, filename) => {
+        const watcher = watch(dir, { recursive: true }, (eventType: string, filename: string | null) => {
             if (!filename) return
 
             const filePath = join(dir, filename)
@@ -139,7 +175,8 @@ function watchDirectory(dir, label, callback) {
         log(`👀 Watching ${label}: ${relative(WEB_ROOT, dir)}`, 'blue')
         return watcher
     } catch (error) {
-        log(`❌ Error watching ${label}: ${error.message}`, 'yellow')
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        log(`❌ Error watching ${label}: ${errorMessage}`, 'yellow')
         return null
     }
 }
@@ -147,7 +184,7 @@ function watchDirectory(dir, label, callback) {
 /**
  * Main watch function
  */
-async function startWatch(options = {}) {
+async function startWatch(options: WatchOptions = {}): Promise<void> {
     const { watchServer = false } = options
 
     log('🚀 Starting development watch mode...', 'bright')
@@ -164,7 +201,8 @@ async function startWatch(options = {}) {
             process.exit(1)
         }
     } catch (error) {
-        log(`❌ Initial build failed: ${error.message}`, 'yellow')
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        log(`❌ Initial build failed: ${errorMessage}`, 'yellow')
         process.exit(1)
     }
 
@@ -185,18 +223,18 @@ async function startWatch(options = {}) {
 
     // Watch templates (for informational purposes, templates are reloaded by Nunjucks)
     if (watchServer) {
-        watchDirectory(TEMPLATES_DIR, 'Templates', (eventType, filename) => {
+        watchDirectory(TEMPLATES_DIR, 'Templates', (eventType: string, filename: string) => {
             log(`📄 Template changed: ${filename}`, 'magenta')
             // Trigger browser reload for template changes
             triggerBrowserReload('html')
         })
 
         // Watch server files (would require server restart)
-        watchDirectory(SERVER_DIR, 'Server', (eventType, filename) => {
+        watchDirectory(SERVER_DIR, 'Server', (eventType: string, filename: string) => {
             log(`⚙️  Server file changed: ${filename} (restart server manually)`, 'magenta')
         })
     } else {
-        watchDirectory(TEMPLATES_DIR, 'Templates', (eventType, filename) => {
+        watchDirectory(TEMPLATES_DIR, 'Templates', (eventType: string, filename: string) => {
             log(`📄 Template changed: ${filename}`, 'magenta')
             // Trigger browser reload for template changes
             triggerBrowserReload('html')
@@ -218,14 +256,15 @@ async function startWatch(options = {}) {
 }
 
 // Parse command line arguments
-const args = process.argv.slice(2)
-const options = {
+const args: string[] = process.argv.slice(2)
+const options: WatchOptions = {
     watchServer: args.includes('--server') || args.includes('-s')
 }
 
 // Start watching
-startWatch(options).catch((error) => {
-    log(`❌ Fatal error: ${error.message}`, 'yellow')
+startWatch(options).catch((error: unknown) => {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    log(`❌ Fatal error: ${errorMessage}`, 'yellow')
     console.error(error)
     process.exit(1)
 })

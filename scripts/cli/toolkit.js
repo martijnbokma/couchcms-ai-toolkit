@@ -306,7 +306,7 @@ async function handleServe(projectDir, options) {
     if (!noWatch) {
         printInfo('Starting watch mode for development...')
         try {
-            const watchScript = join(TOOLKIT_ROOT, 'web', 'scripts', 'watch.js')
+            const watchScript = join(TOOLKIT_ROOT, 'web', 'scripts', 'watch.ts')
             watchProcess = spawn('bun', [watchScript], {
                 cwd: TOOLKIT_ROOT,
                 stdio: 'inherit',
@@ -330,7 +330,7 @@ async function handleServe(projectDir, options) {
         printInfo('Building web assets...')
         try {
             const cleanScript = join(TOOLKIT_ROOT, 'web', 'scripts', 'clean.js')
-            const buildScript = join(TOOLKIT_ROOT, 'web', 'scripts', 'build.js')
+            const buildScript = join(TOOLKIT_ROOT, 'web', 'scripts', 'build.ts')
 
             // Run clean
             const cleanResult = spawnSync('bun', [cleanScript], {
@@ -375,7 +375,7 @@ async function handleServe(projectDir, options) {
 
     // Start server
     try {
-        const { startServer } = await import('../../web/server/server.js')
+        const { startServer } = await import('../../web/server/server.ts')
         await startServer({ port, projectDir })
     } catch (error) {
         printError(`Failed to start server: ${error.message}`)

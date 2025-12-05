@@ -5,13 +5,20 @@
  */
 
 /**
+ * Parsed query parameters with support for multiple values
+ */
+export interface ParsedQueryParams {
+    [key: string]: string | string[]
+}
+
+/**
  * Parse query parameters from Hono request, handling multiple values with same name
  * Hono's c.req.query() may not handle multiple values correctly, so we parse the URL directly
- * @param {string} url - Request URL (can be absolute or relative)
- * @returns {Object} Parsed query parameters with arrays for multiple values
+ * @param url - Request URL (can be absolute or relative)
+ * @returns Parsed query parameters with arrays for multiple values
  */
-export function parseQueryParams(url) {
-    let urlObj
+export function parseQueryParams(url: string): ParsedQueryParams {
+    let urlObj: URL
     try {
         // Try to parse as absolute URL first
         urlObj = new URL(url)
@@ -26,16 +33,16 @@ export function parseQueryParams(url) {
         }
     }
 
-    const queryParams = {}
+    const queryParams: ParsedQueryParams = {}
 
     // Parse all query parameters, handling multiple values with same name
     urlObj.searchParams.forEach((value, key) => {
         if (queryParams[key]) {
             // If key already exists, convert to array
             if (Array.isArray(queryParams[key])) {
-                queryParams[key].push(value)
+                (queryParams[key] as string[]).push(value)
             } else {
-                queryParams[key] = [queryParams[key], value]
+                queryParams[key] = [queryParams[key] as string, value]
             }
         } else {
             queryParams[key] = value
@@ -47,12 +54,16 @@ export function parseQueryParams(url) {
 
 /**
  * Normalize a value to a string, handling arrays and comma-separated values
- * @param {string|string[]|undefined} value - Value to normalize
- * @param {string} defaultValue - Default value if value is empty
- * @param {boolean} preferLast - If true, take last value from array (for visible inputs), else take first
- * @returns {string} Normalized string value
+ * @param value - Value to normalize
+ * @param defaultValue - Default value if value is empty
+ * @param preferLast - If true, take last value from array (for visible inputs), else take first
+ * @returns Normalized string value
  */
-export function normalizeStringValue(value, defaultValue, preferLast = false) {
+export function normalizeStringValue(
+    value: string | string[] | undefined,
+    defaultValue: string,
+    preferLast = false
+): string {
     if (!value) {
         return defaultValue
     }
@@ -90,11 +101,11 @@ export function normalizeStringValue(value, defaultValue, preferLast = false) {
 
 /**
  * Normalize editors array to always be an array with UNIQUE values
- * @param {string|string[]|undefined} editors - Editors value
- * @returns {string[]} Array of unique editor IDs
+ * @param editors - Editors value
+ * @returns Array of unique editor IDs
  */
-export function normalizeEditorsArray(editors) {
-    let result = []
+export function normalizeEditorsArray(editors: string | string[] | undefined): string[] {
+    let result: string[] = []
 
     if (Array.isArray(editors)) {
         result = editors.filter(e => e != null && e !== '' && e !== 'undefined')
@@ -109,16 +120,18 @@ export function normalizeEditorsArray(editors) {
 /**
  * Parse array values from query parameters or form body
  * Handles both array format and multiple inputs with same name
- * @param {Object} data - Query parameters or form body
- * @param {string} key - Key to extract array values for
- * @returns {string[]} Array of unique values
+ * @param data - Query parameters or form body
+ * @param key - Key to extract array values for
+ * @returns Array of unique values
  */
-export function parseArrayValue(data, key) {
-    const values = []
+export function parseArrayValue(data: Record<string, unknown>, key: string): string[] {
+    const values: string[] = []
 
     // When parseBody({ all: true }) is used, fields with multiple values are already arrays
     if (Array.isArray(data[key])) {
-        const filtered = data[key].filter(v => v != null && v !== '' && v !== 'undefined')
+        const filtered = (data[key] as unknown[]).filter(
+            v => v != null && v !== '' && v !== 'undefined'
+        ) as string[]
         if (filtered.length > 0) {
             return filtered
         }
@@ -126,7 +139,7 @@ export function parseArrayValue(data, key) {
 
     // Check if it's a single value
     if (data[key] != null && data[key] !== '' && data[key] !== 'undefined') {
-        return [data[key]]
+        return [String(data[key])]
     }
 
     // Fallback: Collect all values with this key (handles edge cases)
@@ -136,12 +149,12 @@ export function parseArrayValue(data, key) {
             if (v != null && v !== '' && v !== 'undefined') {
                 if (Array.isArray(v)) {
                     v.forEach(item => {
-                        if (item != null && item !== '' && item !== 'undefined' && !values.includes(item)) {
-                            values.push(item)
+                        if (item != null && item !== '' && item !== 'undefined' && !values.includes(String(item))) {
+                            values.push(String(item))
                         }
                     })
-                } else if (!values.includes(v)) {
-                    values.push(v)
+                } else if (!values.includes(String(v))) {
+                    values.push(String(v))
                 }
             }
         }
@@ -149,3 +162,4 @@ export function parseArrayValue(data, key) {
 
     return values
 }
+

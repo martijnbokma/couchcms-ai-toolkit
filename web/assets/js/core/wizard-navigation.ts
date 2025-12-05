@@ -92,12 +92,23 @@
             const setupType = (state.setupType || 'simple') as 'simple' | 'extended' | 'presets'
             const steps = this.getSteps(setupType)
 
-            // First try: use state.currentStep
+            // First try: use state.currentStep (most reliable)
             if (state.currentStep) {
                 const step = steps.find(s => s.num === state.currentStep)
                 if (step) {
-                    console.log('[WizardNavigation.getCurrentStep] Using state.currentStep:', state.currentStep)
-                    return step
+                    // Validate: does form action match?
+                    const form = document.querySelector('form')
+                    const formAction = form?.getAttribute('hx-post') || ''
+                    const expectedRoute = `/api/setup/step/${step.route}`
+
+                    if (formAction.includes(expectedRoute) ||
+                        (formAction.includes('/api/setup/generate') && step.route === 'review')) {
+                        console.log('[WizardNavigation.getCurrentStep] Using state.currentStep:', state.currentStep)
+                        return step
+                    } else {
+                        console.warn('[WizardNavigation.getCurrentStep] State step mismatch, detecting from form')
+                        console.warn('  State step:', state.currentStep, 'Form action:', formAction)
+                    }
                 }
             }
 
@@ -205,44 +216,58 @@
 
             // CRITICAL: Save current form state before navigating
             // This ensures all selections are preserved when navigating between steps
-            // Use immediate sync to avoid race conditions with async event handlers
             const form = document.querySelector('form')
-            if (form && window.formStateSync) {
-                console.log('[WizardNavigation] Syncing form state before navigation (immediate)')
+            if (form && window.formStateSync && typeof window.formStateSync.syncFormToState === 'function') {
+                try {
+                    console.log('[WizardNavigation] Syncing form state before navigation')
 
-                // CRITICAL: Wait a tiny bit to ensure any pending async syncs complete
-                // This prevents race conditions where a checkbox deselect triggers async sync
-                // but navigation happens before that sync completes
-                await new Promise(resolve => setTimeout(resolve, 50))
+                    // Step 1: Immediate sync
+                    const currentState = stateManager.load()
+                    window.formStateSync.syncFormToState(form, true)
 
-                // CRITICAL: Save state multiple times to ensure it's persisted
-                // This handles edge cases where state might be overwritten
-                const currentState = stateManager.load()
-                window.formStateSync.syncFormToState(form, true) // Immediate sync
+                    // Step 2: Wait for DOM updates (checkboxes might have async handlers)
+                    await new Promise<void>(resolve => {
+                        setTimeout(() => {
+                            // Double-check: sync again after delay to catch any async updates
+                            window.formStateSync.syncFormToState(form, true)
+                            resolve()
+                        }, 50)
+                    })
 
-                // Verify state was saved and contains all expected fields
-                const savedState = stateManager.load()
-                console.log('[WizardNavigation] State saved before navigation:', {
-                    css: savedState.css,
-                    js: savedState.js,
-                    agents: savedState.agents,
-                    editors: savedState.editors,
-                    projectName: savedState.projectName,
-                    preset: savedState.preset
-                })
+                    // Step 3: Verify state was saved correctly
+                    const savedState = stateManager.load()
+                    const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
 
-                // CRITICAL: Verify that checkbox arrays are preserved
-                const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
-                checkboxFields.forEach(key => {
-                    const checkboxes = form.querySelectorAll<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
-                    if (checkboxes.length === 0 && currentState[key] && Array.isArray(currentState[key]) && currentState[key].length > 0) {
-                        // Field doesn't exist in current form but exists in state
-                        if (!savedState[key] || !Array.isArray(savedState[key]) || savedState[key].length === 0) {
-                            console.warn(`[WizardNavigation] WARNING: ${key} array was lost! Restoring from current state.`)
-                            stateManager.update({ [key]: currentState[key] })
+                    checkboxFields.forEach(key => {
+                        const checkboxes = form.querySelectorAll<HTMLInputElement>(
+                            `input[name="${key}"][type="checkbox"]`
+                        )
+
+                        // If field doesn't exist in form but exists in state, verify it's preserved
+                        if (checkboxes.length === 0) {
+                            const existingValue = savedState[key]
+                            if (existingValue && Array.isArray(existingValue) && existingValue.length > 0) {
+                                console.log(`[WizardNavigation] Verified ${key} preserved:`, existingValue)
+                            } else if (currentState[key] && Array.isArray(currentState[key]) && currentState[key].length > 0) {
+                                // Lost during sync - restore it
+                                console.warn(`[WizardNavigation] WARNING: ${key} array was lost! Restoring from current state.`)
+                                stateManager.update({ [key]: currentState[key] })
+                            }
                         }
-                    }
-                })
+                    })
+
+                    console.log('[WizardNavigation] State verified before navigation:', {
+                        css: savedState.css,
+                        js: savedState.js,
+                        agents: savedState.agents,
+                        editors: savedState.editors,
+                        projectName: savedState.projectName,
+                        preset: savedState.preset
+                    })
+                } catch (error) {
+                    console.error('[WizardNavigation] Error syncing form state:', error)
+                    // Continue anyway - don't block navigation
+                }
             } else {
                 console.warn('[WizardNavigation] Could not sync form state - form or formStateSync not available')
             }
@@ -386,8 +411,8 @@
         if (window.wizardNavigation) {
             return window.wizardNavigation.navigateBack()
         }
-        console.error('[goBack] wizardNavigation not available')
-        // Fallback to old implementation if available
+
+        // Fallback: Use determineBackRoute if available (legacy compatibility)
         if (typeof window.determineBackRoute === 'function' && window.wizardStateManager && window.HTMXUtils) {
             const state = window.wizardStateManager.load()
             const setupType = (state.setupType || 'simple') as 'simple' | 'extended'
@@ -407,7 +432,47 @@
                 })
             }
         }
+        console.error('[goBack] wizardNavigation not available')
         return Promise.reject(new Error('Navigation not available'))
+    }
+
+    // Backward compatibility: Export determineBackRoute function (used by legacy code)
+    window.determineBackRoute = function(setupType: string): string {
+        const form = document.querySelector('form')
+        const formAction = (form && form.getAttribute('hx-post')) || ''
+        const currentUrl = window.location.pathname + window.location.search
+        const isReviewStep = formAction.includes('/setup/generate') ||
+            currentUrl.includes('/step/review') ||
+            document.querySelector('form[hx-post*="/setup/generate"]')
+
+        const SETUP_TYPES = { SIMPLE: 'simple', EXTENDED: 'extended' }
+        const routeMap: Record<string, string> = {
+            // Review step: go back to previous step
+            review: setupType === SETUP_TYPES.SIMPLE ? '/api/setup/step/editors' : '/api/setup/step/advanced',
+            // Advanced step (6): go back to Editors (5)
+            advanced: setupType === SETUP_TYPES.SIMPLE ? '/api/setup/step/project' : '/api/setup/step/editors',
+            // Editors step (5): go back to Agents (4) for extended, Project (1) for simple
+            editors: setupType === SETUP_TYPES.SIMPLE ? '/api/setup/step/project' : '/api/setup/step/agents',
+            // Agents step (4): go back to Frontend (3) for extended
+            agents: '/api/setup/step/frontend',
+            // Frontend step (3): go back to Presets (2)
+            frontend: '/api/setup/step/presets',
+            // Presets step (2): go back to Project (1)
+            presets: '/api/setup/step/project',
+            // Legacy/complexity step
+            complexity: '/api/setup/step/project',
+            // Default fallback
+            default: '/api/setup/step/project'
+        }
+
+        if (isReviewStep) return routeMap.review
+        if (formAction.includes('/step/advanced')) return routeMap.advanced
+        if (formAction.includes('/step/editors')) return routeMap.editors
+        if (formAction.includes('/step/agents')) return routeMap.agents
+        if (formAction.includes('/step/frontend')) return routeMap.frontend
+        if (formAction.includes('/step/presets')) return routeMap.presets
+        if (formAction.includes('/step/complexity')) return routeMap.complexity
+        return routeMap.default
     }
 
     console.log('[WizardNavigation] Initialized')

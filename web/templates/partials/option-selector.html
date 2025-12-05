@@ -59,11 +59,12 @@
                     type="{{ type }}"
                     name="{{ name }}"
                     value="{{ option.id }}"
+                    id="{{ name }}-{{ option.id }}"
                     class="{{ 'radio radio-primary radio-sm' if type == 'radio' else 'checkbox checkbox-primary checkbox-sm' }} shrink-0 {{ 'mt-1' if type == 'radio' else '' }}"
                     {% if type == 'checkbox' %}
-                        {% if option.id in selected or option.selected %}checked{% endif %}
+                        {% if option.selected %}checked{% endif %}
                     {% else %}
-                        {% if option.id == selected or option.selected %}checked{% endif %}
+                        {% if option.selected or option.id == selected %}checked{% endif %}
                     {% endif %}
                     {% if option.requires %}
                         data-requires="{{ option.requires }}"

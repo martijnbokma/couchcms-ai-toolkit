@@ -12,10 +12,10 @@ import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { readFile } from 'fs/promises'
 import { existsSync } from 'fs'
-import { setupRoutes } from './routes/setup.js'
-import { apiRoutes } from './routes/api.js'
+import { setupRoutes } from './routes/setup'
+import { apiRoutes } from './routes/api'
 import { getToolkitRootCached } from '../../scripts/lib/paths.js'
-import { createLiveReloadHandler, liveReloadManager, websocket } from './live-reload.js'
+import { createLiveReloadHandler, liveReloadManager, websocket } from './live-reload'
 
 const TOOLKIT_ROOT = getToolkitRootCached()
 const __filename = fileURLToPath(import.meta.url)
@@ -35,12 +35,23 @@ const env = new nunjucks.Environment(
 )
 
 /**
- * Render Nunjucks template
- * @param {string} template - Template name (relative to templates directory)
- * @param {Object} context - Template context
- * @returns {Promise<string>} Rendered HTML
+ * Server options
  */
-export async function renderTemplate(template, context = {}) {
+export interface ServerOptions {
+    port?: number
+    projectDir?: string
+}
+
+/**
+ * Render Nunjucks template
+ * @param template - Template name (relative to templates directory)
+ * @param context - Template context
+ * @returns Rendered HTML
+ */
+export async function renderTemplate(
+    template: string,
+    context: Record<string, unknown> = {}
+): Promise<string> {
     return new Promise((resolve, reject) => {
         env.render(template, context, (err, res) => {
             if (err) reject(err)
@@ -53,19 +64,17 @@ export async function renderTemplate(template, context = {}) {
 
 /**
  * Create and configure Hono app
- * @param {Object} options - Server options
- * @param {number} options.port - Server port
- * @param {string} options.projectDir - Project directory
- * @returns {Hono} Configured Hono app
+ * @param options - Server options
+ * @returns Configured Hono app
  */
-export function createApp(options = {}) {
+export function createApp(options: ServerOptions = {}): Hono {
     const { projectDir = process.cwd() } = options
 
     const app = new Hono()
 
     // Make renderTemplate available to route handlers via context
     app.use('*', async (c, next) => {
-        c.renderTemplate = renderTemplate
+        ;(c as { renderTemplate: typeof renderTemplate }).renderTemplate = renderTemplate
         await next()
     })
 
@@ -77,7 +86,7 @@ export function createApp(options = {}) {
 
         // Endpoint for triggering reload from watch script
         app.post('/_live-reload/trigger', async (c) => {
-            const body = await c.req.json().catch(() => ({}))
+            const body = (await c.req.json().catch(() => ({}))) as { type?: string }
             const changeType = body.type || 'full'
             liveReloadManager.broadcastReload(changeType)
             return c.json({ success: true, clients: liveReloadManager.getClientCount() })
@@ -103,7 +112,7 @@ export function createApp(options = {}) {
         try {
             const file = await readFile(fullPath)
             const ext = filePath.split('.').pop()?.toLowerCase()
-            const contentType = {
+            const contentType: Record<string, string> = {
                 'js': 'application/javascript',
                 'css': 'text/css',
                 'html': 'text/html',
@@ -114,13 +123,15 @@ export function createApp(options = {}) {
                 'gif': 'image/gif',
                 'svg': 'image/svg+xml',
                 'ico': 'image/x-icon'
-            }[ext || ''] || 'application/octet-stream'
+            }
+            const mimeType = contentType[ext || ''] || 'application/octet-stream'
 
             return c.body(file, 200, {
-                'Content-Type': contentType
+                'Content-Type': mimeType
             })
         } catch (error) {
-            console.error(`Error serving static file ${filePath}:`, error)
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+            console.error(`Error serving static file ${filePath}:`, errorMessage)
             return c.text('Internal Server Error', 500)
         }
     })
@@ -145,10 +156,10 @@ export function createApp(options = {}) {
 
 /**
  * Check if a port is available
- * @param {number} port - Port number to check
- * @returns {Promise<boolean>} True if port is available
+ * @param port - Port number to check
+ * @returns True if port is available
  */
-async function isPortAvailable(port) {
+async function isPortAvailable(port: number): Promise<boolean> {
     try {
         const server = Bun.serve({
             port,
@@ -163,11 +174,11 @@ async function isPortAvailable(port) {
 
 /**
  * Find an available port starting from the given port
- * @param {number} startPort - Starting port number
- * @param {number} maxAttempts - Maximum number of ports to try
- * @returns {Promise<number>} Available port number
+ * @param startPort - Starting port number
+ * @param maxAttempts - Maximum number of ports to try
+ * @returns Available port number
  */
-async function findAvailablePort(startPort, maxAttempts = 10) {
+async function findAvailablePort(startPort: number, maxAttempts = 10): Promise<number> {
     for (let i = 0; i < maxAttempts; i++) {
         const port = startPort + i
         if (await isPortAvailable(port)) {
@@ -179,11 +190,9 @@ async function findAvailablePort(startPort, maxAttempts = 10) {
 
 /**
  * Start the web server
- * @param {Object} options - Server options
- * @param {number} options.port - Server port (default: 3000)
- * @param {string} options.projectDir - Project directory
+ * @param options - Server options
  */
-export async function startServer(options = {}) {
+export async function startServer(options: ServerOptions = {}): Promise<ReturnType<typeof Bun.serve>> {
     const { port: requestedPort = 3000, projectDir = process.cwd() } = options
 
     const app = createApp({ projectDir })
@@ -198,14 +207,19 @@ export async function startServer(options = {}) {
             port = await findAvailablePort(requestedPort)
             portChanged = true
         } catch (error) {
-            throw new Error(`Failed to start server. Port ${requestedPort} is in use and could not find an available port. Try: bun toolkit serve --port=<different-port>`)
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+            throw new Error(`Failed to start server. Port ${requestedPort} is in use and could not find an available port. Try: bun toolkit serve --port=<different-port>. Error: ${errorMessage}`)
         }
     }
 
     // Start server on available port
     // Include websocket handler for live reload support
     const isProduction = process.env.NODE_ENV === 'production'
-    const serverConfig = {
+    const serverConfig: {
+        port: number
+        fetch: typeof app.fetch
+        websocket?: typeof websocket
+    } = {
         port,
         fetch: app.fetch,
     }

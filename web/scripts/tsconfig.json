@@ -1,0 +1,15 @@
+{
+    "extends": "../server/tsconfig.json",
+    "compilerOptions": {
+        "outDir": null,
+        "noEmit": true,
+        "types": ["node", "bun-types"]
+    },
+    "include": [
+        "**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.js"
+    ]
+}

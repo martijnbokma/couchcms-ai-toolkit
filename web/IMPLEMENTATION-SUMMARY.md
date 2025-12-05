@@ -1,223 +1,98 @@
-# Wizard Steps Refactoring - Implementation Summary
+# Module & Agent Systeem Verbeteringen - Implementatie Samenvatting
 
-**Date:** 2025-01-01
-**Phase:** 1 - Foundation (Completed)
+## ✅ Geïmplementeerd (Fase 1)
 
----
+### 1. Data Extraction Functies
+- ✅ `loadModuleMetadata()` - Haalt frontmatter en content op uit module markdown bestanden
+- ✅ `loadAgentMetadata()` - Haalt frontmatter en content op uit agent markdown bestanden
+- ✅ `determineAgentCategory()` - Bepaalt categorie op basis van naam en tags
+- ✅ `getEnrichedCouchCMSItems()` - Retourneert modules en agents met volledige metadata
+- ✅ `groupByCategory()` - Groepeert items per categorie
 
-## ✅ Completed Implementation
+### 2. API Updates
+- ✅ gray-matter import toegevoegd voor frontmatter parsing
+- ✅ Review route uitgebreid met enriched data
+- ✅ Modules en agents worden nu getoond met:
+  - Beschrijvingen
+  - Categorieën
+  - Versies
+  - Dependencies (requires, conflicts)
+  - Samenvattingen
 
-### 1. Unified Components Created
+### 3. Data Beschikbaar in Template
+De review template heeft nu toegang tot:
+- `enrichedModules` - Array met volledige module metadata
+- `enrichedAgents` - Array met volledige agent metadata
+- `modulesByCategory` - Modules gegroepeerd per categorie
+- `agentsByCategory` - Agents gegroepeerd per categorie
 
-#### A. Option Selector Component (`web/templates/partials/option-selector.html`)
-- **Purpose:** Reusable checkbox/radio option selector
-- **Features:**
-  - Supports both checkbox and radio input types
-  - Dependency handling (e.g., daisyUI requires TailwindCSS)
-  - Skip option support (for presets)
-  - Configurable grid layout
-  - Dependency warning messages
-- **Used in:** Frontend, Agents, Editors, Presets steps
-- **Code Reduction:** ~1000 lines → ~95 lines (95% reduction)
+## 📋 Volgende Stappen (Fase 2)
 
-#### B. Field Group Component (`web/templates/partials/field-group.html`)
-- **Purpose:** Reusable form field groups with validation
-- **Features:**
-  - Supports text, textarea, and other input types
-  - Integrated validation message display
-  - Character counter support
-  - Help text integration
-- **Used in:** Project, Advanced steps
-- **Code Reduction:** ~150 lines → ~70 lines (53% reduction)
+### 1. Modal UI Verbeteringen
+- [ ] Tabbed interface (Modules / Agents tabs)
+- [ ] Categorisering met badges
+- [ ] Detail view per item
+- [ ] Dependency visualisatie
 
-#### C. Validation Message Component (`web/templates/partials/validation-message.html`)
-- **Purpose:** Unified error/help message display
-- **Features:**
-  - Error message display
-  - Help text display
-  - Character counter
-  - ARIA live regions for accessibility
-- **Used in:** All steps with form inputs
+### 2. API Endpoints
+- [ ] `/api/setup/module/:name` - Get single module details
+- [ ] `/api/setup/agent/:name` - Get single agent details
+- [ ] `/api/setup/couchcms-items` - Get all enriched items
 
-### 2. Centralized Configuration
+### 3. Enhanced Features
+- [ ] Search/filter functionaliteit
+- [ ] Code voorbeelden weergave
+- [ ] Links naar documentatie
 
-#### A. Step Configuration (`web/assets/js/core/step-config.ts`)
-- **Purpose:** Single source of truth for step definitions
-- **Features:**
-  - Step definitions for all setup types (simple, extended, presets)
-  - Step metadata (labels, descriptions, validation rules)
-  - Helper functions (getNextStep, getPreviousStep, etc.)
-  - Progress calculation
-- **Benefits:**
-  - Eliminates duplication across wizard-navigation.ts and server routes
-  - Easy to add/modify steps
-  - Type-safe with TypeScript
+## 🎯 Gebruik in Template
 
-#### B. Step Validator (`web/assets/js/core/step-validator.ts`)
-- **Purpose:** Unified validation logic
-- **Features:**
-  - Field-level validation rules
-  - Real-time validation with UI updates
-  - Character counter management
-  - Error message display/clearing
-- **Benefits:**
-  - Consistent validation across all steps
-  - Reusable validation functions
-  - Easy to extend with new rules
+### Huidige Data Structuur
 
-### 3. Base Template
+```javascript
+// enrichedModules example
+{
+    name: "search",
+    id: "search",
+    category: "navigation",
+    version: "2.x",
+    description: "Search functionality with MySQL fulltext and relevance ranking",
+    summary: "Complete guide to implementing search...",
+    required: false,
+    requires: ["couchcms-core"],
+    conflicts: [],
+    content: "First 500 chars of content..."
+}
 
-#### A. Step Base Template (`web/templates/partials/step-base.html`)
-- **Purpose:** Common structure for all steps
-- **Features:**
-  - Standard form structure
-  - Section header integration
-  - Form navigation buttons
-  - Script injection support
-- **Benefits:**
-  - Consistent step structure
-  - Reduces template duplication
-
-### 4. Refactored Steps
-
-All steps have been refactored to use the new components:
-
-- ✅ **frontend.html** - Uses option-selector for CSS/JS frameworks
-- ✅ **agents.html** - Uses option-selector for agent selection
-- ✅ **editors.html** - Uses option-selector for editor selection
-- ✅ **presets.html** - Uses option-selector with skip option
-
----
-
-## 📊 Code Reduction Statistics
-
-| Component | Before | After | Reduction |
-|-----------|--------|-------|-----------|
-| Checkbox/Radio HTML | ~1000 lines | ~95 lines | **95%** |
-| Step Templates | ~1050 lines | ~200 lines | **81%** |
-| Validation Logic | ~350 lines | ~100 lines | **71%** |
-| Step Configuration | Scattered | 1 file | **Centralized** |
-| **Total** | **~2400 lines** | **~500 lines** | **~79%** |
-
----
-
-## 🎯 DRY & Modularity Achievements
-
-### DRY Principles
-- ✅ **Single Source of Truth:** All step definitions in one file
-- ✅ **Reusable Components:** Option selector used in 4+ steps
-- ✅ **Centralized Validation:** One validator for all fields
-- ✅ **Common Templates:** Base template eliminates duplication
-
-### Modular Architecture
-- ✅ **Independent Components:** Each component can be used separately
-- ✅ **Composable Design:** Components can be combined flexibly
-- ✅ **Clear Interfaces:** Well-defined APIs between modules
-- ✅ **Loose Coupling:** Components don't depend on internal details
-
----
-
-## 📁 File Structure
-
-```
-web/
-├── templates/
-│   └── partials/
-│       ├── option-selector.html      # NEW: Unified option selector
-│       ├── field-group.html          # NEW: Reusable field groups
-│       ├── validation-message.html   # NEW: Unified validation display
-│       └── step-base.html            # NEW: Base step template
-├── assets/js/
-│   └── core/
-│       ├── step-config.ts            # NEW: Centralized step definitions
-│       └── step-validator.ts         # NEW: Unified validation system
-└── scripts/
-    └── build.js                      # UPDATED: Includes new TypeScript files
+// modulesByCategory example
+{
+    "core": [...modules],
+    "navigation": [...modules],
+    "content": [...modules],
+    "frontend": [...modules]
+}
 ```
 
----
+### Template Voorbeeld
 
-## ✅ Phase 2 - Integration (Completed)
+```nunjucks
+{% for category, modules in modulesByCategory %}
+    <div class="category-section">
+        <h4>{{ category }}</h4>
+        {% for module in modules %}
+            <div class="module-card">
+                <h5>{{ module.name }}</h5>
+                <p>{{ module.description }}</p>
+                {% if module.required %}
+                    <span class="badge">Required</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+```
 
-### Completed Integration Tasks
-1. ✅ **Updated wizard-navigation.ts** to use step-config.ts
-   - Removed hardcoded step definitions
-   - Uses centralized STEP_CONFIG
-   - Supports all setup types (simple, extended, presets)
-   - Dynamic route mapping from step config
+## 📝 Notities
 
-2. ✅ **Refactored project.html** to use field-group component
-   - Project name field uses field-group
-   - Project description field uses field-group
-   - Reduced from ~130 lines to ~80 lines
-
-3. ✅ **Updated project.html** to use step-validator.ts
-   - Removed inline validation functions
-   - Uses centralized StepValidator
-   - Real-time validation with UI updates
-   - Character counter integration
-
-### Remaining Tasks
-1. **Update server routes** to use step-config.ts (optional - can use shared structure)
-2. **Refactor advanced.html** to use field-group component (if applicable)
-3. **Test all refactored steps** thoroughly
-
-### Future Enhancements (Phase 3)
-- Progressive disclosure for options
-- Smart defaults and recommendations
-- Enhanced visual design
-- Mobile optimizations
-
----
-
-## ✨ Benefits Realized
-
-1. **Maintainability:** Changes in one place propagate automatically
-2. **Consistency:** UI/UX patterns consistent across all steps
-3. **Testability:** Isolated components easier to test
-4. **Scalability:** Easy to add new steps or modify existing ones
-5. **Performance:** Smaller bundle size, better tree-shaking
-6. **Developer Experience:** Less code to write and maintain
-
----
-
-## 🔍 Testing Checklist
-
-- [ ] Test frontend step with new option-selector
-- [ ] Test agents step with new option-selector
-- [ ] Test editors step with new option-selector
-- [ ] Test presets step with skip option
-- [ ] Verify dependency warnings work (daisyUI/TailwindCSS)
-- [ ] Test validation with step-validator
-- [ ] Verify build includes new TypeScript files
-- [ ] Test navigation between steps
-
----
-
-**Status:** Phase 1 & 2 Complete ✅
-**Next:** Phase 3 - Testing & UX Enhancements
-
----
-
-## 📝 Implementation Notes
-
-### TypeScript Module Loading
-The step-config.ts and step-validator.ts are bundled with the wizard.js bundle. They export to `window` for global access:
-- `window.StepConfig` - Step configuration object
-- `window.StepValidator` - Validation class
-- `window.getStepDefinitions()` - Helper function
-- `window.validateProjectName()` - Legacy compatibility function
-
-### Backward Compatibility
-All refactored components maintain backward compatibility:
-- Legacy validation functions still work if StepValidator is not available
-- Fallback step definitions in wizard-navigation.ts
-- Existing server routes continue to work
-
-### Code Quality
-- ✅ TypeScript strict mode compliance
-- ✅ DRY principles applied throughout
-- ✅ Modular architecture with clear interfaces
-- ✅ Comprehensive error handling
-- ✅ Accessibility maintained (ARIA labels, semantic HTML)
-
+- Fallback mechanisme: Als metadata niet beschikbaar is, wordt basis metadata gegenereerd
+- Performance: Metadata wordt per request geladen (kan gecached worden in toekomst)
+- Error handling: Graceful degradation bij ontbrekende bestanden

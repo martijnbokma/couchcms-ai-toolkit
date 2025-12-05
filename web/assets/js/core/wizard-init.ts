@@ -252,22 +252,34 @@
                     // This ensures all selections are preserved when navigating between steps
                     // Use immediate sync to ensure state is saved before HTMX request
                     try {
-                        const existingState = stateManager.load()
-                        formSync.syncFormToState(form, true) // Immediate sync
+                        if (formSync && typeof formSync.syncFormToState === 'function' && stateManager) {
+                            const existingState = stateManager.load()
+                            formSync.syncFormToState(form, true) // Immediate sync
 
-                        // CRITICAL: Verify state was saved correctly
-                        const savedState = stateManager.load()
-                        const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
-                        checkboxFields.forEach(key => {
-                            const checkboxes = form.querySelectorAll<HTMLInputElement>(`input[name="${key}"][type="checkbox"]`)
-                            if (checkboxes.length === 0 && existingState[key] && Array.isArray(existingState[key]) && existingState[key].length > 0) {
-                                // Field doesn't exist in current form but exists in state
-                                if (!savedState[key] || !Array.isArray(savedState[key]) || savedState[key].length === 0) {
-                                    console.warn(`[WizardInit] WARNING: ${key} array was lost in beforeRequest! Restoring.`)
-                                    stateManager.update({ [key]: existingState[key] })
+                            // CRITICAL: Verify state was saved correctly
+                            const savedState = stateManager.load()
+                            const checkboxFields = ['css', 'js', 'agents', 'editors'] as const
+                            checkboxFields.forEach(key => {
+                                const checkboxes = form.querySelectorAll<HTMLInputElement>(
+                                    `input[name="${key}"][type="checkbox"]`
+                                )
+
+                                if (checkboxes.length === 0 &&
+                                    existingState[key] &&
+                                    Array.isArray(existingState[key]) &&
+                                    existingState[key].length > 0) {
+                                    // Field doesn't exist in current form but exists in state
+                                    if (!savedState[key] ||
+                                        !Array.isArray(savedState[key]) ||
+                                        savedState[key].length === 0) {
+                                        console.warn(`[WizardInit] WARNING: ${key} array was lost in beforeRequest! Restoring.`)
+                                        stateManager.update({ [key]: existingState[key] })
+                                    }
                                 }
-                            }
-                        })
+                            })
+                        } else {
+                            console.warn('[WizardInit] formStateSync or stateManager not available')
+                        }
                     } catch (error) {
                         console.error('[WizardInit] Error syncing form state:', error)
                         // Continue anyway - don't block submission
@@ -275,14 +287,18 @@
 
                     // Determine and update next step (don't let errors block submission)
                     try {
-                        const formAction = form.getAttribute('hx-post') || ''
-                        const state = stateManager.load()
-                        const nextStep = determineNextStepFromForm(formAction, state.setupType || 'simple')
+                        if (stateManager) {
+                            const formAction = form.getAttribute('hx-post') || ''
+                            const state = stateManager.load()
+                            const nextStep = determineNextStepFromForm(formAction, state.setupType || 'simple')
 
-                        if (nextStep) {
-                            console.log('[WizardInit] Determined next step:', nextStep.num, nextStep.route)
-                            // Update state with next step (will be confirmed after response)
-                            stateManager.update({ currentStep: nextStep.num })
+                            if (nextStep) {
+                                console.log('[WizardInit] Determined next step:', nextStep.num, nextStep.route)
+                                // Update state with next step (will be confirmed after response)
+                                stateManager.update({ currentStep: nextStep.num })
+                            }
+                        } else {
+                            console.warn('[WizardInit] stateManager not available for step determination')
                         }
                     } catch (error) {
                         console.error('[WizardInit] Error determining next step:', error)

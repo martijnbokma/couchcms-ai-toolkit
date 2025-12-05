@@ -5,27 +5,28 @@
  * Uses Tailwind CSS CLI to compile CSS with custom styles and daisyUI
  */
 
-import { existsSync, mkdirSync } from 'fs'
+import { existsSync, mkdirSync, statSync, rmSync } from 'fs'
 import { join } from 'path'
 import { $ } from 'bun'
+import type { BundleConfig } from './types'
 
-const WEB_DIR = import.meta.dir
-const ASSETS_DIR = join(WEB_DIR, '..', 'assets')
-const JS_SRC_DIR = join(ASSETS_DIR, 'js')
-const CSS_SRC_DIR = join(ASSETS_DIR, 'css')
-const PUBLIC_DIR = join(WEB_DIR, '..', 'public')
-const DIST_DIR = join(PUBLIC_DIR, 'dist')
-const JS_DIST_DIR = join(DIST_DIR, 'js')
-const CSS_DIST_DIR = join(DIST_DIR, 'css')
-const CSS_INPUT = join(CSS_SRC_DIR, 'input.css')
-const CSS_OUTPUT = join(CSS_DIST_DIR, 'app.css')
+const WEB_DIR: string = import.meta.dir
+const ASSETS_DIR: string = join(WEB_DIR, '..', 'assets')
+const JS_SRC_DIR: string = join(ASSETS_DIR, 'js')
+const CSS_SRC_DIR: string = join(ASSETS_DIR, 'css')
+const PUBLIC_DIR: string = join(WEB_DIR, '..', 'public')
+const DIST_DIR: string = join(PUBLIC_DIR, 'dist')
+const JS_DIST_DIR: string = join(DIST_DIR, 'js')
+const CSS_DIST_DIR: string = join(DIST_DIR, 'css')
+const CSS_INPUT: string = join(CSS_SRC_DIR, 'input.css')
+const CSS_OUTPUT: string = join(CSS_DIST_DIR, 'app.css')
 
 /**
  * Get file path, preferring .ts over .js
- * @param {string} basePath - Base path without extension
- * @returns {string|null} Path to file if it exists, null otherwise
+ * @param basePath - Base path without extension
+ * @returns Path to file if it exists, null otherwise
  */
-function getFilePath(basePath) {
+function getFilePath(basePath: string): string | null {
     // Remove .js extension if present (entryBase might already have it)
     const cleanPath = basePath.replace(/\.js$/, '')
 
@@ -59,7 +60,7 @@ console.log('📦 Bundling JavaScript files...\n')
 
 // Bundle configuration
 // Note: TypeScript files (.ts) are preferred over JavaScript (.js)
-const bundles = [
+const bundles: BundleConfig[] = [
     {
         name: 'wizard',
         entry: [
@@ -67,6 +68,8 @@ const bundles = [
             join(JS_SRC_DIR, 'core', 'constants'),
             join(JS_SRC_DIR, 'core', 'dom'),
             join(JS_SRC_DIR, 'core', 'htmx'),
+            // Type guards for safe window access
+            join(JS_SRC_DIR, 'core', 'type-guards'),
             // Improved state management (new)
             join(JS_SRC_DIR, 'core', 'wizard-state-manager'),
             join(JS_SRC_DIR, 'core', 'state-indicator'),
@@ -79,11 +82,11 @@ const bundles = [
             join(JS_SRC_DIR, 'core', 'wizard-init'),
             // Legacy state management (for backward compatibility)
             join(JS_SRC_DIR, 'core', 'state'),
-            // Wizard modules (legacy - kept for compatibility)
-            join(JS_SRC_DIR, 'wizard', 'navigation'),
-            join(JS_SRC_DIR, 'wizard', 'form-restore'),
-            join(JS_SRC_DIR, 'wizard', 'form-sync'),
-            join(JS_SRC_DIR, 'wizard', 'init'),
+            // Wizard modules (legacy - removed, backward compatibility in TypeScript modules)
+            // join(JS_SRC_DIR, 'wizard', 'navigation'), // Removed - backward compat in wizard-navigation.ts
+            // join(JS_SRC_DIR, 'wizard', 'form-restore'), // Removed - backward compat in form-state-sync.ts
+            // join(JS_SRC_DIR, 'wizard', 'form-sync'), // Removed - backward compat in form-state-sync.ts
+            join(JS_SRC_DIR, 'wizard', 'init'), // Still needed - uses legacy functions
             // Step modules
             join(JS_SRC_DIR, 'steps', 'advanced'),
             join(JS_SRC_DIR, 'steps', 'review')
@@ -103,8 +106,10 @@ const bundles = [
     }
 ]
 
-// Tailwind CSS compilation
-async function buildTailwindCSS() {
+/**
+ * Build Tailwind CSS
+ */
+async function buildTailwindCSS(): Promise<void> {
     console.log('\n🎨 Building Tailwind CSS v4...')
 
     if (!existsSync(CSS_INPUT)) {
@@ -121,7 +126,6 @@ async function buildTailwindCSS() {
             throw new Error(`Tailwind CSS compilation failed with exit code ${result.exitCode}`)
         }
 
-        const { statSync } = await import('fs')
         const stats = statSync(CSS_OUTPUT)
         const size = stats.size / 1024
 
@@ -132,13 +136,15 @@ async function buildTailwindCSS() {
     }
 }
 
-// Build each bundle
-for (const bundle of bundles) {
+/**
+ * Build a single bundle
+ */
+async function buildBundle(bundle: BundleConfig): Promise<void> {
     console.log(`🔨 Building ${bundle.name} bundle...`)
 
     try {
         // Resolve entry files (prefer .ts over .js)
-        const resolvedEntries = []
+        const resolvedEntries: string[] = []
         for (const entryBase of bundle.entry) {
             // entryBase already includes full path, just need to check .ts vs .js
             const filePath = getFilePath(entryBase)
@@ -151,7 +157,7 @@ for (const bundle of bundles) {
 
         if (resolvedEntries.length === 0) {
             console.warn(`⚠️  Warning: No entry files found for ${bundle.name} bundle`)
-            continue
+            return
         }
 
         // Build bundle content
@@ -159,13 +165,13 @@ for (const bundle of bundles) {
         const tempDir = join(WEB_DIR, '.temp-build')
 
         // Create temp directory if needed for TypeScript compilation
-        const needsTempDir = resolvedEntries.some(f => f.endsWith('.ts'))
+        const needsTempDir = resolvedEntries.some((f: string) => f.endsWith('.ts'))
         if (needsTempDir && !existsSync(tempDir)) {
             mkdirSync(tempDir, { recursive: true })
         }
 
         for (const entryFile of resolvedEntries) {
-            const fileName = entryFile.split('/').pop()
+            const fileName = entryFile.split('/').pop() || entryFile
             const isTypeScript = entryFile.endsWith('.ts')
 
             // Add separator comment
@@ -189,7 +195,7 @@ for (const bundle of bundles) {
 
                     if (!result.success) {
                         console.error(`❌ Error compiling ${entryFile}:`)
-                        result.logs.forEach(log => console.error('  ', log))
+                        result.logs.forEach((log) => console.error('  ', log))
                         throw new Error(`Failed to compile ${entryFile}`)
                     }
 
@@ -227,7 +233,6 @@ for (const bundle of bundles) {
 
         // Cleanup temp directory
         if (needsTempDir && existsSync(tempDir)) {
-            const { rmSync } = await import('fs')
             rmSync(tempDir, { recursive: true, force: true })
         }
 
@@ -235,7 +240,6 @@ for (const bundle of bundles) {
         await Bun.write(bundle.output, combinedContent)
 
         // Get file size using fs.statSync
-        const { statSync } = await import('fs')
         const stats = statSync(bundle.output)
         const size = stats.size / 1024
 
@@ -244,6 +248,11 @@ for (const bundle of bundles) {
         console.error(`❌ Error building ${bundle.name} bundle:`, error)
         process.exit(1)
     }
+}
+
+// Build each bundle
+for (const bundle of bundles) {
+    await buildBundle(bundle)
 }
 
 // Build Tailwind CSS

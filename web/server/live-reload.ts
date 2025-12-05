@@ -5,30 +5,54 @@
  */
 
 import { createBunWebSocket } from 'hono/bun'
+import type { ChangeType } from '../scripts/types'
+
+/**
+ * WebSocket message types for live reload communication
+ */
+interface ReloadMessage {
+    type: 'reload'
+    changeType: ChangeType
+    timestamp: number
+}
+
+interface PingMessage {
+    type: 'ping'
+}
+
+interface PongMessage {
+    type: 'pong'
+    timestamp: number
+}
+
+type ClientMessage = PingMessage
+type ServerMessage = ReloadMessage | PongMessage
 
 /**
  * Live Reload Manager
  * Manages WebSocket connections and broadcasts reload signals
  */
 export class LiveReloadManager {
+    private clients: Set<WebSocket>
+
     constructor() {
-        this.clients = new Set()
+        this.clients = new Set<WebSocket>()
     }
 
     /**
      * Add a WebSocket client
-     * @param {WebSocket} ws - WebSocket connection
+     * @param ws - WebSocket connection
      */
-    addClient(ws) {
+    addClient(ws: WebSocket): void {
         this.clients.add(ws)
         console.log(`🔌 Live reload client connected (${this.clients.size} total)`)
     }
 
     /**
      * Remove a WebSocket client
-     * @param {WebSocket} ws - WebSocket connection
+     * @param ws - WebSocket connection
      */
-    removeClient(ws) {
+    removeClient(ws: WebSocket): void {
         if (this.clients.has(ws)) {
             this.clients.delete(ws)
             console.log(`🔌 Live reload client disconnected (${this.clients.size} total)`)
@@ -37,30 +61,33 @@ export class LiveReloadManager {
 
     /**
      * Broadcast reload signal to all connected clients
-     * @param {string} type - Type of change ('css', 'js', 'html', 'full')
+     * @param type - Type of change ('css', 'js', 'html', 'full')
      */
-    broadcastReload(type = 'full') {
+    broadcastReload(type: ChangeType = 'full'): void {
         if (this.clients.size === 0) {
             return
         }
 
-        const message = JSON.stringify({
+        const message: ReloadMessage = {
             type: 'reload',
             changeType: type,
             timestamp: Date.now()
-        })
+        }
+
+        const messageString = JSON.stringify(message)
 
         let disconnected = 0
         for (const client of this.clients) {
             try {
                 if (client.readyState === WebSocket.OPEN) {
-                    client.send(message)
+                    client.send(messageString)
                 } else {
                     this.clients.delete(client)
                     disconnected++
                 }
             } catch (error) {
-                console.error('Error sending reload signal:', error)
+                const errorMessage = error instanceof Error ? error.message : String(error)
+                console.error('Error sending reload signal:', errorMessage)
                 this.clients.delete(client)
                 disconnected++
             }
@@ -75,9 +102,9 @@ export class LiveReloadManager {
 
     /**
      * Get number of connected clients
-     * @returns {number}
+     * @returns Number of connected clients
      */
-    getClientCount() {
+    getClientCount(): number {
         return this.clients.size
     }
 }
@@ -89,36 +116,50 @@ export const liveReloadManager = new LiveReloadManager()
 const { upgradeWebSocket, websocket } = createBunWebSocket()
 
 /**
+ * WebSocket handler callbacks type
+ */
+interface WebSocketHandlers {
+    onOpen: (event: Event, ws: WebSocket) => void
+    onMessage: (event: MessageEvent, ws: WebSocket) => void
+    onClose: (event: CloseEvent) => void
+    onError: (event: Event, ws: WebSocket, error: Error) => void
+}
+
+/**
  * Create WebSocket upgrade handler for live reload
- * @returns {Function} Hono route handler
+ * @returns Hono route handler
  */
 export function createLiveReloadHandler() {
-    return upgradeWebSocket((c) => {
-        let wsReference = null
+    return upgradeWebSocket((_c) => {
+        let wsReference: WebSocket | null = null
 
-        return {
-            onOpen(_event, ws) {
+        const handlers: WebSocketHandlers = {
+            onOpen(_event: Event, ws: WebSocket) {
                 wsReference = ws
                 liveReloadManager.addClient(ws)
             },
-            onMessage(event, ws) {
+            onMessage(event: MessageEvent, ws: WebSocket) {
                 // Handle client messages if needed
                 try {
-                    const data = JSON.parse(event.data.toString())
+                    const data = JSON.parse(event.data.toString()) as ClientMessage
                     if (data.type === 'ping') {
-                        ws.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }))
+                        const pongMessage: PongMessage = {
+                            type: 'pong',
+                            timestamp: Date.now()
+                        }
+                        ws.send(JSON.stringify(pongMessage))
                     }
                 } catch (error) {
                     // Ignore invalid messages
                 }
             },
-            onClose(_event) {
+            onClose(_event: CloseEvent) {
                 if (wsReference) {
                     liveReloadManager.removeClient(wsReference)
                     wsReference = null
                 }
             },
-            onError(_event, ws, error) {
+            onError(_event: Event, _ws: WebSocket, error: Error) {
                 console.error('WebSocket error:', error)
                 if (wsReference) {
                     liveReloadManager.removeClient(wsReference)
@@ -126,9 +167,10 @@ export function createLiveReloadHandler() {
                 }
             }
         }
+
+        return handlers
     })
 }
 
 // Export websocket handler for server configuration
 export { websocket }
-
